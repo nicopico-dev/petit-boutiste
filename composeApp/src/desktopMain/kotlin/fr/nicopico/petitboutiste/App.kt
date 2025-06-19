@@ -3,6 +3,7 @@ package fr.nicopico.petitboutiste
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,6 +30,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlinproject.composeapp.generated.resources.Res
 import kotlinproject.composeapp.generated.resources.compose_multiplatform
 
+// Sealed class hierarchy to represent byte items
+sealed class ByteItem
+
+// Represents a single byte
+data class SingleByte(val index: Int, val value: String) : ByteItem()
+
+// Represents a group of bytes
+data class ByteGroup(
+    val startIndex: Int,
+    val endIndex: Int,
+    val bytes: List<String>,
+    val name: String
+) : ByteItem()
+
 @Composable
 fun HexInputDisplay() {
     var hexInput by remember { mutableStateOf("") }
@@ -43,6 +59,42 @@ fun HexInputDisplay() {
             "$formattedHex "  // Add a space for the incomplete byte
         } else {
             formattedHex
+        }
+    }
+
+    // State for byte groups
+    var byteGroups by remember { mutableStateOf(listOf<ByteGroup>()) }
+    var startIndex by remember { mutableStateOf("") }
+    var endIndex by remember { mutableStateOf("") }
+    var groupName by remember { mutableStateOf("") }
+
+    // Process hex input into a list of ByteItems (single bytes and groups)
+    val byteItems = remember(paddedHex, byteGroups) {
+        val allBytes = paddedHex.chunked(2)
+        val items = mutableListOf<ByteItem>()
+
+        // Track which indices are part of groups
+        val groupedIndices = mutableSetOf<Int>()
+
+        // Add all byte groups
+        byteGroups.forEach { group ->
+            groupedIndices.addAll(group.startIndex..group.endIndex)
+            items.add(group)
+        }
+
+        // Add all individual bytes that are not part of any group
+        allBytes.forEachIndexed { index, byte ->
+            if (index !in groupedIndices) {
+                items.add(SingleByte(index, byte))
+            }
+        }
+
+        // Sort items by their start index
+        items.sortedBy {
+            when (it) {
+                is SingleByte -> it.index
+                is ByteGroup -> it.startIndex
+            }
         }
     }
 
@@ -89,38 +141,170 @@ fun HexInputDisplay() {
             }
         )
 
+        // Group creation controls
         if (formattedHex.isNotEmpty()) {
-            // Group by 2 characters (1 byte)
-            val byteList = paddedHex.chunked(2).mapIndexed { index, byte -> index to byte }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = startIndex,
+                    onValueChange = { startIndex = it },
+                    label = { Text("Start Index") },
+                    modifier = Modifier.weight(1f).padding(end = 4.dp),
+                    singleLine = true
+                )
 
+                OutlinedTextField(
+                    value = endIndex,
+                    onValueChange = { endIndex = it },
+                    label = { Text("End Index") },
+                    modifier = Modifier.weight(1f).padding(horizontal = 4.dp),
+                    singleLine = true
+                )
+
+                OutlinedTextField(
+                    value = groupName,
+                    onValueChange = { groupName = it },
+                    label = { Text("Group Name") },
+                    modifier = Modifier.weight(1f).padding(start = 4.dp),
+                    singleLine = true
+                )
+
+                Button(
+                    onClick = {
+                        val start = startIndex.toIntOrNull() ?: return@Button
+                        val end = endIndex.toIntOrNull() ?: return@Button
+
+                        if (start < 0 || end >= paddedHex.length / 2 || start > end) {
+                            return@Button
+                        }
+
+                        val bytes = paddedHex.chunked(2).subList(start, end + 1)
+                        val newGroup = ByteGroup(start, end, bytes, groupName)
+
+                        // Check if this group overlaps with any existing group
+                        val overlaps = byteGroups.any { group ->
+                            (start <= group.endIndex && end >= group.startIndex)
+                        }
+
+                        if (!overlaps) {
+                            byteGroups = byteGroups + newGroup
+                        }
+
+                        // Reset input fields
+                        startIndex = ""
+                        endIndex = ""
+                        groupName = ""
+                    },
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Text("Create Group")
+                }
+            }
+        }
+
+        if (formattedHex.isNotEmpty()) {
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 40.dp),
+                columns = GridCells.Adaptive(minSize = 80.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalArrangement = Arrangement.Top
             ) {
-                items(byteList) { (index, byte) ->
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = byte,
-                            style = TextStyle(
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 18.sp
-                            )
-                        )
-                        Text(
-                            text = index.toString(),
-                            style = TextStyle(
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 12.sp,
-                                color = Color.Gray
-                            )
-                        )
+                items(byteItems) { item ->
+                    when (item) {
+                        is SingleByte -> {
+                            // Display a single byte
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = item.value,
+                                    style = TextStyle(
+                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 18.sp
+                                    )
+                                )
+                                Text(
+                                    text = item.index.toString(),
+                                    style = TextStyle(
+                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 12.sp,
+                                        color = Color.Gray
+                                    )
+                                )
+                            }
+                        }
+                        is ByteGroup -> {
+                            // Display a byte group
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                                    .border(1.dp, Color.Blue)
+                                    .padding(4.dp)
+                            ) {
+                                // Get the raw hex string for this group without spaces
+                                val groupText = item.bytes.joinToString("")
+
+                                Text(
+                                    text = groupText,
+                                    style = TextStyle(
+                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 18.sp
+                                    )
+                                )
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = "${item.startIndex}..${item.endIndex}",
+                                        style = TextStyle(
+                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 12.sp,
+                                            color = Color.Gray
+                                        )
+                                    )
+
+                                    // Add a remove button
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(start = 8.dp)
+                                            .border(1.dp, Color.Red)
+                                            .padding(horizontal = 4.dp, vertical = 2.dp)
+                                            .clickable {
+                                                byteGroups = byteGroups.filter { g -> g != item }
+                                            }
+                                    ) {
+                                        Text(
+                                            text = "✕",
+                                            style = TextStyle(
+                                                fontFamily = FontFamily.Monospace,
+                                                fontSize = 12.sp,
+                                                color = Color.Red
+                                            )
+                                        )
+                                    }
+                                }
+                                if (item.name.isNotEmpty()) {
+                                    Text(
+                                        text = item.name,
+                                        style = TextStyle(
+                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 12.sp,
+                                            color = Color.Blue
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
