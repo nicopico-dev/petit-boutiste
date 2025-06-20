@@ -1,21 +1,27 @@
-package fr.nicopico.petitboutiste
+package fr.nicopico.petitboutiste.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,29 +30,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import fr.nicopico.petitboutiste.models.ByteGroup
+import fr.nicopico.petitboutiste.models.OldByteItem
+import fr.nicopico.petitboutiste.models.SingleByte
+import kotlin.collections.addAll
+import kotlin.collections.plus
 
-import kotlinproject.composeapp.generated.resources.Res
-import kotlinproject.composeapp.generated.resources.compose_multiplatform
-
-// Sealed class hierarchy to represent byte items
-sealed class ByteItem
-
-// Represents a single byte
-data class SingleByte(val index: Int, val value: String) : ByteItem()
-
-// Represents a group of bytes
-data class ByteGroup(
-    val startIndex: Int,
-    val endIndex: Int,
-    val bytes: List<String>,
-    val name: String
-) : ByteItem()
-
+@Deprecated("")
 @Composable
 fun HexInputDisplay() {
-    var hexInput by remember { mutableStateOf("") }
+    var hexInput by rememberSaveable { mutableStateOf("") }
     val formattedHex = remember(hexInput) {
         // Remove any non-hex characters and convert to uppercase
         val cleanHex = hexInput.filter { it.isDigit() || it in 'a'..'f' || it in 'A'..'F' }.uppercase()
@@ -71,7 +64,7 @@ fun HexInputDisplay() {
     // Process hex input into a list of ByteItems (single bytes and groups)
     val byteItems = remember(paddedHex, byteGroups) {
         val allBytes = paddedHex.chunked(2)
-        val items = mutableListOf<ByteItem>()
+        val items = mutableListOf<OldByteItem>()
 
         // Track which indices are part of groups
         val groupedIndices = mutableSetOf<Int>()
@@ -94,6 +87,7 @@ fun HexInputDisplay() {
             when (it) {
                 is SingleByte -> it.index
                 is ByteGroup -> it.startIndex
+                else -> error("not supported")
             }
         }
     }
@@ -221,7 +215,7 @@ fun HexInputDisplay() {
                         is SingleByte -> {
                             // Display a single byte
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
+                                horizontalAlignment = Alignment.Start,
                                 modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                             ) {
                                 Text(
@@ -241,10 +235,11 @@ fun HexInputDisplay() {
                                 )
                             }
                         }
+
                         is ByteGroup -> {
                             // Display a byte group
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
+                                horizontalAlignment = Alignment.Start,
                                 modifier = Modifier
                                     .padding(horizontal = 4.dp, vertical = 2.dp)
                                     .border(1.dp, Color.Blue)
@@ -305,24 +300,11 @@ fun HexInputDisplay() {
                                 }
                             }
                         }
+
+                        else -> error("Not supported")
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-@Preview
-fun App() {
-    MaterialTheme {
-        Column(
-            modifier = Modifier
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            HexInputDisplay()
         }
     }
 }
