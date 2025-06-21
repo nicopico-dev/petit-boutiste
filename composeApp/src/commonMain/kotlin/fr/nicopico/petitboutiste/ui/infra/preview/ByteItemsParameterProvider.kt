@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.preview
+package fr.nicopico.petitboutiste.ui.infra.preview
 
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem

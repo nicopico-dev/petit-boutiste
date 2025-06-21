@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.components
+package fr.nicopico.petitboutiste.ui.main.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.models.HexString
-import fr.nicopico.petitboutiste.ui.preview.HexStringParameterProvider
-import fr.nicopico.petitboutiste.ui.preview.WrapForPreview
+import fr.nicopico.petitboutiste.ui.infra.preview.HexStringParameterProvider
+import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @Composable
 fun HexInput(
@@ -35,13 +35,22 @@ fun HexInput(
     var input by remember(value) {
         mutableStateOf(value.hexString)
     }
+    var isError: Boolean by remember(value) {
+        mutableStateOf(false)
+    }
 
     BasicTextField(
         value = input,
         onValueChange = {
+            isError = false
             input = it
             if (input.length % 2 == 0) {
-                onValueChange(HexString(input))
+                val hexString = HexString.parse(input)
+                if (hexString != null) {
+                    onValueChange(hexString)
+                } else {
+                    isError = true
+                }
             }
         },
         textStyle = TextStyle(
@@ -50,7 +59,7 @@ fun HexInput(
             textAlign = TextAlign.Center
         ),
         modifier = modifier
-            .border(1.dp, Color.Gray)
+            .border(1.dp, color = if (isError) Color.Red else Color.Gray)
             .padding(8.dp),
         decorationBox = { innerTextField ->
             Box(

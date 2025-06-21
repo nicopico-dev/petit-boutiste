@@ -11,6 +11,16 @@ class HexString(
     }
 
     fun isNotEmpty() = hexString.isNotEmpty()
+
+    companion object {
+        fun parse(input: String): HexString? {
+            return try {
+                HexString(input)
+            } catch (_: IllegalArgumentException) {
+                null
+            }
+        }
+    }
 }
 
 private fun String.normalizeHexString(): String = this

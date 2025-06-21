@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.preview
+package fr.nicopico.petitboutiste.ui.infra.preview
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable

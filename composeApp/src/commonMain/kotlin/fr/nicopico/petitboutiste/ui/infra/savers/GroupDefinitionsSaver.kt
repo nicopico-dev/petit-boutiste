@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.savers
+package fr.nicopico.petitboutiste.ui.infra.savers
 
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope

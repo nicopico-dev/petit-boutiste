@@ -1,8 +1,7 @@
-package fr.nicopico.petitboutiste.ui.components
+package fr.nicopico.petitboutiste.ui.main.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,8 +23,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.ui.preview.ByteItemsParameterProvider
-import fr.nicopico.petitboutiste.ui.preview.WrapForPreview
+import fr.nicopico.petitboutiste.ui.infra.preview.ByteItemsParameterProvider
+import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @Composable
 fun HexDisplay(
