@@ -142,7 +142,7 @@ fun HexDisplay(
                 }
             }
         }
-    }
+    } else Box(modifier)
 }
 
 @Preview

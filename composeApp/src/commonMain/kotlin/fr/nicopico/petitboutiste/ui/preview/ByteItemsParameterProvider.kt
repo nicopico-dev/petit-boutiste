@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.ui.preview
 
+import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
@@ -23,7 +24,10 @@ class ByteItemsParameterProvider(
                     ByteItem.Single("AD"),
                     ByteItem.Single("DA"),
                     ByteItem.Single("AD"),
-                )
+                ),
+                definition = ByteGroupDefinition(
+                    1..4
+                ),
             ),
             ByteItem.Single("01"),
             ByteItem.Single("15"),
