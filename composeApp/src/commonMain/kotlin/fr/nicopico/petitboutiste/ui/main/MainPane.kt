@@ -24,6 +24,7 @@ fun MainPane(
     inputData: HexString,
     modifier: Modifier = Modifier,
     byteItems: List<ByteItem> = inputData.toByteItems(),
+    selectedByteItem: ByteItem? = null,
     onDataChanged: (HexString) -> Unit,
     onByteItemClicked: (ByteItem) -> Unit = {},
 ) {
@@ -46,6 +47,7 @@ fun MainPane(
 
         HexDisplay(
             byteItems,
+            selectedByteItem = selectedByteItem,
             modifier = Modifier.weight(1f),
             onByteItemClicked = onByteItemClicked,
         )

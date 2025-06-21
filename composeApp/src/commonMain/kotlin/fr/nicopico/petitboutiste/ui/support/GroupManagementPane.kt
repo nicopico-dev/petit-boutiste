@@ -37,6 +37,7 @@ import fr.nicopico.petitboutiste.models.updateGroupDefinitions
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.ui.support.components.ByteGroupControls
 import fr.nicopico.petitboutiste.ui.support.components.GroupContent
+import fr.nicopico.petitboutiste.ui.support.components.GroupDefinitionItem
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -67,46 +68,21 @@ fun GroupManagementPane(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(groupDefinitions) { index, definition ->
-                ListItem(
-                    text = { Text(definition.name ?: "[UNNAMED]") },
-                    secondaryText = {
-                        with(definition.indexes) {
-                            Text(
-                                "$start..$endInclusive",
-                                style = MaterialTheme.typography.labelSmall,
-                            )
+                GroupDefinitionItem(
+                    definition = definition,
+                    selected = selectedIndex == index,
+                    modifier = Modifier.clickable {
+                        if (selectedIndex != index) {
+                            selectedIndex = index
+                            onGroupDefinitionSelected(groupDefinitions[index])
+                        } else {
+                            selectedIndex = null
+                            onGroupDefinitionSelected(null)
                         }
                     },
-                    trailing = {
-                        IconButton(
-                            content = {
-                                Icon(Icons.Outlined.Delete, "Remove byte group")
-                            },
-                            onClick = {
-                                onGroupDefinitionsChanged(groupDefinitions.removeAt(index))
-                            },
-                        )
-                    },
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .let {
-                            if (selectedIndex == index) {
-                                it.background(MaterialTheme.colorScheme.primaryContainer)
-                            } else it
-                        }
-                        .clickable {
-                            if (selectedIndex != index) {
-                                selectedIndex = index
-                                onGroupDefinitionSelected(groupDefinitions[index])
-                            } else {
-                                selectedIndex = null
-                                onGroupDefinitionSelected(null)
-                            }
-                        }
+                    onDelete = {
+                        onGroupDefinitionsChanged(groupDefinitions.removeAt(index))
+                    }
                 )
             }
         }

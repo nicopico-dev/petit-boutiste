@@ -107,7 +107,8 @@ fun AppScreen(
                         onDataChanged = onDataChanged,
                         onByteItemClicked = {
                             selectedByteItem = if (selectedByteItem != it) it else null
-                        }
+                        },
+                        selectedByteItem = selectedByteItem,
                     )
                 }
             },
