@@ -52,7 +52,7 @@ fun GroupManagementPane(
     val selectedGroupDefinition by remember(groupDefinitions) {
         derivedStateOf {
             selectedIndex
-                ?.let { groupDefinitions[it] }
+                ?.let { groupDefinitions.getOrNull(it) }
         }
     }
 

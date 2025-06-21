@@ -21,6 +21,7 @@ import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
 import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,13 @@ fun AppScreen(
 
     var selectedByteItem: ByteItem? by remember {
         mutableStateOf(null)
+    }
+
+    LaunchedEffect(groupDefinitions) {
+        if (selectedByteItem is ByteItem.Group
+            && (selectedByteItem as ByteItem.Group).definition !in groupDefinitions) {
+            selectedByteItem = null
+        }
     }
 
     MaterialTheme {
