@@ -5,7 +5,7 @@ import java.nio.charset.Charset
 sealed class RepresentationFormat {
     data object Hexadecimal : RepresentationFormat()
 
-    data class Decimal(
+    data class Integer(
         val endianness: Endianness = Endianness.BigEndian,
     ) : RepresentationFormat()
 

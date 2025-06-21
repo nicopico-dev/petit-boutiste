@@ -3,6 +3,13 @@ package fr.nicopico.petitboutiste.models
 private val BYTE_VALUE_REGEX = Regex("[a-fA-F0-9]{2}")
 
 sealed class ByteItem {
+
+    val size: Int
+        get() = when (this) {
+            is Group -> bytes.size
+            is Single -> 1
+        }
+
     data class Single(
         val value: String,
     ) : ByteItem() {
@@ -38,7 +45,6 @@ sealed class ByteItem {
         }
 
         val name: String? = definition.name
-        val size: Int = bytes.size
 
         override fun toString(): String {
             return bytes.joinToString(separator = "")

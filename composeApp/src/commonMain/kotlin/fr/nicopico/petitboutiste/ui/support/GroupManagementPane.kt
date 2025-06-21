@@ -1,7 +1,6 @@
 package fr.nicopico.petitboutiste.ui.support
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,13 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +29,7 @@ import fr.nicopico.petitboutiste.models.removeAt
 import fr.nicopico.petitboutiste.models.updateGroupDefinitions
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.ui.support.components.ByteGroupControls
-import fr.nicopico.petitboutiste.ui.support.components.GroupContent
+import fr.nicopico.petitboutiste.ui.support.components.ByteGroupContent
 import fr.nicopico.petitboutiste.ui.support.components.GroupDefinitionItem
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -112,7 +105,7 @@ fun GroupManagementPane(
         Spacer(Modifier.weight(1f))
 
         if (selectedGroup != null) {
-            GroupContent(selectedGroup, Modifier.fillMaxWidth())
+            ByteGroupContent(selectedGroup, Modifier.fillMaxWidth())
         }
     }
 }
