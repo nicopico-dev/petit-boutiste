@@ -2,6 +2,7 @@ package fr.nicopico.petitboutiste.ui.main.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 fun HexDisplay(
     byteItems: List<ByteItem>,
     modifier: Modifier = Modifier,
+    onByteItemClicked: (ByteItem) -> Unit = {},
 ) {
     if (byteItems.isNotEmpty()) {
         LazyVerticalGrid(
@@ -53,7 +55,9 @@ fun HexDisplay(
                         // Display a single byte
                         Column(
                             horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+                            modifier = Modifier
+                                .clickable { onByteItemClicked(item) }
+                                .padding(horizontal = 4.dp, vertical = 4.dp)
                         ) {
                             Text(
                                 text = item.value,
@@ -80,6 +84,7 @@ fun HexDisplay(
                             horizontalAlignment = Alignment.Start,
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
+                                .clickable { onByteItemClicked(item) }
                                 .border(1.dp, Color.Blue)
                                 .padding(4.dp)
                         ) {
@@ -107,16 +112,14 @@ fun HexDisplay(
                                 )
                             }
 
-                            if (item.name != null && item.name.isNotBlank()) {
-                                Text(
-                                    text = item.name,
-                                    style = TextStyle(
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 12.sp,
-                                        color = Color.Blue
-                                    )
+                            Text(
+                                text = item.name ?: "",
+                                style = TextStyle(
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 12.sp,
+                                    color = Color.Blue
                                 )
-                            }
+                            )
                         }
                         itemIndex += item.bytes.size
                     }

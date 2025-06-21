@@ -22,7 +22,7 @@ fun App() {
     }
 
     AppScreen(
-        data = data,
+        inputData = data,
         groupDefinitions = groupDefinitions,
         onDataChanged = { data = it },
         onGroupDefinitionsChanged = { groupDefinitions = it }

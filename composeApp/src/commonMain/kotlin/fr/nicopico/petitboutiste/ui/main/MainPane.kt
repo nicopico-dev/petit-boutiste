@@ -9,11 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.HexString
 import fr.nicopico.petitboutiste.models.toByteItems
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
@@ -22,19 +21,16 @@ import fr.nicopico.petitboutiste.ui.main.components.HexInput
 
 @Composable
 fun MainPane(
-    data: HexString,
+    inputData: HexString,
     modifier: Modifier = Modifier,
-    groupDefinitions: List<ByteGroupDefinition> = emptyList(),
+    byteItems: List<ByteItem> = inputData.toByteItems(),
     onDataChanged: (HexString) -> Unit,
+    onByteItemClicked: (ByteItem) -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val byteItems = remember(data, groupDefinitions) {
-            data.toByteItems(groupDefinitions)
-        }
-
         Text(
             text = "Hex Input",
             style = MaterialTheme.typography.titleMedium,
@@ -42,22 +38,27 @@ fun MainPane(
         )
 
         HexInput(
-            value = data,
+            value = inputData,
             onValueChange = { onDataChanged(it) },
         )
 
         Spacer(Modifier.height(16.dp))
 
-        HexDisplay(byteItems, modifier = Modifier.weight(1f))
+        HexDisplay(
+            byteItems,
+            modifier = Modifier.weight(1f),
+            onByteItemClicked = onByteItemClicked,
+        )
     }
 }
 
 @Preview
 @Composable
 private fun MainPanePreview() {
+    val hexString = HexString(rawHexString = "33DAADDAAD")
     WrapForPreview {
         MainPane(
-            HexString(rawHexString = "33DAADDAAD"),
+            inputData = hexString,
             onDataChanged = {},
         )
     }
