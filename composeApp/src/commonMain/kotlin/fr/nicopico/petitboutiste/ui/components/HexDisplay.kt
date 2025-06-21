@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,27 +31,30 @@ import fr.nicopico.petitboutiste.ui.preview.WrapForPreview
 fun HexDisplay(
     byteItems: List<ByteItem>,
     modifier: Modifier = Modifier,
-    onRemoveGroupClicked: (ByteItem.Group) -> Unit = {},
 ) {
-    var byteGroups by remember(byteItems) {
-        mutableStateOf(byteItems.filterIsInstance<ByteItem.Group>())
-    }
-
     if (byteItems.isNotEmpty()) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 80.dp),
+            columns = GridCells.FixedSize(40.dp),
             modifier = modifier,
             horizontalArrangement = Arrangement.Center,
             verticalArrangement = Arrangement.Top
         ) {
             var itemIndex = 0
-            items(byteItems) { item ->
+            items(
+                items = byteItems,
+                span = { byteItem ->
+                    when (byteItem) {
+                        is ByteItem.Group -> GridItemSpan(byteItem.size)
+                        is ByteItem.Single -> GridItemSpan(1)
+                    }
+                }
+            ) { item ->
                 when (item) {
                     is ByteItem.Single -> {
                         // Display a single byte
                         Column(
                             horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
                         ) {
                             Text(
                                 text = item.value,
@@ -79,7 +80,7 @@ fun HexDisplay(
                         Column(
                             horizontalAlignment = Alignment.Start,
                             modifier = Modifier
-                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                                .padding(horizontal = 4.dp)
                                 .border(1.dp, Color.Blue)
                                 .padding(4.dp)
                         ) {
@@ -105,27 +106,8 @@ fun HexDisplay(
                                         color = Color.Gray
                                     )
                                 )
-
-                                // Add a remove button
-                                Box(
-                                    modifier = Modifier
-                                        .padding(start = 8.dp)
-                                        .border(1.dp, Color.Red)
-                                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                                        .clickable {
-                                            onRemoveGroupClicked(item)
-                                        }
-                                ) {
-                                    Text(
-                                        text = "✕",
-                                        style = TextStyle(
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 12.sp,
-                                            color = Color.Red
-                                        )
-                                    )
-                                }
                             }
+
                             if (item.name != null && item.name.isNotBlank()) {
                                 Text(
                                     text = item.name,

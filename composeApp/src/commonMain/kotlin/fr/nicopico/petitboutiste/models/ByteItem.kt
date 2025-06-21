@@ -38,6 +38,7 @@ sealed class ByteItem {
         }
 
         val name: String? = definition.name
+        val size: Int = bytes.size
 
         override fun toString(): String {
             return bytes.joinToString(separator = "")

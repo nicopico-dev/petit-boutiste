@@ -19,7 +19,7 @@ fun App() {
         mutableStateOf(HexString(""))
     }
     var groupDefinitions by rememberSaveable(stateSaver = GroupDefinitionsSaver) {
-        mutableStateOf(emptyList<ByteGroupDefinition>())
+        mutableStateOf(emptyList())
     }
 
     AppContent(
