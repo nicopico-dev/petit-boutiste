@@ -82,7 +82,6 @@ fun ByteItemContent(
         }
 
         if (!collapsed) {
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Big Endian ?")
                 Checkbox(

@@ -178,7 +178,10 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
             )
 
             if (selectedByteItem != null) {
-                HorizontalDivider(Modifier.padding(vertical = 4.dp))
+                HorizontalDivider(
+                    thickness = 2.dp,
+                    modifier = Modifier.padding(vertical = 4.dp),
+                )
 
                 ByteItemContent(
                     byteItem = selectedByteItem
