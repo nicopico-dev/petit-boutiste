@@ -32,12 +32,14 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.Template
 import fr.nicopico.petitboutiste.repository.TemplateRepository
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun TemplateManagement(
     modifier: Modifier = Modifier,
     definitions: List<ByteGroupDefinition> = emptyList(),
+    onTemplateLoaded: (List<ByteGroupDefinition>) -> Unit = {},
 ) {
     val templateRepository = remember { TemplateRepository() }
     val templates by templateRepository.observe().collectAsState(emptyList())
@@ -50,8 +52,16 @@ fun TemplateManagement(
         mutableStateOf(false)
     }
 
+    var showLoadDialog by remember {
+        mutableStateOf(false)
+    }
+
     var templateName by remember {
         mutableStateOf("")
+    }
+
+    var selectedTemplate by remember {
+        mutableStateOf<Template?>(null)
     }
 
     Column(modifier.fillMaxWidth()) {
@@ -85,7 +95,8 @@ fun TemplateManagement(
                         }
                     },
                     onClick = {
-                        TODO("Handle load")
+                        selectedTemplate = null
+                        showLoadDialog = true
                     },
                 )
                 Button(
@@ -143,6 +154,73 @@ fun TemplateManagement(
                     onClick = { showSaveDialog = false }
                 ) {
                     Text("Cancel")
+                }
+            }
+        )
+    }
+
+    if (showLoadDialog) {
+        AlertDialog(
+            onDismissRequest = { showLoadDialog = false },
+            title = { Text("Load Template") },
+            text = {
+                Column {
+                    Text("Select a template to load:")
+                    if (templates.isEmpty()) {
+                        Text("No templates available", modifier = Modifier.padding(top = 8.dp))
+                    } else {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            templates.forEach { template ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { selectedTemplate = template }
+                                        .padding(vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = template.name,
+                                        fontWeight = if (selectedTemplate?.id == template.id) FontWeight.Bold else FontWeight.Normal,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        selectedTemplate?.let { template ->
+                            // Return the selected template's definitions
+                            onTemplateLoaded(template.definitions)
+                            showLoadDialog = false
+                        }
+                    },
+                    enabled = selectedTemplate != null
+                ) {
+                    Text("Load")
+                }
+            },
+            dismissButton = {
+                Row {
+                    TextButton(
+                        onClick = {
+                            selectedTemplate?.let { template ->
+                                templateRepository.delete(template.id)
+                                selectedTemplate = null
+                            }
+                        },
+                        enabled = selectedTemplate != null
+                    ) {
+                        Text("Delete")
+                    }
+                    TextButton(
+                        onClick = { showLoadDialog = false }
+                    ) {
+                        Text("Cancel")
+                    }
                 }
             }
         )

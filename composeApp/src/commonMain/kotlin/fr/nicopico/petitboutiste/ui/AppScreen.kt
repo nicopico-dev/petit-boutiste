@@ -163,7 +163,8 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
     AnimatedPane(modifier) {
         Column {
             TemplateManagement(
-                definitions = definitions
+                definitions = definitions,
+                onTemplateLoaded = onDefinitionsChanged
             )
 
             HorizontalDivider(Modifier.padding(vertical = 4.dp))
