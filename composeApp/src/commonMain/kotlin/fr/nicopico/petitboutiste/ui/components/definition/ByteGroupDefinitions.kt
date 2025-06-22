@@ -41,7 +41,7 @@ fun ByteGroupDefinitions(
             )
         }
 
-        item(Modifier.padding(top = 8.dp)) {
+        item {
             ByteGroupDefinitionForm(
                 definition = selectedDefinition,
                 onDefinitionSaved = { savedDefinition ->
@@ -53,6 +53,7 @@ fun ByteGroupDefinitions(
 
                     onDefinitionsChanged(updatedDefinitions.sortedBy { it.indexes.start })
                 },
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 24.dp),
             )
         }
     }

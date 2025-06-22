@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -37,7 +38,9 @@ import fr.nicopico.petitboutiste.ui.components.DragHandle
 import fr.nicopico.petitboutiste.ui.components.HexDisplay
 import fr.nicopico.petitboutiste.ui.components.HexInput
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
+import fr.nicopico.petitboutiste.ui.components.template.TemplateManagement
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
+import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun AppScreen(
@@ -160,15 +163,20 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
 ) {
     AnimatedPane(modifier) {
         Column {
+            TemplateManagement()
+
+            HorizontalDivider(Modifier.padding(vertical = 4.dp))
+
             ByteGroupDefinitions(
                 definitions = definitions,
                 onDefinitionsChanged = onDefinitionsChanged,
                 selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
                 onDefinitionSelected = onDefinitionSelected,
+                modifier = Modifier.weight(1f)
             )
 
             if (selectedByteItem != null) {
-                Spacer(Modifier.weight(1f))
+                HorizontalDivider(Modifier.padding(vertical = 4.dp))
 
                 ByteItemContent(
                     byteItem = selectedByteItem

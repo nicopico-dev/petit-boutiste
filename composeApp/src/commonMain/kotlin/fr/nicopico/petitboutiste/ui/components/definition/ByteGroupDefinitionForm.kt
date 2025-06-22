@@ -1,15 +1,19 @@
 package fr.nicopico.petitboutiste.ui.components.definition
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.UnfoldLess
+import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -44,6 +49,10 @@ fun ByteGroupDefinitionForm(
     }
     var name by remember(definition) {
         mutableStateOf(definition?.name ?: "")
+    }
+
+    var collapsed by remember {
+        mutableStateOf(false)
     }
 
     //region Input validation
@@ -99,72 +108,93 @@ fun ByteGroupDefinitionForm(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            Modifier.clickable {
+                collapsed = !collapsed
+            },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
-                value = startIndexInput,
-                onValueChange = { startIndexInput = it },
-                label = { Text("Start") },
-                isError = startIndexError != null,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                ),
-                singleLine = true,
-                modifier = Modifier.weight(1f),
+            Text(
+                "Definition form",
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f)
             )
 
-            OutlinedTextField(
-                value = endIndexInput,
-                onValueChange = { endIndexInput = it },
-                label = { Text("End") },
-                isError = endIndexError != null,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                ),
-                singleLine = true,
-                modifier = Modifier.weight(1f),
+            Icon(
+                if (collapsed) Icons.Default.UnfoldMore else Icons.Default.UnfoldLess,
+                "Toggle",
+                modifier = Modifier.size(18.dp)
             )
         }
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Name?") },
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                keyboardActions = KeyboardActions(
-                    onSend = { saveDefinition() }
-                )
-            )
-
-            val buttonColors = ButtonDefaults.buttonColors()
-            IconButton(
-                content = {
-                    if (definition == null) {
-                        Icon(Icons.Default.Add, "Add")
-                    } else {
-                        Icon(Icons.Default.Save, "Save")
-                    }
-                },
-                colors = IconButtonDefaults.iconButtonColors()
-                    .copy(
-                        containerColor = buttonColors.containerColor,
-                        contentColor = buttonColors.contentColor,
-                        disabledContainerColor = buttonColors.disabledContainerColor,
-                        disabledContentColor = buttonColors.disabledContentColor
+        if (!collapsed) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = startIndexInput,
+                    onValueChange = { startIndexInput = it },
+                    label = { Text("Start") },
+                    isError = startIndexError != null,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next,
                     ),
-                enabled = isValid,
-                onClick = saveDefinition,
-                modifier = Modifier.offset(y = 4.dp)
-            )
+                    singleLine = true,
+                    modifier = Modifier.weight(1f),
+                )
+
+                OutlinedTextField(
+                    value = endIndexInput,
+                    onValueChange = { endIndexInput = it },
+                    label = { Text("End") },
+                    isError = endIndexError != null,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next,
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name?") },
+                    singleLine = true,
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                    keyboardActions = KeyboardActions(
+                        onSend = { saveDefinition() }
+                    )
+                )
+
+                val buttonColors = ButtonDefaults.buttonColors()
+                IconButton(
+                    content = {
+                        if (definition == null) {
+                            Icon(Icons.Default.Add, "Add")
+                        } else {
+                            Icon(Icons.Default.Save, "Save")
+                        }
+                    },
+                    colors = IconButtonDefaults.iconButtonColors()
+                        .copy(
+                            containerColor = buttonColors.containerColor,
+                            contentColor = buttonColors.contentColor,
+                            disabledContainerColor = buttonColors.disabledContainerColor,
+                            disabledContentColor = buttonColors.disabledContentColor
+                        ),
+                    enabled = isValid,
+                    onClick = saveDefinition,
+                    modifier = Modifier.offset(y = 4.dp)
+                )
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ kotlin {
 
             implementation(compose.materialIconsExtended)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.multiplatform.settings)
 
             implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
             implementation("org.jetbrains.compose.material3.adaptive:adaptive-layout:1.1.2")
