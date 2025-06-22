@@ -12,9 +12,12 @@ import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.models.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.Template
 import fr.nicopico.petitboutiste.repository.TemplateRepository
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -32,12 +37,21 @@ import kotlin.uuid.ExperimentalUuidApi
 @Composable
 fun TemplateManagement(
     modifier: Modifier = Modifier,
+    definitions: List<ByteGroupDefinition> = emptyList(),
 ) {
     val templateRepository = remember { TemplateRepository() }
     val templates by templateRepository.observe().collectAsState(emptyList())
 
     var collapsed by remember {
         mutableStateOf(false)
+    }
+
+    var showSaveDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var templateName by remember {
+        mutableStateOf("")
     }
 
     Column(modifier.fillMaxWidth()) {
@@ -71,7 +85,7 @@ fun TemplateManagement(
                         }
                     },
                     onClick = {
-                        TODO()
+                        TODO("Handle load")
                     },
                 )
                 Button(
@@ -85,10 +99,52 @@ fun TemplateManagement(
                         }
                     },
                     onClick = {
-                        TODO()
+                        templateName = ""
+                        showSaveDialog = true
                     },
                 )
             }
         }
+    }
+
+    if (showSaveDialog) {
+        AlertDialog(
+            onDismissRequest = { showSaveDialog = false },
+            title = { Text("Save Template") },
+            text = {
+                Column {
+                    Text("Enter a name for your template:")
+                    OutlinedTextField(
+                        value = templateName,
+                        onValueChange = { templateName = it },
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        singleLine = true
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (templateName.isNotBlank()) {
+                            val template = Template(
+                                name = templateName,
+                                definitions = definitions
+                            )
+                            templateRepository.save(template)
+                            showSaveDialog = false
+                        }
+                    }
+                ) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showSaveDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }

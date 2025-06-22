@@ -40,7 +40,6 @@ import fr.nicopico.petitboutiste.ui.components.HexInput
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.template.TemplateManagement
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
-import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun AppScreen(
@@ -163,7 +162,9 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
 ) {
     AnimatedPane(modifier) {
         Column {
-            TemplateManagement()
+            TemplateManagement(
+                definitions = definitions
+            )
 
             HorizontalDivider(Modifier.padding(vertical = 4.dp))
 

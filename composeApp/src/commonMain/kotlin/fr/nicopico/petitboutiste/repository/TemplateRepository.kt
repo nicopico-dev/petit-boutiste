@@ -69,8 +69,9 @@ private class TemplateRepositorySettings(
     override fun save(template: Template) {
         val newValue = templates
             .updateAndGet { existingTemplates ->
-                if (template.id == null) {
-                    existingTemplates + template.copy(id = Uuid.random())
+                val index = existingTemplates.indexOfFirst { it.id == template.id }
+                if (index == -1) {
+                    existingTemplates + template
                 } else {
                     existingTemplates.map {
                         if (it.id == template.id) {
