@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
@@ -78,6 +80,20 @@ fun ByteGroupControls(
     }
     //endregion
 
+    val saveGroupDefinition: () -> Unit = {
+        val definition = ByteGroupDefinition(
+            startIndexInput.toInt()..endIndexInput.toInt(),
+            name.ifBlank { null },
+        )
+        onDefinitionChanged(definition)
+
+        if (groupDefinition == null) {
+            startIndexInput = ""
+            endIndexInput = ""
+            name = ""
+        }
+    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -91,7 +107,10 @@ fun ByteGroupControls(
                 onValueChange = { startIndexInput = it },
                 label = { Text("Start") },
                 isError = startIndexError != null,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next,
+                ),
                 singleLine = true,
                 modifier = Modifier.weight(1f),
             )
@@ -101,7 +120,10 @@ fun ByteGroupControls(
                 onValueChange = { endIndexInput = it },
                 label = { Text("End") },
                 isError = endIndexError != null,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next,
+                ),
                 singleLine = true,
                 modifier = Modifier.weight(1f),
             )
@@ -117,6 +139,10 @@ fun ByteGroupControls(
                 label = { Text("Name?") },
                 singleLine = true,
                 modifier = Modifier.weight(1f),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                keyboardActions = KeyboardActions(
+                    onSend = { saveGroupDefinition() }
+                )
             )
 
             val buttonColors = ButtonDefaults.buttonColors()
@@ -136,19 +162,7 @@ fun ByteGroupControls(
                         disabledContentColor = buttonColors.disabledContentColor
                     ),
                 enabled = isValid,
-                onClick = {
-                    val definition = ByteGroupDefinition(
-                        startIndexInput.toInt()..endIndexInput.toInt(),
-                        name.ifBlank { null },
-                    )
-                    onDefinitionChanged(definition)
-
-                    if (groupDefinition == null) {
-                        startIndexInput = ""
-                        endIndexInput = ""
-                        name = ""
-                    }
-                },
+                onClick = saveGroupDefinition,
                 modifier = Modifier.offset(y = 4.dp)
             )
         }
