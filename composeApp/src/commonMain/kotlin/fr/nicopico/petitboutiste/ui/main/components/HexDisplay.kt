@@ -106,25 +106,24 @@ fun HexDisplay(
                                     fontSize = 18.sp
                                 )
                             )
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "$itemIndex..${itemIndex + item.bytes.size - 1}",
-                                    style = TextStyle(
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 12.sp,
-                                        color = Color.Gray
-                                    )
+
+                            val index = if (item.size > 1) {
+                                "$itemIndex..${itemIndex + item.bytes.size - 1}"
+                            } else itemIndex.toString()
+                            Text(
+                                text = index,
+                                style = TextStyle(
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
                                 )
-                            }
+                            )
 
                             Text(
                                 text = item.name ?: "",
                                 style = TextStyle(
                                     fontFamily = FontFamily.Monospace,
-                                    fontSize = 12.sp,
+                                    fontSize = 8.sp,
                                     color = Color.Blue
                                 )
                             )
