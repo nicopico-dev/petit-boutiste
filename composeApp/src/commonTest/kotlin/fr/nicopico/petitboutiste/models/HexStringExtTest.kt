@@ -123,7 +123,7 @@ class HexStringExtTest {
                 listOf("1A", "2B", "3C"),
                 ByteGroupDefinition(
                     indexes = 0..2,
-                    name = "Group2",
+                    name = "Group1",
                 ),
             ),
             ByteItem.Single(3, "4D")
