@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.extensions.name
 import fr.nicopico.petitboutiste.models.extensions.size
 import fr.nicopico.petitboutiste.ui.infra.preview.ByteItemsParameterProvider
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
@@ -42,7 +43,6 @@ fun HexDisplay(
             horizontalArrangement = Arrangement.Center,
             verticalArrangement = Arrangement.Top
         ) {
-            var itemIndex = 0
             items(
                 items = byteItems,
                 span = { byteItem ->
@@ -52,83 +52,51 @@ fun HexDisplay(
                     }
                 }
             ) { item ->
-                when (item) {
-                    is ByteItem.Single -> {
-                        // Display a single byte
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .clickable { onByteItemClicked(item) }
-                                .padding(horizontal = 4.dp, vertical = 4.dp)
-                        ) {
-                            Text(
-                                text = item.value,
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 18.sp
-                                )
-                            )
-                            Text(
-                                text = "$itemIndex",
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 12.sp,
-                                    color = Color.Gray
-                                )
-                            )
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .clickable { onByteItemClicked(item) }
+                        .let {
+                            if (item is ByteItem.Group) {
+                                it.border(1.dp, Color.Blue)
+                            } else it
                         }
-                        itemIndex += 1
-                    }
-
-                    is ByteItem.Group -> {
-                        // Display a byte group
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .padding(horizontal = 4.dp)
-                                .clickable { onByteItemClicked(item) }
-                                .border(1.dp, Color.Blue)
-                                .let {
-                                    if (item == selectedByteItem) {
-                                        it.background(MaterialTheme.colorScheme.primaryContainer)
-                                    } else it
-                                }
-                                .padding(4.dp)
-                        ) {
-                            // Get the raw hex string for this group without spaces
-                            val groupText = item.toString()
-
-                            Text(
-                                text = groupText,
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 18.sp
-                                )
-                            )
-
-                            val index = if (item.size > 1) {
-                                "$itemIndex..${itemIndex + item.bytes.size - 1}"
-                            } else itemIndex.toString()
-                            Text(
-                                text = index,
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 12.sp,
-                                    color = Color.Gray
-                                )
-                            )
-
-                            Text(
-                                text = item.name ?: "",
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 8.sp,
-                                    color = Color.Blue
-                                )
-                            )
+                        .let {
+                            if (item == selectedByteItem) {
+                                it.background(MaterialTheme.colorScheme.primaryContainer)
+                            } else it
                         }
-                        itemIndex += item.bytes.size
-                    }
+                        .padding(4.dp)
+                ) {
+                    Text(
+                        text = item.toString(),
+                        style = TextStyle(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 18.sp
+                        )
+                    )
+
+                    val index = if (item.firstIndex != item.lastIndex) {
+                        "${item.firstIndex}..${item.lastIndex}"
+                    } else item.firstIndex.toString()
+                    Text(
+                        text = index,
+                        style = TextStyle(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
+                    )
+
+                    Text(
+                        text = item.name ?: "",
+                        style = TextStyle(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 8.sp,
+                            color = Color.Blue
+                        )
+                    )
                 }
             }
         }

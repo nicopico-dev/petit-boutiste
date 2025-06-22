@@ -86,15 +86,8 @@ private fun GroupContentPreview() {
     WrapForPreview {
         ByteItemContent(
             ByteItem.Group(
-                bytes = listOf(
-                    ByteItem.Single("62"),
-                    ByteItem.Single("6F"),
-                    ByteItem.Single("6E"),
-                    ByteItem.Single("6A"),
-                    ByteItem.Single("6F"),
-                    ByteItem.Single("75"),
-                    ByteItem.Single("72"),
-                ),
+                index = 0,
+                bytes = "626F6E6A6F7572",
                 name = "Test"
             )
         )

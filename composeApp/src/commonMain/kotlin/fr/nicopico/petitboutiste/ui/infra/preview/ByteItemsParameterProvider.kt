@@ -1,6 +1,5 @@
 package fr.nicopico.petitboutiste.ui.infra.preview
 
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
@@ -8,36 +7,26 @@ class ByteItemsParameterProvider(
     override val values: Sequence<List<ByteItem>> = sequenceOf(
         listOf(),
         listOf(
-            ByteItem.Single("62"),
-            ByteItem.Single("6F"),
-            ByteItem.Single("6E"),
-            ByteItem.Single("6A"),
-            ByteItem.Single("6F"),
-            ByteItem.Single("75"),
-            ByteItem.Single("72"),
+            ByteItem.Single(0, "62"),
+            ByteItem.Single(1, "6F"),
+            ByteItem.Single(2, "6E"),
+            ByteItem.Single(3, "6A"),
+            ByteItem.Single(4, "6F"),
+            ByteItem.Single(5, "75"),
+            ByteItem.Single(6, "72"),
         ),
         listOf(
-            ByteItem.Single("33"),
-            ByteItem.Group(
-                listOf(
-                    ByteItem.Single("DA"),
-                    ByteItem.Single("AD"),
-                    ByteItem.Single("DA"),
-                    ByteItem.Single("AD"),
-                ),
-                definition = ByteGroupDefinition(
-                    1..4
-                ),
-            ),
-            ByteItem.Single("01"),
-            ByteItem.Single("15"),
-            ByteItem.Single("01"),
-            ByteItem.Single("04"),
-            ByteItem.Single("00"),
-            ByteItem.Single("01"),
-            ByteItem.Single("00"),
-            ByteItem.Single("00"),
-            ByteItem.Single("04"),
+            ByteItem.Single(0, "33"),
+            ByteItem.Group(1, "DAADDAAD"),
+            ByteItem.Single(2, "01"),
+            ByteItem.Single(3, "15"),
+            ByteItem.Single(4, "01"),
+            ByteItem.Single(5, "04"),
+            ByteItem.Single(6, "00"),
+            ByteItem.Single(7, "01"),
+            ByteItem.Single(8, "00"),
+            ByteItem.Single(9, "00"),
+            ByteItem.Single(10, "04"),
         ),
     )
 ) : PreviewParameterProvider<List<ByteItem>>
