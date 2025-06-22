@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.main.components
+package fr.nicopico.petitboutiste.ui.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border

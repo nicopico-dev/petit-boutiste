@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.support.components
+package fr.nicopico.petitboutiste.ui.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +26,14 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.Endianness
 import fr.nicopico.petitboutiste.models.RepresentationFormat
-import fr.nicopico.petitboutiste.models.getRepresentation
+import fr.nicopico.petitboutiste.models.extensions.getRepresentation
+import fr.nicopico.petitboutiste.models.extensions.name
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ByteGroupContent(
-    byteGroup: ByteItem.Group,
+fun ByteItemContent(
+    byteItem: ByteItem,
     modifier: Modifier = Modifier,
 ) {
     var useBigEndian by remember {
@@ -44,16 +45,16 @@ fun ByteGroupContent(
         }
     }
 
-    val representations = remember(byteGroup, endianness) {
+    val representations = remember(byteItem, endianness) {
         mapOf(
-            "Hexadecimal" to (byteGroup.getRepresentation(RepresentationFormat.Hexadecimal) ?: "[ERROR]"),
-            "Integer" to (byteGroup.getRepresentation(RepresentationFormat.Integer(endianness)) ?: "[ERROR]"),
-            "Text" to (byteGroup.getRepresentation(RepresentationFormat.Text(endianness)) ?: "[ERROR]"),
+            "Hexadecimal" to (byteItem.getRepresentation(RepresentationFormat.Hexadecimal) ?: "[ERROR]"),
+            "Integer" to (byteItem.getRepresentation(RepresentationFormat.Integer(endianness)) ?: "[ERROR]"),
+            "Text" to (byteItem.getRepresentation(RepresentationFormat.Text(endianness)) ?: "[ERROR]"),
         )
     }
 
     Column(modifier) {
-        Text(byteGroup.name ?: "UNNAMED GROUP", style = MaterialTheme.typography.labelLarge)
+        Text(byteItem.name ?: "UNNAMED", style = MaterialTheme.typography.labelLarge)
 
         Spacer(Modifier.height(8.dp))
 
@@ -83,7 +84,7 @@ fun ByteGroupContent(
 @Composable
 private fun GroupContentPreview() {
     WrapForPreview {
-        ByteGroupContent(
+        ByteItemContent(
             ByteItem.Group(
                 bytes = listOf(
                     ByteItem.Single("62"),

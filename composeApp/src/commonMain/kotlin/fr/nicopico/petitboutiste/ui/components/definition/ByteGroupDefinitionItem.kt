@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.support.components
+package fr.nicopico.petitboutiste.ui.components.definition
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,7 +18,7 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GroupDefinitionItem(
+fun ByteGroupDefinitionItem(
     definition: ByteGroupDefinition,
     modifier: Modifier = Modifier,
     selected: Boolean = false,

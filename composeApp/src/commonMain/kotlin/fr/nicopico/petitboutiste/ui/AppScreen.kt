@@ -1,23 +1,21 @@
+@file:OptIn(ExperimentalMaterial3AdaptiveApi::class)
 package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DragHandle
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
 import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.runtime.Composable
@@ -28,23 +26,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.HexString
-import fr.nicopico.petitboutiste.models.toByteItems
+import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.ui.components.ByteItemContent
+import fr.nicopico.petitboutiste.ui.components.DragHandle
+import fr.nicopico.petitboutiste.ui.components.HexDisplay
+import fr.nicopico.petitboutiste.ui.components.HexInput
+import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
-import fr.nicopico.petitboutiste.ui.main.MainPane
-import fr.nicopico.petitboutiste.ui.support.GroupManagementPane
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AppScreen(
     inputData: HexString,
     groupDefinitions: List<ByteGroupDefinition> = emptyList(),
-    onDataChanged: (HexString) -> Unit,
+    onInputDataChanged: (HexString) -> Unit,
     onGroupDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
 ) {
     val scaffoldValue = ThreePaneScaffoldValue(
@@ -63,7 +61,8 @@ fun AppScreen(
 
     LaunchedEffect(groupDefinitions) {
         if (selectedByteItem is ByteItem.Group
-            && (selectedByteItem as ByteItem.Group).definition !in groupDefinitions) {
+            && (selectedByteItem as ByteItem.Group).definition !in groupDefinitions
+        ) {
             selectedByteItem = null
         }
     }
@@ -74,71 +73,106 @@ fun AppScreen(
             value = scaffoldValue,
             paneExpansionState = rememberPaneExpansionState(),
             paneExpansionDragHandle = { state ->
-                val interactionSource = remember { MutableInteractionSource() }
-                Box(
-                    modifier =
-                        Modifier
-                            .paneExpansionDraggable(
-                                state,
-                                LocalMinimumInteractiveComponentSize.current,
-                                interactionSource,
-                                semanticsProperties = {},
-                            )
-                            .fillMaxHeight(),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(1.dp)
-                            .padding(vertical = 8.dp)
-                            .background(Color.LightGray)
-                            .align(Alignment.Center)
-                    )
-                    Icon(
-                        Icons.Filled.DragHandle,
-                        "support pane drag handle",
-                        modifier = Modifier
-                            .rotate(90f)
-                            .align(Alignment.Center)
-                    )
-                }
+                DragHandle(state, "support pane drag handle")
             },
             mainPane = {
-                AnimatedPane(
-                    Modifier
+                MainPane(
+                    inputData = inputData,
+                    byteItems = byteItems,
+                    onInputDataChanged = onInputDataChanged,
+                    selectedByteItem = selectedByteItem,
+                    onByteItemSelected = { selectedByteItem = it },
+                    modifier = Modifier
                         .safeContentPadding()
-                        .padding(16.dp)
-                ) {
-                    MainPane(
-                        inputData = inputData,
-                        byteItems = byteItems,
-                        onDataChanged = onDataChanged,
-                        onByteItemClicked = {
-                            selectedByteItem = if (selectedByteItem != it) it else null
-                        },
-                        selectedByteItem = selectedByteItem,
-                    )
-                }
+                        .padding(16.dp),
+                )
             },
             supportingPane = {
-                AnimatedPane(
-                    Modifier
-                        .safeContentPadding()
-                        .padding(16.dp)
-                ) {
-                    GroupManagementPane(
-                        groupDefinitions = groupDefinitions,
-                        onGroupDefinitionsChanged = onGroupDefinitionsChanged,
-                        onGroupDefinitionSelected = { definition ->
-                            selectedByteItem = byteItems.firstOrNull {
+                SupportingPane(
+                    definitions = groupDefinitions,
+                    onDefinitionsChanged = onGroupDefinitionsChanged,
+                    onDefinitionSelected = { definition ->
+                        // Select the ByteGroup matching this definition
+                        selectedByteItem = if (definition != null) {
+                            byteItems.firstOrNull {
                                 it is ByteItem.Group && it.definition == definition
                             }
-                        },
-                        selectedGroup = selectedByteItem as? ByteItem.Group
-                    )
-                }
+                        } else null
+                    },
+                    selectedByteItem = selectedByteItem,
+                    modifier = Modifier
+                        .safeContentPadding()
+                        .padding(16.dp),
+                )
             },
         )
+    }
+}
+
+@Composable
+private fun ThreePaneScaffoldPaneScope.MainPane(
+    inputData: HexString,
+    onInputDataChanged: (HexString) -> Unit,
+    modifier: Modifier = Modifier,
+    byteItems: List<ByteItem> = inputData.toByteItems(),
+    selectedByteItem: ByteItem? = null,
+    onByteItemSelected: (ByteItem?) -> Unit = {},
+) {
+    AnimatedPane(modifier) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "Hex Input",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            HexInput(
+                value = inputData,
+                onValueChange = { onInputDataChanged(it) },
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            HexDisplay(
+                byteItems,
+                selectedByteItem = selectedByteItem,
+                modifier = Modifier.weight(1f),
+                onByteItemClicked = {
+                    onByteItemSelected(if (selectedByteItem != it) it else null)
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ThreePaneScaffoldPaneScope.SupportingPane(
+    definitions: List<ByteGroupDefinition>,
+    onDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
+    onDefinitionSelected: (ByteGroupDefinition?) -> Unit,
+    modifier: Modifier = Modifier,
+    selectedByteItem: ByteItem? = null,
+) {
+    AnimatedPane(modifier) {
+        Column {
+            ByteGroupDefinitions(
+                definitions = definitions,
+                onDefinitionsChanged = onDefinitionsChanged,
+                selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
+                onDefinitionSelected = onDefinitionSelected,
+            )
+
+            if (selectedByteItem != null) {
+                Spacer(Modifier.weight(1f))
+
+                ByteItemContent(
+                    byteItem = selectedByteItem
+                )
+            }
+        }
     }
 }
 
@@ -148,7 +182,7 @@ private fun AppScreenPreview() {
     WrapForPreview {
         AppScreen(
             HexString(rawHexString = "33DAADDAAD"),
-            onDataChanged = {},
+            onInputDataChanged = {},
             onGroupDefinitionsChanged = {}
         )
     }

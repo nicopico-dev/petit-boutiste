@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.models
 
+import fr.nicopico.petitboutiste.models.extensions.toByteItems
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

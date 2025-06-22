@@ -1,6 +1,23 @@
-package fr.nicopico.petitboutiste.models
+package fr.nicopico.petitboutiste.models.extensions
 
+import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.ByteItem.Group
+import fr.nicopico.petitboutiste.models.ByteItem.Single
+import fr.nicopico.petitboutiste.models.Endianness
+import fr.nicopico.petitboutiste.models.RepresentationFormat
 import java.math.BigInteger
+
+val ByteItem.name: String?
+    get() = when (this) {
+        is Group -> name
+        is Single -> null
+    }
+
+val ByteItem.size: Int
+    get() = when (this) {
+        is Group -> bytes.size
+        is Single -> 1
+    }
 
 fun ByteItem.toByteArray(): ByteArray {
     val hexString = toString()

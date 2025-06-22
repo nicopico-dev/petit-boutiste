@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.support.components
+package fr.nicopico.petitboutiste.ui.components.definition
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
@@ -31,23 +31,23 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @Composable
-fun ByteGroupControls(
-    groupDefinition: ByteGroupDefinition?,
-    onDefinitionChanged: (ByteGroupDefinition) -> Unit,
+fun ByteGroupDefinitionForm(
+    definition: ByteGroupDefinition?,
+    onDefinitionSaved: (ByteGroupDefinition) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var startIndexInput by remember(groupDefinition) {
-        mutableStateOf(groupDefinition?.indexes?.start?.toString() ?: "")
+    var startIndexInput by remember(definition) {
+        mutableStateOf(definition?.indexes?.start?.toString() ?: "")
     }
-    var endIndexInput by remember(groupDefinition) {
-        mutableStateOf(groupDefinition?.indexes?.endInclusive?.toString() ?: "")
+    var endIndexInput by remember(definition) {
+        mutableStateOf(definition?.indexes?.endInclusive?.toString() ?: "")
     }
-    var name by remember(groupDefinition) {
-        mutableStateOf(groupDefinition?.name ?: "")
+    var name by remember(definition) {
+        mutableStateOf(definition?.name ?: "")
     }
 
     //region Input validation
-    val startIndexError by remember(groupDefinition) {
+    val startIndexError by remember(definition) {
         derivedStateOf {
             if (startIndexInput.isNotEmpty()) {
                 val startIndex = startIndexInput.toIntOrNull()
@@ -59,7 +59,7 @@ fun ByteGroupControls(
             } else null
         }
     }
-    val endIndexError by remember(groupDefinition) {
+    val endIndexError by remember(definition) {
         derivedStateOf {
             if (endIndexInput.isNotEmpty()) {
                 val startIndex = startIndexInput.toIntOrNull()
@@ -72,7 +72,7 @@ fun ByteGroupControls(
             } else null
         }
     }
-    val isValid by remember(groupDefinition) {
+    val isValid by remember(definition) {
         derivedStateOf {
             startIndexInput.isNotEmpty() && endIndexInput.isNotEmpty()
                 && startIndexError == null && endIndexError == null
@@ -80,14 +80,14 @@ fun ByteGroupControls(
     }
     //endregion
 
-    val saveGroupDefinition: () -> Unit = {
-        val definition = ByteGroupDefinition(
+    val saveDefinition: () -> Unit = {
+        val definitionToSave = ByteGroupDefinition(
             startIndexInput.toInt()..endIndexInput.toInt(),
             name.ifBlank { null },
         )
-        onDefinitionChanged(definition)
+        onDefinitionSaved(definitionToSave)
 
-        if (groupDefinition == null) {
+        if (definition == null) {
             startIndexInput = ""
             endIndexInput = ""
             name = ""
@@ -141,14 +141,14 @@ fun ByteGroupControls(
                 modifier = Modifier.weight(1f),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                 keyboardActions = KeyboardActions(
-                    onSend = { saveGroupDefinition() }
+                    onSend = { saveDefinition() }
                 )
             )
 
             val buttonColors = ButtonDefaults.buttonColors()
             IconButton(
                 content = {
-                    if (groupDefinition == null) {
+                    if (definition == null) {
                         Icon(Icons.Default.Add, "Add")
                     } else {
                         Icon(Icons.Default.Save, "Save")
@@ -162,7 +162,7 @@ fun ByteGroupControls(
                         disabledContentColor = buttonColors.disabledContentColor
                     ),
                 enabled = isValid,
-                onClick = saveGroupDefinition,
+                onClick = saveDefinition,
                 modifier = Modifier.offset(y = 4.dp)
             )
         }
@@ -171,16 +171,16 @@ fun ByteGroupControls(
 
 @Preview
 @Composable
-private fun ByteGroupControlsCreatePreview() {
+private fun ByteGroupDefinitionFormPreview() {
     WrapForPreview {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ByteGroupControls(
-                groupDefinition = null,
-                onDefinitionChanged = {},
+            ByteGroupDefinitionForm(
+                definition = null,
+                onDefinitionSaved = {},
             )
-            ByteGroupControls(
-                groupDefinition = ByteGroupDefinition(2..5, "Test Group"),
-                onDefinitionChanged = {},
+            ByteGroupDefinitionForm(
+                definition = ByteGroupDefinition(2..5, "Test Group"),
+                onDefinitionSaved = {},
             )
         }
     }

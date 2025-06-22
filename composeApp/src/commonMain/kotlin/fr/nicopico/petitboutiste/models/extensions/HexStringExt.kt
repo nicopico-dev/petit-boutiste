@@ -1,4 +1,8 @@
-package fr.nicopico.petitboutiste.models
+package fr.nicopico.petitboutiste.models.extensions
+
+import fr.nicopico.petitboutiste.models.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.HexString
 
 fun HexString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList()

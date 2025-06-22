@@ -4,12 +4,6 @@ private val BYTE_VALUE_REGEX = Regex("[a-fA-F0-9]{2}")
 
 sealed class ByteItem {
 
-    val size: Int
-        get() = when (this) {
-            is Group -> bytes.size
-            is Single -> 1
-        }
-
     data class Single(
         val value: String,
     ) : ByteItem() {
