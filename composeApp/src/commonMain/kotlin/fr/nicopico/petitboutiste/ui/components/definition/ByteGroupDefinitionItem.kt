@@ -28,7 +28,7 @@ fun ByteGroupDefinitionItem(
         supportingContent = {
             with(definition.indexes) {
                 Text(
-                    "$start..$endInclusive",
+                    "$start..$endInclusive (${count()} bytes)",
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
