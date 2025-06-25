@@ -1,6 +1,6 @@
 package fr.nicopico.petitboutiste.ui.infra.preview
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
