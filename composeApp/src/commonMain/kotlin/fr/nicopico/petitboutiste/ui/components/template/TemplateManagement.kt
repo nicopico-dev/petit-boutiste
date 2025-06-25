@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.Template
 import fr.nicopico.petitboutiste.repository.TemplateRepository
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -136,8 +138,15 @@ fun TemplateManagement(
                 TextButton(
                     onClick = {
                         if (templateName.isNotBlank()) {
+                            // Format current date/time in ISO format
+                            val timestamp = LocalDateTime.now().format(
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+                            )
+                            // Add timestamp to template name
+                            val nameWithTimestamp = "$templateName ($timestamp)"
+
                             val template = Template(
-                                name = templateName,
+                                name = nameWithTimestamp,
                                 definitions = definitions
                             )
                             templateRepository.save(template)
@@ -169,21 +178,23 @@ fun TemplateManagement(
                         Text("No templates available", modifier = Modifier.padding(top = 8.dp))
                     } else {
                         Column(modifier = Modifier.padding(top = 8.dp)) {
-                            templates.forEach { template ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { selectedTemplate = template }
-                                        .padding(vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = template.name,
-                                        fontWeight = if (selectedTemplate?.id == template.id) FontWeight.Bold else FontWeight.Normal,
-                                        modifier = Modifier.weight(1f)
-                                    )
+                            templates
+                                .sortedBy(Template::name)
+                                .forEach { template ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { selectedTemplate = template }
+                                            .padding(vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = template.name,
+                                            fontWeight = if (selectedTemplate?.id == template.id) FontWeight.Bold else FontWeight.Normal,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
                                 }
-                            }
                         }
                     }
                 }
