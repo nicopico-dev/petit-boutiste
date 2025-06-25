@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.UnfoldLess
@@ -54,6 +55,10 @@ fun TemplateManagement(
     }
 
     var showLoadDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showClearDialog by remember {
         mutableStateOf(false)
     }
 
@@ -113,6 +118,20 @@ fun TemplateManagement(
                     onClick = {
                         templateName = ""
                         showSaveDialog = true
+                    },
+                )
+                Button(
+                    content = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text("Clear")
+                            Icon(Icons.Default.Clear, null)
+                        }
+                    },
+                    onClick = {
+                        showClearDialog = true
                     },
                 )
             }
@@ -231,6 +250,33 @@ fun TemplateManagement(
                     ) {
                         Text("Cancel")
                     }
+                }
+            }
+        )
+    }
+
+    if (showClearDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearDialog = false },
+            title = { Text("Clear Definitions") },
+            text = {
+                Text("Are you sure you want to clear all definitions? This action cannot be undone.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onTemplateLoaded(emptyList())
+                        showClearDialog = false
+                    }
+                ) {
+                    Text("Clear")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showClearDialog = false }
+                ) {
+                    Text("Cancel")
                 }
             }
         )
