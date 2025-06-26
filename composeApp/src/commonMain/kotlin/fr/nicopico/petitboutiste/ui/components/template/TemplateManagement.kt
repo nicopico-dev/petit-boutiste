@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.FileOpen
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
-import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.FileOpen
+import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material.icons.outlined.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -108,7 +108,7 @@ fun TemplateManagement(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 IconButtonWithLabel(
-                    icon = Icons.Default.FileOpen,
+                    icon = Icons.Outlined.FileOpen,
                     label = "Load",
                     onClick = {
                         selectedTemplate = null
@@ -116,7 +116,7 @@ fun TemplateManagement(
                     },
                 )
                 IconButtonWithLabel(
-                    icon = Icons.Default.Save,
+                    icon = Icons.Outlined.Save,
                     label = "Save",
                     onClick = {
                         templateName = ""
@@ -124,14 +124,14 @@ fun TemplateManagement(
                     },
                 )
                 IconButtonWithLabel(
-                    icon = Icons.Default.Download,
+                    icon = Icons.Outlined.Download,
                     label = "Export",
                     onClick = {
                         showExportDialog = true
                     },
                 )
                 IconButtonWithLabel(
-                    icon = Icons.Default.Upload,
+                    icon = Icons.Outlined.Upload,
                     label = "Import",
                     onClick = {
                         importReplace = false
@@ -139,7 +139,7 @@ fun TemplateManagement(
                     },
                 )
                 IconButtonWithLabel(
-                    icon = Icons.Default.Clear,
+                    icon = Icons.Outlined.Clear,
                     label = "Clear",
                     onClick = {
                         showClearDialog = true
