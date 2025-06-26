@@ -28,5 +28,11 @@ class ByteItemsParameterProvider(
             ByteItem.Single(9, "00"),
             ByteItem.Single(10, "04"),
         ),
+        // Test case with a large ByteGroup that exceeds the default maxColumnsPerRow (8)
+        listOf(
+            ByteItem.Single(0, "FF"),
+            ByteItem.Group(1, "AABBCCDDEEFF00112233445566778899", "Large Group"),
+            ByteItem.Single(2, "EE"),
+        ),
     )
 ) : PreviewParameterProvider<List<ByteItem>>
