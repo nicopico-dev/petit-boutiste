@@ -27,6 +27,18 @@ interface TemplateRepository {
     @OptIn(ExperimentalUuidApi::class)
     fun delete(templateId: Uuid)
 
+    /**
+     * Export all templates to a JSON string
+     */
+    fun exportToJson(): String
+
+    /**
+     * Import templates from a JSON string
+     * @param json The JSON string containing templates
+     * @param replace Whether to replace existing templates or merge with them
+     */
+    fun importFromJson(json: String, replace: Boolean = false)
+
     companion object {
         private val instance by lazy {
             TemplateRepositorySettings()
@@ -97,6 +109,34 @@ private class TemplateRepositorySettings(
             withContext(dispatcher) {
                 jsonData = json.encodeToString(newValue)
             }
+        }
+    }
+
+    override fun exportToJson(): String {
+        return json.encodeToString(templates.value)
+    }
+
+    override fun importFromJson(json: String, replace: Boolean) {
+        try {
+            val importedTemplates = Json.decodeFromString<List<Template>>(json)
+            val newValue = templates.updateAndGet { existingTemplates ->
+                if (replace) {
+                    importedTemplates
+                } else {
+                    // Merge templates, keeping existing ones if there's an ID conflict
+                    val existingIds = existingTemplates.map { it.id }.toSet()
+                    val newTemplates = importedTemplates.filter { it.id !in existingIds }
+                    existingTemplates + newTemplates
+                }
+            }
+            scope.launch {
+                withContext(dispatcher) {
+                    jsonData = this@TemplateRepositorySettings.json.encodeToString(newValue)
+                }
+            }
+        } catch (e: Exception) {
+            // Handle JSON parsing errors
+            println("Error importing templates: ${e.message}")
         }
     }
 }

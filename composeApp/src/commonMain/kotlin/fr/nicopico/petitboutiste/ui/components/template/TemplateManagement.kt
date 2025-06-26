@@ -9,12 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -32,8 +33,12 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.Template
 import fr.nicopico.petitboutiste.repository.TemplateRepository
+import fr.nicopico.petitboutiste.ui.components.foundation.IconButtonWithLabel
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -62,12 +67,24 @@ fun TemplateManagement(
         mutableStateOf(false)
     }
 
+    var showExportDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showImportDialog by remember {
+        mutableStateOf(false)
+    }
+
     var templateName by remember {
         mutableStateOf("")
     }
 
     var selectedTemplate by remember {
         mutableStateOf<Template?>(null)
+    }
+
+    var importReplace by remember {
+        mutableStateOf(false)
     }
 
     Column(modifier.fillMaxWidth()) {
@@ -90,46 +107,40 @@ fun TemplateManagement(
                 Modifier.padding(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Button(
-                    content = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text("Load")
-                            Icon(Icons.Default.FileOpen, null)
-                        }
-                    },
+                IconButtonWithLabel(
+                    icon = Icons.Default.FileOpen,
+                    label = "Load",
                     onClick = {
                         selectedTemplate = null
                         showLoadDialog = true
                     },
                 )
-                Button(
-                    content = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text("Save")
-                            Icon(Icons.Default.Save, null)
-                        }
-                    },
+                IconButtonWithLabel(
+                    icon = Icons.Default.Save,
+                    label = "Save",
                     onClick = {
                         templateName = ""
                         showSaveDialog = true
                     },
                 )
-                Button(
-                    content = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text("Clear")
-                            Icon(Icons.Default.Clear, null)
-                        }
+                IconButtonWithLabel(
+                    icon = Icons.Default.Download,
+                    label = "Export",
+                    onClick = {
+                        showExportDialog = true
                     },
+                )
+                IconButtonWithLabel(
+                    icon = Icons.Default.Upload,
+                    label = "Import",
+                    onClick = {
+                        importReplace = false
+                        showImportDialog = true
+                    },
+                )
+                IconButtonWithLabel(
+                    icon = Icons.Default.Clear,
+                    label = "Clear",
                     onClick = {
                         showClearDialog = true
                     },
@@ -275,6 +286,127 @@ fun TemplateManagement(
             dismissButton = {
                 TextButton(
                     onClick = { showClearDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    if (showExportDialog) {
+        AlertDialog(
+            onDismissRequest = { showExportDialog = false },
+            title = { Text("Export Templates") },
+            text = {
+                Text("This will export all templates to a JSON file. Click Export to select a file location.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        // Create a file chooser dialog
+                        val fileChooser = JFileChooser().apply {
+                            dialogTitle = "Save Templates"
+                            fileSelectionMode = JFileChooser.FILES_ONLY
+                            fileFilter = FileNameExtensionFilter("JSON Files", "json")
+                            selectedFile = File("templates.json")
+                        }
+
+                        // Show the dialog and handle the result
+                        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                            val file = fileChooser.selectedFile
+                            // Ensure the file has a .json extension
+                            val filePath = if (!file.name.lowercase().endsWith(".json")) {
+                                "${file.absolutePath}.json"
+                            } else {
+                                file.absolutePath
+                            }
+
+                            try {
+                                // Export templates to JSON
+                                val jsonData = templateRepository.exportToJson()
+                                File(filePath).writeText(jsonData)
+                                showExportDialog = false
+                            } catch (e: Exception) {
+                                // Handle export errors
+                                println("Error exporting templates: ${e.message}")
+                            }
+                        } else {
+                            // User cancelled the dialog
+                            showExportDialog = false
+                        }
+                    }
+                ) {
+                    Text("Export")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showExportDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    if (showImportDialog) {
+        AlertDialog(
+            onDismissRequest = { showImportDialog = false },
+            title = { Text("Import Templates") },
+            text = {
+                Column {
+                    Text("This will import templates from a JSON file.")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        androidx.compose.material3.Checkbox(
+                            checked = importReplace,
+                            onCheckedChange = { importReplace = it }
+                        )
+                        Text("Replace existing templates", modifier = Modifier.padding(start = 8.dp))
+                    }
+                    Text(
+                        "Click Import to select a file.",
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        // Create a file chooser dialog
+                        val fileChooser = JFileChooser().apply {
+                            dialogTitle = "Import Templates"
+                            fileSelectionMode = JFileChooser.FILES_ONLY
+                            fileFilter = FileNameExtensionFilter("JSON Files", "json")
+                        }
+
+                        // Show the dialog and handle the result
+                        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                            val file = fileChooser.selectedFile
+
+                            try {
+                                // Import templates from JSON
+                                val jsonData = file.readText()
+                                templateRepository.importFromJson(jsonData, importReplace)
+                                showImportDialog = false
+                            } catch (e: Exception) {
+                                // Handle import errors
+                                println("Error importing templates: ${e.message}")
+                            }
+                        } else {
+                            // User cancelled the dialog
+                            showImportDialog = false
+                        }
+                    }
+                ) {
+                    Text("Import")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showImportDialog = false }
                 ) {
                     Text("Cancel")
                 }
