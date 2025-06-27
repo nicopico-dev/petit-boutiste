@@ -124,14 +124,14 @@ fun TemplateManagement(
                     },
                 )
                 IconButtonWithLabel(
-                    icon = Icons.Outlined.Download,
+                    icon = Icons.Outlined.Upload,
                     label = "Export",
                     onClick = {
                         showExportDialog = true
                     },
                 )
                 IconButtonWithLabel(
-                    icon = Icons.Outlined.Upload,
+                    icon = Icons.Outlined.Download,
                     label = "Import",
                     onClick = {
                         importReplace = false
