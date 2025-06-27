@@ -184,7 +184,16 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
                 )
 
                 ByteItemContent(
-                    byteItem = selectedByteItem
+                    byteItem = selectedByteItem,
+                    selectedRepresentation = (selectedByteItem as? ByteItem.Group)?.definition?.representation,
+                    onRepresentationSelected = { newRepresentation ->
+                        val group = selectedByteItem as? ByteItem.Group ?: return@ByteItemContent
+                        val updatedDefinition = group.definition.copy(representation = newRepresentation)
+                        val updatedDefinitions = definitions.map {
+                            if (it == group.definition) updatedDefinition else it
+                        }
+                        onDefinitionsChanged(updatedDefinitions)
+                    }
                 )
             }
         }

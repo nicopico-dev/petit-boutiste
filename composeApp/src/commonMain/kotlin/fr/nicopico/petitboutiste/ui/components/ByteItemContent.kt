@@ -40,6 +40,8 @@ import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 fun ByteItemContent(
     byteItem: ByteItem,
     modifier: Modifier = Modifier,
+    selectedRepresentation: RepresentationFormat? = null,
+    onRepresentationSelected: (RepresentationFormat?) -> Unit = {},
 ) {
     var useBigEndian by remember {
         mutableStateOf(true)
@@ -49,8 +51,18 @@ fun ByteItemContent(
             if (useBigEndian) Endianness.BigEndian else Endianness.LittleEndian
         }
     }
-    var collapsed by remember {
+    // Don't collapse when representation is selected
+    // Use firstIndex and lastIndex as keys instead of byteItem to maintain state when only representation changes
+    var collapsed by remember(byteItem.firstIndex, byteItem.lastIndex) {
         mutableStateOf(false)
+    }
+
+    val representationFormats = remember(endianness) {
+        listOf(
+            RepresentationFormat.Hexadecimal,
+            RepresentationFormat.Integer(endianness),
+            RepresentationFormat.Text(endianness)
+        )
     }
 
     val representations = remember(byteItem, endianness) {
@@ -93,13 +105,38 @@ fun ByteItemContent(
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 items(representations.entries.toList()) { (label, value) ->
-                    OutlinedTextField(
-                        label = { Text(label) },
-                        value = value,
-                        onValueChange = {},
-                        readOnly = true,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
-                    )
+                    ) {
+                        val index = when (label) {
+                            "Hexadecimal" -> 0
+                            "Integer" -> 1
+                            "Text" -> 2
+                            else -> -1
+                        }
+
+                        val format = if (index >= 0) representationFormats[index] else null
+
+                        OutlinedTextField(
+                            label = { Text(label) },
+                            value = value,
+                            onValueChange = {},
+                            readOnly = true,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Checkbox(
+                            checked = format == selectedRepresentation,
+                            onCheckedChange = { checked ->
+                                if (checked) {
+                                    onRepresentationSelected(format)
+                                } else if (format == selectedRepresentation) {
+                                    onRepresentationSelected(null)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -109,13 +146,17 @@ fun ByteItemContent(
 @Preview
 @Composable
 private fun GroupContentPreview() {
+    var selectedRepresentation by remember { mutableStateOf<RepresentationFormat?>(null) }
+
     WrapForPreview {
         ByteItemContent(
-            ByteItem.Group(
+            byteItem = ByteItem.Group(
                 index = 0,
                 bytes = "626F6E6A6F7572",
                 name = "Test"
-            )
+            ),
+            selectedRepresentation = selectedRepresentation,
+            onRepresentationSelected = { selectedRepresentation = it }
         )
     }
 }
