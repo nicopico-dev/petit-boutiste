@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ByteGroupDefinitionForm(
     definition: ByteGroupDefinition?,
@@ -85,6 +87,7 @@ fun ByteGroupDefinitionForm(
         val definitionToSave = ByteGroupDefinition(
             startIndexInput.toInt()..endIndexInput.toInt(),
             name.ifBlank { null },
+            definition?.representation,
         )
         onDefinitionSaved(definitionToSave)
 
