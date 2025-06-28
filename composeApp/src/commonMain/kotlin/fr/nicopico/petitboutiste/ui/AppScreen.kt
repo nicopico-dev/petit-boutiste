@@ -160,6 +160,10 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
     modifier: Modifier = Modifier,
     selectedByteItem: ByteItem? = null,
 ) {
+    var collapsedContent: Boolean by remember {
+        mutableStateOf(false)
+    }
+
     AnimatedPane(modifier) {
         Column {
             TemplateManagement(
@@ -193,7 +197,9 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
                             if (it == group.definition) updatedDefinition else it
                         }
                         onDefinitionsChanged(updatedDefinitions)
-                    }
+                    },
+                    collapsed = collapsedContent,
+                    onToggleCollapsed = { collapsedContent = it },
                 )
             }
         }

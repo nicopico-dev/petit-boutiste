@@ -42,6 +42,8 @@ fun ByteItemContent(
     modifier: Modifier = Modifier,
     selectedRepresentation: RepresentationFormat? = null,
     onRepresentationSelected: (RepresentationFormat?) -> Unit = {},
+    collapsed: Boolean = false,
+    onToggleCollapsed: (Boolean) -> Unit = {},
 ) {
     var useBigEndian by remember {
         mutableStateOf(true)
@@ -50,11 +52,6 @@ fun ByteItemContent(
         derivedStateOf {
             if (useBigEndian) Endianness.BigEndian else Endianness.LittleEndian
         }
-    }
-    // Don't collapse when representation is selected
-    // Use firstIndex and lastIndex as keys instead of byteItem to maintain state when only representation changes
-    var collapsed by remember(byteItem.firstIndex, byteItem.lastIndex) {
-        mutableStateOf(false)
     }
 
     val representationFormats = remember(endianness) {
@@ -75,9 +72,7 @@ fun ByteItemContent(
 
     Column(modifier) {
         Row(
-            Modifier.clickable {
-                collapsed = !collapsed
-            },
+            Modifier.clickable { onToggleCollapsed(!collapsed) },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
