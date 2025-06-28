@@ -121,16 +121,18 @@ fun ByteItemContent(
                             modifier = Modifier.weight(1f)
                         )
 
-                        Checkbox(
-                            checked = format == selectedRepresentation,
-                            onCheckedChange = { checked ->
-                                if (checked) {
-                                    onRepresentationSelected(format)
-                                } else if (format == selectedRepresentation) {
-                                    onRepresentationSelected(null)
+                        if (byteItem is ByteItem.Group) {
+                            Checkbox(
+                                checked = format == selectedRepresentation,
+                                onCheckedChange = { checked ->
+                                    if (checked) {
+                                        onRepresentationSelected(format)
+                                    } else if (format == selectedRepresentation) {
+                                        onRepresentationSelected(null)
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }

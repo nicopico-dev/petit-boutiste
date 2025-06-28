@@ -63,10 +63,14 @@ fun AppScreen(
     }
 
     LaunchedEffect(groupDefinitions) {
-        if (selectedByteItem is ByteItem.Group
-            && (selectedByteItem as ByteItem.Group).definition !in groupDefinitions
-        ) {
-            selectedByteItem = null
+        if (selectedByteItem is ByteItem.Group) {
+            val updatedDefinition = groupDefinitions.firstOrNull {
+                it.indexes == (selectedByteItem as ByteItem.Group).definition.indexes
+            }
+
+            selectedByteItem = if (updatedDefinition != null) {
+                (selectedByteItem as ByteItem.Group).copy(definition = updatedDefinition)
+            } else null
         }
     }
 
