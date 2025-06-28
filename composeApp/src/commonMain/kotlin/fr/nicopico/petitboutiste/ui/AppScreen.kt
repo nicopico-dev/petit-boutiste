@@ -107,6 +107,7 @@ fun AppScreen(
                         } else null
                     },
                     selectedByteItem = selectedByteItem,
+                    byteItems = byteItems,
                     modifier = Modifier
                         .safeContentPadding()
                         .padding(16.dp),
@@ -163,6 +164,7 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit,
     modifier: Modifier = Modifier,
     selectedByteItem: ByteItem? = null,
+    byteItems: List<ByteItem> = emptyList(),
 ) {
     var collapsedContent: Boolean by remember {
         mutableStateOf(false)
@@ -182,6 +184,7 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
                 onDefinitionsChanged = onDefinitionsChanged,
                 selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
                 onDefinitionSelected = onDefinitionSelected,
+                byteItems = byteItems,
                 modifier = Modifier.weight(1f)
             )
 

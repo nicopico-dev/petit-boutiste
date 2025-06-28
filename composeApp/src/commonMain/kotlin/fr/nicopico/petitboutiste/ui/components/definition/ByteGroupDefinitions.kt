@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.removeAt
 import fr.nicopico.petitboutiste.models.extensions.replace
 
@@ -33,6 +34,7 @@ fun ByteGroupDefinitions(
     modifier: Modifier = Modifier,
     selectedDefinition: ByteGroupDefinition? = null,
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
+    byteItems: List<ByteItem> = emptyList(),
 ) {
     var collapsed by remember {
         mutableStateOf(false)
@@ -66,8 +68,13 @@ fun ByteGroupDefinitions(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(definitions) { index, definition ->
+                    val byteGroup = byteItems.firstOrNull {
+                        it is ByteItem.Group && it.definition == definition
+                    } as? ByteItem.Group
+
                     ByteGroupDefinitionItem(
                         definition = definition,
+                        byteGroup = byteGroup,
                         selected = definition == selectedDefinition,
                         modifier = Modifier.clickable {
                             if (definition != selectedDefinition) {

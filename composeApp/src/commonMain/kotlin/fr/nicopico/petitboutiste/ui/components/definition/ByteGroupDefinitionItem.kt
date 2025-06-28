@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.extensions.getRepresentation
 
 @Composable
 fun ByteGroupDefinitionItem(
@@ -22,16 +24,30 @@ fun ByteGroupDefinitionItem(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     onDelete: () -> Unit,
+    byteGroup: ByteItem.Group? = null,
 ) {
     ListItem(
         headlineContent = { Text(definition.name ?: "[UNNAMED]") },
         supportingContent = {
-            with(definition.indexes) {
-                Text(
-                    "$start..$endInclusive (${count()} bytes)",
-                    style = MaterialTheme.typography.labelSmall,
-                )
+            val rangeText = with(definition.indexes) {
+                "$start..$endInclusive (${count()} bytes)"
             }
+
+            val valueText = if (byteGroup != null && definition.representation != null) {
+                val representation = byteGroup.getRepresentation(definition.representation)
+                if (representation != null) {
+                    "\nValue: $representation"
+                } else {
+                    ""
+                }
+            } else {
+                ""
+            }
+
+            Text(
+                text = rangeText + valueText,
+                style = MaterialTheme.typography.labelSmall,
+            )
         },
         trailingContent = {
             IconButton(
