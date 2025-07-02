@@ -22,12 +22,14 @@ jobs:
 
       - name: Set up JDK
         uses: actions/setup-java@v3
+        if: ${{ !env.ACT }}
         with:
           distribution: 'temurin'
           java-version: '17'
           cache: 'gradle'
 
       - name: Make Gradle wrapper executable
+        if: ${{ !env.ACT }}
         run: chmod +x ./gradlew
 
       - name: Build macOS application
@@ -36,18 +38,18 @@ jobs:
       - name: Find APP file
         id: find-app
         run: |
-          APP_PATH=$(find composeApp/build/compose/binaries/main/app -name "*.app" -type d | head -n 1)
+          APP_PATH=$(find composeApp/build/compose/binaries/main-release/app -name "*.app" -type d | head -n 1)
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
-          echo "APP_NAME=$(basename $APP_PATH)" >> $GITHUB_ENV
+          echo "APP_NAME=$(basename "$APP_PATH")" >> $GITHUB_ENV
 
       - name: Create ZIP archive
         run: |
           cd $(dirname "$APP_PATH")
-          zip -r "${{ env.APP_NAME }}.zip" "${{ env.APP_NAME }}"
-          echo "ZIP_PATH=$(pwd)/${{ env.APP_NAME }}.zip" >> $GITHUB_ENV
+          zip -r "$APP_NAME.zip" "$APP_NAME"
+          echo "ZIP_PATH=$(pwd)/$APP_NAME.zip" >> $GITHUB_ENV
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-package
           path: ${{ env.ZIP_PATH }}
@@ -56,10 +58,12 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: app-package
           path: ./artifacts
@@ -79,5 +83,3 @@ jobs:
           draft: false
           prerelease: false
           files: ${{ env.ZIP_PATH }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

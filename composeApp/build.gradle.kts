@@ -53,7 +53,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "fr.nicopico.petitboutiste"
+            packageName = "Petit Boutiste"
             packageVersion = "1.0.0"
         }
     }
