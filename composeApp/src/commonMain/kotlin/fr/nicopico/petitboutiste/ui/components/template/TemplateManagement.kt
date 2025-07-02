@@ -48,11 +48,8 @@ fun TemplateManagement(
     var templateName by remember { mutableStateOf("") }
     var selectedTemplate by remember { mutableStateOf<Template?>(null) }
 
-    var showSaveDialog by remember { mutableStateOf(false) }
-    var showLoadDialog by remember { mutableStateOf(false) }
-    var showClearDialog by remember { mutableStateOf(false) }
-    var showExportDialog by remember { mutableStateOf(false) }
-    var showImportDialog by remember { mutableStateOf(false) }
+    // Single dialog state to ensure only one dialog is displayed at a time
+    var dialogState by remember { mutableStateOf(TemplateDialogState.None) }
 
     var importReplace by remember { mutableStateOf(false) }
 
@@ -81,7 +78,7 @@ fun TemplateManagement(
                     label = "Load",
                     onClick = {
                         selectedTemplate = null
-                        showLoadDialog = true
+                        dialogState = TemplateDialogState.Load
                     },
                 )
                 IconButtonWithLabel(
@@ -89,14 +86,14 @@ fun TemplateManagement(
                     label = "Save",
                     onClick = {
                         templateName = ""
-                        showSaveDialog = true
+                        dialogState = TemplateDialogState.Save
                     },
                 )
                 IconButtonWithLabel(
                     icon = Icons.Outlined.Upload,
                     label = "Export",
                     onClick = {
-                        showExportDialog = true
+                        dialogState = TemplateDialogState.Export
                     },
                 )
                 IconButtonWithLabel(
@@ -104,77 +101,79 @@ fun TemplateManagement(
                     label = "Import",
                     onClick = {
                         importReplace = false
-                        showImportDialog = true
+                        dialogState = TemplateDialogState.Import
                     },
                 )
                 IconButtonWithLabel(
                     icon = Icons.Outlined.Clear,
                     label = "Clear",
                     onClick = {
-                        showClearDialog = true
+                        dialogState = TemplateDialogState.Clear
                     },
                 )
             }
         }
     }
 
-    if (showSaveDialog) {
-        SaveTemplateDialog(
-            onDismissRequest = { showSaveDialog = false },
-            onSave = { template ->
-                templateRepository.save(template)
-                showSaveDialog = false
-            },
-            definitions = definitions,
-            initialTemplateName = templateName
-        )
-    }
-
-    if (showLoadDialog) {
-        LoadTemplateDialog(
-            onDismissRequest = { showLoadDialog = false },
-            onTemplateLoaded = { loadedDefinitions ->
-                onTemplateLoaded(loadedDefinitions)
-                showLoadDialog = false
-            },
-            onTemplateDeleted = { templateId ->
-                templateRepository.delete(templateId)
-                selectedTemplate = null
-            },
-            templates = templates,
-            initialSelectedTemplate = selectedTemplate
-        )
-    }
-
-    if (showClearDialog) {
-        ClearDefinitionsDialog(
-            onDismissRequest = { showClearDialog = false },
-            onConfirm = {
-                onTemplateLoaded(emptyList())
-                showClearDialog = false
-            }
-        )
-    }
-
-    if (showExportDialog) {
-        ExportTemplatesDialog(
-            onDismissRequest = { showExportDialog = false },
-            onExport = { _ ->
-                val jsonData = templateRepository.exportToJson()
-                showExportDialog = false
-                jsonData
-            }
-        )
-    }
-
-    if (showImportDialog) {
-        ImportTemplatesDialog(
-            onDismissRequest = { showImportDialog = false },
-            onImport = { jsonData, replace ->
-                templateRepository.importFromJson(jsonData, replace)
-                showImportDialog = false
-            },
-            initialReplaceState = importReplace
-        )
+    // Display the appropriate dialog based on the current dialog state
+    when (dialogState) {
+        TemplateDialogState.Save -> {
+            SaveTemplateDialog(
+                onDismissRequest = { dialogState = TemplateDialogState.None },
+                onSave = { template ->
+                    templateRepository.save(template)
+                    dialogState = TemplateDialogState.None
+                },
+                definitions = definitions,
+                initialTemplateName = templateName
+            )
+        }
+        TemplateDialogState.Load -> {
+            LoadTemplateDialog(
+                onDismissRequest = { dialogState = TemplateDialogState.None },
+                onTemplateLoaded = { loadedDefinitions ->
+                    onTemplateLoaded(loadedDefinitions)
+                    dialogState = TemplateDialogState.None
+                },
+                onTemplateDeleted = { templateId ->
+                    templateRepository.delete(templateId)
+                    selectedTemplate = null
+                },
+                templates = templates,
+                initialSelectedTemplate = selectedTemplate
+            )
+        }
+        TemplateDialogState.Clear -> {
+            ClearDefinitionsDialog(
+                onDismissRequest = { dialogState = TemplateDialogState.None },
+                onConfirm = {
+                    onTemplateLoaded(emptyList())
+                    dialogState = TemplateDialogState.None
+                }
+            )
+        }
+        TemplateDialogState.Export -> {
+            ExportTemplatesDialog(
+                onDismissRequest = { dialogState = TemplateDialogState.None },
+                onExport = { _ ->
+                    val jsonData = templateRepository.exportToJson()
+                    dialogState = TemplateDialogState.None
+                    jsonData
+                }
+            )
+        }
+        TemplateDialogState.Import -> {
+            ImportTemplatesDialog(
+                onDismissRequest = { dialogState = TemplateDialogState.None },
+                onImport = { jsonData, replace ->
+                    templateRepository.importFromJson(jsonData, replace)
+                    dialogState = TemplateDialogState.None
+                },
+                initialReplaceState = importReplace
+            )
+        }
+        TemplateDialogState.None -> {
+            // No dialog to display
+        }
     }
 }
