@@ -1,0 +1,83 @@
+name: Create macOS Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        default: '1.0.0'
+      release_notes:
+        description: 'Release notes'
+        required: false
+        default: 'New release'
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build macOS application
+        run: ./gradlew :composeApp:createReleaseDistributable
+
+      - name: Find APP file
+        id: find-app
+        run: |
+          APP_PATH=$(find composeApp/build/compose/binaries/main/app -name "*.app" -type d | head -n 1)
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
+          echo "APP_NAME=$(basename $APP_PATH)" >> $GITHUB_ENV
+
+      - name: Create ZIP archive
+        run: |
+          cd $(dirname "$APP_PATH")
+          zip -r "${{ env.APP_NAME }}.zip" "${{ env.APP_NAME }}"
+          echo "ZIP_PATH=$(pwd)/${{ env.APP_NAME }}.zip" >> $GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-package
+          path: ${{ env.ZIP_PATH }}
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-package
+          path: ./artifacts
+
+      - name: Find ZIP file
+        id: find-zip
+        run: |
+          ZIP_PATH=$(find ./artifacts -name "*.zip" | head -n 1)
+          echo "ZIP_PATH=$ZIP_PATH" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: Release v${{ github.event.inputs.version }}
+          body: ${{ github.event.inputs.release_notes }}
+          draft: false
+          prerelease: false
+          files: ${{ env.ZIP_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
