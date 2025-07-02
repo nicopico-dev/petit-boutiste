@@ -1,21 +1,14 @@
 package fr.nicopico.petitboutiste.ui.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.UnfoldLess
-import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,13 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.Endianness
 import fr.nicopico.petitboutiste.models.RepresentationFormat
 import fr.nicopico.petitboutiste.models.extensions.getRepresentation
 import fr.nicopico.petitboutiste.models.extensions.name
+import fr.nicopico.petitboutiste.ui.components.foundation.CollapsableStateless
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,69 +63,55 @@ fun ByteItemContent(
         )
     }
 
-    Column(modifier) {
-        Row(
-            Modifier.clickable { onToggleCollapsed(!collapsed) },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                (byteItem.name ?: "[UNNAMED]") + " Content",
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.weight(1f)
-            )
-
-            Icon(
-                if (collapsed) Icons.Default.UnfoldMore else Icons.Default.UnfoldLess,
-                "Toggle",
-                modifier = Modifier.size(18.dp)
+    CollapsableStateless(
+        title = (byteItem.name ?: "[UNNAMED]") + " Content",
+        collapsed = collapsed,
+        onToggleCollapsed = onToggleCollapsed,
+        modifier = modifier
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Big Endian ?")
+            Checkbox(
+                useBigEndian,
+                onCheckedChange = { useBigEndian = it },
+                modifier = Modifier.padding(0.dp)
             )
         }
 
-        if (!collapsed) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Big Endian ?")
-                Checkbox(
-                    useBigEndian,
-                    onCheckedChange = { useBigEndian = it },
-                    modifier = Modifier.padding(0.dp)
-                )
-            }
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            items(representations.entries.toList()) { (label, value) ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val index = when (label) {
+                        "Hexadecimal" -> 0
+                        "Integer" -> 1
+                        "Text" -> 2
+                        else -> -1
+                    }
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                items(representations.entries.toList()) { (label, value) ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        val index = when (label) {
-                            "Hexadecimal" -> 0
-                            "Integer" -> 1
-                            "Text" -> 2
-                            else -> -1
-                        }
+                    val format = if (index >= 0) representationFormats[index] else null
 
-                        val format = if (index >= 0) representationFormats[index] else null
+                    OutlinedTextField(
+                        label = { Text(label) },
+                        value = value,
+                        onValueChange = {},
+                        readOnly = true,
+                        modifier = Modifier.weight(1f)
+                    )
 
-                        OutlinedTextField(
-                            label = { Text(label) },
-                            value = value,
-                            onValueChange = {},
-                            readOnly = true,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        if (byteItem is ByteItem.Group) {
-                            Checkbox(
-                                checked = format == selectedRepresentation,
-                                onCheckedChange = { checked ->
-                                    if (checked) {
-                                        onRepresentationSelected(format)
-                                    } else if (format == selectedRepresentation) {
-                                        onRepresentationSelected(null)
-                                    }
+                    if (byteItem is ByteItem.Group) {
+                        Checkbox(
+                            checked = format == selectedRepresentation,
+                            onCheckedChange = { checked ->
+                                if (checked) {
+                                    onRepresentationSelected(format)
+                                } else if (format == selectedRepresentation) {
+                                    onRepresentationSelected(null)
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
             }
