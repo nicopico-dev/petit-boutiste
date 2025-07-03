@@ -55,6 +55,11 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Petit Boutiste"
             packageVersion = "1.0.0"
+
+            macOS {
+                setDockNameSameAsPackageName
+                iconFile.set(project.file("src/desktopMain/resources/icons/app-icon.icns"))
+            }
         }
     }
 }
