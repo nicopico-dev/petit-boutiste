@@ -102,7 +102,7 @@ fun HexDisplay(
                             text = index,
                             style = TextStyle(
                                 fontFamily = FontFamily.Monospace,
-                                fontSize = 12.sp,
+                                fontSize = 9.sp,
                                 color = Color.Gray
                             )
                         )
