@@ -1,6 +1,7 @@
 package fr.nicopico.petitboutiste.ui.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,11 +9,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,77 +55,89 @@ fun HexDisplay(
             }
             val maxColumnsPerRow = (availableWidthPx / columnWidthPx)
 
-            LazyVerticalGrid(
-                columns = GridCells.FixedSize(COLUMN_WIDTH),
-                modifier = modifier,
-                horizontalArrangement = Arrangement.Center,
-                verticalArrangement = Arrangement.Top
-            ) {
-                items(
-                    items = byteItems,
-                    span = { byteItem ->
-                        when (byteItem) {
-                            is ByteItem.Group -> {
-                                // Limit the span to the maximum number of columns per row
-                                val span = minOf(byteItem.size, maxColumnsPerRow)
-                                GridItemSpan(span)
-                            }
+            // Add grid state to track scrolling
+            val gridState = rememberLazyGridState()
 
-                            is ByteItem.Single -> GridItemSpan(1)
+            // Use Box to position the grid and scrollbar
+            Box(modifier = modifier) {
+                LazyVerticalGrid(
+                    columns = GridCells.FixedSize(COLUMN_WIDTH),
+                    state = gridState,
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    items(
+                        items = byteItems,
+                        span = { byteItem ->
+                            when (byteItem) {
+                                is ByteItem.Group -> {
+                                    // Limit the span to the maximum number of columns per row
+                                    val span = minOf(byteItem.size, maxColumnsPerRow)
+                                    GridItemSpan(span)
+                                }
+
+                                is ByteItem.Single -> GridItemSpan(1)
+                            }
                         }
-                    }
-                ) { item ->
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .clickable { onByteItemClicked(item) }
-                            .let {
-                                if (item is ByteItem.Group) {
-                                    it.border(1.dp, Color.Blue)
-                                } else it
-                            }
-                            .let {
-                                if (item == selectedByteItem) {
-                                    it.background(MaterialTheme.colorScheme.primaryContainer)
-                                } else it
-                            }
-                            .padding(4.dp)
-                    ) {
-                        Text(
-                            text = item.toString(),
-                            style = TextStyle(
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 18.sp
+                    ) { item ->
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .clickable { onByteItemClicked(item) }
+                                .let {
+                                    if (item is ByteItem.Group) {
+                                        it.border(1.dp, Color.Blue)
+                                    } else it
+                                }
+                                .let {
+                                    if (item == selectedByteItem) {
+                                        it.background(MaterialTheme.colorScheme.primaryContainer)
+                                    } else it
+                                }
+                                .padding(4.dp)
+                        ) {
+                            Text(
+                                text = item.toString(),
+                                style = TextStyle(
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 18.sp
+                                )
                             )
-                        )
 
-                        val index = if (item.firstIndex != item.lastIndex) {
-                            "${item.firstIndex}..${item.lastIndex}"
-                        } else item.firstIndex.toString()
-                        Text(
-                            text = index,
-                            style = TextStyle(
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 9.sp,
-                                color = Color.Gray
+                            val index = if (item.firstIndex != item.lastIndex) {
+                                "${item.firstIndex}..${item.lastIndex}"
+                            } else item.firstIndex.toString()
+                            Text(
+                                text = index,
+                                style = TextStyle(
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 9.sp,
+                                    color = Color.Gray
+                                )
                             )
-                        )
 
-                        Text(
-                            text = item.name ?: "",
-                            style = TextStyle(
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 8.sp,
-                                color = Color.Blue
-                            ),
-                            softWrap = false,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                            Text(
+                                text = item.name ?: "",
+                                style = TextStyle(
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 8.sp,
+                                    color = Color.Blue
+                                ),
+                                softWrap = false,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
                 }
             }
+
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(gridState),
+            )
         }
     } else Box(modifier)
 }

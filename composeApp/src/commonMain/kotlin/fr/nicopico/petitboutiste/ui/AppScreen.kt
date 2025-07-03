@@ -91,7 +91,9 @@ fun AppScreen(
                     onByteItemSelected = { selectedByteItem = it },
                     modifier = Modifier
                         .safeContentPadding()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        // Need to add space to make the scrollbar handle grabbable
+                        .padding(end = 16.dp),
                 )
             },
             supportingPane = {
