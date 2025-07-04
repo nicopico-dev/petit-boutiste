@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
@@ -27,7 +28,13 @@ fun ByteGroupDefinitionItem(
     byteGroup: ByteItem.Group? = null,
 ) {
     ListItem(
-        headlineContent = { Text(definition.name ?: "[UNNAMED]") },
+        headlineContent = {
+            Text(
+                definition.name ?: "[UNNAMED]",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
         supportingContent = {
             val rangeText = with(definition.indexes) {
                 "$start..$endInclusive (${count()} bytes)"
@@ -47,6 +54,8 @@ fun ByteGroupDefinitionItem(
             Text(
                 text = rangeText + valueText,
                 style = MaterialTheme.typography.labelSmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
         },
         trailingContent = {

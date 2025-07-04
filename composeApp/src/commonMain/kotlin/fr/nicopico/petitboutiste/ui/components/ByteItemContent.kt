@@ -4,6 +4,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -98,7 +99,9 @@ fun ByteItemContent(
                         value = value,
                         onValueChange = {},
                         readOnly = true,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .heightIn(max = 120.dp)
+                            .weight(1f)
                     )
 
                     if (byteItem is ByteItem.Group) {
