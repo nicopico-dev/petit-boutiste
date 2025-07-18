@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.compose.reload.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 
 plugins {
@@ -36,9 +35,11 @@ kotlin {
             implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.1.2")
 
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
@@ -67,7 +68,4 @@ compose.desktop {
 // Compose Hot-Reload! (https://github.com/JetBrains/compose-hot-reload)
 composeCompiler {
     featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
-}
-tasks.withType<ComposeHotRun>().configureEach {
-    mainClass.set("fr.nicopico.petitboutiste.MainKt")
 }
