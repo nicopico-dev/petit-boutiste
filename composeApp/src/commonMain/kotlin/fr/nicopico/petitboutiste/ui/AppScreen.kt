@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalMaterial3AdaptiveApi::class)
+
 package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -74,49 +75,48 @@ fun AppScreen(
         }
     }
 
-    MaterialTheme {
-        SupportingPaneScaffold(
-            directive = PaneScaffoldDirective.Default,
-            value = scaffoldValue,
-            paneExpansionState = rememberPaneExpansionState(),
-            paneExpansionDragHandle = { state ->
-                DragHandle(state, "support pane drag handle")
-            },
-            mainPane = {
-                MainPane(
-                    inputData = inputData,
-                    byteItems = byteItems,
-                    onInputDataChanged = onInputDataChanged,
-                    selectedByteItem = selectedByteItem,
-                    onByteItemSelected = { selectedByteItem = it },
-                    modifier = Modifier
-                        .safeContentPadding()
-                        .padding(16.dp)
-                        // Need to add space to make the scrollbar handle grabbable
-                        .padding(end = 16.dp),
-                )
-            },
-            supportingPane = {
-                SupportingPane(
-                    definitions = groupDefinitions,
-                    onDefinitionsChanged = onGroupDefinitionsChanged,
-                    onDefinitionSelected = { definition ->
-                        // Select the ByteGroup matching this definition
-                        selectedByteItem = if (definition != null) {
-                            byteItems.firstOrNull {
-                                it is ByteItem.Group && it.definition == definition
-                            }
-                        } else null
-                    },
-                    selectedByteItem = selectedByteItem,
-                    byteItems = byteItems,
-                    modifier = Modifier
-                        .safeContentPadding()
-                        .padding(16.dp),
-                )
-            },
-        )
-    }
+
+    SupportingPaneScaffold(
+        directive = PaneScaffoldDirective.Default,
+        value = scaffoldValue,
+        paneExpansionState = rememberPaneExpansionState(),
+        paneExpansionDragHandle = { state ->
+            DragHandle(state, "support pane drag handle")
+        },
+        mainPane = {
+            MainPane(
+                inputData = inputData,
+                byteItems = byteItems,
+                onInputDataChanged = onInputDataChanged,
+                selectedByteItem = selectedByteItem,
+                onByteItemSelected = { selectedByteItem = it },
+                modifier = Modifier
+                    .safeContentPadding()
+                    .padding(16.dp)
+                    // Need to add space to make the scrollbar handle grabbable
+                    .padding(end = 16.dp),
+            )
+        },
+        supportingPane = {
+            SupportingPane(
+                definitions = groupDefinitions,
+                onDefinitionsChanged = onGroupDefinitionsChanged,
+                onDefinitionSelected = { definition ->
+                    // Select the ByteGroup matching this definition
+                    selectedByteItem = if (definition != null) {
+                        byteItems.firstOrNull {
+                            it is ByteItem.Group && it.definition == definition
+                        }
+                    } else null
+                },
+                selectedByteItem = selectedByteItem,
+                byteItems = byteItems,
+                modifier = Modifier
+                    .safeContentPadding()
+                    .padding(16.dp),
+            )
+        },
+    )
 }
 
 @Composable

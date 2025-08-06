@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 fun WrapForPreview(
     content: @Composable () -> Unit
 ) {
-    MaterialTheme{
+    MaterialTheme {
         content()
     }
 }
