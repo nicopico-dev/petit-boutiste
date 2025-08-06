@@ -7,6 +7,9 @@ import java.nio.charset.Charset
 @Serializable
 sealed class RepresentationFormat {
     @Serializable
+    data object Binary : RepresentationFormat()
+
+    @Serializable
     data object Hexadecimal : RepresentationFormat()
 
     @Serializable

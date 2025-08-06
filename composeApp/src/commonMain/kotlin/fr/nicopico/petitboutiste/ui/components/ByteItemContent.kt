@@ -52,7 +52,8 @@ fun ByteItemContent(
         listOf(
             RepresentationFormat.Hexadecimal,
             RepresentationFormat.Integer(endianness),
-            RepresentationFormat.Text(endianness)
+            RepresentationFormat.Text(endianness),
+            RepresentationFormat.Binary,
         )
     }
 
@@ -61,6 +62,7 @@ fun ByteItemContent(
             "Hexadecimal" to (byteItem.getRepresentation(RepresentationFormat.Hexadecimal) ?: "[ERROR]"),
             "Integer" to (byteItem.getRepresentation(RepresentationFormat.Integer(endianness)) ?: "[ERROR]"),
             "Text" to (byteItem.getRepresentation(RepresentationFormat.Text(endianness)) ?: "[ERROR]"),
+            "Binary" to (byteItem.getRepresentation(RepresentationFormat.Binary) ?: "[ERROR]"),
         )
     }
 
@@ -85,11 +87,8 @@ fun ByteItemContent(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    val index = when (label) {
-                        "Hexadecimal" -> 0
-                        "Integer" -> 1
-                        "Text" -> 2
-                        else -> -1
+                    val index: Int = remember(label) {
+                        representations.keys.indexOf(label)
                     }
 
                     val format = if (index >= 0) representationFormats[index] else null
@@ -125,7 +124,9 @@ fun ByteItemContent(
 @Preview
 @Composable
 private fun GroupContentPreview() {
-    var selectedRepresentation by remember { mutableStateOf<RepresentationFormat?>(null) }
+    var selectedRepresentation by remember {
+        mutableStateOf<RepresentationFormat?>(null)
+    }
 
     WrapForPreview {
         ByteItemContent(

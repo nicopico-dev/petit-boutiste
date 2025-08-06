@@ -31,6 +31,14 @@ fun ByteItem.toByteArray(): ByteArray {
 
 fun ByteItem.getRepresentation(format: RepresentationFormat): String? {
     return when (format) {
+        is RepresentationFormat.Binary -> {
+            val byteArray = this.toByteArray()
+            byteArray.joinToString(" ") { byte ->
+                val binaryString = byte.toUByte().toString(2).padStart(8, '0')
+                "${binaryString.take(4)} ${binaryString.substring(4)}"
+            }
+        }
+
         is RepresentationFormat.Hexadecimal -> this.toString()
 
         is RepresentationFormat.Integer -> {
