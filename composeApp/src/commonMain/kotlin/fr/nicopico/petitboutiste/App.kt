@@ -68,6 +68,7 @@ fun App() {
             AppScreen(
                 inputData = selectedTab.inputData,
                 groupDefinitions = selectedTab.groupDefinitions,
+                inputType = selectedTab.inputType,
                 onInputDataChanged = { newData ->
                     tabs = tabs.map {
                         if (it.id == selectedTabId) it.copy(inputData = newData) else it
@@ -76,6 +77,11 @@ fun App() {
                 onGroupDefinitionsChanged = { newDefinitions ->
                     tabs = tabs.map {
                         if (it.id == selectedTabId) it.copy(groupDefinitions = newDefinitions) else it
+                    }
+                },
+                onInputTypeChanged = { newInputType ->
+                    tabs = tabs.map {
+                        if (it.id == selectedTabId) it.copy(inputType = newInputType) else it
                     }
                 }
             )

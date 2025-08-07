@@ -2,9 +2,9 @@ package fr.nicopico.petitboutiste.models.extensions
 
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.HexString
+import fr.nicopico.petitboutiste.models.DataString
 
-fun HexString.toByteItems(
+fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList()
 ): List<ByteItem> {
     val bytes = hexString.windowed(2, 2)

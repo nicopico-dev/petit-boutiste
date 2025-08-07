@@ -22,36 +22,66 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.nicopico.petitboutiste.models.BinaryString
 import fr.nicopico.petitboutiste.models.DataString
 import fr.nicopico.petitboutiste.models.HexString
-import fr.nicopico.petitboutiste.ui.infra.preview.HexStringParameterProvider
+import fr.nicopico.petitboutiste.models.extensions.formatForDisplay
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @Composable
-fun HexInput(
+fun BinaryInput(
     value: DataString,
     onValueChange: (DataString) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var input by remember(value) {
-        mutableStateOf(value.hexString)
+    // Convert DataString to BinaryString if needed
+    val binaryValue = when (value) {
+        is BinaryString -> value
+        is HexString -> BinaryString.fromHexString(value)
+        else -> BinaryString("00000000") // Default empty binary string
     }
-    var isError: Boolean by remember(value) {
+
+    var input by remember(binaryValue) {
+        mutableStateOf(binaryValue.binaryString)
+    }
+    var formattedInput by remember(input) {
+        mutableStateOf(if (input.isNotEmpty()) {
+            try {
+                BinaryString(input).formatForDisplay()
+            } catch (e: IllegalArgumentException) {
+                input
+            }
+        } else "")
+    }
+    var isError: Boolean by remember(binaryValue) {
         mutableStateOf(false)
     }
 
     BasicTextField(
-        value = input,
+        value = formattedInput.ifEmpty { input },
         onValueChange = {
+            // Remove formatting (spaces) for processing
+            val rawInput = it.replace(" ", "")
             isError = false
-            input = it
-            if (input.length % 2 == 0) {
-                val dataString = HexString.parse(input)
-                if (dataString != null) {
-                    onValueChange(dataString)
+            input = rawInput
+
+            // Only update if the input is valid
+            if (rawInput.all { char -> char == '0' || char == '1' }) {
+                // Only update the data if the length is a multiple of 8
+                if (rawInput.length % 8 == 0 && rawInput.isNotEmpty()) {
+                    val dataString = BinaryString.parse(rawInput)
+                    if (dataString != null) {
+                        onValueChange(dataString)
+                        formattedInput = dataString.formatForDisplay()
+                    } else {
+                        isError = true
+                    }
                 } else {
-                    isError = true
+                    // Still update the formatted display for partial input
+                    formattedInput = rawInput
                 }
+            } else {
+                isError = true
             }
         },
         textStyle = TextStyle(
@@ -69,7 +99,7 @@ fun HexInput(
             ) {
                 if (input.isEmpty()) {
                     Text(
-                        text = "Paste hexadecimal string here (e.g., 48656C6C6F)",
+                        text = "Paste binary string here (e.g., 01001000 01100101 01101100 01101100 01101111)",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
@@ -83,13 +113,11 @@ fun HexInput(
 
 @Preview
 @Composable
-private fun HexInputPreview() {
-    val parameterProvider = remember { HexStringParameterProvider() }
+private fun BinaryInputPreview() {
     WrapForPreview {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            parameterProvider.values.forEach { hexString ->
-                HexInput(hexString, onValueChange = {})
-            }
+            BinaryInput(BinaryString("0101010101010101"), onValueChange = {})
+            BinaryInput(BinaryString(""), onValueChange = {})
         }
     }
 }

@@ -2,15 +2,15 @@ package fr.nicopico.petitboutiste.models
 
 class HexString(
     rawHexString: String
-) {
+) : DataString {
 
-    val hexString: String = rawHexString.normalizeHexString()
+    override val hexString: String = rawHexString.normalizeHexString()
 
     init {
         require(hexString.length % 2 == 0) { "HexString must have an even length" }
     }
 
-    fun isNotEmpty() = hexString.isNotEmpty()
+    override fun isNotEmpty() = hexString.isNotEmpty()
 
     companion object {
         fun parse(input: String): HexString? {

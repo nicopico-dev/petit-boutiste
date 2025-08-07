@@ -3,7 +3,9 @@
 package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -32,8 +35,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.DataString
 import fr.nicopico.petitboutiste.models.HexString
+import fr.nicopico.petitboutiste.models.InputType
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.ui.components.BinaryInput
 import fr.nicopico.petitboutiste.ui.components.ByteItemContent
 import fr.nicopico.petitboutiste.ui.components.DragHandle
 import fr.nicopico.petitboutiste.ui.components.HexDisplay
@@ -44,10 +50,12 @@ import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @Composable
 fun AppScreen(
-    inputData: HexString,
+    inputData: DataString,
     groupDefinitions: List<ByteGroupDefinition> = emptyList(),
-    onInputDataChanged: (HexString) -> Unit,
+    onInputDataChanged: (DataString) -> Unit,
     onGroupDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
+    inputType: InputType = InputType.HEX,
+    onInputTypeChanged: (InputType) -> Unit = {},
 ) {
     val scaffoldValue = ThreePaneScaffoldValue(
         primary = PaneAdaptedValue.Expanded,
@@ -90,6 +98,8 @@ fun AppScreen(
                 onInputDataChanged = onInputDataChanged,
                 selectedByteItem = selectedByteItem,
                 onByteItemSelected = { selectedByteItem = it },
+                inputType = inputType,
+                onInputTypeChanged = onInputTypeChanged,
                 modifier = Modifier
                     .safeContentPadding()
                     .padding(16.dp)
@@ -122,12 +132,14 @@ fun AppScreen(
 
 @Composable
 private fun ThreePaneScaffoldPaneScope.MainPane(
-    inputData: HexString,
-    onInputDataChanged: (HexString) -> Unit,
+    inputData: DataString,
+    onInputDataChanged: (DataString) -> Unit,
     modifier: Modifier = Modifier,
     byteItems: List<ByteItem> = inputData.toByteItems(),
     selectedByteItem: ByteItem? = null,
     onByteItemSelected: (ByteItem?) -> Unit = {},
+    inputType: InputType = InputType.HEX,
+    onInputTypeChanged: (InputType) -> Unit = {},
 ) {
     AnimatedPane(modifier) {
         Column(
@@ -135,16 +147,43 @@ private fun ThreePaneScaffoldPaneScope.MainPane(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Hex Input",
+                text = "Data Input",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            HexInput(
-                value = inputData,
-                onValueChange = { onInputDataChanged(it) },
-                modifier = Modifier.heightIn(max = 120.dp)
-            )
+            // Input type selection
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(bottom = 16.dp)
+            ) {
+                Text("Input Type:")
+                RadioButton(
+                    selected = inputType == InputType.HEX,
+                    onClick = { onInputTypeChanged(InputType.HEX) }
+                )
+                Text("Hex")
+                RadioButton(
+                    selected = inputType == InputType.BINARY,
+                    onClick = { onInputTypeChanged(InputType.BINARY) }
+                )
+                Text("Binary")
+            }
+
+            // Render the appropriate input component based on the selected input type
+            when (inputType) {
+                InputType.HEX -> HexInput(
+                    value = inputData,
+                    onValueChange = { onInputDataChanged(it) },
+                    modifier = Modifier.heightIn(max = 120.dp)
+                )
+                InputType.BINARY -> BinaryInput(
+                    value = inputData,
+                    onValueChange = { onInputDataChanged(it) },
+                    modifier = Modifier.heightIn(max = 120.dp)
+                )
+            }
 
             Spacer(Modifier.height(16.dp))
 
@@ -162,7 +201,7 @@ private fun ThreePaneScaffoldPaneScope.MainPane(
 
 @Composable
 private fun ThreePaneScaffoldPaneScope.SupportingPane(
-    inputData: HexString,
+    inputData: DataString,
     definitions: List<ByteGroupDefinition>,
     onDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit,
@@ -233,10 +272,26 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
 @Composable
 private fun AppScreenPreview() {
     WrapForPreview {
-        AppScreen(
-            HexString(rawHexString = "33DAADDAAD"),
-            onInputDataChanged = {},
-            onGroupDefinitionsChanged = {}
-        )
+        Column {
+            // Preview with Hex input
+            Text("Hex Input Preview", style = MaterialTheme.typography.titleLarge)
+            AppScreen(
+                HexString(rawHexString = "33DAADDAAD"),
+                onInputDataChanged = {},
+                onGroupDefinitionsChanged = {},
+                inputType = InputType.HEX
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            // Preview with Binary input
+            Text("Binary Input Preview", style = MaterialTheme.typography.titleLarge)
+            AppScreen(
+                HexString(rawHexString = "33DAADDAAD"),
+                onInputDataChanged = {},
+                onGroupDefinitionsChanged = {},
+                inputType = InputType.BINARY
+            )
+        }
     }
 }

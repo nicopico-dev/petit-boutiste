@@ -11,11 +11,12 @@ value class TabId(val value: String) {
 }
 
 /**
- * Represents the data for a single tab, including its input data and group definitions
+ * Represents the data for a single tab, including its input data, input type, and group definitions
  */
 data class TabData(
     val id: TabId = TabId.create(),
     val name: String = "Untitled",
-    val inputData: HexString = HexString(""),
+    val inputData: DataString = HexString(""),
+    val inputType: InputType = InputType.HEX,
     val groupDefinitions: List<ByteGroupDefinition> = emptyList()
 )
