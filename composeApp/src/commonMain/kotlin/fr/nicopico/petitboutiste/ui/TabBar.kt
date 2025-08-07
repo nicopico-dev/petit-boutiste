@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -50,7 +51,9 @@ fun TabBar(
 
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shadowElevation = 4.dp
+        shadowElevation = 4.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -60,12 +63,16 @@ fun TabBar(
             TabRow(
                 selectedTabIndex = tabs.indexOfFirst { it.id == selectedTabId }.takeIf { it >= 0 } ?: 0,
                 modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
             ) {
                 tabs.forEach { tab ->
                     Tab(
                         selected = tab.id == selectedTabId,
                         onClick = { onTabSelected(tab.id) },
                         modifier = Modifier.height(48.dp),
+                        selectedContentColor = MaterialTheme.colorScheme.primary,
+                        unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         text = {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,

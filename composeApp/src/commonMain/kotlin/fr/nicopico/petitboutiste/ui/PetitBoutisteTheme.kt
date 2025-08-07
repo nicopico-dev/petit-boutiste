@@ -7,7 +7,9 @@ import androidx.compose.ui.graphics.Color
 
 private val PetitBoutisteColorScheme = lightColorScheme(
     primary = Color(0xFF1F3D91),
-    primaryContainer = Color(0xFFDEE4F8)
+    primaryContainer = Color(0xFFDEE4F8),
+    surfaceVariant = Color(0xFFE2F4FB),
+    onSurfaceVariant = Color(0xFF1C1B1F)
 )
 
 @Composable
