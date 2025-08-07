@@ -88,7 +88,7 @@ fun HexDisplay(
                                 .clickable { onByteItemClicked(item) }
                                 .let {
                                     if (item is ByteItem.Group) {
-                                        it.border(1.dp, Color.Blue)
+                                        it.border(1.dp, MaterialTheme.colorScheme.primary)
                                     } else it
                                 }
                                 .let {
@@ -123,7 +123,7 @@ fun HexDisplay(
                                 style = TextStyle(
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 8.sp,
-                                    color = Color.Blue
+                                    color = MaterialTheme.colorScheme.primary
                                 ),
                                 softWrap = false,
                                 maxLines = 1,

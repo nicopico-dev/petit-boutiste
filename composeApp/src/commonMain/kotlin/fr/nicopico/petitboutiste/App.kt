@@ -2,7 +2,7 @@ package fr.nicopico.petitboutiste
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import fr.nicopico.petitboutiste.ui.PetitBoutisteTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +33,7 @@ fun App() {
     val selectedTabIndex = tabs.indexOfFirst { it.id == selectedTabId }.takeIf { it >= 0 } ?: 0
     val selectedTab = tabs.getOrNull(selectedTabIndex) ?: tabs.first()
 
-    MaterialTheme {
+    PetitBoutisteTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             // Tab bar for switching between tabs
             TabBar(
