@@ -99,6 +99,7 @@ fun AppScreen(
         },
         supportingPane = {
             SupportingPane(
+                inputData = inputData,
                 definitions = groupDefinitions,
                 onDefinitionsChanged = onGroupDefinitionsChanged,
                 onDefinitionSelected = { definition ->
@@ -161,6 +162,7 @@ private fun ThreePaneScaffoldPaneScope.MainPane(
 
 @Composable
 private fun ThreePaneScaffoldPaneScope.SupportingPane(
+    inputData: HexString,
     definitions: List<ByteGroupDefinition>,
     onDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit,
@@ -190,14 +192,26 @@ private fun ThreePaneScaffoldPaneScope.SupportingPane(
                 modifier = Modifier.weight(1f)
             )
 
-            if (selectedByteItem != null) {
+            // If a byte item is selected, show its content
+            // Otherwise, show the representation of the whole payload
+            val byteItemToDisplay = selectedByteItem
+                ?: if (inputData.isNotEmpty()) {
+                    // Create a group representing the entire payload
+                    ByteItem.Group(
+                        index = 0,
+                        bytes = inputData.hexString,
+                        name = "Whole Payload"
+                    )
+                } else null
+
+            if (byteItemToDisplay != null) {
                 HorizontalDivider(
                     thickness = 2.dp,
                     modifier = Modifier.padding(vertical = 4.dp),
                 )
 
                 ByteItemContent(
-                    byteItem = selectedByteItem,
+                    byteItem = byteItemToDisplay,
                     selectedRepresentation = (selectedByteItem as? ByteItem.Group)?.definition?.representation,
                     onRepresentationSelected = { newRepresentation ->
                         val group = selectedByteItem as? ByteItem.Group ?: return@ByteItemContent

@@ -35,14 +35,21 @@ sealed class ByteItem {
             index: Int,
             bytes: String,
             name: String? = null,
-        ) : this(bytes.windowed(2, 2), ByteGroupDefinition(index..(index + bytes.length - 1), name))
+        ) : this(
+            bytes = bytes.windowed(2, 2),
+            definition = ByteGroupDefinition(
+                indexes = index..<(index + (bytes.length / 2)),
+                name = name,
+            ),
+        )
 
         init {
             require(bytes.isNotEmpty()) {
                 "bytes must not be empty"
             }
-            require(bytes.size == ((definition.indexes.last + 1) - definition.indexes.first)) {
-                "bytes length must match the indexes of the definition"
+            val definitionSize = with(definition.indexes) { last - first + 1 }
+            require(bytes.size == definitionSize) {
+                "bytes length must match the size expected by the definition"
             }
             require(bytes.all { it.length == 2 }) {
                 "Each bytes must have a length of 2"
