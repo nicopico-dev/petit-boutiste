@@ -99,7 +99,7 @@ fun BinaryInput(
             ) {
                 if (input.isEmpty()) {
                     Text(
-                        text = "Paste binary string here (e.g., 01001000 01100101 01101100 01101100 01101111)",
+                        text = "Paste binary string here (e.g., 01001000 )",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center

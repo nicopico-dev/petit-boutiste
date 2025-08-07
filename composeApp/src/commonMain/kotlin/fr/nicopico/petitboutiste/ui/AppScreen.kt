@@ -3,18 +3,17 @@
 package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -44,6 +43,7 @@ import fr.nicopico.petitboutiste.ui.components.ByteItemContent
 import fr.nicopico.petitboutiste.ui.components.DragHandle
 import fr.nicopico.petitboutiste.ui.components.HexDisplay
 import fr.nicopico.petitboutiste.ui.components.HexInput
+import fr.nicopico.petitboutiste.ui.components.InputTypeToggle
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.template.TemplateManagement
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
@@ -146,42 +146,34 @@ private fun ThreePaneScaffoldPaneScope.MainPane(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = "Data Input",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            Box(Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Data Input",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp).align(Alignment.Center)
+                )
 
-            // Input type selection
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(bottom = 16.dp)
-            ) {
-                Text("Input Type:")
-                RadioButton(
-                    selected = inputType == InputType.HEX,
-                    onClick = { onInputTypeChanged(InputType.HEX) }
+                InputTypeToggle(
+                    inputType,
+                    onInputTypeChanged,
+                    Modifier.align(Alignment.CenterEnd)
                 )
-                Text("Hex")
-                RadioButton(
-                    selected = inputType == InputType.BINARY,
-                    onClick = { onInputTypeChanged(InputType.BINARY) }
-                )
-                Text("Binary")
             }
 
+            Spacer(Modifier.height(16.dp))
+
             // Render the appropriate input component based on the selected input type
+            val inputModifier = Modifier.heightIn(max = 120.dp)
             when (inputType) {
                 InputType.HEX -> HexInput(
                     value = inputData,
                     onValueChange = { onInputDataChanged(it) },
-                    modifier = Modifier.heightIn(max = 120.dp)
+                    modifier = inputModifier
                 )
                 InputType.BINARY -> BinaryInput(
                     value = inputData,
                     onValueChange = { onInputDataChanged(it) },
-                    modifier = Modifier.heightIn(max = 120.dp)
+                    modifier = inputModifier
                 )
             }
 
