@@ -2,6 +2,8 @@
 
 Petit Boutiste is a desktop application for analyzing and interpreting hexadecimal data. It provides a user-friendly interface for working with binary data formats, allowing you to define and visualize byte groups with different representations.
 
+![screenshot.png](screenshot.png)
+
 ## Features
 
 - Input and display hexadecimal data
