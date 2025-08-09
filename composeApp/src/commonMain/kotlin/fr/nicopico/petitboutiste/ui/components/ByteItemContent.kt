@@ -26,6 +26,8 @@ import fr.nicopico.petitboutiste.models.Endianness
 import fr.nicopico.petitboutiste.models.RepresentationFormat
 import fr.nicopico.petitboutiste.models.extensions.getRepresentation
 import fr.nicopico.petitboutiste.models.extensions.name
+import fr.nicopico.petitboutiste.models.extensions.toByteArray
+import fr.nicopico.petitboutiste.models.representation.decodeProtobufPayload
 import fr.nicopico.petitboutiste.ui.components.foundation.CollapsableStateless
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
@@ -54,6 +56,7 @@ fun ByteItemContent(
             RepresentationFormat.Integer(endianness),
             RepresentationFormat.Text(endianness),
             RepresentationFormat.Binary,
+            RepresentationFormat.Custom,
         )
     }
 
@@ -63,6 +66,7 @@ fun ByteItemContent(
             "Integer" to (byteItem.getRepresentation(RepresentationFormat.Integer(endianness)) ?: "[ERROR]"),
             "Text" to (byteItem.getRepresentation(RepresentationFormat.Text(endianness)) ?: "[ERROR]"),
             "Binary" to (byteItem.getRepresentation(RepresentationFormat.Binary) ?: "[ERROR]"),
+            "Protobuf" to (byteItem.getProtobufRepresentation() ?: "[ERROR]"),
         )
     }
 
@@ -119,6 +123,24 @@ fun ByteItemContent(
             }
         }
     }
+}
+
+// TODO Experiment with protobuf representation
+private fun ByteItem.getProtobufRepresentation(): String? {
+    val byteArray = this.toByteArray()
+    val result = runCatching {
+        decodeProtobufPayload(
+            payload = byteArray,
+            protoFilePath = "/Users/nicopico/Downloads/DeviceInfoPush.desc",
+            messageType = "DeviceInfoPush",
+        )
+    }
+    return result
+        .onFailure { error ->
+            println("Protobuf representation failed for ${byteArray.toHexString()}")
+            error.printStackTrace()
+        }
+        .getOrNull()
 }
 
 @Preview

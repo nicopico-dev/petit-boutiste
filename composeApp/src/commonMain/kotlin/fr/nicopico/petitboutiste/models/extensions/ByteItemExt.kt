@@ -56,5 +56,7 @@ fun ByteItem.getRepresentation(format: RepresentationFormat): String? {
             }
             String(byteArray, format.charset)
         }
+
+        else -> null
     }
 }

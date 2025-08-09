@@ -23,4 +23,7 @@ sealed class RepresentationFormat {
         @Contextual
         val charset: Charset = Charsets.UTF_8,
     ) : RepresentationFormat()
+
+    @Serializable
+    data object Custom : RepresentationFormat()
 }
