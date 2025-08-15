@@ -54,6 +54,12 @@ To run a specific test:
 ./gradlew test --tests "fr.nicopico.petitboutiste.models.HexStringTest"
 ```
 
+Another example:
+
+```bash
+./gradlew test --tests "fr.nicopico.petitboutiste.models.RepresentationTest"
+```
+
 ### Writing Tests
 
 Tests use the Kotlin Test library. Here's an example of a test class:
@@ -90,7 +96,9 @@ Follow the Given-When-Then pattern for clear test structure:
   - `src/commonMain/`: Cross-platform code
     - `kotlin/fr/nicopico/petitboutiste/`: Main package
       - `models/`: Data models
+        - `representation/`: DataRenderer, arguments, decoders (binary, hex, integer, text, protobuf)
       - `ui/`: UI components and screens
+        - `components/representation/`: Renderer UI (ArgumentInput, RendererForm, ByteItemRender)
   - `src/desktopMain/`: Desktop-specific code
 
 ### Key Components
@@ -102,12 +110,22 @@ Follow the Given-When-Then pattern for clear test structure:
   - `ByteItem.Single`: Represents a single byte (two hex characters)
   - `ByteItem.Group`: Represents a named group of bytes
 
+#### Representations
+
+- `DataRenderer`: Enum that converts a byte array into human-readable forms (Binary, Hexadecimal, Integer, Text, Protobuf)
+  - Supports renderer-specific arguments (e.g., Endianness, Charset)
+  - `Protobuf` renderer may require user validation before rendering
+- Decoders: `decodeBinary`, `decodeHexadecimal`, `decodeInteger`, `decodeText`, `decodeProtobuf`
+
 #### UI Components
 
 The UI is built with Compose Multiplatform and includes components for displaying and inputting hexadecimal data:
 
 - `HexDisplay`: Displays hexadecimal data
 - `HexInput`: Allows input of hexadecimal data
+- `ByteItemRender`: Renders a list of ByteItem elements (single bytes and groups)
+- `ArgumentInput`: Inputs for renderer arguments (e.g., endianness, charset)
+- `RendererForm`: Form to select a DataRenderer and configure its arguments
 
 ### Code Style
 
