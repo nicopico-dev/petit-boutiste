@@ -1,5 +1,7 @@
 package fr.nicopico.petitboutiste.models
 
+import fr.nicopico.petitboutiste.models.input.BinaryString
+import fr.nicopico.petitboutiste.models.input.HexString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

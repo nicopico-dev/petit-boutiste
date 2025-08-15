@@ -1,7 +1,7 @@
-package fr.nicopico.petitboutiste.models.renderer.arguments
+package fr.nicopico.petitboutiste.models.representation.arguments
 
-import fr.nicopico.petitboutiste.models.Endianness
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Endianness
 
 private val DEFAULT: Endianness = Endianness.BigEndian
 

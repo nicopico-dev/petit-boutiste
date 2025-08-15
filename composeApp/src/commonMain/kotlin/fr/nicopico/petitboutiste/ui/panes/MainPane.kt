@@ -18,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.DataString
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.ui.components.BinaryInput
 import fr.nicopico.petitboutiste.ui.components.HexDisplay

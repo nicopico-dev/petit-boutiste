@@ -1,7 +1,7 @@
 package fr.nicopico.petitboutiste.ui.infra.preview
 
-import fr.nicopico.petitboutiste.models.DataString
-import fr.nicopico.petitboutiste.models.HexString
+import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.input.HexString
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 class HexStringParameterProvider(

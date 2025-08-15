@@ -1,9 +1,9 @@
-package fr.nicopico.petitboutiste.models
+package fr.nicopico.petitboutiste.models.representation
 
+import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteArray
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentValues
-import fr.nicopico.petitboutiste.models.renderer.arguments.emptyArgumentValues
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.utils.json.RepresentationSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable

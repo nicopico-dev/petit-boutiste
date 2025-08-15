@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.Representation
-import fr.nicopico.petitboutiste.models.render
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.ui.components.foundation.Dropdown
 
 @Composable

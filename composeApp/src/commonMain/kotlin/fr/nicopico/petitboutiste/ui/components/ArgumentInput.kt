@@ -10,9 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgValue
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentType
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
 import fr.nicopico.petitboutiste.ui.components.foundation.Dropdown
 
 @Composable

@@ -2,9 +2,9 @@ package fr.nicopico.petitboutiste.ui.infra.savers
 
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
-import fr.nicopico.petitboutiste.models.HexString
-import fr.nicopico.petitboutiste.models.TabData
-import fr.nicopico.petitboutiste.models.TabId
+import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.ui.TabData
+import fr.nicopico.petitboutiste.models.ui.TabId
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 

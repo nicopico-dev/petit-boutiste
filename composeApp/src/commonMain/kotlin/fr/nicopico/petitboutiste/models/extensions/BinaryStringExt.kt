@@ -1,7 +1,7 @@
 package fr.nicopico.petitboutiste.models.extensions
 
-import fr.nicopico.petitboutiste.models.BinaryString
-import fr.nicopico.petitboutiste.models.HexString
+import fr.nicopico.petitboutiste.models.input.BinaryString
+import fr.nicopico.petitboutiste.models.input.HexString
 
 /**
  * Convert HexString to BinaryString

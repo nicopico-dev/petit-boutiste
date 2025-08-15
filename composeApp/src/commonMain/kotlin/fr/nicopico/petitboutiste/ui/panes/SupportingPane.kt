@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.DataString
-import fr.nicopico.petitboutiste.models.Representation
 import fr.nicopico.petitboutiste.models.extensions.name
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
+import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.ui.components.ByteItemRender
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.CollapsableStateless

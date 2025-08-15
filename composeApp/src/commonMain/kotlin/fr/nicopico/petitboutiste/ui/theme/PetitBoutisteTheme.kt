@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui
+package fr.nicopico.petitboutiste.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
@@ -19,4 +19,3 @@ fun PetitBoutisteTheme(content: @Composable () -> Unit) {
         content = content
     )
 }
-

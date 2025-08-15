@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.render
+import fr.nicopico.petitboutiste.models.representation.render
 
 @Composable
 fun ByteGroupDefinitionItem(

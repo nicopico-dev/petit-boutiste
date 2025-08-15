@@ -11,9 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentValues
-import fr.nicopico.petitboutiste.models.renderer.arguments.emptyArgumentValues
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @Composable

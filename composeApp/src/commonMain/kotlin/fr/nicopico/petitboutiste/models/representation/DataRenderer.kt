@@ -1,17 +1,17 @@
-package fr.nicopico.petitboutiste.models.renderer
+package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgKey
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgValue
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentType
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentValues
-import fr.nicopico.petitboutiste.models.renderer.arguments.CharsetArgument
-import fr.nicopico.petitboutiste.models.renderer.arguments.EndiannessArgument
-import fr.nicopico.petitboutiste.models.renderer.impl.PROTOBUF_ARGUMENTS
-import fr.nicopico.petitboutiste.models.renderer.impl.decodeBinary
-import fr.nicopico.petitboutiste.models.renderer.impl.decodeHexadecimal
-import fr.nicopico.petitboutiste.models.renderer.impl.decodeInteger
-import fr.nicopico.petitboutiste.models.renderer.impl.decodeProtobuf
-import fr.nicopico.petitboutiste.models.renderer.impl.decodeText
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgKey
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.models.representation.arguments.CharsetArgument
+import fr.nicopico.petitboutiste.models.representation.arguments.EndiannessArgument
+import fr.nicopico.petitboutiste.models.representation.decoder.PROTOBUF_ARGUMENTS
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeBinary
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeHexadecimal
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeInteger
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeProtobuf
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeText
 
 enum class DataRenderer(
     val arguments: List<Argument> = emptyList(),

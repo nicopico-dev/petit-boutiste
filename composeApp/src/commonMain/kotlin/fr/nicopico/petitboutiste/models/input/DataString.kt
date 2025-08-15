@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.models
+package fr.nicopico.petitboutiste.models.input
 
 /**
  * Interface representing a data string.
@@ -7,7 +7,7 @@ package fr.nicopico.petitboutiste.models
  */
 interface DataString {
     /**
-     * The normalized string representation of the data.
+     * The normalized hexadecimal representation of the data.
      */
     val hexString: String
 

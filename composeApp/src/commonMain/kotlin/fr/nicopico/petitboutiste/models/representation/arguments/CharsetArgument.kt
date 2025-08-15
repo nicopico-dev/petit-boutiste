@@ -1,6 +1,6 @@
-package fr.nicopico.petitboutiste.models.renderer.arguments
+package fr.nicopico.petitboutiste.models.representation.arguments
 
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import java.nio.charset.Charset
 
 private val DEFAULT: Charset = Charsets.UTF_8

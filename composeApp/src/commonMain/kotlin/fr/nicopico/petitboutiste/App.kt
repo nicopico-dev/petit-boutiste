@@ -2,18 +2,18 @@ package fr.nicopico.petitboutiste
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import fr.nicopico.petitboutiste.ui.PetitBoutisteTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import fr.nicopico.petitboutiste.models.TabData
+import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.ui.AppScreen
 import fr.nicopico.petitboutiste.ui.TabBar
 import fr.nicopico.petitboutiste.ui.infra.savers.TabIdSaver
 import fr.nicopico.petitboutiste.ui.infra.savers.TabsSaver
+import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

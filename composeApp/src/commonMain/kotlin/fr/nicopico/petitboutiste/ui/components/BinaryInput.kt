@@ -22,10 +22,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.nicopico.petitboutiste.models.BinaryString
-import fr.nicopico.petitboutiste.models.DataString
-import fr.nicopico.petitboutiste.models.HexString
 import fr.nicopico.petitboutiste.models.extensions.formatForDisplay
+import fr.nicopico.petitboutiste.models.input.BinaryString
+import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @Composable

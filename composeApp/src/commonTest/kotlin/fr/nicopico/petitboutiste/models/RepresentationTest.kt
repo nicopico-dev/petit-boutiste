@@ -1,6 +1,8 @@
 package fr.nicopico.petitboutiste.models
 
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.render
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

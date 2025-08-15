@@ -1,7 +1,7 @@
 package fr.nicopico.petitboutiste.ui.infra.preview
 
-import fr.nicopico.petitboutiste.ui.PetitBoutisteTheme
 import androidx.compose.runtime.Composable
+import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
 
 @Composable
 fun WrapForPreview(

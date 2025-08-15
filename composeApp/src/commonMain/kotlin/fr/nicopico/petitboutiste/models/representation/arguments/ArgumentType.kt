@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.models.renderer.arguments
+package fr.nicopico.petitboutiste.models.representation.arguments
 
 import java.io.File
 import kotlin.reflect.KClass

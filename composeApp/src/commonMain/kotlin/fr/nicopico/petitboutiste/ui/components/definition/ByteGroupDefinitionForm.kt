@@ -30,7 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.DEFAULT_REPRESENTATION
+import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,14 +1,14 @@
-package fr.nicopico.petitboutiste.models.renderer.impl
+package fr.nicopico.petitboutiste.models.representation.decoder
 
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
 import com.google.protobuf.DynamicMessage
 import com.google.protobuf.util.JsonFormat
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer.Argument
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentType.FileType
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentType.StringType
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.StringType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import java.io.File
 
 private const val ARG_PROTO_FILE_KEY = "protoFile"

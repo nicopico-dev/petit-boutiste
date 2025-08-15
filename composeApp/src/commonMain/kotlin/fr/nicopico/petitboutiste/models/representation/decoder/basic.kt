@@ -1,10 +1,10 @@
-package fr.nicopico.petitboutiste.models.renderer.impl
+package fr.nicopico.petitboutiste.models.representation.decoder
 
-import fr.nicopico.petitboutiste.models.Endianness
-import fr.nicopico.petitboutiste.models.renderer.DataRenderer
-import fr.nicopico.petitboutiste.models.renderer.arguments.ArgumentValues
-import fr.nicopico.petitboutiste.models.renderer.arguments.getCharset
-import fr.nicopico.petitboutiste.models.renderer.arguments.getEndianness
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Endianness
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.models.representation.arguments.getCharset
+import fr.nicopico.petitboutiste.models.representation.arguments.getEndianness
 import java.math.BigInteger
 
 fun DataRenderer.decodeBinary(byteArray: ByteArray): String {

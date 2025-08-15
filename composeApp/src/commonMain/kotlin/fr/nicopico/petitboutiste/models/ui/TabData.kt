@@ -1,6 +1,9 @@
-package fr.nicopico.petitboutiste.models
+package fr.nicopico.petitboutiste.models.ui
 
-import fr.nicopico.petitboutiste.models.ui.InputType
+import fr.nicopico.petitboutiste.models.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.input.HexString
+import java.util.UUID
 
 /**
  * Represents a unique identifier for a tab
@@ -8,7 +11,7 @@ import fr.nicopico.petitboutiste.models.ui.InputType
 @JvmInline
 value class TabId(val value: String) {
     companion object {
-        fun create(): TabId = TabId(java.util.UUID.randomUUID().toString())
+        fun create(): TabId = TabId(UUID.randomUUID().toString())
     }
 }
 

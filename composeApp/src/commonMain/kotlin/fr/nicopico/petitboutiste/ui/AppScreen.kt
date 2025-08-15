@@ -24,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.DataString
-import fr.nicopico.petitboutiste.models.HexString
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.ui.components.DragHandle
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview

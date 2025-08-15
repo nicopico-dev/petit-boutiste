@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.models
+package fr.nicopico.petitboutiste.models.input
 
 class BinaryString(
     rawBinaryString: String

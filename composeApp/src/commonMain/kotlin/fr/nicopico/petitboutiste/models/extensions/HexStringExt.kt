@@ -2,7 +2,7 @@ package fr.nicopico.petitboutiste.models.extensions
 
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.DataString
+import fr.nicopico.petitboutiste.models.input.DataString
 
 fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList()
