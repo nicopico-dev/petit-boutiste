@@ -25,7 +25,7 @@ class BinaryRepresentationTest {
         )
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         // the result is formatted with bytes grouped, and each byte split into two 4-bit groups
@@ -40,7 +40,7 @@ class BinaryRepresentationTest {
         val byteItem = ByteItem.Single(0, "FF")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         // the result is formatted with the byte split into two 4-bit groups
@@ -55,7 +55,7 @@ class BinaryRepresentationTest {
         val byteItem = ByteItem.Single(0, "00")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         // the result is formatted with leading zeros

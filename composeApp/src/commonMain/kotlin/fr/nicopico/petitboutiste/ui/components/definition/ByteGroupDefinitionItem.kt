@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.isOff
-import fr.nicopico.petitboutiste.models.representation.render
+import fr.nicopico.petitboutiste.models.representation.renderAsString
 
 @Composable
 fun ByteGroupDefinitionItem(
@@ -42,7 +42,7 @@ fun ByteGroupDefinitionItem(
             }
 
             val valueText = if (byteGroup != null && !definition.representation.isOff) {
-                val representation = definition.representation.render(byteGroup)
+                val representation = definition.representation.renderAsString(byteGroup)
                 if (representation != null) {
                     "\nValue: $representation"
                 } else {

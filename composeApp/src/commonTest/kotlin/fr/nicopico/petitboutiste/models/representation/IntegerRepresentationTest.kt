@@ -20,7 +20,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "00")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("0", output)
@@ -32,7 +32,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "09")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("9", output)
@@ -44,7 +44,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "0A")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("10", output)
@@ -56,7 +56,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "10")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("16", output)
@@ -68,7 +68,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "1A")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("26", output)
@@ -80,7 +80,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "7F")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("127", output)
@@ -92,7 +92,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "80")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("-128", output)
@@ -104,7 +104,7 @@ class IntegerRepresentationTest {
         val byteItem = ByteItem.Single(0, "FF")
 
         // WHEN
-        val output = representation.render(byteItem)
+        val output = representation.renderAsString(byteItem)
 
         // THEN
         assertEquals("-1", output)

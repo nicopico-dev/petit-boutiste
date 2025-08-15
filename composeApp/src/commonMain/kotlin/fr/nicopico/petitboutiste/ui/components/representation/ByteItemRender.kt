@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.render
@@ -49,7 +51,7 @@ fun ByteItemRender(
             var dirty by remember(representation.dataRenderer) {
                 mutableStateOf(representation.dataRenderer.requireUserValidation)
             }
-            val rendererOutput: String? by remember(representation, byteItem) {
+            val rendererOutput by remember(representation, byteItem) {
                 derivedStateOf { representation.render(byteItem) }
             }
 
@@ -78,16 +80,22 @@ fun ByteItemRender(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (!dirty) {
-                    rendererOutput?.let { output ->
-                        OutlinedTextField(
-                            value = output,
-                            onValueChange = {},
-                            readOnly = true,
-                            modifier = Modifier
-                                .heightIn(max = 300.dp)
-                                .fillMaxWidth()
-                        )
-                    } ?: Text("[ERROR]")
+                    when (val output = rendererOutput) {
+                        is RenderResult.Success -> {
+                            OutlinedTextField(
+                                value = output.data,
+                                onValueChange = {},
+                                readOnly = true,
+                                modifier = Modifier
+                                    .heightIn(max = 300.dp)
+                                    .fillMaxWidth()
+                            )
+                        }
+                        is RenderResult.Error -> {
+                            Text("[ERROR] ${output.message}", color = MaterialTheme.colors.error)
+                        }
+                        is RenderResult.None -> Unit
+                    }
                 }
             }
         }

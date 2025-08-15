@@ -20,12 +20,17 @@ data class Representation(
 val Representation.isOff: Boolean
     get() = dataRenderer == DataRenderer.Off
 
-fun Representation.render(byteItem: ByteItem): String? {
+
+fun Representation.render(byteItem: ByteItem): RenderResult {
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
+            ?.let { render -> RenderResult.Success(render) }
+            ?: RenderResult.None
     } catch (e: Exception) {
-        // TODO Display the rendering error on the UI
-        println("Render error: ${e.message}")
-        null
+        RenderResult.Error(e.toString())
     }
+}
+
+fun Representation.renderAsString(byteItem: ByteItem): String? {
+    return render(byteItem).asString()
 }
