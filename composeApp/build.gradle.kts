@@ -10,6 +10,8 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
+version = "1.2.1"
+
 kotlin {
     jvm("desktop")
 
@@ -58,11 +60,16 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Petit Boutiste"
-            packageVersion = "1.2.1"
+            packageVersion = version.toString()
+            vendor = "Nicolas PICON"
+
+            // TODO Add license
+            // licenseFile = rootProject.file("LICENSE")
 
             macOS {
                 setDockNameSameAsPackageName
                 iconFile.set(project.file("src/desktopMain/resources/icons/app-icon.icns"))
+                bundleID = "fr.nicopico.petitboutiste"
             }
         }
     }
