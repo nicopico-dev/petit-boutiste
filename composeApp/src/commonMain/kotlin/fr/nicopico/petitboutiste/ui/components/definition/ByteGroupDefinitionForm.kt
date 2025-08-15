@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,9 +86,9 @@ fun ByteGroupDefinitionForm(
 
     val saveDefinition: () -> Unit = {
         val definitionToSave = ByteGroupDefinition(
-            startIndexInput.toInt()..endIndexInput.toInt(),
-            name.ifBlank { null },
-            definition?.representation,
+            indexes = startIndexInput.toInt()..endIndexInput.toInt(),
+            name = name.ifBlank { null },
+            representation = definition?.representation ?: DEFAULT_REPRESENTATION,
         )
         onDefinitionSaved(definitionToSave)
 

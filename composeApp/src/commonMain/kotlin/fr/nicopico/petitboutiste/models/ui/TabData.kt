@@ -1,5 +1,7 @@
 package fr.nicopico.petitboutiste.models
 
+import fr.nicopico.petitboutiste.models.ui.InputType
+
 /**
  * Represents a unique identifier for a tab
  */

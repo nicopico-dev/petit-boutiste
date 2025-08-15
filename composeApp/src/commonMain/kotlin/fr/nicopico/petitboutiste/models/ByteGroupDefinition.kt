@@ -8,5 +8,5 @@ data class ByteGroupDefinition(
     @Serializable(with = IntRangeSerializer::class)
     val indexes: IntRange,
     val name: String? = null,
-    val representation: RepresentationFormat? = null,
+    val representation: Representation = DEFAULT_REPRESENTATION,
 )

@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.nicopico.petitboutiste.models.InputType
+import fr.nicopico.petitboutiste.models.ui.InputType
 
 @Composable
 fun InputTypeToggle(
