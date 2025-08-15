@@ -19,9 +19,9 @@ import fr.nicopico.petitboutiste.models.extensions.name
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
-import fr.nicopico.petitboutiste.ui.components.ByteItemRender
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.CollapsableStateless
+import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.ui.components.template.TemplateManagement
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)

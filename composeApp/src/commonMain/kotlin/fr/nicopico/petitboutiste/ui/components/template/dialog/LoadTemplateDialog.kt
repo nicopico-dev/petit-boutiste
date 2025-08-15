@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.components.template
+package fr.nicopico.petitboutiste.ui.components.template.dialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

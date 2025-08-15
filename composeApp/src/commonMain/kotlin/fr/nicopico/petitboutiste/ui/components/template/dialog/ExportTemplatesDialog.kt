@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.components.template
+package fr.nicopico.petitboutiste.ui.components.template.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

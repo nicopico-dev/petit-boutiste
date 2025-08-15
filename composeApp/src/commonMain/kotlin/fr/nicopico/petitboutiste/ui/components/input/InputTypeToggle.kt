@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.components
+package fr.nicopico.petitboutiste.ui.components.input
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

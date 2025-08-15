@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.components.template
+package fr.nicopico.petitboutiste.ui.components.template.dialog
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

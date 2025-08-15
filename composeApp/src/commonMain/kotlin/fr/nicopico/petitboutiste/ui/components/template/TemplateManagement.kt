@@ -23,6 +23,11 @@ import fr.nicopico.petitboutiste.models.Template
 import fr.nicopico.petitboutiste.repository.TemplateRepository
 import fr.nicopico.petitboutiste.ui.components.foundation.Collapsable
 import fr.nicopico.petitboutiste.ui.components.foundation.IconButtonWithLabel
+import fr.nicopico.petitboutiste.ui.components.template.dialog.ClearDefinitionsDialog
+import fr.nicopico.petitboutiste.ui.components.template.dialog.ExportTemplatesDialog
+import fr.nicopico.petitboutiste.ui.components.template.dialog.ImportTemplatesDialog
+import fr.nicopico.petitboutiste.ui.components.template.dialog.LoadTemplateDialog
+import fr.nicopico.petitboutiste.ui.components.template.dialog.SaveTemplateDialog
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)

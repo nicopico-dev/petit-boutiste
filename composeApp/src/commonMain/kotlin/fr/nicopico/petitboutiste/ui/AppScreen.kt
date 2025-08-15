@@ -28,7 +28,7 @@ import fr.nicopico.petitboutiste.models.extensions.toByteItems
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.InputType
-import fr.nicopico.petitboutiste.ui.components.DragHandle
+import fr.nicopico.petitboutiste.ui.components.foundation.DragHandle
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.ui.panes.MainPane
 import fr.nicopico.petitboutiste.ui.panes.SupportingPane

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.render
 
 @Composable
@@ -40,7 +41,7 @@ fun ByteGroupDefinitionItem(
                 "$start..$endInclusive (${count()} bytes)"
             }
 
-            val valueText = if (byteGroup != null && definition.representation != null) {
+            val valueText = if (byteGroup != null && !definition.representation.isOff) {
                 val representation = definition.representation.render(byteGroup)
                 if (representation != null) {
                     "\nValue: $representation"

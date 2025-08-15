@@ -21,10 +21,10 @@ import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.ui.InputType
-import fr.nicopico.petitboutiste.ui.components.BinaryInput
 import fr.nicopico.petitboutiste.ui.components.HexDisplay
-import fr.nicopico.petitboutiste.ui.components.HexInput
-import fr.nicopico.petitboutiste.ui.components.InputTypeToggle
+import fr.nicopico.petitboutiste.ui.components.input.BinaryInput
+import fr.nicopico.petitboutiste.ui.components.input.HexInput
+import fr.nicopico.petitboutiste.ui.components.input.InputTypeToggle
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable

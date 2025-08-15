@@ -15,7 +15,7 @@ import fr.nicopico.petitboutiste.models.representation.decoder.decodeText
 
 enum class DataRenderer(
     val arguments: List<Argument> = emptyList(),
-    val showSubmitButton: Boolean = false,
+    val requireUserValidation: Boolean = false,
 ) {
     Off,
     Binary,
@@ -27,7 +27,7 @@ enum class DataRenderer(
         EndiannessArgument,
         CharsetArgument
     ),
-    Protobuf(PROTOBUF_ARGUMENTS, showSubmitButton = true),
+    Protobuf(PROTOBUF_ARGUMENTS, requireUserValidation = true),
     ;
 
     constructor(vararg arguments: Argument) : this(arguments.toList())

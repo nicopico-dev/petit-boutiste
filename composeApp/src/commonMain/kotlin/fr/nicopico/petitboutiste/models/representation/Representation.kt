@@ -17,6 +17,9 @@ data class Representation(
     val argumentValues: ArgumentValues = emptyArgumentValues(),
 )
 
+val Representation.isOff: Boolean
+    get() = dataRenderer == DataRenderer.Off
+
 fun Representation.render(byteItem: ByteItem): String? {
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)

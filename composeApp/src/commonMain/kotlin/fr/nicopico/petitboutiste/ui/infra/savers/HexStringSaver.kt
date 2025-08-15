@@ -6,11 +6,11 @@ import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
 
 object HexStringSaver : Saver<DataString, String> {
-    override fun SaverScope.save(value: DataString): String? {
+    override fun SaverScope.save(value: DataString): String {
         return value.hexString
     }
 
-    override fun restore(value: String): DataString? {
+    override fun restore(value: String): DataString {
         return HexString(value)
     }
 }

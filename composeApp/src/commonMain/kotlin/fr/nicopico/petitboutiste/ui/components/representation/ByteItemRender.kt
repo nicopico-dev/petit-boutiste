@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.components
+package fr.nicopico.petitboutiste.ui.components.representation
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.ui.components.foundation.Dropdown
 
@@ -41,9 +42,9 @@ fun ByteItemRender(
             modifier = Modifier.fillMaxWidth()
         )
 
-        if (representation.dataRenderer != DataRenderer.Off) {
+        if (!representation.isOff) {
             var dirty by remember(representation) {
-                mutableStateOf(representation.dataRenderer.showSubmitButton)
+                mutableStateOf(representation.dataRenderer.requireUserValidation)
             }
             val rendererOutput: String? by remember(representation, byteItem) {
                 derivedStateOf { representation.render(byteItem) }
@@ -60,7 +61,7 @@ fun ByteItemRender(
                 RendererForm(
                     arguments = representation.dataRenderer.arguments,
                     values = representation.argumentValues,
-                    showSubmitButton = representation.dataRenderer.showSubmitButton,
+                    showSubmitButton = representation.dataRenderer.requireUserValidation,
                     onSubmit = {
                         dirty = false
                         onRepresentationChanged(representation.copy(argumentValues = it))
