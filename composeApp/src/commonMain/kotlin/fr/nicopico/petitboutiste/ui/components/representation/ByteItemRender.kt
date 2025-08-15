@@ -39,6 +39,7 @@ fun ByteItemRender(
             onItemSelected = {
                 onRepresentationChanged(representation.copy(dataRenderer = it))
             },
+            getItemLabel = DataRenderer::label,
             modifier = Modifier.fillMaxWidth()
         )
 

@@ -25,8 +25,15 @@ fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentVal
     if (getEndianness(argumentValues) == Endianness.LittleEndian) {
         byteArray.reverse()
     }
-    // FIXME `FF` gives `-1`, should be 255
     return BigInteger(byteArray).toString(10)
+}
+
+fun DataRenderer.decodeUnsignedInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
+    require(this == DataRenderer.UnsignedInteger)
+    if (getEndianness(argumentValues) == Endianness.LittleEndian) {
+        byteArray.reverse()
+    }
+    return BigInteger(1, byteArray).toString(10)
 }
 
 fun DataRenderer.decodeText(byteArray: ByteArray, argumentValues: ArgumentValues): String {

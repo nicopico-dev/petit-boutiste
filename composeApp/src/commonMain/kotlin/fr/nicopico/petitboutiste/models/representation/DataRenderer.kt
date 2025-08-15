@@ -12,25 +12,25 @@ import fr.nicopico.petitboutiste.models.representation.decoder.decodeHexadecimal
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeInteger
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeProtobuf
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeText
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeUnsignedInteger
 
 enum class DataRenderer(
     val arguments: List<Argument> = emptyList(),
     val requireUserValidation: Boolean = false,
+    val customLabel: String? = null,
 ) {
     Off,
     Binary,
     Hexadecimal,
-    Integer(
-        EndiannessArgument
-    ),
-    Text(
-        EndiannessArgument,
-        CharsetArgument
-    ),
+    Integer(EndiannessArgument),
+    UnsignedInteger(listOf(EndiannessArgument), customLabel = "Integer (unsigned)"),
+    Text(EndiannessArgument, CharsetArgument),
     Protobuf(PROTOBUF_ARGUMENTS, requireUserValidation = true),
     ;
 
     constructor(vararg arguments: Argument) : this(arguments.toList())
+
+    val label: String get() = customLabel ?: name
 
     class Argument(
         val key: ArgKey,
@@ -45,6 +45,7 @@ enum class DataRenderer(
             Binary -> decodeBinary(byteArray)
             Hexadecimal -> decodeHexadecimal(byteArray)
             Integer -> decodeInteger(byteArray, argumentValues)
+            UnsignedInteger -> decodeUnsignedInteger(byteArray, argumentValues)
             Text -> decodeText(byteArray, argumentValues)
             Protobuf -> decodeProtobuf(byteArray, argumentValues)
         }
