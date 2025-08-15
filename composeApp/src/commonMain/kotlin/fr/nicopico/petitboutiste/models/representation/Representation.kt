@@ -1,5 +1,7 @@
 package fr.nicopico.petitboutiste.models.representation
 
+import fr.nicopico.petitboutiste.log
+import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteArray
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
@@ -22,11 +24,13 @@ val Representation.isOff: Boolean
 
 
 fun Representation.render(byteItem: ByteItem): RenderResult {
+    log("Rendering with $this...")
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
             ?.let { render -> RenderResult.Success(render) }
             ?: RenderResult.None
     } catch (e: Exception) {
+        logError("Error rendering with $this: ${e.message}")
         RenderResult.Error(e.toString())
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import fr.nicopico.petitboutiste.logError
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -47,7 +48,7 @@ fun ExportTemplatesDialog(
                             onDismissRequest()
                         } catch (e: Exception) {
                             // Handle export errors
-                            println("Error exporting templates: ${e.message}")
+                            logError("Error exporting templates: ${e.message}")
                         }
                     } else {
                         // User cancelled the dialog

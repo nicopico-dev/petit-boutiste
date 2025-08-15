@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.logError
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -68,7 +69,7 @@ fun ImportTemplatesDialog(
                             onImport(jsonData, importReplace)
                         } catch (e: Exception) {
                             // Handle import errors
-                            println("Error importing templates: ${e.message}")
+                            logError("Error importing templates: ${e.message}")
                         }
                     } else {
                         // User cancelled the dialog

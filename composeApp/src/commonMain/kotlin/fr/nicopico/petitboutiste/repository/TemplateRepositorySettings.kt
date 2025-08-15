@@ -3,6 +3,7 @@ package fr.nicopico.petitboutiste.repository
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.nullableString
+import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.Template
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -106,7 +107,7 @@ class TemplateRepositorySettings(
             }
         } catch (e: Exception) {
             // Handle JSON parsing errors
-            println("Error importing templates: ${e.message}")
+            logError("Error importing templates: ${e.message}")
         }
     }
 }
