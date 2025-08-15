@@ -6,16 +6,19 @@ import kotlin.reflect.KClass
 sealed class ArgumentType<T : Any>(
     private val type: KClass<T>
 ) {
-    abstract fun convert(value: String): T
+    abstract fun convertFrom(argValue: ArgValue): T
+    abstract fun convertTo(value: T): ArgValue
 
     fun matches(expectedType: KClass<*>): Boolean = type.java.isAssignableFrom(expectedType.java)
 
     data object FileType : ArgumentType<File>(File::class) {
-        override fun convert(value: String): File = File(value).absoluteFile
+        override fun convertFrom(argValue: String): File = File(argValue).absoluteFile
+        override fun convertTo(value: File): ArgValue = value.absolutePath
     }
 
     data object StringType : ArgumentType<String>(String::class) {
-        override fun convert(value: String): String = value
+        override fun convertFrom(argValue: String): String = argValue
+        override fun convertTo(value: String): String = value
     }
 
     data class ChoiceType<T: Any>(
@@ -24,9 +27,11 @@ sealed class ArgumentType<T : Any>(
         private val argValueConverter: (ArgValue) -> T,
         private val choiceConverter: (T) -> ArgValue,
     ) : ArgumentType<T>(type) {
-        override fun convert(value: String): T = argValueConverter(value)
+
+        override fun convertFrom(argValue: String): T = argValueConverter(argValue)
+        override fun convertTo(value: T): ArgValue = choiceConverter(value)
 
         @Suppress("UNCHECKED_CAST")
-        fun convertChoice(choice: Any): ArgValue = choiceConverter(choice as T)
+        fun convertChoice(choice: Any): ArgValue = convertTo(choice as T)
     }
 }

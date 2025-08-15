@@ -59,7 +59,7 @@ enum class DataRenderer(
         @Suppress("UNCHECKED_CAST")
         val type: ArgumentType<T> = definition.type as ArgumentType<T>
         if (type.matches(T::class)) {
-            return type.convert(value)
+            return type.convertFrom(value)
         } else error("Mismatch between argument $definition and expected type ${T::class}")
     }
 }

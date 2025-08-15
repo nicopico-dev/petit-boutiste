@@ -13,39 +13,43 @@ import androidx.compose.ui.Modifier
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.ui.components.foundation.Dropdown
+import fr.nicopico.petitboutiste.ui.components.foundation.FileSelector
 
 @Composable
 fun ArgumentInput(
     argument: DataRenderer.Argument,
     value: ArgValue?,
-    onValueChanged: (ArgValue) -> Unit,
+    onValueChanged: (ArgValue?) -> Unit,
     modifier: Modifier = Modifier.Companion,
 ) {
     Column(modifier = modifier) {
-        var textValue by remember(argument, value) {
-            mutableStateOf(value ?: argument.defaultValue ?: "")
+
+        // Must be mutable to allow editing in the TextField below
+        var argValue by remember(argument, value) {
+            mutableStateOf(value ?: argument.defaultValue)
         }
 
         when (argument.type) {
-            is ArgumentType.FileType -> {
-                // TODO Display a file selection dialog for ArgumentType.FileType
-                OutlinedTextField(
-                    value = textValue,
-                    onValueChange = { value ->
-                        textValue = value
-                        onValueChanged(value)
-                    },
+            is FileType -> {
+                FileSelector(
                     label = { Text(argument.label) },
+                    onFileSelected = { file ->
+                        onValueChanged(
+                            file?.let { FileType.convertTo(it) }
+                        )
+                    },
+                    selection = argValue?.let(FileType::convertFrom),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
             is ArgumentType.StringType -> {
                 OutlinedTextField(
-                    value = textValue,
+                    value = argValue ?: "",
                     onValueChange = { value ->
-                        textValue = value
+                        argValue = value
                         onValueChanged(value)
                     },
                     label = { Text(argument.label) },
@@ -58,7 +62,7 @@ fun ArgumentInput(
                     Dropdown(
                         label = argument.label,
                         items = choices,
-                        selection = convert(textValue),
+                        selection = argValue?.let(::convertFrom),
                         onItemSelected = { choice ->
                             onValueChanged(convertChoice(choice))
                         }

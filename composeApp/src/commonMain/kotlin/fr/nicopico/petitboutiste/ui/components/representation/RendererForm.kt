@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgKey
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
@@ -26,7 +29,9 @@ fun RendererForm(
     modifier: Modifier = Modifier,
 ) {
     val argumentValues = remember(arguments, values) {
-        values.toMutableMap()
+        mutableStateMapOf<ArgKey, ArgValue>().also {
+            it.putAll(values)
+        }
     }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -35,7 +40,12 @@ fun RendererForm(
                 argument = argument,
                 value = argumentValues[argument.key],
                 onValueChanged = { value ->
-                    argumentValues[argument.key] = value
+                    if (value != null) {
+                        argumentValues[argument.key] = value
+                    } else {
+                        argumentValues.remove(argument.key)
+                    }
+
                     if (showSubmitButton) {
                         // Do not submit the form automatically,
                         // but indicate that some parameters have changed

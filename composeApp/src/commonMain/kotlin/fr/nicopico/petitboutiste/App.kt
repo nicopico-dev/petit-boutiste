@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.ui.AppScreen
 import fr.nicopico.petitboutiste.ui.TabBar
@@ -21,7 +22,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     // Initialize with a default tab
     var tabs by rememberSaveable(stateSaver = TabsSaver) {
-        mutableStateOf(listOf(TabData()))
+        mutableStateOf(listOf(
+            // Create the default tab with input data
+            TabData(inputData = HexString("FF00"))
+        ))
     }
 
     // Track the currently selected tab
