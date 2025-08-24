@@ -2,10 +2,12 @@ package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ui.TabData
@@ -47,7 +50,7 @@ fun TabBar(
 ) {
     var showRenameDialog by remember { mutableStateOf(false) }
     var tabToRename by remember { mutableStateOf<TabData?>(null) }
-    var newTabName by remember { mutableStateOf("") }
+    var newTabName: String? by remember { mutableStateOf(null) }
 
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -76,29 +79,52 @@ fun TabBar(
                         text = {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Text(
-                                    text = tab.name,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
                                     modifier = Modifier.weight(1f)
-                                )
-
-                                // Edit button
-                                IconButton(
-                                    onClick = {
-                                        tabToRename = tab
-                                        newTabName = tab.name
-                                        showRenameDialog = true
-                                    },
-                                    modifier = Modifier.size(16.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = "Rename tab",
-                                        modifier = Modifier.size(16.dp)
+                                    Text(
+                                        text = tab.name ?: "Untilted",
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
                                     )
+
+                                    Spacer(Modifier.width(8.dp))
+
+                                    // Edit button
+                                    IconButton(
+                                        onClick = {
+                                            tabToRename = tab
+                                            newTabName = tab.name
+                                            showRenameDialog = true
+                                        },
+                                        modifier = Modifier.size(16.dp),
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Edit,
+                                            contentDescription = "Rename tab",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+                                }
+
+                                if (tab.templateData != null) {
+                                    with(tab.templateData) {
+                                        Text(
+                                            text = templateFile.name.let {
+                                                // Display '*' next to the template file name
+                                                // if the definitions have changed
+                                                if (definitionsHaveChanged) {
+                                                    "$it *"
+                                                } else it
+                                            },
+                                            maxLines = 1,
+                                            fontStyle = FontStyle.Italic,
+                                        )
+                                    }
                                 }
 
                                 // Close button (only show if there's more than one tab)
@@ -140,7 +166,7 @@ fun TabBar(
             title = { Text("Rename Tab") },
             text = {
                 OutlinedTextField(
-                    value = newTabName,
+                    value = newTabName ?: "",
                     onValueChange = { newTabName = it },
                     label = { Text("Tab Name") },
                     singleLine = true
@@ -149,7 +175,8 @@ fun TabBar(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        if (newTabName.isNotBlank()) {
+                        val newTabName = newTabName
+                        if (newTabName != null && newTabName.isNotBlank()) {
                             onTabRenamed(tabToRename!!.id, newTabName)
                         }
                         showRenameDialog = false

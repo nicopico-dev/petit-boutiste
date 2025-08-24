@@ -14,3 +14,6 @@ data class AppState(
         }
     }
 }
+
+val AppState.selectedTab: TabData
+    get() = tabs.first { it.id == selectedTabId }

@@ -1,0 +1,155 @@
+package fr.nicopico.petitboutiste
+
+import fr.nicopico.petitboutiste.models.app.AppEvent
+import fr.nicopico.petitboutiste.models.app.AppState
+import fr.nicopico.petitboutiste.models.app.selectedTab
+import fr.nicopico.petitboutiste.models.persistence.toTemplate
+import fr.nicopico.petitboutiste.models.ui.TabData
+import fr.nicopico.petitboutiste.models.ui.TabId
+import fr.nicopico.petitboutiste.models.ui.TabTemplateData
+import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
+import fr.nicopico.petitboutiste.repository.TemplateManager
+import kotlinx.coroutines.runBlocking
+
+class Reducer(
+    private val templateManager: TemplateManager,
+    private val legacyTemplateManager: LegacyTemplateManager,
+) {
+
+    // TODO Handle Concurrent changes to the AppState
+    // TODO Remove usage of runBlocking
+    operator fun invoke(state: AppState, event: AppEvent): AppState {
+        log("Received event: $event on state: $state...")
+        return when (event) {
+            //region Tab management
+            is AppEvent.AddNewTabEvent -> {
+                state.copy(tabs = state.tabs + TabData())
+            }
+
+            is AppEvent.SelectTabEvent -> {
+                state.copy(selectedTabId = event.tabId)
+            }
+
+            is AppEvent.RenameTabEvent -> {
+                state.copy(
+                    tabs = state.tabs.update(event.tabId) {
+                        copy(name = event.tabName)
+                    }
+                )
+            }
+
+            is AppEvent.RemoveTabEvent -> {
+                if (state.tabs.size > 1) {
+                    val tabs = state.tabs.filterNot { it.id == event.tabId }
+                    val selectedTabId = if (state.selectedTabId == event.tabId) {
+                        tabs.first().id
+                    } else state.selectedTabId
+                    state.copy(tabs = tabs, selectedTabId = selectedTabId)
+                } else state
+            }
+            //endregion
+
+            //region Current Tab
+            is AppEvent.CurrentTabEvent.ChangeInputTypeEvent -> {
+                state.updateCurrentTab {
+                    copy(inputType = event.type)
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.ChangeInputDataEvent -> {
+                state.updateCurrentTab {
+                    copy(inputData = event.data)
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.ChangeDefinitionsEvent -> {
+                state.updateCurrentTab {
+                    copy(
+                        groupDefinitions = event.definitions,
+                        templateData = templateData?.copy(definitionsHaveChanged = true),
+                    )
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.ClearAllDefinitionsEvent -> {
+                state.updateCurrentTab {
+                    copy(groupDefinitions = emptyList(), templateData = null)
+                }
+            }
+
+            //region Templates
+            is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
+                val template = runBlocking {
+                    templateManager.loadTemplate(event.templateFile)
+                }
+                state.updateCurrentTab {
+                    copy(
+                        groupDefinitions = template.definitions,
+                        templateData = TabTemplateData(event.templateFile),
+                    )
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.SaveTemplateEvent -> {
+                val template = with(state.selectedTab) {
+                    toTemplate(event.templateFile.nameWithoutExtension)
+                }
+                runBlocking {
+                    templateManager.saveTemplate(template, event.templateFile, event.updateExisting)
+                }
+
+                state.updateCurrentTab {
+                    copy(templateData = TabTemplateData(event.templateFile))
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.AddDefinitionsFromTemplateEvent -> {
+                val template = runBlocking {
+                    templateManager.loadTemplate(event.templateFile)
+                }
+                state.updateCurrentTab {
+                    // TODO Handle duplicate or conflicting definitions
+                    copy(groupDefinitions = groupDefinitions + template.definitions)
+                }
+            }
+            //endregion
+            //endregion
+
+            //region Legacy templates
+            is AppEvent.ExportLegacyTemplatesEvent -> {
+                runBlocking {
+                    legacyTemplateManager.exportLegacyTemplates(event.exportFolder)
+                }
+                state
+            }
+
+            is AppEvent.ConvertLegacyTemplatesBundleEvent -> {
+                runBlocking {
+                    legacyTemplateManager.convertLegacyTemplates(event.bundleFile, event.exportFolder)
+                }
+                state
+            }
+
+            AppEvent.ClearAllLegacyTemplates -> {
+                runBlocking {
+                    legacyTemplateManager.deleteAllLegacyTemplates()
+                }
+                state
+            }
+            //endregion
+
+        }.also {
+            log("  -> $it")
+        }
+    }
+
+    private fun List<TabData>.update(tabId: TabId, block: TabData.() -> TabData): List<TabData> {
+        return map { tab ->
+            if (tab.id == tabId) tab.block() else tab
+        }
+    }
+
+    private fun AppState.updateCurrentTab(block: TabData.() -> TabData): AppState {
+        return copy(tabs = tabs.update(selectedTabId, block))
+    }
+}

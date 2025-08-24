@@ -11,8 +11,10 @@ import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
+import fr.nicopico.petitboutiste.models.ui.TabTemplateData
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.io.File
 import java.util.prefs.Preferences
 
 class AppStateRepositorySettings(
@@ -47,7 +49,7 @@ class AppStateRepositorySettings(
             }
         }
 
-        val finalTabs = if (tabs.isEmpty()) listOf(TabData()) else tabs
+        val finalTabs = tabs.ifEmpty { listOf(TabData()) }
         val selected = TabId(persisted.selectedTabId)
         val selectedTabId = if (finalTabs.any { it.id == selected }) selected else finalTabs.first().id
 
@@ -69,10 +71,12 @@ private data class PersistedAppState(
 @Serializable
 private data class PersistedTab(
     val id: String,
-    val name: String,
+    val name: String?,
     val inputHex: String,
     val inputType: InputType,
-    val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
+    val groupDefinitions: List<ByteGroupDefinition>,
+    val templateFilePath: String?,
+    val templateDefinitionsChanged: Boolean,
 )
 
 private fun TabData.toPersisted(): PersistedTab = PersistedTab(
@@ -81,6 +85,8 @@ private fun TabData.toPersisted(): PersistedTab = PersistedTab(
     inputHex = inputData.hexString,
     inputType = inputType,
     groupDefinitions = groupDefinitions,
+    templateFilePath = templateData?.templateFile?.path,
+    templateDefinitionsChanged = templateData?.definitionsHaveChanged ?: false,
 )
 
 private fun PersistedTab.toTabData(): TabData {
@@ -95,5 +101,11 @@ private fun PersistedTab.toTabData(): TabData {
         inputData = data,
         inputType = inputType,
         groupDefinitions = groupDefinitions,
+        templateData = templateFilePath?.let { path ->
+            TabTemplateData(
+                templateFile = File(path),
+                definitionsHaveChanged = templateDefinitionsChanged
+            )
+        },
     )
 }

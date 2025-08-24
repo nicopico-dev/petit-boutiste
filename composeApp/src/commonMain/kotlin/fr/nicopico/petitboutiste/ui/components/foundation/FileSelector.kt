@@ -14,12 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mohamedrejeb.calf.picker.FilePickerFileType
-import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
-import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.utils.compose.Slot
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.io.File
 
@@ -31,14 +29,11 @@ fun FileSelector(
     selection: File? = null,
     label: Slot? = null,
 ) {
-    val pickerLauncher = rememberFilePickerLauncher(
-        type = FilePickerFileType.All,
-        selectionMode = FilePickerSelectionMode.Single,
-        onResult = { files ->
-            val selectedFile = files.firstOrNull()?.file
-            onFileSelected(selectedFile)
+    val pickerLauncher = rememberFilePickerLauncher { selectedFile ->
+        if (selectedFile != null) {
+            onFileSelected(selectedFile.file)
         }
-    )
+    }
 
     val defaultColors = TextFieldDefaults.colors()
     OutlinedTextField(

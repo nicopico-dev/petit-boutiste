@@ -1,8 +1,8 @@
 [versions]
 androidx-lifecycle = "2.9.1"
-calf = "0.8.0"
 composeHotReload = "1.0.0-beta04"
 composeMultiplatform = "1.8.2"
+filekit = "0.10.0"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
@@ -12,7 +12,7 @@ protobuf = "4.31.1"
 [libraries]
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-calf-filepicker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calf" }
+filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "filekit" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

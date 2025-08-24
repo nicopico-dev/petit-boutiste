@@ -1,13 +1,12 @@
-package fr.nicopico.petitboutiste.models
+package fr.nicopico.petitboutiste.models.persistence
 
+import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 @Serializable
 data class Template(
-    val id: Uuid = Uuid.random(),
     val name: String,
     val definitions: List<ByteGroupDefinition> = emptyList(),
 )
