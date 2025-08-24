@@ -3,39 +3,30 @@ package fr.nicopico.petitboutiste
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import fr.nicopico.petitboutiste.models.input.HexString
-import fr.nicopico.petitboutiste.models.ui.TabData
+import fr.nicopico.petitboutiste.models.app.AppEvent
+import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
+import fr.nicopico.petitboutiste.models.app.AppState
 import fr.nicopico.petitboutiste.ui.AppScreen
 import fr.nicopico.petitboutiste.ui.TabBar
-import fr.nicopico.petitboutiste.ui.infra.savers.TabIdSaver
-import fr.nicopico.petitboutiste.ui.infra.savers.TabsSaver
 import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App() {
-    // Initialize with a default tab
-    var tabs by rememberSaveable(stateSaver = TabsSaver) {
-        mutableStateOf(listOf(
-            // Create the default tab with input data
-            TabData(inputData = HexString("FF00"))
-        ))
-    }
+fun App(
+    appState: AppState,
+    onAppEvent: (AppEvent) -> Unit,
+) {
+    val tabs = appState.tabs
+    val selectedTabId = appState.selectedTabId
 
-    // Track the currently selected tab
-    var selectedTabId by rememberSaveable(stateSaver = TabIdSaver) {
-        mutableStateOf(tabs.first().id)
+    val selectedTab by remember(appState) {
+        derivedStateOf { tabs.first { it.id == selectedTabId } }
     }
-
-    // Find the currently selected tab
-    val selectedTabIndex = tabs.indexOfFirst { it.id == selectedTabId }.takeIf { it >= 0 } ?: 0
-    val selectedTab = tabs.getOrNull(selectedTabIndex) ?: tabs.first()
 
     PetitBoutisteTheme {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -43,28 +34,17 @@ fun App() {
             TabBar(
                 tabs = tabs,
                 selectedTabId = selectedTabId,
-                onTabSelected = { tabId -> selectedTabId = tabId },
+                onTabSelected = { tabId ->
+                    onAppEvent(AppEvent.SelectTabEvent(tabId))
+                },
                 onTabAdded = {
-                    val newTab = TabData()
-                    tabs = tabs + newTab
-                    selectedTabId = newTab.id
+                    onAppEvent(AppEvent.AddNewTabEvent)
                 },
                 onTabClosed = { tabId ->
-                    if (tabs.size > 1) {
-                        val tabIndex = tabs.indexOfFirst { it.id == tabId }
-                        tabs = tabs.filterNot { it.id == tabId }
-
-                        // If we closed the selected tab, select another one
-                        if (tabId == selectedTabId) {
-                            val newIndex = if (tabIndex >= tabs.size) tabs.size - 1 else tabIndex
-                            selectedTabId = tabs[newIndex].id
-                        }
-                    }
+                    onAppEvent(AppEvent.RemoveTabEvent(tabId))
                 },
                 onTabRenamed = { tabId, newName ->
-                    tabs = tabs.map {
-                        if (it.id == tabId) it.copy(name = newName) else it
-                    }
+                    onAppEvent(AppEvent.RenameTabEvent(tabId, newName))
                 }
             )
 
@@ -74,19 +54,13 @@ fun App() {
                 groupDefinitions = selectedTab.groupDefinitions,
                 inputType = selectedTab.inputType,
                 onInputDataChanged = { newData ->
-                    tabs = tabs.map {
-                        if (it.id == selectedTabId) it.copy(inputData = newData) else it
-                    }
+                    onAppEvent(CurrentTabEvent.ChangeInputDataEvent(newData))
                 },
                 onGroupDefinitionsChanged = { newDefinitions ->
-                    tabs = tabs.map {
-                        if (it.id == selectedTabId) it.copy(groupDefinitions = newDefinitions) else it
-                    }
+                    onAppEvent(CurrentTabEvent.ChangeDefinitionsEvent(newDefinitions))
                 },
                 onInputTypeChanged = { newInputType ->
-                    tabs = tabs.map {
-                        if (it.id == selectedTabId) it.copy(inputType = newInputType) else it
-                    }
+                    onAppEvent(CurrentTabEvent.ChangeInputTypeEvent(newInputType))
                 }
             )
         }

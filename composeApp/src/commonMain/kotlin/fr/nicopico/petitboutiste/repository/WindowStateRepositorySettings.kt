@@ -6,11 +6,8 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.nullableString
-import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.ui.ScreenCharacteristics
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.util.prefs.Preferences
 
@@ -18,12 +15,12 @@ class WindowStateRepositorySettings(
     settings: Settings = PreferencesSettings(
         Preferences.userNodeForPackage(WindowStateRepository::class.java)
     ),
-    private val json: Json = Json {
+    json: Json = Json {
         allowStructuredMapKeys = true
     },
-) : WindowStateRepository {
+) : BaseRepositorySettings(settings, json), WindowStateRepository {
 
-    private var jsonData by settings.nullableString("persistedState")
+    private val key = "persistedState"
 
     override fun save(windowState: WindowState, screenCharacteristics: ScreenCharacteristics) {
         val persisted = PersistedWindowState(
@@ -35,7 +32,7 @@ class WindowStateRepositorySettings(
             isFullScreen = windowState.placement == WindowPlacement.Fullscreen,
         )
         val update: PersistedData = getPersistedData() + mapOf(screenCharacteristics to persisted)
-        jsonData = json.encodeToString(update)
+        encodeAndStore(key, update)
     }
 
     override fun restore(screenCharacteristics: ScreenCharacteristics): WindowState? {
@@ -59,15 +56,7 @@ class WindowStateRepositorySettings(
     }
 
     private fun getPersistedData(): PersistedData {
-        return try {
-            jsonData
-                ?.let { jsonData -> json.decodeFromString<PersistedData>(jsonData) }
-                ?: emptyMap()
-        } catch (e: SerializationException) {
-            logError("Error decoding persisted window state, clearing data ($e)")
-            jsonData = null
-            emptyMap()
-        }
+        return decodeOrNull<PersistedData>(key) ?: emptyMap()
     }
 }
 
