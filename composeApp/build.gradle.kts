@@ -19,6 +19,13 @@ kotlin {
         freeCompilerArgs.add("-Xwhen-guards")
     }
 
+    jvmToolchain {
+        // Runs with JBR-21 for Jewel L&F
+        languageVersion = JavaLanguageVersion.of(21)
+        @Suppress("UnstableApiUsage")
+        vendor = JvmVendorSpec.JETBRAINS
+    }
+
     sourceSets {
         val desktopMain by getting
 
@@ -41,6 +48,9 @@ kotlin {
             implementation("org.jetbrains.compose.material3.adaptive:adaptive-layout:1.1.2")
             implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.1.2")
 
+            implementation("org.jetbrains.jewel:jewel-int-ui-standalone-243:0.27.0")
+            implementation("org.jetbrains.jewel:jewel-int-ui-decorated-window-243:0.27.0")
+
             implementation(libs.protobuf.java)
             implementation(libs.protobuf.java.util)
         }
@@ -50,7 +60,10 @@ kotlin {
         }
 
         desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
+            implementation(compose.desktop.currentOs) {
+                // TODO Remove Material dependencies
+                // exclude(group = "org.jetbrains.compose.material")
+            }
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }

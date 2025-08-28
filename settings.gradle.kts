@@ -24,6 +24,11 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+        maven("https://packages.jetbrains.team/maven/p/kpm/public/") {
+            mavenContent {
+                includeGroupAndSubgroups("org.jetbrains.jewel")
+            }
+        }
         mavenCentral()
     }
 }
