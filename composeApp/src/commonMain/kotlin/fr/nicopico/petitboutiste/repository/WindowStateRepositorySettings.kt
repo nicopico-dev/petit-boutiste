@@ -20,7 +20,7 @@ class WindowStateRepositorySettings(
     },
 ) : BaseRepositorySettings(settings, json), WindowStateRepository {
 
-    private val key = "persistedState"
+    private val key = "WINDOW_STATE"
 
     override fun save(windowState: WindowState, screenCharacteristics: ScreenCharacteristics) {
         val persisted = PersistedWindowState(
