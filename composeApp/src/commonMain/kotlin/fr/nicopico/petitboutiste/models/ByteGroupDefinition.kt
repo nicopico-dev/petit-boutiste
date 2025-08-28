@@ -11,4 +11,10 @@ data class ByteGroupDefinition(
     val indexes: IntRange,
     val name: String? = null,
     val representation: Representation = DEFAULT_REPRESENTATION,
-)
+) {
+    init {
+        require(indexes.first >= 0 && indexes.last >= indexes.first) {
+            "ByteGroupDefinition indexes are invalid: $indexes"
+        }
+    }
+}

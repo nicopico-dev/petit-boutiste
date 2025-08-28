@@ -29,6 +29,12 @@ sealed class ByteItem {
     data class Group(
         val bytes: List<String>,
         val definition: ByteGroupDefinition,
+
+        /**
+         * Set to `true` if [bytes] do not match the definition size.
+         * This means the payload is likely incomplete or the definition is incorrect
+         */
+        val incomplete: Boolean = false,
     ) : ByteItem() {
 
         constructor(
@@ -46,10 +52,6 @@ sealed class ByteItem {
         init {
             require(bytes.isNotEmpty()) {
                 "bytes must not be empty"
-            }
-            val definitionSize = with(definition.indexes) { last - first + 1 }
-            require(bytes.size == definitionSize) {
-                "bytes length must match the size expected by the definition"
             }
             require(bytes.all { it.length == 2 }) {
                 "Each bytes must have a length of 2"

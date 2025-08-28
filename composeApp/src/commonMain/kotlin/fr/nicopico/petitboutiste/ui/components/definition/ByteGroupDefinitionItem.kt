@@ -28,6 +28,8 @@ fun ByteGroupDefinitionItem(
     onDelete: () -> Unit,
     byteGroup: ByteItem.Group? = null,
 ) {
+    val incomplete = byteGroup?.incomplete ?: false
+
     ListItem(
         headlineContent = {
             Text(
@@ -38,7 +40,8 @@ fun ByteGroupDefinitionItem(
         },
         supportingContent = {
             val rangeText = with(definition.indexes) {
-                "$start..$endInclusive (${count()} bytes)"
+                val incompleteText = if (incomplete) ", incomplete" else ""
+                "$start..$endInclusive (${count()} bytes$incompleteText)"
             }
 
             val valueText = if (byteGroup != null && !definition.representation.isOff) {
@@ -73,7 +76,7 @@ fun ByteGroupDefinitionItem(
         modifier = modifier
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
+                color = if (incomplete) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(4.dp)
             )
     )

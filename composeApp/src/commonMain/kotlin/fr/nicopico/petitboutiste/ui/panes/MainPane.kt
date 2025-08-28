@@ -78,7 +78,7 @@ fun ThreePaneScaffoldPaneScope.MainPane(
             Spacer(Modifier.height(16.dp))
 
             HexDisplay(
-                byteItems,
+                byteItems = byteItems,
                 selectedByteItem = selectedByteItem,
                 modifier = Modifier.weight(1f),
                 onByteItemClicked = {

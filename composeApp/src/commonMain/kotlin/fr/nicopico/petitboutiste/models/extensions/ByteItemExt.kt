@@ -16,8 +16,14 @@ val ByteItem.size: Int
         is Single -> 1
     }
 
+val ByteItem.rawHexString: String
+    get() = when (this) {
+        is Group -> bytes.joinToString(separator = "")
+        is Single -> value
+    }
+
 fun ByteItem.toByteArray(): ByteArray {
-    val hexString = toString()
+    val hexString = rawHexString
     val len = hexString.length
     val data = ByteArray(len / 2)
     for (i in 0 until len step 2) {

@@ -3,6 +3,7 @@ package fr.nicopico.petitboutiste.models.extensions
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.input.DataString
+import kotlin.math.min
 
 fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList()
@@ -13,14 +14,11 @@ fun DataString.toByteItems(
         return bytes.mapIndexed { index, value -> ByteItem.Single(index, value) }
     }
 
-    // Filter valid group definitions
+    // Ignore definitions that are completely outside the bounds of the payload,
+    // and sort by Start index
     val validGroupDefinitions = groupDefinitions
-        .filter { it.indexes.first >= 0 && it.indexes.last < bytes.size }
+        .filter { it.indexes.first <= bytes.lastIndex }
         .sortedBy { it.indexes.first }
-
-    if (validGroupDefinitions.isEmpty()) {
-        return bytes.mapIndexed { index, value -> ByteItem.Single(index, value) }
-    }
 
     val result = mutableListOf<ByteItem>()
     var currentIndex = 0
@@ -38,9 +36,18 @@ fun DataString.toByteItems(
             continue
         }
 
+        // Ensure we do not go outside the bounds of the payload
+        val endIndex = min(definition.indexes.last, bytes.lastIndex)
+
         // Add the group
-        val groupBytes = (definition.indexes.first..definition.indexes.last).map { bytes[it] }
-        result.add(ByteItem.Group(groupBytes, definition))
+        val groupBytes = (definition.indexes.first..endIndex).map { bytes[it] }
+        result.add(
+            ByteItem.Group(
+                bytes = groupBytes,
+                definition = definition,
+                incomplete = endIndex < definition.indexes.last
+            )
+        )
         currentIndex = definition.indexes.last + 1
     }
 

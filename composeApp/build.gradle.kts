@@ -15,6 +15,10 @@ version = "1.2.1"
 kotlin {
     jvm("desktop")
 
+    compilerOptions {
+        freeCompilerArgs.add("-Xwhen-guards")
+    }
+
     sourceSets {
         val desktopMain by getting
 

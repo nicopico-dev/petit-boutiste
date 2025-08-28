@@ -4,6 +4,7 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -134,13 +135,13 @@ class HexStringExtTest {
     }
 
     @Test
-    fun `toByteItems ignores invalid definitions`() {
+    fun `toByteItems marks out-of-bounds definitions`() {
         // Given a hex string and an invalid group definition
         val hexString = HexString("1A2B3C4D")
         val groupDefinitions = listOf(
-            ByteGroupDefinition(-1..1, "InvalidStart"), // Invalid start index
-            ByteGroupDefinition(2..10, "InvalidEnd"),   // Invalid end index
-            ByteGroupDefinition(1..2, "ValidGroup")     // Valid group
+            ByteGroupDefinition(1..2, "Valid (completely in bound)"),
+            ByteGroupDefinition(3..5, "Valid (end out of bounds)"),
+            ByteGroupDefinition(6..10, "Invalid: start outside of bounds")
         )
 
         // When converting to byte items with the group definitions
@@ -153,11 +154,18 @@ class HexStringExtTest {
                 listOf("2B", "3C"),
                 ByteGroupDefinition(
                     indexes = 1..2,
-                    name = "ValidGroup",
+                    name = "Valid (completely in bound)",
                 )
             ),
-            ByteItem.Single(3, "4D"),
+            ByteItem.Group(
+                listOf("4D"),
+                ByteGroupDefinition(
+                    indexes = 3..5,
+                    name = "Valid (end out of bounds)",
+                ),
+                incomplete = true,
+            ),
         )
-        assertEquals(expected, byteItems)
+        assertContentEquals(expected, byteItems)
     }
 }

@@ -87,9 +87,11 @@ fun HexDisplay(
                                 .padding(horizontal = 4.dp)
                                 .clickable { onByteItemClicked(item) }
                                 .let {
-                                    if (item is ByteItem.Group) {
-                                        it.border(1.dp, MaterialTheme.colorScheme.primary)
-                                    } else it
+                                    when (item) {
+                                        is ByteItem.Single -> it
+                                        is ByteItem.Group if item.incomplete -> it.border(1.dp, MaterialTheme.colorScheme.error)
+                                        is ByteItem.Group -> it.border(1.dp, MaterialTheme.colorScheme.primary)
+                                    }
                                 }
                                 .let {
                                     if (item == selectedByteItem) {
