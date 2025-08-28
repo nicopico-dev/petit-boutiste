@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
-version = "1.3.4"
+version = "2.0.0"
 
 kotlin {
     jvm("desktop")
@@ -72,13 +72,9 @@ compose.desktop {
 
             macOS {
                 setDockNameSameAsPackageName
-                iconFile = file("icons/app-icon.icns")
+                iconFile.set(project.file("src/desktopMain/resources/icons/app-icon.icns"))
                 bundleID = "fr.nicopico.petitboutiste"
             }
-        }
-
-        buildTypes.release.proguard {
-            configurationFiles.from(project.file("compose-desktop.pro"))
         }
     }
 }
