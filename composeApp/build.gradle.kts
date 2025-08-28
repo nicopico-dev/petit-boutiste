@@ -76,6 +76,10 @@ compose.desktop {
                 bundleID = "fr.nicopico.petitboutiste"
             }
         }
+
+        buildTypes.release.proguard {
+            configurationFiles.from(project.file("compose-desktop.pro"))
+        }
     }
 }
 
