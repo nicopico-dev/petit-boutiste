@@ -72,7 +72,7 @@ compose.desktop {
 
             macOS {
                 setDockNameSameAsPackageName
-                iconFile.set(project.file("src/desktopMain/resources/icons/app-icon.icns"))
+                iconFile = file("icons/app-icon.icns")
                 bundleID = "fr.nicopico.petitboutiste"
             }
         }
