@@ -11,8 +11,11 @@ Petit Boutiste is a desktop application for analyzing and interpreting hexadecim
 - Define named groups of bytes
 - Interpret byte groups as different data types:
   - Raw hexadecimal
-  - Integer values (with configurable endianness)
-  - Text (with configurable endianness)
+  - Binary
+  - Integer values (with configurable endianness, unsigned or signed)
+  - Text (with configurable endianness and charset)
+  - Protobuf, with a `.desc` file compiled using a command like:
+    - `protoc --include_imports foo.proto --descriptor_set_out=foo.desc`
 - Save and load templates for reuse with similar data structures
 - Export and import templates for sharing
 - Multi-tab interface for working with multiple data sets simultaneously
