@@ -32,24 +32,23 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
-            implementation(compose.materialIconsExtended)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.multiplatform.settings)
-            implementation(libs.filekit.dialogs)
-
+            implementation(libs.bundles.jewel)
+            // TODO Remove Material dependencies
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended) // ?
             implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
             implementation("org.jetbrains.compose.material3.adaptive:adaptive-layout:1.1.2")
             implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.1.2")
 
-            implementation("org.jetbrains.jewel:jewel-int-ui-standalone-243:0.27.0")
-            implementation("org.jetbrains.jewel:jewel-int-ui-decorated-window-243:0.27.0")
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.multiplatform.settings)
+            implementation(libs.filekit.dialogs)
 
             implementation(libs.protobuf.java)
             implementation(libs.protobuf.java.util)
