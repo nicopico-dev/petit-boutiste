@@ -1,0 +1,209 @@
+ProGuard, version 7.7.0
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/library.kotlin_module]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/LICENSE]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/AL2.0]
+Note: duplicate definition of resource file [META-INF/LGPL2.1]
+Note: duplicate definition of resource file [META-INF/LICENSE]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of program class [module-info]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of program class [module-info]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/MANIFEST.MF]
+Note: duplicate definition of resource file [META-INF/LICENSE.txt]
+Note: there were 75 duplicate class definitions.
+      (https://www.guardsquare.com/proguard/manual/troubleshooting#duplicateclass)
+Note: com.google.common.reflect.Invokable$ConstructorInvokable calls 'Class.getTypeParameters'
+Note: com.google.common.reflect.Invokable$MethodInvokable calls 'Method.getGenericReturnType'
+Note: com.google.common.reflect.Invokable$MethodInvokable calls 'Method.getGenericParameterTypes'
+Note: com.google.common.reflect.Invokable$MethodInvokable calls 'Method.getGenericExceptionTypes'
+Note: com.google.common.reflect.Invokable$MethodInvokable calls 'Method.getTypeParameters'
+Note: com.google.common.reflect.TypeCapture calls 'Class.getGenericSuperclass'
+Note: com.google.common.reflect.TypeResolver$TypeMappingIntrospector calls 'Class.getGenericSuperclass'
+Note: com.google.common.reflect.TypeResolver$TypeMappingIntrospector calls 'Class.getGenericInterfaces'
+Note: com.google.common.reflect.TypeResolver$TypeMappingIntrospector calls 'Class.getTypeParameters'
+Note: com.google.common.reflect.TypeResolver$WildcardCapturer calls 'Class.getTypeParameters'
+Note: com.google.common.reflect.TypeToken calls 'Class.getGenericSuperclass'
+Note: com.google.common.reflect.TypeToken calls 'Class.getGenericInterfaces'
+Note: com.google.common.reflect.TypeToken calls 'Class.getTypeParameters'
+Note: com.google.common.reflect.Types$ClassOwnership calls 'Class.getGenericSuperclass'
+Note: com.google.common.reflect.Types$NativeTypeVariableEquals calls 'Class.getTypeParameters'
+Note: com.google.common.reflect.Types$ParameterizedTypeImpl calls 'Class.getTypeParameters'
+Note: com.google.gson.FieldAttributes calls 'Field.getGenericType'
+Note: com.google.gson.FieldAttributes calls 'Field.getType'
+Note: com.google.gson.internal.$Gson$Types calls 'Class.getGenericInterfaces'
+Note: com.google.gson.internal.$Gson$Types calls 'Class.getGenericSuperclass'
+Note: com.google.gson.internal.$Gson$Types calls 'Class.getTypeParameters'
+Note: com.google.gson.internal.Excluder calls 'Field.getType'
+Note: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory calls 'Field.getType'
+Note: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory calls 'Field.getGenericType'
+Note: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory calls 'Class.getGenericSuperclass'
+Note: com.google.gson.reflect.TypeToken calls 'Class.getGenericSuperclass'
+Note: com.google.gson.reflect.TypeToken calls 'Class.getTypeParameters'
+Note: com.google.gson.reflect.TypeToken calls 'Class.getGenericInterfaces'
+Note: com.google.protobuf.FieldInfo calls 'Field.getType'
+Note: com.google.protobuf.FieldType calls 'Field.getType'
+Note: com.google.protobuf.FieldType calls 'Field.getGenericType'
+Note: com.google.protobuf.FieldType calls 'Class.getGenericInterfaces'
+Note: com.google.protobuf.FieldType calls 'Class.getGenericSuperclass'
+Note: com.google.protobuf.FieldType calls 'Class.getTypeParameters'
+Note: com.google.protobuf.MessageSchema calls 'Field.getType'
+Note: com.google.protobuf.UnsafeUtil calls 'Field.getType'
+Note: com.sun.jna.Native calls 'Field.getType'
+Note: com.sun.jna.Structure calls 'Field.getType'
+Note: com.sun.jna.StructureReadContext calls 'Field.getType'
+Note: org.freedesktop.dbus.Marshalling calls 'Method.getGenericParameterTypes'
+Note: org.freedesktop.dbus.Marshalling calls 'Field.getGenericType'
+Note: org.freedesktop.dbus.Marshalling calls 'Class.getTypeParameters'
+Note: org.freedesktop.dbus.Marshalling calls 'Field.getType'
+Note: org.freedesktop.dbus.RemoteInvocationHandler calls 'Method.getGenericReturnType'
+Note: org.freedesktop.dbus.RemoteInvocationHandler calls 'Method.getGenericParameterTypes'
+Note: org.freedesktop.dbus.StructHelper calls 'Field.getType'
+Note: org.freedesktop.dbus.bin.DBusDaemon$DBusServer calls 'Method.getGenericReturnType'
+Note: org.freedesktop.dbus.connections.base.ConnectionMethodInvocation calls 'Method.getGenericParameterTypes'
+Note: org.freedesktop.dbus.connections.base.ConnectionMethodInvocation calls 'Method.getGenericReturnType'
+Note: org.freedesktop.dbus.connections.base.DBusBoundPropertyHandler calls 'Method.getGenericReturnType'
+Note: org.freedesktop.dbus.messages.ExportedObject calls 'Method.getGenericParameterTypes'
+Note: org.freedesktop.dbus.messages.ExportedObject calls 'Method.getGenericReturnType'
+Note: org.freedesktop.dbus.messages.ExportedObject calls 'Field.getType'
+Note: org.freedesktop.dbus.propertyref.PropRefRemoteHandler calls 'Method.getGenericReturnType'
+Note: org.freedesktop.dbus.utils.Util calls 'Class.getGenericInterfaces'
+Note: com.google.common.reflect.Invokable$ConstructorInvokable calls 'Class.getEnclosingClass'
+Note: com.google.common.reflect.TypeToken calls 'Class.getEnclosingClass'
+Note: com.google.common.reflect.Types calls 'Class.getEnclosingClass'
+Note: com.google.common.reflect.Types$ClassOwnership$1 calls 'Class.getEnclosingClass'
+Note: com.google.common.reflect.Types$ClassOwnership$2 calls 'Class.getEnclosingClass'
+Note: com.google.gson.internal.$Gson$Types$ParameterizedTypeImpl calls 'Class.getEnclosingClass'
+Note: com.sun.jna.Native calls 'Class.getDeclaringClass'
+Note: org.freedesktop.dbus.DBusMatchRule calls 'Class.getEnclosingClass'
+Note: org.freedesktop.dbus.messages.DBusSignal calls 'Class.getEnclosingClass'
+Note: com.google.common.reflect.Invokable$ConstructorInvokable calls 'Class.getEnclosingConstructor'
+Note: com.google.common.reflect.Invokable$ConstructorInvokable calls 'Class.getEnclosingMethod'
+Note: com.google.common.io.TempFileCreator: can't find dynamically referenced class android.os.Build$VERSION
+Note: com.google.common.io.TempFileCreator: can't find dynamically referenced class android.os.Build$VERSION_CODES
+Note: com.google.common.util.concurrent.MoreExecutors: can't find dynamically referenced class com.google.appengine.api.ThreadManager
+Note: com.google.common.util.concurrent.MoreExecutors: can't find dynamically referenced class com.google.appengine.api.utils.SystemProperty
+Note: com.google.common.util.concurrent.MoreExecutors: can't find dynamically referenced class com.google.apphosting.api.ApiProxy
+Note: com.google.protobuf.Android: can't find dynamically referenced class libcore.io.Memory
+Note: com.google.protobuf.Android: can't find dynamically referenced class org.robolectric.Robolectric
+Note: com.google.common.base.FinalizableReferenceQueue accesses a method 'startFinalizer(java.lang.Class,java.lang.ref.ReferenceQueue,java.lang.ref.PhantomReference)' dynamically
+Note: com.google.common.base.Throwables accesses a method 'getJavaLangAccess()' dynamically
+Note: com.google.common.base.internal.Finalizer accesses a method 'finalizeReferent()' dynamically
+Note: com.google.common.base.internal.Finalizer accesses a constructor '<init>(java.lang.ThreadGroup,java.lang.Runnable,java.lang.String,long,boolean)' dynamically
+Note: com.google.common.util.concurrent.MoreExecutors accesses a method 'currentRequestThreadFactory()' dynamically
+Note: com.google.common.util.concurrent.MoreExecutors accesses a method 'getCurrentEnvironment()' dynamically
+Note: com.google.gson.internal.ConstructorConstructor accesses a declared constructor '<init>()' dynamically
+Note: com.google.gson.internal.UnsafeAllocator accesses a method 'allocateInstance(java.lang.Class)' dynamically
+Note: com.google.gson.internal.reflect.UnsafeReflectionAccessor accesses a method 'objectFieldOffset(java.lang.reflect.Field)' dynamically
+Note: com.google.gson.internal.reflect.UnsafeReflectionAccessor accesses a method 'putBoolean(java.lang.Object,long,boolean)' dynamically
+Note: com.google.protobuf.DescriptorMessageInfoFactory accesses a declared method 'getDefaultInstance()' dynamically
+Note: com.google.protobuf.ExtensionSchemas accesses a declared constructor '<init>()' dynamically
+Note: com.google.protobuf.Internal accesses a method 'getDefaultInstance()' dynamically
+Note: com.google.protobuf.ListFieldSchemas accesses a declared constructor '<init>()' dynamically
+Note: com.google.protobuf.MapFieldSchemas accesses a declared constructor '<init>()' dynamically
+Note: com.google.protobuf.NewInstanceSchemas accesses a declared constructor '<init>()' dynamically
+Note: com.google.protobuf.SchemaUtil accesses a constructor '<init>()' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'getByte(java.lang.Object,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'putByte(java.lang.Object,long,byte)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'getBoolean(java.lang.Object,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'putBoolean(java.lang.Object,long,boolean)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'getFloat(java.lang.Object,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'putFloat(java.lang.Object,long,float)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'getDouble(java.lang.Object,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'putDouble(java.lang.Object,long,double)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'getByte(long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'putByte(long,byte)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'getInt(long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'putInt(long,int)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'getLong(long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'putLong(long,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'copyMemory(long,long,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$JvmMemoryAccessor accesses a method 'copyMemory(java.lang.Object,long,java.lang.Object,long,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'objectFieldOffset(java.lang.reflect.Field)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'arrayBaseOffset(java.lang.Class)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'arrayIndexScale(java.lang.Class)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'getInt(java.lang.Object,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'putInt(java.lang.Object,long,int)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'getLong(java.lang.Object,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'putLong(java.lang.Object,long,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'getObject(java.lang.Object,long)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'putObject(java.lang.Object,long,java.lang.Object)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'objectFieldOffset(java.lang.reflect.Field)' dynamically
+Note: com.google.protobuf.UnsafeUtil$MemoryAccessor accesses a method 'getLong(java.lang.Object,long)' dynamically
+Note: com.sun.jna.Klass accesses a declared constructor '<init>()' dynamically
+Note: com.sun.jna.Structure accesses a constructor '<init>()' dynamically
+Note: com.sun.jna.platform.WindowUtils$MacWindowUtils$1 accesses a method 'getPeer()' dynamically
+Note: com.sun.jna.platform.WindowUtils$MacWindowUtils$1 accesses a method 'setAlpha(float)' dynamically
+Note: com.sun.jna.platform.WindowUtils$X11WindowUtils accesses a method 'getVisual()' dynamically
+Note: com.sun.jna.platform.win32.COM.util.Convert accesses a method 'values()' dynamically
+Note: com.sun.jna.ptr.ByReference accesses a method 'getValue()' dynamically
+Note: org.freedesktop.dbus.Marshalling accesses a declared constructor '<init>()' dynamically
+Note: org.freedesktop.dbus.messages.Error accesses a constructor '<init>(java.lang.String)' dynamically
+Note: org.freedesktop.dbus.messages.ExportedObject accesses a method 'value()' dynamically
+Note: org.freedesktop.dbus.utils.ReflectionFileDescriptorHelper accesses a declared constructor '<init>(int)' dynamically
+Note: org.slf4j.LoggerFactory accesses a constructor '<init>()' dynamically
+Note: org.slf4j.helpers.SubstituteLogger accesses a method 'log(org.slf4j.event.LoggingEvent)' dynamically
+Note: the configuration keeps the entry point 'io.github.vinceglb.filekit.dialogs.platform.windows.jna.ShellItemArray { com.sun.jna.platform.win32.WinNT$HRESULT GetPropertyStore(io.github.vinceglb.filekit.dialogs.platform.windows.jna.ShTypes$GETPROPERTYSTOREFLAGS,com.sun.jna.platform.win32.Guid$REFIID,com.sun.jna.ptr.PointerByReference); }', but not the descriptor class 'io.github.vinceglb.filekit.dialogs.platform.windows.jna.ShTypes$GETPROPERTYSTOREFLAGS'
