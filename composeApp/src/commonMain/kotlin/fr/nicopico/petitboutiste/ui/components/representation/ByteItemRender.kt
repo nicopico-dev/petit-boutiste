@@ -28,6 +28,7 @@ import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.ui.components.foundation.Dropdown
+import fr.nicopico.petitboutiste.utils.hasDifferentEntriesFrom
 
 @Composable
 fun ByteItemRender(
@@ -67,9 +68,11 @@ fun ByteItemRender(
                     arguments = representation.dataRenderer.arguments,
                     values = representation.argumentValues,
                     showSubmitButton = representation.dataRenderer.requireUserValidation,
-                    onSubmit = {
+                    onSubmit = { argumentValues ->
                         dirty = false
-                        onRepresentationChanged(representation.copy(argumentValues = it))
+                        if (argumentValues hasDifferentEntriesFrom representation.argumentValues) {
+                            onRepresentationChanged(representation.copy(argumentValues = argumentValues))
+                        }
                     },
                     onDirty = {
                         dirty = true
