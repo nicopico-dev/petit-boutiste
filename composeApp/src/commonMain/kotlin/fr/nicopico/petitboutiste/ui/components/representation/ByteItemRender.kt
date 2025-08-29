@@ -49,11 +49,17 @@ fun ByteItemRender(
         )
 
         if (!representation.isOff) {
-            var dirty by remember(representation.dataRenderer) {
-                mutableStateOf(representation.dataRenderer.requireUserValidation)
-            }
             val rendererOutput by remember(representation, byteItem) {
                 derivedStateOf { representation.render(byteItem) }
+            }
+            var formArguments by remember {
+                mutableStateOf(representation.argumentValues)
+            }
+            // Dirty is true when the current arguments are different from the one used for then render
+            val dirty by remember(representation.dataRenderer, formArguments) {
+                derivedStateOf {
+                    formArguments hasDifferentEntriesFrom representation.argumentValues
+                }
             }
 
             Column(
@@ -69,13 +75,13 @@ fun ByteItemRender(
                     values = representation.argumentValues,
                     showSubmitButton = representation.dataRenderer.requireUserValidation,
                     onSubmit = { argumentValues ->
-                        dirty = false
+                        formArguments = argumentValues
                         if (argumentValues hasDifferentEntriesFrom representation.argumentValues) {
                             onRepresentationChanged(representation.copy(argumentValues = argumentValues))
                         }
                     },
-                    onDirty = {
-                        dirty = true
+                    onArgumentsChangeWithoutSubmit = {
+                        formArguments = it
                     },
                     modifier = Modifier.fillMaxWidth()
                 )

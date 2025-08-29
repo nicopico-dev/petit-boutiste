@@ -25,7 +25,7 @@ fun RendererForm(
     values: ArgumentValues,
     showSubmitButton: Boolean,
     onSubmit: (ArgumentValues) -> Unit,
-    onDirty: () -> Unit = {},
+    onArgumentsChangeWithoutSubmit: (ArgumentValues) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val argumentValues = remember(arguments, values) {
@@ -49,7 +49,7 @@ fun RendererForm(
                     if (showSubmitButton) {
                         // Do not submit the form automatically,
                         // but indicate that some parameters have changed
-                        onDirty()
+                        onArgumentsChangeWithoutSubmit(argumentValues)
                     } else {
                         onSubmit(argumentValues)
                     }

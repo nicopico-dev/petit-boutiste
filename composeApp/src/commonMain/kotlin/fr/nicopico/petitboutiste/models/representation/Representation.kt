@@ -24,6 +24,7 @@ val Representation.isOff: Boolean
 
 
 fun Representation.render(byteItem: ByteItem): RenderResult {
+    // TODO Optimization: memoize the latest render to prevent multiple renderings of the same payload
     log("Rendering with $this...")
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
