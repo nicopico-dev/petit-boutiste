@@ -20,9 +20,11 @@ import fr.nicopico.petitboutiste.ui.PetitBoutisteMenuBar
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
+import org.jetbrains.jewel.intui.standalone.theme.darkThemeDefinition
 import org.jetbrains.jewel.intui.standalone.theme.default
 import org.jetbrains.jewel.intui.standalone.theme.lightThemeDefinition
 import org.jetbrains.jewel.intui.window.decoratedWindow
+import org.jetbrains.jewel.intui.window.styling.dark
 import org.jetbrains.jewel.intui.window.styling.light
 import org.jetbrains.jewel.ui.ComponentStyling
 import org.jetbrains.jewel.ui.component.Text
@@ -31,6 +33,8 @@ import org.jetbrains.jewel.window.DecoratedWindow
 import org.jetbrains.jewel.window.TitleBar
 import org.jetbrains.jewel.window.newFullscreenControls
 import org.jetbrains.jewel.window.styling.TitleBarStyle
+import org.jetbrains.skiko.SystemTheme
+import org.jetbrains.skiko.currentSystemTheme
 
 private val windowStateRepository = WindowStateRepository()
 private val appStateRepository = AppStateRepository()
@@ -60,33 +64,14 @@ fun main() {
             derivedStateOf { appState.selectedTab }
         }
 
-//        Window(
-//            title = "Petit Boutiste",
-//            state = windowState,
-//            onCloseRequest = {
-//                windowStateRepository.save(windowState, screenCharacteristics)
-//                appStateRepository.save(appState)
-//                exitApplication()
-//            },
-//            content = {
-//                PetitBoutisteMenuBar(currentTab) { menuEvent ->
-//                    appState = reducer(appState, menuEvent)
-//                }
-//
-//                App(
-//                    appState = appState,
-//                    onAppEvent = { event ->
-//                        appState = reducer(appState, event)
-//                    }
-//                )
-//            },
-//        )
+        // TODO Follow system theme changes
+        val isDark = currentSystemTheme == SystemTheme.DARK
 
         IntUiTheme(
-            theme = JewelTheme.lightThemeDefinition(),
+            theme = if (isDark) JewelTheme.darkThemeDefinition() else JewelTheme.lightThemeDefinition(),
             styling = ComponentStyling.default()
                 .decoratedWindow(
-                    titleBarStyle = TitleBarStyle.light()
+                    titleBarStyle = if (isDark) TitleBarStyle.dark() else TitleBarStyle.light(),
                 )
         ) {
             DecoratedWindow(
