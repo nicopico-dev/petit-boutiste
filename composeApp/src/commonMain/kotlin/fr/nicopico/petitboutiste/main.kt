@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.getScreenCharacteristics
@@ -16,7 +16,8 @@ import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
-import fr.nicopico.petitboutiste.ui.PetitBoutisteMenuBar
+import fr.nicopico.petitboutiste.ui.PBMenuBar
+import fr.nicopico.petitboutiste.ui.PBTitleBar
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
@@ -27,11 +28,8 @@ import org.jetbrains.jewel.intui.window.decoratedWindow
 import org.jetbrains.jewel.intui.window.styling.dark
 import org.jetbrains.jewel.intui.window.styling.light
 import org.jetbrains.jewel.ui.ComponentStyling
-import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.painterResource
 import org.jetbrains.jewel.window.DecoratedWindow
-import org.jetbrains.jewel.window.TitleBar
-import org.jetbrains.jewel.window.newFullscreenControls
 import org.jetbrains.jewel.window.styling.TitleBarStyle
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
@@ -64,6 +62,10 @@ fun main() {
             derivedStateOf { appState.selectedTab }
         }
 
+        fun onEvent(event: AppEvent) {
+            appState = reducer(appState, event)
+        }
+
         // TODO Follow system theme changes
         val isDark = currentSystemTheme == SystemTheme.DARK
 
@@ -84,22 +86,9 @@ fun main() {
                 },
                 state = windowState,
                 content = {
-                    PetitBoutisteMenuBar(currentTab) { menuEvent ->
-                        appState = reducer(appState, menuEvent)
-                    }
-
-                    TitleBar(
-                        Modifier.newFullscreenControls()
-                    ) {
-                        Text(title)
-                    }
-
-                    App(
-                        appState = appState,
-                        onAppEvent = { event ->
-                            appState = reducer(appState, event)
-                        }
-                    )
+                    PBMenuBar(currentTab, onEvent = ::onEvent)
+                    PBTitleBar(appState, onEvent = ::onEvent)
+                    App(appState, onEvent = ::onEvent)
                 }
             )
         }

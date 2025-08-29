@@ -26,7 +26,6 @@ fun AppScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // TODO Show toolbar for most-used elements (load, save, clear)
         // Tab bar for switching between tabs
         TabBar(
             tabs = tabs,

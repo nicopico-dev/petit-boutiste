@@ -3,7 +3,8 @@ androidx-lifecycle = "2.9.3"
 composeHotReload = "1.0.0-beta06"
 composeMultiplatform = "1.9.0-rc01"
 filekit = "0.10.0"
-jewel = "0.29.0-252.24604"
+intellijPlatform = "252.23892.530" # https://mvnrepository.com/artifact/com.jetbrains.intellij.platform/core
+jewel = "0.29.0-252.24604" # https://central.sonatype.com/artifact/org.jetbrains.jewel/jewel-int-ui-standalone/versions
 kotlin = "2.2.10"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
@@ -14,6 +15,7 @@ protobuf = "4.31.1"
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
+intellij-platform-icons = { module = "com.jetbrains.intellij.platform:icons", version.ref = "intellijPlatform" }
 jewel-int-ui-standalone = { module = "org.jetbrains.jewel:jewel-int-ui-standalone", version.ref = "jewel" }
 jewel-int-ui-decorated-window = { module = "org.jetbrains.jewel:jewel-int-ui-decorated-window", version.ref = "jewel" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
@@ -24,7 +26,7 @@ protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version
 protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util", version.ref = "protobuf" }
 
 [bundles]
-jewel = [ "jewel-int-ui-standalone", "jewel-int-ui-decorated-window" ]
+jewel = [ "jewel-int-ui-standalone", "jewel-int-ui-decorated-window", "intellij-platform-icons" ]
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
