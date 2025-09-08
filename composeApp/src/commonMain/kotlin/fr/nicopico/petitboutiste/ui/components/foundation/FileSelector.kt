@@ -11,13 +11,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.utils.compose.Slot
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
-import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
+import fr.nicopico.petitboutiste.utils.file.showFileDialog
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.io.File
 
@@ -29,11 +32,7 @@ fun FileSelector(
     selection: File? = null,
     label: Slot? = null,
 ) {
-    val pickerLauncher = rememberFilePickerLauncher { selectedFile ->
-        if (selectedFile != null) {
-            onFileSelected(selectedFile.file)
-        }
-    }
+    val coroutineScope = rememberCoroutineScope()
 
     val defaultColors = TextFieldDefaults.colors()
     OutlinedTextField(
@@ -54,7 +53,11 @@ fun FileSelector(
             disabledSupportingTextColor = defaultColors.unfocusedSupportingTextColor,
         ),
         modifier = modifier.clickable {
-            pickerLauncher.launch()
+            coroutineScope.launch {
+                showFileDialog(FileDialogOperation.ChooseFile()) { file ->
+                    onFileSelected(file)
+                }
+            }
         },
     )
 }

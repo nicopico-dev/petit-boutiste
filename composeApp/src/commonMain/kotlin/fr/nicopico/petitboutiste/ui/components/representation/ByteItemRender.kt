@@ -50,16 +50,18 @@ fun ByteItemRender(
 
         if (!representation.isOff) {
             val rendererOutput by remember(representation, byteItem) {
-                derivedStateOf { representation.render(byteItem) }
-            }
-            var formArguments by remember {
-                mutableStateOf(representation.argumentValues)
-            }
-            // Dirty is true when the current arguments are different from the one used for then render
-            val dirty by remember(representation.dataRenderer, formArguments) {
                 derivedStateOf {
-                    formArguments hasDifferentEntriesFrom representation.argumentValues
+                    representation.render(byteItem)
                 }
+            }
+
+            // Dirty is true when the current arguments are different from the one used for then render
+            var dirty by remember(representation.dataRenderer) {
+                mutableStateOf(false)
+            }
+            // Wait for the "Render" button if the renderer requires user validation
+            var rendered by remember(representation.dataRenderer) {
+                mutableStateOf(!representation.dataRenderer.requireUserValidation)
             }
 
             Column(
@@ -75,20 +77,21 @@ fun ByteItemRender(
                     values = representation.argumentValues,
                     showSubmitButton = representation.dataRenderer.requireUserValidation,
                     onSubmit = { argumentValues ->
-                        formArguments = argumentValues
                         if (argumentValues hasDifferentEntriesFrom representation.argumentValues) {
                             onRepresentationChanged(representation.copy(argumentValues = argumentValues))
                         }
+                        dirty = false
+                        rendered = true
                     },
                     onArgumentsChangeWithoutSubmit = {
-                        formArguments = it
+                        dirty = true
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (!dirty) {
+                if (!dirty && rendered) {
                     when (val output = rendererOutput) {
                         is RenderResult.Success -> {
                             OutlinedTextField(
