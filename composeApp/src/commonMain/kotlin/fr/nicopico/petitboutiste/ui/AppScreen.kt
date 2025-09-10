@@ -26,24 +26,6 @@ fun AppScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // Tab bar for switching between tabs
-        TabBar(
-            tabs = tabs,
-            selectedTabId = selectedTabId,
-            onTabSelected = { tabId ->
-                onAppEvent(AppEvent.SelectTabEvent(tabId))
-            },
-            onTabAdded = {
-                onAppEvent(AppEvent.AddNewTabEvent)
-            },
-            onTabClosed = { tabId ->
-                onAppEvent(AppEvent.RemoveTabEvent(tabId))
-            },
-            onTabRenamed = { tabId, newName ->
-                onAppEvent(AppEvent.RenameTabEvent(tabId, newName))
-            }
-        )
-
         // Main app screen with the selected tab's data
         TabContent(
             inputData = selectedTab.inputData,
