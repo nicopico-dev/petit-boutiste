@@ -5,15 +5,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,10 +23,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction.Companion.Done
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogState
+import androidx.compose.ui.window.DialogWindow
+import androidx.compose.ui.window.WindowPosition
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.app.AppState
@@ -36,12 +44,19 @@ import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.ExperimentalJewelApi
+import org.jetbrains.jewel.foundation.GlobalColors
+import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
+import org.jetbrains.jewel.intui.standalone.theme.light
 import org.jetbrains.jewel.ui.Orientation
+import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Divider
 import org.jetbrains.jewel.ui.component.Dropdown
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.IconButton
+import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
+import org.jetbrains.jewel.ui.component.TextField
 import org.jetbrains.jewel.ui.component.Tooltip
 import org.jetbrains.jewel.ui.icon.IconKey
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
@@ -130,8 +145,6 @@ fun DecoratedWindowScope.PBTitleBar(
 
             TemplateToolbar(tabData = selectedTab, onEvent)
         }
-
-        Text(title)
     }
 }
 
@@ -174,47 +187,25 @@ private fun TabToolbar(
     onEvent: (AppEvent) -> Unit,
 ) {
     var showRenameDialog by remember { mutableStateOf(false) }
-    var newTabName: String? by remember { mutableStateOf(null) }
 
     ToolbarItem(
         label = "Edit tab name",
         iconKey = AllIconsKeys.Actions.Edit,
         onClick = {
-            newTabName = tabData.name
             showRenameDialog = true
         },
     )
 
     // Rename dialog
     if (showRenameDialog) {
-        AlertDialog(
-            onDismissRequest = { showRenameDialog = false },
-            title = { Text("Rename Tab") },
-            text = {
-                OutlinedTextField(
-                    value = newTabName ?: "",
-                    onValueChange = { newTabName = it },
-                    label = { Text("Tab Name") },
-                    singleLine = true
-                )
+        RenameTabDialog(
+            currentName = tabData.name,
+            onSubmit = {
+                onEvent(AppEvent.RenameTabEvent(tabData.id, it))
+                showRenameDialog = false
             },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        val newTabName = newTabName
-                        if (newTabName != null && newTabName.isNotBlank()) {
-                            onEvent(AppEvent.RenameTabEvent(tabData.id, newTabName))
-                        }
-                        showRenameDialog = false
-                    }
-                ) {
-                    Text("Rename")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showRenameDialog = false }) {
-                    Text("Cancel")
-                }
+            onDismiss = {
+                showRenameDialog = false
             }
         )
     }
@@ -296,5 +287,72 @@ private fun ToolbarItem(
             )
         },
         modifier = modifier,
+    )
+}
+
+@Composable
+private fun RenameTabDialog(
+    currentName: String?,
+    onSubmit: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    val textFieldState = rememberTextFieldState(currentName ?: "")
+
+    val submit = {
+        val newTabName = textFieldState.text.toString()
+        if (newTabName != currentName && newTabName.isNotBlank()) {
+            onSubmit(newTabName)
+        }
+        onDismiss()
+    }
+
+    DialogWindow(
+        onCloseRequest = onDismiss,
+        title = "Rename",
+        state = DialogState(
+            position = WindowPosition.Aligned(Alignment.Center),
+            size = DpSize(250.dp, 140.dp),
+        ),
+        content = {
+            Column(
+                Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    "Rename this tab",
+                    style = JewelTheme.createDefaultTextStyle(
+                        color = GlobalColors.light().text.normal
+                    ),
+                )
+
+                TextField(
+                    state = textFieldState,
+                    placeholder = { Text("Tab Name") },
+                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                    keyboardOptions = KeyboardOptions(imeAction = Done),
+                    onKeyboardAction = { submit() }
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End),
+                ) {
+                    OutlinedButton(
+                        content = { Text("Cancel") },
+                        onClick = onDismiss,
+                    )
+
+                    DefaultButton(
+                        content = { Text("Rename") },
+                        onClick = submit
+                    )
+                }
+            }
+        }
     )
 }
