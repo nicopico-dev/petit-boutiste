@@ -12,6 +12,7 @@ import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
+import fr.nicopico.petitboutiste.ui.components.TabContent
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -29,12 +30,12 @@ fun AppScreen(
         // Main app screen with the selected tab's data
         TabContent(
             inputData = selectedTab.inputData,
-            groupDefinitions = selectedTab.groupDefinitions,
+            definitions = selectedTab.groupDefinitions,
             inputType = selectedTab.inputType,
             onInputDataChanged = { newData ->
                 onAppEvent(AppEvent.CurrentTabEvent.ChangeInputDataEvent(newData))
             },
-            onGroupDefinitionsChanged = { newDefinitions ->
+            onDefinitionsChanged = { newDefinitions ->
                 onAppEvent(AppEvent.CurrentTabEvent.ChangeDefinitionsEvent(newDefinitions))
             },
             onInputTypeChanged = { newInputType ->

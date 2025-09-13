@@ -1,19 +1,10 @@
-package fr.nicopico.petitboutiste.ui
+package fr.nicopico.petitboutiste.ui.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
-import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
-import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
-import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,45 +12,46 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.ui.InputType
-import fr.nicopico.petitboutiste.ui.components.foundation.DragHandle
+import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
+import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
+import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
-import fr.nicopico.petitboutiste.ui.panes.MainPane
-import fr.nicopico.petitboutiste.ui.panes.SupportingPane
+import fr.nicopico.petitboutiste.utils.compose.optionalSlot
+import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
+import org.jetbrains.jewel.ui.component.Text
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TabContent(
     inputData: DataString,
-    groupDefinitions: List<ByteGroupDefinition> = emptyList(),
+    definitions: List<ByteGroupDefinition> = emptyList(),
     onInputDataChanged: (DataString) -> Unit,
-    onGroupDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
+    onDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
     inputType: InputType = InputType.HEX,
     onInputTypeChanged: (InputType) -> Unit = {},
 ) {
-    val scaffoldValue = ThreePaneScaffoldValue(
-        primary = PaneAdaptedValue.Expanded,
-        secondary = PaneAdaptedValue.Expanded,
-        tertiary = PaneAdaptedValue.Hidden,
-    )
-
-    val byteItems = remember(inputData, groupDefinitions) {
-        inputData.toByteItems(groupDefinitions)
+    val byteItems = remember(inputData, definitions) {
+        inputData.toByteItems(definitions)
     }
 
     var selectedByteItem: ByteItem? by remember {
         mutableStateOf(null)
     }
 
-    LaunchedEffect(groupDefinitions) {
+    // Ensure the definition is up to date for `selectedByteItem`
+    LaunchedEffect(definitions) {
         if (selectedByteItem is ByteItem.Group) {
-            val updatedDefinition = groupDefinitions.firstOrNull {
+            val updatedDefinition = definitions.firstOrNull {
                 it.indexes == (selectedByteItem as ByteItem.Group).definition.indexes
             }
 
@@ -69,15 +61,14 @@ fun TabContent(
         }
     }
 
+    // As ByteItem.Single do not have a definition, we use the same representation for all of them
+    // (note that it is possible to create a Group with a single byte)
+    var singleByteRepresentation by remember {
+        mutableStateOf(Representation(DataRenderer.Off))
+    }
 
-    SupportingPaneScaffold(
-        directive = PaneScaffoldDirective.Default,
-        value = scaffoldValue,
-        paneExpansionState = rememberPaneExpansionState(),
-        paneExpansionDragHandle = { state ->
-            DragHandle(state, "support pane drag handle")
-        },
-        mainPane = {
+    DesktopScaffold(
+        main = {
             MainPane(
                 inputData = inputData,
                 byteItems = byteItems,
@@ -87,17 +78,16 @@ fun TabContent(
                 inputType = inputType,
                 onInputTypeChanged = onInputTypeChanged,
                 modifier = Modifier
-                    .safeContentPadding()
                     .padding(16.dp)
                     // Need to add space to make the scrollbar handle grabbable
                     .padding(end = 16.dp),
             )
         },
-        supportingPane = {
-            SupportingPane(
-                inputData = inputData,
-                definitions = groupDefinitions,
-                onDefinitionsChanged = onGroupDefinitionsChanged,
+        definitions = {
+            ByteGroupDefinitions(
+                definitions = definitions,
+                onDefinitionsChanged = onDefinitionsChanged,
+                selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
                 onDefinitionSelected = { definition ->
                     // Select the ByteGroup matching this definition
                     selectedByteItem = if (definition != null) {
@@ -106,11 +96,32 @@ fun TabContent(
                         }
                     } else null
                 },
-                selectedByteItem = selectedByteItem,
                 byteItems = byteItems,
-                modifier = Modifier
-                    .safeContentPadding()
-                    .padding(16.dp),
+                modifier = Modifier.padding(16.dp),
+            )
+        },
+        tools = selectedByteItem.optionalSlot { selectedByteItem ->
+            ByteItemRender(
+                byteItem = selectedByteItem,
+                representation = if (selectedByteItem is ByteItem.Group) {
+                    selectedByteItem.definition.representation
+                } else singleByteRepresentation,
+                onRepresentationChanged = { representation ->
+                    if (selectedByteItem is ByteItem.Group) {
+                        val currentDefinition = selectedByteItem.definition
+                        val updatedDefinition = currentDefinition
+                            .copy(representation = representation)
+
+                        onDefinitionsChanged(
+                            definitions.map {
+                                if (it == currentDefinition) updatedDefinition else it
+                            }
+                        )
+                    } else {
+                        singleByteRepresentation = representation
+                    }
+                },
+                modifier = Modifier.padding(16.dp),
             )
         },
     )
@@ -121,23 +132,25 @@ fun TabContent(
 private fun AppScreenPreview() {
     WrapForPreview {
         Column {
+            val labelTextStyle = JewelTheme.createDefaultTextStyle(fontWeight = FontWeight.Bold)
+
             // Preview with Hex input
-            Text("Hex Input Preview", style = MaterialTheme.typography.titleLarge)
+            Text("Hex Input Preview", style = labelTextStyle)
             TabContent(
                 HexString(rawHexString = "33DAADDAAD"),
                 onInputDataChanged = {},
-                onGroupDefinitionsChanged = {},
+                onDefinitionsChanged = {},
                 inputType = InputType.HEX
             )
 
             Spacer(Modifier.height(32.dp))
 
             // Preview with Binary input
-            Text("Binary Input Preview", style = MaterialTheme.typography.titleLarge)
+            Text("Binary Input Preview", style = labelTextStyle)
             TabContent(
                 HexString(rawHexString = "33DAADDAAD"),
                 onInputDataChanged = {},
-                onGroupDefinitionsChanged = {},
+                onDefinitionsChanged = {},
                 inputType = InputType.BINARY
             )
         }

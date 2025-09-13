@@ -42,9 +42,6 @@ kotlin {
             // TODO Remove Material dependencies
             implementation(compose.material3)
             implementation(compose.materialIconsExtended) // ?
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive-layout:1.1.2")
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.1.2")
 
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.multiplatform.settings)
