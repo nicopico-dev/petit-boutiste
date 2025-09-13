@@ -1,18 +1,16 @@
 package fr.nicopico.petitboutiste.ui.components.input
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.models.ui.InputType
+import org.jetbrains.jewel.ui.component.SegmentedControl
+import org.jetbrains.jewel.ui.component.SegmentedControlButtonData
+import org.jetbrains.jewel.ui.component.Text
 
 @Composable
 fun InputTypeToggle(
@@ -20,25 +18,26 @@ fun InputTypeToggle(
     onInputTypeChange: (InputType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Format toggle button
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = modifier
-            .border(1.dp, Color.LightGray)
-            .padding(horizontal = 4.dp, vertical = 2.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier,
     ) {
-        InputType.entries.forEach { inputType ->
-            val selected = inputType == current
-            Text(
-                text = (if (selected) "→" else " ") + inputType.label,
-                fontSize = 10.sp,
-                color = if (selected) Color.Blue else Color.Gray,
-                modifier = Modifier.clickable(enabled = !selected) {
-                    onInputTypeChange(inputType)
-                }
-            )
+        Text("Input mode")
+
+        val buttons = remember(current) {
+            InputType.entries.map { inputType ->
+                SegmentedControlButtonData(
+                    selected = inputType == current,
+                    content = { Text(inputType.label) },
+                    onSelect = { onInputTypeChange(inputType) },
+                )
+            }
         }
+
+        SegmentedControl(
+            buttons = buttons
+        )
     }
 }
 
