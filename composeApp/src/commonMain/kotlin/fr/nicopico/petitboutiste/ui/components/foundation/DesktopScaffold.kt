@@ -29,7 +29,7 @@ fun DesktopScaffold(
                 dividerStyle = dividerStyle,
                 draggableWidth = 16.dp,
                 firstPaneMinWidth = 200.dp,
-                secondPaneMinWidth = 200.dp,
+                secondPaneMinWidth = 100.dp,
             )
         } ?: main,
         second = definitions,

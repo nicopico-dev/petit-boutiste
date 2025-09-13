@@ -77,10 +77,7 @@ fun TabContent(
                 onByteItemSelected = { selectedByteItem = it },
                 inputType = inputType,
                 onInputTypeChanged = onInputTypeChanged,
-                modifier = Modifier
-                    .padding(16.dp)
-                    // Need to add space to make the scrollbar handle grabbable
-                    .padding(end = 16.dp),
+                modifier = Modifier.padding(16.dp),
             )
         },
         definitions = {

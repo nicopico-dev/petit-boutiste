@@ -1,14 +1,20 @@
 package fr.nicopico.petitboutiste.ui.theme
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.intui.standalone.styling.default
 import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
 import org.jetbrains.jewel.ui.component.styling.DividerStyle
+import org.jetbrains.jewel.ui.component.styling.ScrollbarStyle
+import org.jetbrains.jewel.ui.component.styling.ScrollbarVisibility
+import org.jetbrains.jewel.ui.component.styling.TrackClickBehavior
 import org.jetbrains.jewel.ui.theme.dividerStyle
+import org.jetbrains.jewel.ui.theme.scrollbarStyle
 import org.jetbrains.jewel.ui.util.fromArgbHexStringOrNull
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
@@ -28,10 +34,29 @@ object JewelThemeUtils {
 
     val dividerStyle: DividerStyle
         @Composable
-        get() = DividerStyle(
-            color = Color.LightGray,
-            metrics = JewelTheme.dividerStyle.metrics,
-        )
+        get() {
+            val dividerStyle = JewelTheme.dividerStyle
+            return remember(dividerStyle) {
+                DividerStyle(
+                    color = Color.LightGray,
+                    metrics = dividerStyle.metrics,
+                )
+            }
+        }
+
+    val scrollbarStyle: ScrollbarStyle
+        @Composable
+        get() {
+            val scrollbarStyle = JewelTheme.scrollbarStyle
+            return remember(scrollbarStyle) {
+                ScrollbarStyle(
+                    colors = scrollbarStyle.colors,
+                    metrics = scrollbarStyle.metrics,
+                    trackClickBehavior = TrackClickBehavior.JumpToSpot,
+                    scrollbarVisibility = ScrollbarVisibility.WhenScrolling.default()
+                )
+            }
+        }
 
     private val isDarkTheme = currentSystemTheme == SystemTheme.DARK
 
@@ -44,9 +69,16 @@ object JewelThemeUtils {
 
         val subTextColor = Color.Gray
         val dangerousActionColor = Color.Red
+        val errorColor = Color.Red
+
+        val accentColor: Color = hexColor("FF1F3D91")
+        val accentContainer: Color = hexColor("FFDEE4F8")
+
         val inputBackgroundColor: Color
             @Composable
             get() = JewelTheme.globalColors.panelBackground
+
+
     }
 
     object typography {
