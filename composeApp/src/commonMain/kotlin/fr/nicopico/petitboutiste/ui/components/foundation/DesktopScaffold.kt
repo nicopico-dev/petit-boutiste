@@ -25,7 +25,7 @@ fun DesktopScaffold(
             VerticalSplitLayout(
                 first = main,
                 second = tools,
-                state = rememberSplitLayoutState(0.65f),
+                state = rememberSplitLayoutState(0.67f),
                 dividerStyle = dividerStyle,
                 draggableWidth = 16.dp,
                 firstPaneMinWidth = 200.dp,

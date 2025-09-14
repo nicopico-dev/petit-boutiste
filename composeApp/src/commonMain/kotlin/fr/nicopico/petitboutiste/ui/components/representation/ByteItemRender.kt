@@ -25,9 +25,8 @@ import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
-import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.render
-import fr.nicopico.petitboutiste.ui.components.foundation.Dropdown
+import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
 import fr.nicopico.petitboutiste.utils.hasDifferentEntriesFrom
 import org.jetbrains.jewel.foundation.theme.JewelTheme
@@ -66,7 +65,7 @@ fun ByteItemRender(
     ) {
         Column(
             modifier = Modifier
-                .widthIn(max = 400.dp)
+                .widthIn(max = 300.dp)
                 .fillMaxHeight()
                 .border(1.dp, JewelThemeUtils.colors.borderColor)
                 .padding(8.dp)
@@ -75,11 +74,11 @@ fun ByteItemRender(
 
             Text(
                 "Representation",
-                style = JewelTheme.typography.medium,
+                style = JewelTheme.typography.regular,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
 
-            Dropdown(
+            PBDropdown(
                 items = DataRenderer.entries,
                 selection = representation.dataRenderer,
                 onItemSelected = {
@@ -136,7 +135,7 @@ fun ByteItemRender(
                     is RenderResult.Error -> Outline.Error
                     is RenderResult.None -> Outline.Warning
                 },
-                undecorated = representation.isOff,
+                undecorated = true,
                 modifier = Modifier
                     .widthIn(min = 200.dp)
                     .fillMaxSize(),

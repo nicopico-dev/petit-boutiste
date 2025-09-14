@@ -4,8 +4,6 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
@@ -18,6 +16,8 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
+import org.jetbrains.jewel.ui.component.DefaultButton
+import org.jetbrains.jewel.ui.component.Text
 
 @Composable
 fun RendererForm(
@@ -38,7 +38,7 @@ fun RendererForm(
         arguments.forEach { argument ->
             ArgumentInput(
                 argument = argument,
-                value = argumentValues[argument.key],
+                userValue = argumentValues[argument.key],
                 onValueChanged = { value ->
                     if (value != null) {
                         argumentValues[argument.key] = value
@@ -59,7 +59,7 @@ fun RendererForm(
         }
 
         if (showSubmitButton) {
-            Button(
+            DefaultButton(
                 content = {
                     Text("Render")
                 },
