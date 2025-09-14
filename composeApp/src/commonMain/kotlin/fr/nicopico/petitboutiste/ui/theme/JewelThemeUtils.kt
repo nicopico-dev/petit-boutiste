@@ -36,9 +36,10 @@ object JewelThemeUtils {
         @Composable
         get() {
             val dividerStyle = JewelTheme.dividerStyle
-            return remember(dividerStyle) {
+            val borderColor = colors.borderColor
+            return remember(dividerStyle, borderColor) {
                 DividerStyle(
-                    color = Color.LightGray,
+                    color = borderColor,
                     metrics = dividerStyle.metrics,
                 )
             }
@@ -67,6 +68,7 @@ object JewelThemeUtils {
         val iconTint: Color
             get() = if (isDarkTheme) iconOnDarkTint else iconOnLightTint
 
+        // TODO Use JewelTheme.colorPalette instead
         val subTextColor = Color.Gray
         val dangerousActionColor = Color.Red
         val errorColor = Color.Red
@@ -74,11 +76,14 @@ object JewelThemeUtils {
         val accentColor: Color = hexColor("FF1F3D91")
         val accentContainer: Color = hexColor("FFDEE4F8")
 
+        // TODO Use JewelTheme.globalColors.border.normal
+        val borderColor: Color
+            @Composable
+            get() = Color.LightGray
+
         val inputBackgroundColor: Color
             @Composable
             get() = JewelTheme.globalColors.panelBackground
-
-
     }
 
     object typography {
