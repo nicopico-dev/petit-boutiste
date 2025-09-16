@@ -60,21 +60,19 @@ fun ByteItemRender(
     }
 
     Row(
-        modifier,
+        modifier.border(1.dp, JewelThemeUtils.colors.borderColor),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Column(
             modifier = Modifier
                 .widthIn(max = 300.dp)
                 .fillMaxHeight()
-                .border(1.dp, JewelThemeUtils.colors.borderColor)
                 .padding(8.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-
             Text(
                 "Representation",
-                style = JewelTheme.typography.regular,
+                style = JewelTheme.typography.h4TextStyle,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
 
@@ -118,6 +116,12 @@ fun ByteItemRender(
             )
         }
 
+        Divider(
+            orientation = Orientation.Vertical,
+            style = JewelThemeUtils.dividerStyle,
+            modifier = Modifier.fillMaxHeight().padding(vertical = 16.dp)
+        )
+
         if (!dirty && rendered) {
             TextArea(
                 state = remember(rendererOutput) {
@@ -138,7 +142,8 @@ fun ByteItemRender(
                 undecorated = true,
                 modifier = Modifier
                     .widthIn(min = 200.dp)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp),
             )
         }
     }

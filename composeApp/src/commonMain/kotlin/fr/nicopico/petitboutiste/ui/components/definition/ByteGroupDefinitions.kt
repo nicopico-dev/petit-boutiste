@@ -2,6 +2,7 @@ package fr.nicopico.petitboutiste.ui.components.definition
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -12,7 +13,9 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.removeAt
 import fr.nicopico.petitboutiste.models.extensions.replace
-import fr.nicopico.petitboutiste.ui.components.foundation.Collapsable
+import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.ui.component.Text
+import org.jetbrains.jewel.ui.typography
 
 @Composable
 fun ByteGroupDefinitions(
@@ -23,13 +26,14 @@ fun ByteGroupDefinitions(
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
     byteItems: List<ByteItem> = emptyList(),
 ) {
-    Collapsable(
-        title = "Definitions",
-        modifier = modifier,
-        initialCollapsed = false
-    ) {
+    Column(modifier) {
+        Text(
+            "Definitions",
+            style = JewelTheme.typography.h4TextStyle,
+            modifier = Modifier.padding(bottom = 8.dp),
+        )
+
         LazyColumn(
-            Modifier.padding(start = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(definitions) { index, definition ->

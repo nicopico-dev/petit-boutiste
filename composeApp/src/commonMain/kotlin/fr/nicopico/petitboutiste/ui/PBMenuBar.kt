@@ -1,10 +1,8 @@
 package fr.nicopico.petitboutiste.ui
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
@@ -15,6 +13,8 @@ import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import kotlinx.coroutines.launch
+import org.jetbrains.jewel.ui.icons.AllIconsKeys
+import org.jetbrains.jewel.ui.painter.rememberResourcePainterProvider
 
 @Composable
 fun FrameWindowScope.PBMenuBar(
@@ -22,6 +22,7 @@ fun FrameWindowScope.PBMenuBar(
     onEvent: (AppEvent) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
+    val warningIcon by rememberResourcePainterProvider(AllIconsKeys.General.Warning).getPainter()
 
     MenuBar {
         Menu("Template", mnemonic = 'T') {
@@ -93,7 +94,7 @@ fun FrameWindowScope.PBMenuBar(
         Menu("Definitions", mnemonic = 'D') {
             Item(
                 text = "Clear all definitions",
-                icon = rememberVectorPainter(Icons.Outlined.Warning),
+                icon = warningIcon,
                 onClick = {
                     // TODO Ask confirmation
                     onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
@@ -151,7 +152,7 @@ fun FrameWindowScope.PBMenuBar(
 
             Item(
                 text = "Clear all legacy templates",
-                icon = rememberVectorPainter(Icons.Outlined.Warning),
+                icon = warningIcon,
                 onClick = {
                     // TODO Ask confirmation
                     onEvent(AppEvent.ClearAllLegacyTemplates)
