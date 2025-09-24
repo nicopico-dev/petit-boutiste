@@ -139,6 +139,7 @@ fun ByteItemRender(
                     is RenderResult.Error -> Outline.Error
                     is RenderResult.None -> Outline.Warning
                 },
+                textStyle = JewelTheme.typography.h2TextStyle,
                 undecorated = true,
                 modifier = Modifier
                     .widthIn(min = 200.dp)
