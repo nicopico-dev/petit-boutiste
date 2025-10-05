@@ -20,7 +20,7 @@ import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
-private val fieldMaxWidth = 250.dp
+private val fieldMaxWidth = 200.dp
 
 @Composable
 fun ByteGroupDefinitionForm(
