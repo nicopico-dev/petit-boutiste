@@ -117,10 +117,10 @@ fun TabContent(
                 onRepresentationChanged = { representation ->
                     if (selectedByteItem is ByteItem.Group) {
                         val currentDefinition = selectedByteItem.definition
-                        val updatedDefinition = currentDefinition
-                            .copy(representation = representation)
-
-                        onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(currentDefinition, updatedDefinition))
+                        if (representation != currentDefinition.representation) {
+                            val updatedDefinition = currentDefinition.copy(representation = representation)
+                            onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(currentDefinition, updatedDefinition))
+                        }
                     } else {
                         singleByteRepresentation = representation
                     }

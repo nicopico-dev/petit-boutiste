@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextField
@@ -26,15 +25,18 @@ fun PBTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val state = remember(value) { TextFieldState(value) }
+    val state = remember(value) {
+        TextFieldState(value)
+    }
 
     // Observe changes to the text
     LaunchedEffect(value) {
-        val update = snapshotFlow { state.text.toString() }
+        snapshotFlow { state.text.toString() }
             .drop(1)
             .distinctUntilChanged()
-            .first()
-        onValueChange(update)
+            .collect {
+                onValueChange(it)
+            }
     }
 
     Column(modifier) {

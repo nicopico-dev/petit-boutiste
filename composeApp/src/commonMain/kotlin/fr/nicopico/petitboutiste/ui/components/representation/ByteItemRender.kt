@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
@@ -99,12 +100,15 @@ fun ByteItemRender(
                 values = representation.argumentValues,
                 showSubmitButton = representation.dataRenderer.requireUserValidation,
                 onArgumentsChange = { argumentValues, submit ->
-                    onRepresentationChanged(
-                        representation.copy(
-                            argumentValues = argumentValues,
-                            submitted = submit,
+                    if (submit) {
+                        log("Arguments changed: $argumentValues")
+                        onRepresentationChanged(
+                            representation.copy(
+                                argumentValues = argumentValues,
+                                submitted = true,
+                            )
                         )
-                    )
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             )

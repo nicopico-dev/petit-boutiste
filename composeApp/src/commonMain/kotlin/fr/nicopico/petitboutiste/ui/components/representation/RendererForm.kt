@@ -5,14 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
-import fr.nicopico.petitboutiste.models.representation.arguments.ArgKey
-import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
@@ -23,15 +20,11 @@ import org.jetbrains.jewel.ui.component.Text
 fun RendererForm(
     arguments: List<DataRenderer.Argument>,
     values: ArgumentValues,
-    showSubmitButton: Boolean,
     onArgumentsChange: (ArgumentValues, submit: Boolean) -> Unit,
+    showSubmitButton: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val argumentValues = remember(arguments, values) {
-        mutableStateMapOf<ArgKey, ArgValue>().also {
-            it.putAll(values)
-        }
-    }
+    var argumentValues: ArgumentValues = remember(arguments, values) { values }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         arguments.forEach { argument ->
@@ -39,10 +32,10 @@ fun RendererForm(
                 argument = argument,
                 userValue = argumentValues[argument.key],
                 onValueChanged = { value ->
-                    if (value != null) {
-                        argumentValues[argument.key] = value
+                    argumentValues = if (value != null) {
+                        argumentValues + (argument.key to value)
                     } else {
-                        argumentValues.remove(argument.key)
+                        argumentValues - argument.key
                     }
 
                     onArgumentsChange(

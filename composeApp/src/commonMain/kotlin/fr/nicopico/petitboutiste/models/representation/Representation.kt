@@ -1,6 +1,5 @@
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteArray
@@ -34,7 +33,6 @@ val Representation.isReady: Boolean
 
 fun Representation.render(byteItem: ByteItem): RenderResult {
     // TODO Optimization: memoize the latest render to prevent multiple renderings of the same payload
-    log("Rendering with $this...")
     require(isReady) { "Representation must be ready!" }
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
