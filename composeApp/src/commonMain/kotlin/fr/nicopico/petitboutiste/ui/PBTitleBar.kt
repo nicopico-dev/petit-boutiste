@@ -163,17 +163,24 @@ private fun TabItem(
                 Text(name ?: "Untitled")
 
                 if (templateData != null) {
-                    Text(
-                        text = templateData.templateFile.name.let { templateFileName ->
-                            if (templateData.definitionsHaveChanged) {
-                                "$templateFileName *"
-                            } else templateFileName
-                        },
-                        maxLines = 1,
-                        fontStyle = FontStyle.Italic,
-                        color = JewelThemeUtils.colors.subTextColor,
-                        style = TextStyle.Default.copy(fontSize = 12.sp)
-                    )
+                    Row {
+                        Text(
+                            text = templateData.templateFile.name,
+                            maxLines = 1,
+                            fontStyle = FontStyle.Italic,
+                            color = JewelThemeUtils.colors.subTextColor,
+                            style = TextStyle.Default.copy(fontSize = 12.sp)
+                        )
+
+                        if (templateData.definitionsHaveChanged) {
+                            Text(
+                                text = "*",
+                                color = JewelThemeUtils.colors.subTextColor,
+                                style = TextStyle.Default.copy(fontSize = 14.sp),
+                                modifier = Modifier.padding(horizontal = 4.dp),
+                            )
+                        }
+                    }
                 }
             }
         }
