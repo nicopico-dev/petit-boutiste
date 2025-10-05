@@ -47,7 +47,8 @@ fun RendererForm(
 
                     onArgumentsChange(
                         argumentValues,
-                        !showSubmitButton, // Submit automatically if the form does not show a submit button
+                        // Submit automatically if the form does not show a Submit button
+                        !showSubmitButton,
                     )
                 },
                 modifier = modifier.fillMaxWidth()
