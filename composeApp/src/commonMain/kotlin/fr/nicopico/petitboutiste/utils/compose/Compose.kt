@@ -13,7 +13,7 @@ typealias Slot = @Composable () -> Unit
  * someText?.compose { Text(it) }
  * ```
  */
-fun <T : Any?> T.optionalSlot(block: @Composable (T) -> Unit) : Slot? {
+fun <T : Any> T?.optionalSlot(block: @Composable (T) -> Unit) : Slot? {
     return if (this != null) {
         { block(this) }
     } else null

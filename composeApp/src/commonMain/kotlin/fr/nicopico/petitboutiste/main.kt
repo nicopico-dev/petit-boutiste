@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.getScreenCharacteristics
@@ -16,8 +16,12 @@ import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
-import fr.nicopico.petitboutiste.ui.PetitBoutisteMenuBar
+import fr.nicopico.petitboutiste.ui.PBMenuBar
+import fr.nicopico.petitboutiste.ui.PBTitleBar
+import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
 import io.github.vinceglb.filekit.FileKit
+import org.jetbrains.jewel.ui.component.painterResource
+import org.jetbrains.jewel.window.DecoratedWindow
 
 private val windowStateRepository = WindowStateRepository()
 private val appStateRepository = AppStateRepository()
@@ -47,26 +51,26 @@ fun main() {
             derivedStateOf { appState.selectedTab }
         }
 
-        Window(
-            title = "Petit Boutiste",
-            state = windowState,
-            onCloseRequest = {
-                windowStateRepository.save(windowState, screenCharacteristics)
-                appStateRepository.save(appState)
-                exitApplication()
-            },
-            content = {
-                PetitBoutisteMenuBar(currentTab) { menuEvent ->
-                    appState = reducer(appState, menuEvent)
-                }
+        fun onEvent(event: AppEvent) {
+            appState = reducer(appState, event)
+        }
 
-                App(
-                    appState = appState,
-                    onAppEvent = { event ->
-                        appState = reducer(appState, event)
-                    }
-                )
-            },
-        )
+        PetitBoutisteTheme {
+            DecoratedWindow(
+                title = "Petit Boutiste",
+                icon = painterResource("icons/app-icon.png"),
+                onCloseRequest = {
+                    windowStateRepository.save(windowState, screenCharacteristics)
+                    appStateRepository.save(appState)
+                    exitApplication()
+                },
+                state = windowState,
+                content = {
+                    PBMenuBar(currentTab, onEvent = ::onEvent)
+                    PBTitleBar(appState, onEvent = ::onEvent)
+                    App(appState, onEvent = ::onEvent)
+                }
+            )
+        }
     }
 }

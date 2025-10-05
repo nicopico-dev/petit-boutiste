@@ -3,20 +3,6 @@ package fr.nicopico.petitboutiste.ui.components.definition
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -25,15 +11,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
+import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelPosition
+import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
+import org.jetbrains.jewel.ui.component.DefaultButton
+import org.jetbrains.jewel.ui.component.Text
 
-@OptIn(ExperimentalMaterial3Api::class)
+private val fieldMaxWidth = 200.dp
+
 @Composable
 fun ByteGroupDefinitionForm(
     definition: ByteGroupDefinition?,
@@ -103,80 +91,38 @@ fun ByteGroupDefinitionForm(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(
-            if (definition == null) "New definition" else "Update definition",
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.weight(1f)
+        PBTextField(
+            label = "Name (optional)",
+            value = name,
+            onValueChange = { name = it },
+            labelPosition = PBLabelPosition.Start,
+            maxFieldWidth = fieldMaxWidth,
         )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = startIndexInput,
-                onValueChange = { startIndexInput = it },
-                label = { Text("Start") },
-                isError = startIndexError != null,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                ),
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-            )
+        PBTextField(
+            label = "Start",
+            value = startIndexInput,
+            onValueChange = { startIndexInput = it },
+            labelPosition = PBLabelPosition.Start,
+            isError = startIndexError != null,
+            maxFieldWidth = fieldMaxWidth,
+        )
 
-            OutlinedTextField(
-                value = endIndexInput,
-                onValueChange = { endIndexInput = it },
-                label = { Text("End") },
-                isError = endIndexError != null,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                ),
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-            )
-        }
+        PBTextField(
+            label = "End",
+            value = endIndexInput,
+            onValueChange = { endIndexInput = it },
+            labelPosition = PBLabelPosition.Start,
+            isError = endIndexError != null,
+            maxFieldWidth = fieldMaxWidth,
+        )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Name?") },
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                keyboardActions = KeyboardActions(
-                    onSend = { saveDefinition() }
-                )
-            )
-
-            val buttonColors = ButtonDefaults.buttonColors()
-            IconButton(
-                content = {
-                    if (definition == null) {
-                        Icon(Icons.Default.Add, "Add")
-                    } else {
-                        Icon(Icons.Default.Save, "Save")
-                    }
-                },
-                colors = IconButtonDefaults.iconButtonColors()
-                    .copy(
-                        containerColor = buttonColors.containerColor,
-                        contentColor = buttonColors.contentColor,
-                        disabledContainerColor = buttonColors.disabledContainerColor,
-                        disabledContentColor = buttonColors.disabledContentColor
-                    ),
-                enabled = isValid,
-                onClick = saveDefinition,
-                modifier = Modifier.offset(y = 4.dp)
-            )
-        }
+        DefaultButton(
+            content = { Text(text = "Save definition") },
+            onClick = saveDefinition,
+            enabled = isValid,
+            modifier = Modifier.align(Alignment.End),
+        )
     }
 }
 

@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
-version = "1.3.4"
+version = "2.0.0"
 
 kotlin {
     jvm("desktop")
@@ -19,27 +19,30 @@ kotlin {
         freeCompilerArgs.add("-Xwhen-guards")
     }
 
+    jvmToolchain {
+        // Runs with JBR-21 for Jewel L&F
+        languageVersion = JavaLanguageVersion.of(21)
+        @Suppress("UnstableApiUsage")
+        vendor = JvmVendorSpec.JETBRAINS
+    }
+
     sourceSets {
         val desktopMain by getting
 
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
-            implementation(compose.materialIconsExtended)
+            implementation(libs.bundles.jewel)
+
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.multiplatform.settings)
             implementation(libs.filekit.dialogs)
-
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive-layout:1.1.2")
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.1.2")
 
             implementation(libs.protobuf.java)
             implementation(libs.protobuf.java.util)
@@ -50,7 +53,9 @@ kotlin {
         }
 
         desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
+            implementation(compose.desktop.currentOs) {
+                exclude(group = "org.jetbrains.compose.material")
+            }
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
@@ -72,13 +77,9 @@ compose.desktop {
 
             macOS {
                 setDockNameSameAsPackageName
-                iconFile = file("icons/app-icon.icns")
+                iconFile.set(project.file("src/desktopMain/resources/icons/app-icon.icns"))
                 bundleID = "fr.nicopico.petitboutiste"
             }
-        }
-
-        buildTypes.release.proguard {
-            configurationFiles.from(project.file("compose-desktop.pro"))
         }
     }
 }

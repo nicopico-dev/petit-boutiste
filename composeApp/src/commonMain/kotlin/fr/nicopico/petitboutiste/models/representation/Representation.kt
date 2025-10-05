@@ -1,6 +1,5 @@
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteArray
@@ -17,15 +16,24 @@ val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 data class Representation(
     val dataRenderer: DataRenderer,
     val argumentValues: ArgumentValues = emptyArgumentValues(),
+    val submitted: Boolean = false,
 )
 
 val Representation.isOff: Boolean
     get() = dataRenderer == DataRenderer.Off
 
+/**
+ * A representation is ready if:
+ * the representation does not require any user validation
+ * *or*
+ * the user explicitly submitted the representation for rendering
+ */
+val Representation.isReady: Boolean
+    get() = !dataRenderer.requireUserValidation || submitted
 
 fun Representation.render(byteItem: ByteItem): RenderResult {
     // TODO Optimization: memoize the latest render to prevent multiple renderings of the same payload
-    log("Rendering with $this...")
+    require(isReady) { "Representation must be ready!" }
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
             ?.let { render -> RenderResult.Success(render) }

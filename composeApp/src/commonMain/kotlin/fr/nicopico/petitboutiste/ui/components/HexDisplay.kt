@@ -1,15 +1,14 @@
 package fr.nicopico.petitboutiste.ui.components
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,9 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,6 +32,9 @@ import fr.nicopico.petitboutiste.models.extensions.name
 import fr.nicopico.petitboutiste.models.extensions.size
 import fr.nicopico.petitboutiste.ui.infra.preview.ByteItemsParameterProvider
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
+import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import org.jetbrains.jewel.ui.component.Text
+import org.jetbrains.jewel.ui.component.VerticallyScrollableContainer
 
 private val COLUMN_WIDTH = 40.dp
 
@@ -46,9 +45,8 @@ fun HexDisplay(
     selectedByteItem: ByteItem? = null,
     onByteItemClicked: (ByteItem) -> Unit = {},
 ) {
-
     if (byteItems.isNotEmpty()) {
-        BoxWithConstraints {
+        BoxWithConstraints(modifier) {
             val availableWidthPx = constraints.maxWidth
             val columnWidthPx = with(LocalDensity.current) {
                 COLUMN_WIDTH.toPx().toInt()
@@ -58,14 +56,17 @@ fun HexDisplay(
             // Add grid state to track scrolling
             val gridState = rememberLazyGridState()
 
-            // Use Box to position the grid and scrollbar
-            Box(modifier = modifier) {
+            // TODO The scrollbar sometimes overlap at the bottom of the container
+            VerticallyScrollableContainer(
+                scrollState = gridState as ScrollableState,
+                style = JewelThemeUtils.scrollbarStyle,
+            ) {
                 LazyVerticalGrid(
                     columns = GridCells.FixedSize(COLUMN_WIDTH),
                     state = gridState,
+                    horizontalArrangement = Arrangement.Start,
+                    verticalArrangement = Arrangement.Top,
                     modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalArrangement = Arrangement.Top
                 ) {
                     items(
                         items = byteItems,
@@ -84,28 +85,25 @@ fun HexDisplay(
                         Column(
                             horizontalAlignment = Alignment.Start,
                             modifier = Modifier
-                                .padding(horizontal = 4.dp)
+                                .padding(4.dp)
                                 .clickable { onByteItemClicked(item) }
                                 .let {
                                     when (item) {
                                         is ByteItem.Single -> it
-                                        is ByteItem.Group if item.incomplete -> it.border(1.dp, MaterialTheme.colorScheme.error)
-                                        is ByteItem.Group -> it.border(1.dp, MaterialTheme.colorScheme.primary)
+                                        is ByteItem.Group if item.incomplete -> it.border(1.dp, JewelThemeUtils.colors.errorColor)
+                                        is ByteItem.Group -> it.border(1.dp, JewelThemeUtils.colors.accentColor)
                                     }
                                 }
                                 .let {
                                     if (item == selectedByteItem) {
-                                        it.background(MaterialTheme.colorScheme.primaryContainer)
+                                        it.background(JewelThemeUtils.colors.accentContainer)
                                     } else it
                                 }
                                 .padding(4.dp)
                         ) {
                             Text(
                                 text = item.toString(),
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 18.sp
-                                )
+                                style = JewelThemeUtils.typography.data,
                             )
 
                             val index = if (item.firstIndex != item.lastIndex) {
@@ -125,7 +123,7 @@ fun HexDisplay(
                                 style = TextStyle(
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 8.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = JewelThemeUtils.colors.accentColor,
                                 ),
                                 softWrap = false,
                                 maxLines = 1,
@@ -135,11 +133,6 @@ fun HexDisplay(
                     }
                 }
             }
-
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(gridState),
-            )
         }
     } else Box(modifier)
 }

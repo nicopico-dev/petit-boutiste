@@ -24,6 +24,11 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+        maven("https://www.jetbrains.com/intellij-repository/releases") {
+            mavenContent {
+                includeGroupAndSubgroups("com.jetbrains.intellij.platform")
+            }
+        }
         mavenCentral()
     }
 }

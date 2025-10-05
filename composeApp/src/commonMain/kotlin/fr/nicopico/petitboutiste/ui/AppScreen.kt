@@ -12,6 +12,7 @@ import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
+import fr.nicopico.petitboutiste.ui.components.TabContent
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -26,39 +27,14 @@ fun AppScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // TODO Show toolbar for most-used elements (load, save, clear)
-        // Tab bar for switching between tabs
-        TabBar(
-            tabs = tabs,
-            selectedTabId = selectedTabId,
-            onTabSelected = { tabId ->
-                onAppEvent(AppEvent.SelectTabEvent(tabId))
-            },
-            onTabAdded = {
-                onAppEvent(AppEvent.AddNewTabEvent)
-            },
-            onTabClosed = { tabId ->
-                onAppEvent(AppEvent.RemoveTabEvent(tabId))
-            },
-            onTabRenamed = { tabId, newName ->
-                onAppEvent(AppEvent.RenameTabEvent(tabId, newName))
-            }
-        )
-
         // Main app screen with the selected tab's data
         TabContent(
             inputData = selectedTab.inputData,
-            groupDefinitions = selectedTab.groupDefinitions,
+            definitions = selectedTab.groupDefinitions,
             inputType = selectedTab.inputType,
-            onInputDataChanged = { newData ->
-                onAppEvent(AppEvent.CurrentTabEvent.ChangeInputDataEvent(newData))
+            onCurrentTabEvent = { currentTabEvent ->
+                onAppEvent(currentTabEvent)
             },
-            onGroupDefinitionsChanged = { newDefinitions ->
-                onAppEvent(AppEvent.CurrentTabEvent.ChangeDefinitionsEvent(newDefinitions))
-            },
-            onInputTypeChanged = { newInputType ->
-                onAppEvent(AppEvent.CurrentTabEvent.ChangeInputTypeEvent(newInputType))
-            }
         )
     }
 }

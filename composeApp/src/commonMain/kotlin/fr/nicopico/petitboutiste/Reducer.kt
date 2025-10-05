@@ -19,7 +19,7 @@ class Reducer(
     // TODO Handle Concurrent changes to the AppState
     // TODO Remove usage of runBlocking
     operator fun invoke(state: AppState, event: AppEvent): AppState {
-        log("Received event: $event on state: $state...")
+        log("Received event: $event...")
         return when (event) {
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
@@ -63,11 +63,30 @@ class Reducer(
                 }
             }
 
-            is AppEvent.CurrentTabEvent.ChangeDefinitionsEvent -> {
+            is AppEvent.CurrentTabEvent.AddDefinitionEvent -> {
                 state.updateCurrentTab {
                     copy(
-                        groupDefinitions = event.definitions,
+                        groupDefinitions = groupDefinitions + event.definition,
+                    )
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.UpdateDefinitionEvent -> {
+                state.updateCurrentTab {
+                    val updatedDefinitions = groupDefinitions.map { definition ->
+                        if (definition == event.sourceDefinition) event.updatedDefinition else definition
+                    }
+                    copy(
+                        groupDefinitions = updatedDefinitions,
                         templateData = templateData?.copy(definitionsHaveChanged = true),
+                    )
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.DeleteDefinitionEvent -> {
+                state.updateCurrentTab {
+                    copy(
+                        groupDefinitions = groupDefinitions - event.definition,
                     )
                 }
             }
@@ -138,7 +157,6 @@ class Reducer(
                 state
             }
             //endregion
-
         }.also {
             log("  -> $it")
         }

@@ -1,24 +1,32 @@
 [versions]
-androidx-lifecycle = "2.9.3"
-composeHotReload = "1.0.0-beta06"
-composeMultiplatform = "1.9.0-rc01"
-filekit = "0.10.0"
-kotlin = "2.2.10"
+androidx-lifecycle = "2.9.4"
+composeHotReload = "1.0.0-beta09"
+composeMultiplatform = "1.9.0"
+filekit = "0.12.0"
+intellijPlatform = "252.25557.178" # https://mvnrepository.com/artifact/com.jetbrains.intellij.platform/core
+jewel = "0.30.0-252.26252" # https://central.sonatype.com/artifact/org.jetbrains.jewel/jewel-int-ui-standalone/versions
+kotlin = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 multiplatform-settings = "1.3.0"
-protobuf = "4.31.1"
+protobuf = "4.32.0"
 
 [libraries]
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
+intellij-platform-icons = { module = "com.jetbrains.intellij.platform:icons", version.ref = "intellijPlatform" }
+jewel-int-ui-standalone = { module = "org.jetbrains.jewel:jewel-int-ui-standalone", version.ref = "jewel" }
+jewel-int-ui-decorated-window = { module = "org.jetbrains.jewel:jewel-int-ui-decorated-window", version.ref = "jewel" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobuf" }
 protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util", version.ref = "protobuf" }
+
+[bundles]
+jewel = [ "jewel-int-ui-standalone", "jewel-int-ui-decorated-window", "intellij-platform-icons" ]
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }

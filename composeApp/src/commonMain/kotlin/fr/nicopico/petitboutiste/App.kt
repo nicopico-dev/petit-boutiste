@@ -9,12 +9,12 @@ import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
 @Composable
 fun App(
     appState: AppState,
-    onAppEvent: (AppEvent) -> Unit,
+    onEvent: (AppEvent) -> Unit,
 ) {
     val tabs = appState.tabs
     val selectedTabId = appState.selectedTabId
 
     PetitBoutisteTheme {
-        AppScreen(tabs, selectedTabId, onAppEvent)
+        AppScreen(tabs, selectedTabId, onEvent)
     }
 }

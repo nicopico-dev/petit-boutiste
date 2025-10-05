@@ -1,10 +1,8 @@
 package fr.nicopico.petitboutiste.ui
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
@@ -15,13 +13,16 @@ import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import kotlinx.coroutines.launch
+import org.jetbrains.jewel.ui.icons.AllIconsKeys
+import org.jetbrains.jewel.ui.painter.rememberResourcePainterProvider
 
 @Composable
-fun FrameWindowScope.PetitBoutisteMenuBar(
+fun FrameWindowScope.PBMenuBar(
     currentTab: TabData,
-    onMenuEvent: (AppEvent) -> Unit,
+    onEvent: (AppEvent) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
+    val warningIcon by rememberResourcePainterProvider(AllIconsKeys.General.Warning).getPainter()
 
     MenuBar {
         Menu("Template", mnemonic = 'T') {
@@ -37,7 +38,7 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
                             title = "Load template",
                             operation = FileDialogOperation.ChooseFile("json")
                         ) { selectedFile ->
-                            onMenuEvent(CurrentTabEvent.LoadTemplateEvent(selectedFile))
+                            onEvent(CurrentTabEvent.LoadTemplateEvent(selectedFile))
                         }
                     }
                 }
@@ -47,7 +48,7 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
                 shortcut = KeyShortcut(Key.S, meta = true),
                 onClick = {
                     if (currentTab.templateData != null) {
-                        onMenuEvent(
+                        onEvent(
                             CurrentTabEvent.SaveTemplateEvent(
                                 currentTab.templateData.templateFile,
                                 updateExisting = true
@@ -62,7 +63,7 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
                                     extension = "json",
                                 ),
                             ) { selectedFile ->
-                                onMenuEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
+                                onEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
                             }
                         }
                     }
@@ -83,7 +84,7 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
                             if (selectedFile.exists()) {
                                 // TODO Confirm overwrite, otherwise exit
                             }
-                            onMenuEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
+                            onEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
                         }
                     }
                 }
@@ -93,10 +94,10 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
         Menu("Definitions", mnemonic = 'D') {
             Item(
                 text = "Clear all definitions",
-                icon = rememberVectorPainter(Icons.Outlined.Warning),
+                icon = warningIcon,
                 onClick = {
                     // TODO Ask confirmation
-                    onMenuEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
+                    onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
                 }
             )
 
@@ -110,7 +111,7 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
                             title = "Load definitions from...",
                             operation = FileDialogOperation.ChooseFile("json")
                         ) { selectedFile ->
-                            onMenuEvent(CurrentTabEvent.AddDefinitionsFromTemplateEvent(selectedFile))
+                            onEvent(CurrentTabEvent.AddDefinitionsFromTemplateEvent(selectedFile))
                         }
                     }
                 }
@@ -126,7 +127,7 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
                             title = "Select export folder for legacy templates",
                             operation = FileDialogOperation.ChooseFolder,
                         ) { selectedFolder ->
-                            onMenuEvent(AppEvent.ExportLegacyTemplatesEvent(selectedFolder))
+                            onEvent(AppEvent.ExportLegacyTemplatesEvent(selectedFolder))
                         }
                     }
                 }
@@ -141,7 +142,7 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
                             operation = FileDialogOperation.ChooseFile("json"),
                         ) { selectedFile ->
                             val outputFolder = selectedFile.parentFile
-                            onMenuEvent(AppEvent.ConvertLegacyTemplatesBundleEvent(selectedFile, outputFolder))
+                            onEvent(AppEvent.ConvertLegacyTemplatesBundleEvent(selectedFile, outputFolder))
                         }
                     }
                 }
@@ -151,10 +152,10 @@ fun FrameWindowScope.PetitBoutisteMenuBar(
 
             Item(
                 text = "Clear all legacy templates",
-                icon = rememberVectorPainter(Icons.Outlined.Warning),
+                icon = warningIcon,
                 onClick = {
                     // TODO Ask confirmation
-                    onMenuEvent(AppEvent.ClearAllLegacyTemplates)
+                    onEvent(AppEvent.ClearAllLegacyTemplates)
                 }
             )
         }
