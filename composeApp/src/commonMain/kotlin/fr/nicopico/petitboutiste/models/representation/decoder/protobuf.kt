@@ -27,6 +27,9 @@ val PROTOBUF_ARGUMENTS = listOf(
     ),
 )
 
+private val protobufPrinter = JsonFormat.printer()
+    .preservingProtoFieldNames()
+
 fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.Protobuf)
     return decodeProtobufPayload(
@@ -70,5 +73,5 @@ private fun decodeProtobufPayload(payload: ByteArray, protoFile: File, messageTy
     val dynamicMessage = DynamicMessage.parseFrom(messageTypeDescriptor, payload)
 
     // Convert the dynamic Protobuf message to a JSON string
-    return JsonFormat.printer().print(dynamicMessage)
+    return protobufPrinter.print(dynamicMessage)
 }
