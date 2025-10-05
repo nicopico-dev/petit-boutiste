@@ -39,9 +39,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.bundles.jewel)
-            // TODO Remove Material dependencies
-            implementation(compose.material3)
-            implementation(compose.materialIconsExtended) // ?
 
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.multiplatform.settings)
@@ -57,8 +54,7 @@ kotlin {
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs) {
-                // TODO Remove Material dependencies
-                // exclude(group = "org.jetbrains.compose.material")
+                exclude(group = "org.jetbrains.compose.material")
             }
             implementation(libs.kotlinx.coroutinesSwing)
         }
