@@ -15,9 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,10 +23,10 @@ import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
-import fr.nicopico.petitboutiste.utils.hasDifferentEntriesFrom
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.Outline
@@ -44,19 +42,12 @@ fun ByteItemRender(
     onRepresentationChanged: (Representation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val rendererOutput by remember(representation, byteItem) {
+    val rendererOutput by remember(byteItem, representation) {
         derivedStateOf {
-            representation.render(byteItem)
+            if (representation.isReady) {
+                representation.render(byteItem)
+            } else RenderResult.None
         }
-    }
-
-    // Dirty is true when the current arguments are different from the one used for then render
-    var dirty by remember(representation.dataRenderer) {
-        mutableStateOf(false)
-    }
-    // Wait for the "Render" button if the renderer requires user validation
-    var rendered by remember(representation.dataRenderer) {
-        mutableStateOf(!representation.dataRenderer.requireUserValidation)
     }
 
     Row(
@@ -79,8 +70,13 @@ fun ByteItemRender(
             PBDropdown(
                 items = DataRenderer.entries,
                 selection = representation.dataRenderer,
-                onItemSelected = {
-                    onRepresentationChanged(representation.copy(dataRenderer = it))
+                onItemSelected = { dataRenderer ->
+                    onRepresentationChanged(
+                        representation.copy(
+                            dataRenderer = dataRenderer,
+                            submitted = false,
+                        )
+                    )
                 },
                 getItemLabel = DataRenderer::label,
                 modifier = Modifier.fillMaxWidth()
@@ -102,15 +98,13 @@ fun ByteItemRender(
                 arguments = representation.dataRenderer.arguments,
                 values = representation.argumentValues,
                 showSubmitButton = representation.dataRenderer.requireUserValidation,
-                onSubmit = { argumentValues ->
-                    if (argumentValues hasDifferentEntriesFrom representation.argumentValues) {
-                        onRepresentationChanged(representation.copy(argumentValues = argumentValues))
-                    }
-                    dirty = false
-                    rendered = true
-                },
-                onArgumentsChangeWithoutSubmit = {
-                    dirty = true
+                onArgumentsChange = { argumentValues, submit ->
+                    onRepresentationChanged(
+                        representation.copy(
+                            argumentValues = argumentValues,
+                            submitted = submit,
+                        )
+                    )
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -122,7 +116,7 @@ fun ByteItemRender(
             modifier = Modifier.fillMaxHeight().padding(vertical = 16.dp)
         )
 
-        if (!dirty && rendered) {
+        if (representation.isReady) {
             TextArea(
                 state = remember(rendererOutput) {
                     TextFieldState(

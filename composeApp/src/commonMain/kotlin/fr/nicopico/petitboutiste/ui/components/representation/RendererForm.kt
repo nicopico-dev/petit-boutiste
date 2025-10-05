@@ -24,8 +24,7 @@ fun RendererForm(
     arguments: List<DataRenderer.Argument>,
     values: ArgumentValues,
     showSubmitButton: Boolean,
-    onSubmit: (ArgumentValues) -> Unit,
-    onArgumentsChangeWithoutSubmit: (ArgumentValues) -> Unit = {},
+    onArgumentsChange: (ArgumentValues, submit: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val argumentValues = remember(arguments, values) {
@@ -46,13 +45,10 @@ fun RendererForm(
                         argumentValues.remove(argument.key)
                     }
 
-                    if (showSubmitButton) {
-                        // Do not submit the form automatically,
-                        // but indicate that some parameters have changed
-                        onArgumentsChangeWithoutSubmit(argumentValues)
-                    } else {
-                        onSubmit(argumentValues)
-                    }
+                    onArgumentsChange(
+                        argumentValues,
+                        !showSubmitButton, // Submit automatically if the form does not show a submit button
+                    )
                 },
                 modifier = modifier.fillMaxWidth()
             )
@@ -64,7 +60,7 @@ fun RendererForm(
                     Text("Render")
                 },
                 onClick = {
-                    onSubmit(argumentValues)
+                    onArgumentsChange(argumentValues, true)
                 },
                 modifier = Modifier.align(Alignment.End)
             )
@@ -80,7 +76,7 @@ private fun RendererFormPreview() {
             DataRenderer.Protobuf.arguments,
             values = emptyArgumentValues(),
             showSubmitButton = true,
-            onSubmit = {}
+            onArgumentsChange = { _, _ -> },
         )
     }
 }

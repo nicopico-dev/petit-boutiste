@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.isOff
+import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.renderAsString
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
 import org.jetbrains.jewel.foundation.theme.JewelTheme
@@ -70,7 +71,11 @@ fun ByteGroupDefinitionItem(
                 overflow = TextOverflow.Ellipsis,
             )
 
-            val valueText = if (byteGroup != null && !definition.representation.isOff) {
+            val valueText = if (
+                byteGroup != null
+                && !definition.representation.isOff
+                && definition.representation.isReady
+            ) {
                 definition.representation.renderAsString(byteGroup)
             } else null
             if (valueText != null) {
