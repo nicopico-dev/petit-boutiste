@@ -68,7 +68,7 @@ fun ByteGroupDefinitions(
                             onAddDefinition(savedDefinition)
                         }
                     },
-                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 24.dp),
+                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
                 )
             }
         }
