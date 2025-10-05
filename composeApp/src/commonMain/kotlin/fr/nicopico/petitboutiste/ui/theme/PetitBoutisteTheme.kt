@@ -1,21 +1,31 @@
 package fr.nicopico.petitboutiste.ui.theme
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-
-private val PetitBoutisteColorScheme = lightColorScheme(
-    primary = Color(0xFF1F3D91),
-    primaryContainer = Color(0xFFDEE4F8),
-    surfaceVariant = Color(0xFFE2F4FB),
-    onSurfaceVariant = Color(0xFF1C1B1F)
-)
+import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
+import org.jetbrains.jewel.intui.standalone.theme.darkThemeDefinition
+import org.jetbrains.jewel.intui.standalone.theme.default
+import org.jetbrains.jewel.intui.standalone.theme.lightThemeDefinition
+import org.jetbrains.jewel.intui.window.decoratedWindow
+import org.jetbrains.jewel.intui.window.styling.dark
+import org.jetbrains.jewel.intui.window.styling.light
+import org.jetbrains.jewel.ui.ComponentStyling
+import org.jetbrains.jewel.window.styling.TitleBarStyle
+import org.jetbrains.skiko.SystemTheme
+import org.jetbrains.skiko.currentSystemTheme
 
 @Composable
 fun PetitBoutisteTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = PetitBoutisteColorScheme,
-        content = content
-    )
+    // TODO Follow system theme changes
+    val isDark = currentSystemTheme == SystemTheme.DARK
+
+    IntUiTheme(
+        theme = if (isDark) JewelTheme.darkThemeDefinition() else JewelTheme.lightThemeDefinition(),
+        styling = ComponentStyling.default()
+            .decoratedWindow(
+                titleBarStyle = if (isDark) TitleBarStyle.dark() else TitleBarStyle.light(),
+            )
+    ) {
+        content()
+    }
 }

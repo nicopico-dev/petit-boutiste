@@ -108,7 +108,7 @@ fun DecoratedWindowScope.PBTitleBar(
                                                 Icon(
                                                     key = AllIconsKeys.General.Close,
                                                     contentDescription = CLOSE_TAB_DESCRIPTION,
-                                                    tint = JewelThemeUtils.dangerousActionColor,
+                                                    tint = JewelThemeUtils.colors.dangerousActionColor,
                                                 )
                                             },
                                             modifier = Modifier.size(20.dp),
@@ -171,7 +171,7 @@ private fun TabItem(
                         },
                         maxLines = 1,
                         fontStyle = FontStyle.Italic,
-                        color = JewelThemeUtils.subTextColor,
+                        color = JewelThemeUtils.colors.subTextColor,
                         style = TextStyle.Default.copy(fontSize = 12.sp)
                     )
                 }

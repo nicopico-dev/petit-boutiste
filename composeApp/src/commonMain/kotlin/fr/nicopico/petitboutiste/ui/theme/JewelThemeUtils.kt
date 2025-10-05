@@ -22,16 +22,6 @@ import org.jetbrains.skiko.currentSystemTheme
 @Suppress("ClassName")
 object JewelThemeUtils {
 
-    @Deprecated("Use colors object", ReplaceWith("JewelThemeUtils.colors.iconOnLightTint"))
-    val iconOnLightTint = colors.iconOnLightTint
-    @Deprecated("Use colors object", ReplaceWith("JewelThemeUtils.colors.iconOnDarkTint"))
-    val iconOnDarkTint = colors.iconOnDarkTint
-
-    @Deprecated("Use colors object", ReplaceWith("JewelThemeUtils.colors.subTextColor"))
-    val subTextColor = colors.subTextColor
-    @Deprecated("Use colors object", ReplaceWith("JewelThemeUtils.colors.dangerousActionColor"))
-    val dangerousActionColor = colors.dangerousActionColor
-
     val dividerStyle: DividerStyle
         @Composable
         get() {
