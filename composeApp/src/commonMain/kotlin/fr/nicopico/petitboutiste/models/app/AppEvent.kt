@@ -15,7 +15,12 @@ sealed class AppEvent {
     sealed class CurrentTabEvent : AppEvent() {
         data class ChangeInputTypeEvent(val type: InputType) : CurrentTabEvent()
         data class ChangeInputDataEvent(val data: DataString) : CurrentTabEvent()
-        data class ChangeDefinitionsEvent(val definitions: List<ByteGroupDefinition>): CurrentTabEvent()
+        data class AddDefinitionEvent(val definition: ByteGroupDefinition): CurrentTabEvent()
+        data class UpdateDefinitionEvent(
+            val sourceDefinition: ByteGroupDefinition,
+            val updatedDefinition: ByteGroupDefinition,
+        ): CurrentTabEvent()
+        data class DeleteDefinitionEvent(val definition: ByteGroupDefinition): CurrentTabEvent()
         data object ClearAllDefinitionsEvent : CurrentTabEvent()
 
         data class LoadTemplateEvent(val templateFile: File) : CurrentTabEvent()

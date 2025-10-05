@@ -11,8 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.extensions.removeAt
-import fr.nicopico.petitboutiste.models.extensions.replace
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.typography
@@ -20,7 +18,9 @@ import org.jetbrains.jewel.ui.typography
 @Composable
 fun ByteGroupDefinitions(
     definitions: List<ByteGroupDefinition>,
-    onDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
+    onAddDefinition: (ByteGroupDefinition) -> Unit,
+    onUpdateDefinition: (source: ByteGroupDefinition, update: ByteGroupDefinition) -> Unit,
+    onDeleteDefinition: (ByteGroupDefinition) -> Unit,
     modifier: Modifier = Modifier,
     selectedDefinition: ByteGroupDefinition? = null,
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
@@ -53,7 +53,7 @@ fun ByteGroupDefinitions(
                         }
                     },
                     onDelete = {
-                        onDefinitionsChanged(definitions.removeAt(index))
+                        onDeleteDefinition(definition)
                     }
                 )
             }
@@ -62,13 +62,11 @@ fun ByteGroupDefinitions(
                 ByteGroupDefinitionForm(
                     definition = selectedDefinition,
                     onDefinitionSaved = { savedDefinition ->
-                        val updatedDefinitions = if (selectedDefinition != null) {
-                            definitions.replace(selectedDefinition, savedDefinition)
+                        if (selectedDefinition != null) {
+                            onUpdateDefinition(selectedDefinition, savedDefinition)
                         } else {
-                            definitions + savedDefinition
+                            onAddDefinition(savedDefinition)
                         }
-
-                        onDefinitionsChanged(updatedDefinitions.sortedBy { it.indexes.start })
                     },
                     modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 24.dp),
                 )

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
@@ -35,10 +36,8 @@ import org.jetbrains.jewel.ui.component.Text
 fun TabContent(
     inputData: DataString,
     definitions: List<ByteGroupDefinition> = emptyList(),
-    onInputDataChanged: (DataString) -> Unit,
-    onDefinitionsChanged: (List<ByteGroupDefinition>) -> Unit,
     inputType: InputType = InputType.HEX,
-    onInputTypeChanged: (InputType) -> Unit = {},
+    onCurrentTabEvent: (CurrentTabEvent) -> Unit = {},
 ) {
     val byteItems = remember(inputData, definitions) {
         inputData.toByteItems(definitions)
@@ -72,18 +71,30 @@ fun TabContent(
             MainPane(
                 inputData = inputData,
                 byteItems = byteItems,
-                onInputDataChanged = onInputDataChanged,
+                onInputDataChanged = { data ->
+                    onCurrentTabEvent(CurrentTabEvent.ChangeInputDataEvent(data))
+                },
                 selectedByteItem = selectedByteItem,
                 onByteItemSelected = { selectedByteItem = it },
                 inputType = inputType,
-                onInputTypeChanged = onInputTypeChanged,
+                onInputTypeChanged = { inputType ->
+                    onCurrentTabEvent(CurrentTabEvent.ChangeInputTypeEvent(inputType))
+                },
                 modifier = Modifier.padding(16.dp),
             )
         },
         definitions = {
             ByteGroupDefinitions(
                 definitions = definitions,
-                onDefinitionsChanged = onDefinitionsChanged,
+                onAddDefinition = { definition ->
+                    onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
+                },
+                onUpdateDefinition = { source, update ->
+                    onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(source, update))
+                },
+                onDeleteDefinition = { definition ->
+                    onCurrentTabEvent(CurrentTabEvent.DeleteDefinitionEvent(definition))
+                },
                 selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
                 onDefinitionSelected = { definition ->
                     // Select the ByteGroup matching this definition
@@ -109,11 +120,7 @@ fun TabContent(
                         val updatedDefinition = currentDefinition
                             .copy(representation = representation)
 
-                        onDefinitionsChanged(
-                            definitions.map {
-                                if (it == currentDefinition) updatedDefinition else it
-                            }
-                        )
+                        onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(currentDefinition, updatedDefinition))
                     } else {
                         singleByteRepresentation = representation
                     }
@@ -135,8 +142,6 @@ private fun AppScreenPreview() {
             Text("Hex Input Preview", style = labelTextStyle)
             TabContent(
                 HexString(rawHexString = "33DAADDAAD"),
-                onInputDataChanged = {},
-                onDefinitionsChanged = {},
                 inputType = InputType.HEX
             )
 
@@ -146,8 +151,6 @@ private fun AppScreenPreview() {
             Text("Binary Input Preview", style = labelTextStyle)
             TabContent(
                 HexString(rawHexString = "33DAADDAAD"),
-                onInputDataChanged = {},
-                onDefinitionsChanged = {},
                 inputType = InputType.BINARY
             )
         }

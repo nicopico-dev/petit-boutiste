@@ -32,15 +32,9 @@ fun AppScreen(
             inputData = selectedTab.inputData,
             definitions = selectedTab.groupDefinitions,
             inputType = selectedTab.inputType,
-            onInputDataChanged = { newData ->
-                onAppEvent(AppEvent.CurrentTabEvent.ChangeInputDataEvent(newData))
+            onCurrentTabEvent = { currentTabEvent ->
+                onAppEvent(currentTabEvent)
             },
-            onDefinitionsChanged = { newDefinitions ->
-                onAppEvent(AppEvent.CurrentTabEvent.ChangeDefinitionsEvent(newDefinitions))
-            },
-            onInputTypeChanged = { newInputType ->
-                onAppEvent(AppEvent.CurrentTabEvent.ChangeInputTypeEvent(newInputType))
-            }
         )
     }
 }
