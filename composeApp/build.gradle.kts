@@ -65,6 +65,9 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "fr.nicopico.petitboutiste.MainKt"
+        buildTypes.release.proguard {
+            configurationFiles.from(project.file("compose-desktop.pro"))
+        }
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

@@ -5,6 +5,11 @@
 # Ensure our own code is not removed by shrinking
 -keep,includedescriptorclasses class fr.nicopico.petitboutiste.** { *; }
 
+# Jewel
+-dontoptimize
+-dontwarn androidx.compose.desktop.DesktopTheme*
+-keep class org.jetbrains.jewel.ui.**
+
 # FileKit / JNA
 -keep class com.sun.jna.** { *; }
 -keep class * implements com.sun.jna.* { *; }
