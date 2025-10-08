@@ -77,7 +77,9 @@ fun DecoratedWindowScope.PBTitleBar(
         derivedStateOf { appState.selectedTab }
     }
 
-    TitleBar(modifier.newFullscreenControls()) {
+    TitleBar(
+        modifier.newFullscreenControls().height(50.dp)
+    ) {
         Row(
             Modifier.align(Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
@@ -99,7 +101,7 @@ fun DecoratedWindowScope.PBTitleBar(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(vertical = 4.dp)
                                 ) {
-                                    TabItem(tabData, Modifier.weight(1f))
+                                    TabItem(tabData, Modifier.weight(1f), fullChangeIndicator = true)
 
                                     if (appState.tabs.size > 1) {
                                         Spacer(Modifier.width(16.dp))
@@ -130,7 +132,12 @@ fun DecoratedWindowScope.PBTitleBar(
                         content = { Text("Add a new tab") },
                     )
                 },
-                content = { TabItem(selectedTab) },
+                content = {
+                    TabItem(
+                        selectedTab,
+                        Modifier.padding(end = 16.dp),
+                    )
+                },
             )
 
             TabToolbar(tabData = selectedTab, onEvent)
@@ -152,6 +159,7 @@ fun DecoratedWindowScope.PBTitleBar(
 private fun TabItem(
     tabData: TabData,
     modifier: Modifier = Modifier,
+    fullChangeIndicator: Boolean = false,
 ) {
     with(tabData) {
         Row(
@@ -174,9 +182,11 @@ private fun TabItem(
 
                         if (templateData.definitionsHaveChanged) {
                             Text(
-                                text = "*",
+                                text = if (fullChangeIndicator) "(Modified)" else "*",
                                 color = JewelThemeUtils.colors.subTextColor,
-                                style = TextStyle.Default.copy(fontSize = 14.sp),
+                                style = TextStyle.Default.copy(
+                                    fontSize = if (fullChangeIndicator) 12.sp else 14.sp
+                                ),
                                 modifier = Modifier.padding(horizontal = 4.dp),
                             )
                         }
