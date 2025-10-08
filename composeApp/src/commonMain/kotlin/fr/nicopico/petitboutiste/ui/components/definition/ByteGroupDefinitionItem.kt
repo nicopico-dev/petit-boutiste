@@ -121,7 +121,7 @@ fun ByteGroupDefinitionItem(
                         Icon(
                             key = AllIconsKeys.General.ArrowDownSmall,
                             contentDescription = "Toggle form",
-                            modifier = Modifier.rotate(if (displayForm) 0f else 180f)
+                            modifier = Modifier.rotate(if (displayForm) 180f else 0f)
                         )
                     },
                     onClick = {
