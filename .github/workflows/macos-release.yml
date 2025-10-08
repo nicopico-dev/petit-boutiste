@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         if: ${{ !env.ACT }}
         with:
           distribution: 'jetbrains'
@@ -75,7 +75,7 @@ jobs:
           echo "ZIP_PATH=$ZIP_PATH" >> $GITHUB_ENV
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version }}
           name: Release v${{ github.event.inputs.version }}
