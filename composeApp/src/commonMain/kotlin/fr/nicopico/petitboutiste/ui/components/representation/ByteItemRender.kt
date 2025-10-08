@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.ui.components.representation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -138,7 +139,8 @@ fun ByteItemRender(
                     is RenderResult.None -> Outline.Warning
                 },
                 textStyle = JewelTheme.typography.h2TextStyle,
-                undecorated = true,
+                undecorated = false,
+                decorationBoxModifier = Modifier.background(JewelThemeUtils.colors.windowBackgroundColor),
                 modifier = Modifier
                     .widthIn(min = 200.dp)
                     .fillMaxSize()

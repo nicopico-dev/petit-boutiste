@@ -13,6 +13,7 @@ import org.jetbrains.jewel.ui.component.styling.DividerStyle
 import org.jetbrains.jewel.ui.component.styling.ScrollbarStyle
 import org.jetbrains.jewel.ui.component.styling.ScrollbarVisibility
 import org.jetbrains.jewel.ui.component.styling.TrackClickBehavior
+import org.jetbrains.jewel.ui.theme.colorPalette
 import org.jetbrains.jewel.ui.theme.dividerStyle
 import org.jetbrains.jewel.ui.theme.scrollbarStyle
 import org.jetbrains.jewel.ui.util.fromArgbHexStringOrNull
@@ -74,6 +75,10 @@ object JewelThemeUtils {
         val inputBackgroundColor: Color
             @Composable
             get() = JewelTheme.globalColors.panelBackground
+
+        val windowBackgroundColor: Color
+            @Composable
+            get() = JewelTheme.colorPalette.gray[11]
     }
 
     object typography {
