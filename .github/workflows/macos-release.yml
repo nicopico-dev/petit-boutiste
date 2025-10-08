@@ -24,8 +24,8 @@ jobs:
         uses: actions/setup-java@v3
         if: ${{ !env.ACT }}
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: 'jetbrains'
+          java-version: '21'
           cache: 'gradle'
 
       - name: Make Gradle wrapper executable
@@ -81,5 +81,5 @@ jobs:
           name: Release v${{ github.event.inputs.version }}
           body: ${{ github.event.inputs.release_notes }}
           draft: false
-          prerelease: false
+          prerelease: true
           files: ${{ env.ZIP_PATH }}
