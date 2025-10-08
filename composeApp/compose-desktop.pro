@@ -6,9 +6,10 @@
 -keep,includedescriptorclasses class fr.nicopico.petitboutiste.** { *; }
 
 # Jewel
--dontoptimize
+-dontoptimize # required for DecoratedWindow
 -dontwarn androidx.compose.desktop.DesktopTheme*
--keep class org.jetbrains.jewel.ui.**
+-keep class ** extends org.jetbrains.jewel.ui.painter.PainterHint
+-keep class com.jetbrains.JBR* { *; }
 
 # FileKit / JNA
 -keep class com.sun.jna.** { *; }

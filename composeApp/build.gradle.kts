@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -70,13 +69,16 @@ compose.desktop {
         }
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Petit Boutiste"
             packageVersion = version.toString()
             vendor = "Nicolas PICON"
 
             // TODO Add license
             // licenseFile = rootProject.file("LICENSE")
+
+            modules("jdk.unsupported")
+
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
 
             macOS {
                 setDockNameSameAsPackageName
@@ -85,9 +87,4 @@ compose.desktop {
             }
         }
     }
-}
-
-// Compose Hot-Reload! (https://github.com/JetBrains/compose-hot-reload)
-composeCompiler {
-    featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }
