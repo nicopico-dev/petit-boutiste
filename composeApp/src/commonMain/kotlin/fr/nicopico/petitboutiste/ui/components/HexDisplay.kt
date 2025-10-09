@@ -70,6 +70,8 @@ fun HexDisplay(
                 ) {
                     items(
                         items = byteItems,
+                        key = { it.firstIndex..it.lastIndex },
+                        contentType = { it::class },
                         span = { byteItem ->
                             when (byteItem) {
                                 is ByteItem.Group -> {
@@ -80,7 +82,7 @@ fun HexDisplay(
 
                                 is ByteItem.Single -> GridItemSpan(1)
                             }
-                        }
+                        },
                     ) { item ->
                         Column(
                             horizontalAlignment = Alignment.Start,
