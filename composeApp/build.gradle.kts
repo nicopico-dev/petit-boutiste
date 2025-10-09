@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
-version = "2.0.1"
+version = "2.0.2"
 
 kotlin {
     jvm("desktop")
