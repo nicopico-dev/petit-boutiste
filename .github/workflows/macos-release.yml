@@ -83,5 +83,5 @@ jobs:
           name: Release v${{ github.event.inputs.version }}
           body: ${{ github.event.inputs.release_notes }}
           draft: false
-          prerelease: true
+          prerelease: false
           files: ${{ env.ZIP_PATH }}
