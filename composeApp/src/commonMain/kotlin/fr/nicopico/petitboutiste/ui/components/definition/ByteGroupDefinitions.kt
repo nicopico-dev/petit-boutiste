@@ -76,7 +76,7 @@ fun ByteGroupDefinitions(
                     OutlinedButton(
                         content = { Text("Add new definition") },
                         onClick = {
-                            val nextIndex: Int = definitions.last().indexes.last + 1
+                            val nextIndex: Int = if (definitions.isEmpty()) 0 else definitions.last().indexes.last + 1
                             val definition = ByteGroupDefinition(
                                 indexes = nextIndex..nextIndex
                             )
