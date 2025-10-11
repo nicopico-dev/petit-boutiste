@@ -144,7 +144,7 @@ fun ByteItemRender(
                 modifier = Modifier
                     .widthIn(min = 200.dp)
                     .fillMaxSize()
-                    .padding(vertical = 16.dp),
+                    .padding(top = 8.dp, end = 8.dp, bottom = 8.dp),
             )
         }
     }
