@@ -67,6 +67,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         groupDefinitions = groupDefinitions + event.definition,
+                        templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
             }
@@ -87,6 +88,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         groupDefinitions = groupDefinitions - event.definition,
+                        templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
             }
