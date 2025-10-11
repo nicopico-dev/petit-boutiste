@@ -15,8 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.models.input.Base64String
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.ui.InputType
+import fr.nicopico.petitboutiste.ui.components.input.Base64Input
 import fr.nicopico.petitboutiste.ui.components.input.BinaryInput
 import fr.nicopico.petitboutiste.ui.components.input.HexInput
 import fr.nicopico.petitboutiste.ui.components.input.InputTypeToggle
@@ -67,6 +69,12 @@ fun MainPane(
 
             InputType.BINARY -> BinaryInput(
                 value = inputData,
+                onValueChange = { onInputDataChanged(it) },
+                modifier = inputModifier
+            )
+
+            InputType.BASE64 -> Base64Input(
+                value = inputData as? Base64String ?: Base64String(""),
                 onValueChange = { onInputDataChanged(it) },
                 modifier = inputModifier
             )

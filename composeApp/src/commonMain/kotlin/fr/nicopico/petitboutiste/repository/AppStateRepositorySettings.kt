@@ -6,6 +6,7 @@ import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.app.AppState
+import fr.nicopico.petitboutiste.models.input.Base64String
 import fr.nicopico.petitboutiste.models.input.BinaryString
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.InputType
@@ -94,6 +95,7 @@ private fun PersistedTab.toTabData(): TabData {
     val data = when (inputType) {
         InputType.HEX -> hex
         InputType.BINARY -> BinaryString.fromHexString(hex)
+        InputType.BASE64 -> Base64String.fromHexString(hex)
     }
     return TabData(
         id = TabId(id),
