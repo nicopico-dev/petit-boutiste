@@ -47,7 +47,7 @@ fun ByteGroupDefinitionItem(
     form: Slot? = null,
 ) {
     val incomplete = byteGroup?.incomplete ?: false
-    var displayForm by remember(definition) {
+    var displayForm by remember(definition.id) {
         mutableStateOf(false)
     }
 

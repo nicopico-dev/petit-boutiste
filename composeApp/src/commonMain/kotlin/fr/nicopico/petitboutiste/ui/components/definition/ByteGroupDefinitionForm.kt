@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelPosition
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
@@ -24,18 +23,18 @@ private val fieldMaxWidth = 200.dp
 
 @Composable
 fun ByteGroupDefinitionForm(
-    definition: ByteGroupDefinition?,
+    definition: ByteGroupDefinition,
     onDefinitionSaved: (ByteGroupDefinition) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var startIndexInput by remember(definition) {
-        mutableStateOf(definition?.indexes?.start?.toString() ?: "")
+    var startIndexInput by remember(definition.id) {
+        mutableStateOf(definition.indexes.first.toString())
     }
-    var endIndexInput by remember(definition) {
-        mutableStateOf(definition?.indexes?.endInclusive?.toString() ?: "")
+    var endIndexInput by remember(definition.id) {
+        mutableStateOf(definition.indexes.last.toString())
     }
-    var name by remember(definition) {
-        mutableStateOf(definition?.name ?: "")
+    var name by remember(definition.id) {
+        mutableStateOf(definition.name ?: "")
     }
 
     //region Input validation
@@ -73,18 +72,11 @@ fun ByteGroupDefinitionForm(
     //endregion
 
     val saveDefinition: () -> Unit = {
-        val definitionToSave = ByteGroupDefinition(
+        val definitionToSave = definition.copy(
             indexes = startIndexInput.toInt()..endIndexInput.toInt(),
             name = name.ifBlank { null },
-            representation = definition?.representation ?: DEFAULT_REPRESENTATION,
         )
         onDefinitionSaved(definitionToSave)
-
-        if (definition == null) {
-            startIndexInput = ""
-            endIndexInput = ""
-            name = ""
-        }
     }
 
     Column(
@@ -131,10 +123,6 @@ fun ByteGroupDefinitionForm(
 private fun ByteGroupDefinitionFormPreview() {
     WrapForPreview {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ByteGroupDefinitionForm(
-                definition = null,
-                onDefinitionSaved = {},
-            )
             ByteGroupDefinitionForm(
                 definition = ByteGroupDefinition(2..5, "Test Group"),
                 onDefinitionSaved = {},

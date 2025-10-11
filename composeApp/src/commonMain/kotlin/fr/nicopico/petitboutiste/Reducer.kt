@@ -75,7 +75,7 @@ class Reducer(
             is AppEvent.CurrentTabEvent.UpdateDefinitionEvent -> {
                 state.updateCurrentTab {
                     val updatedDefinitions = groupDefinitions.map { definition ->
-                        if (definition == event.sourceDefinition) event.updatedDefinition else definition
+                        if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
                     copy(
                         groupDefinitions = updatedDefinitions,
