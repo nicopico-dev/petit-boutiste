@@ -43,6 +43,7 @@ fun ByteGroupDefinitionItem(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     byteGroup: ByteItem.Group? = null,
+    invalidDefinition: Boolean = false,
     form: Slot? = null,
 ) {
     val incomplete = byteGroup?.incomplete ?: false
@@ -55,7 +56,9 @@ fun ByteGroupDefinitionItem(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = if (incomplete) JewelThemeUtils.colors.errorColor else JewelThemeUtils.colors.borderColor,
+                color = if (incomplete || invalidDefinition) {
+                    JewelThemeUtils.colors.errorColor
+                } else JewelThemeUtils.colors.borderColor,
                 shape = RoundedCornerShape(4.dp)
             )
             .background(if (selected) JewelThemeUtils.colors.accentContainer else Color.Transparent)
@@ -73,12 +76,16 @@ fun ByteGroupDefinitionItem(
                     fontWeight = FontWeight.Bold,
                 )
 
-                val rangeText = with(definition.indexes) {
-                    val incompleteText = if (incomplete) ", incomplete" else ""
-                    "$start..$endInclusive (${count()} bytes$incompleteText)"
+                val rangeSuffix = with(definition.indexes) {
+                    val rangeText = when {
+                        invalidDefinition -> ") - invalid start index"
+                        incomplete -> ", incomplete)"
+                        else -> ")"
+                    }
+                    "$start..$endInclusive (${count()} bytes$rangeText"
                 }
                 Text(
-                    text = rangeText,
+                    text = rangeSuffix,
                     style = JewelTheme.typography.medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

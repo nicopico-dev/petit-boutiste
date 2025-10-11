@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
@@ -29,6 +30,18 @@ fun ByteGroupDefinitions(
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
     byteItems: List<ByteItem> = emptyList(),
 ) {
+    val invalidDefinitions: Set<ByteGroupDefinition> = remember(definitions) {
+        buildSet {
+            var previousDefinitionEnd = -1
+            definitions.forEach { definition ->
+                if (definition.indexes.first <= previousDefinitionEnd) {
+                    add(definition)
+                }
+                previousDefinitionEnd = definition.indexes.last
+            }
+        }
+    }
+
     Column(modifier) {
         Text(
             "Definitions",
@@ -58,6 +71,7 @@ fun ByteGroupDefinitions(
                     onDelete = {
                         onDeleteDefinition(definition)
                     },
+                    invalidDefinition = definition in invalidDefinitions,
                     form = {
                         ByteGroupDefinitionForm(
                             definition = definition,
