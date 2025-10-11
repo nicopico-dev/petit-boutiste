@@ -101,15 +101,13 @@ fun ByteItemRender(
                 values = representation.argumentValues,
                 showSubmitButton = representation.dataRenderer.requireUserValidation,
                 onArgumentsChange = { argumentValues, submit ->
-                    if (submit) {
-                        log("Arguments changed: $argumentValues")
-                        onRepresentationChanged(
-                            representation.copy(
-                                argumentValues = argumentValues,
-                                submitted = true,
-                            )
+                    log("Arguments changed: $argumentValues")
+                    onRepresentationChanged(
+                        representation.copy(
+                            argumentValues = argumentValues,
+                            submitted = submit,
                         )
-                    }
+                    )
                 },
                 modifier = Modifier.fillMaxWidth()
             )
