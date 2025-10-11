@@ -93,18 +93,19 @@ fun FrameWindowScope.PBMenuBar(
 
         Menu("Definitions", mnemonic = 'D') {
             Item(
-                text = "Clear all definitions",
-                icon = warningIcon,
+                text = "Restore definitions from current template",
+                enabled = currentTab.templateData?.definitionsHaveChanged == true,
                 onClick = {
-                    // TODO Ask confirmation
-                    onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
+                    if (currentTab.templateData == null) {
+                        // No-op
+                        return@Item
+                    }
+                    onEvent(CurrentTabEvent.LoadTemplateEvent(currentTab.templateData.templateFile))
                 }
             )
 
-            Separator()
-
             Item(
-                text = "Add definitions from template",
+                text = "Add definitions from another template",
                 onClick = {
                     scope.launch {
                         showFileDialog(
@@ -114,6 +115,17 @@ fun FrameWindowScope.PBMenuBar(
                             onEvent(CurrentTabEvent.AddDefinitionsFromTemplateEvent(selectedFile))
                         }
                     }
+                }
+            )
+
+            Separator()
+
+            Item(
+                text = "Clear all definitions",
+                icon = warningIcon,
+                onClick = {
+                    // TODO Ask confirmation
+                    onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
                 }
             )
         }
