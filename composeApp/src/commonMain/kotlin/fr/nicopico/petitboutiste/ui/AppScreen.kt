@@ -13,7 +13,7 @@ import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
 import fr.nicopico.petitboutiste.ui.components.TabContent
-import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

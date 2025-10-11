@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.name
 import fr.nicopico.petitboutiste.models.extensions.size
-import fr.nicopico.petitboutiste.ui.infra.preview.ByteItemsParameterProvider
-import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.utils.preview.ByteItemsParameterProvider
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.VerticallyScrollableContainer
 

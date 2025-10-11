@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.infra.preview
+package fr.nicopico.petitboutiste.utils.preview
 
 import fr.nicopico.petitboutiste.models.ByteItem
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider

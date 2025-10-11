@@ -23,8 +23,8 @@ import fr.nicopico.petitboutiste.models.extensions.formatForDisplay
 import fr.nicopico.petitboutiste.models.input.BinaryString
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
-import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.jewel.ui.component.Text
 
 @Composable

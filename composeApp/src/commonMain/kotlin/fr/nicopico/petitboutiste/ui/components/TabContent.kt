@@ -26,8 +26,8 @@ import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
 import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
-import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
 import org.jetbrains.jewel.ui.component.Text

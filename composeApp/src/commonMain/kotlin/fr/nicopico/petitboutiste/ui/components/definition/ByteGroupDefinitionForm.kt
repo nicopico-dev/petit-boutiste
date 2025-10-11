@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelPosition
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
-import fr.nicopico.petitboutiste.ui.infra.preview.WrapForPreview
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 

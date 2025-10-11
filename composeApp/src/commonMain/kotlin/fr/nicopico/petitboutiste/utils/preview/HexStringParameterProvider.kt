@@ -1,4 +1,4 @@
-package fr.nicopico.petitboutiste.ui.infra.preview
+package fr.nicopico.petitboutiste.utils.preview
 
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
