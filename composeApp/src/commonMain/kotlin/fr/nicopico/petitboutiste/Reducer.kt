@@ -41,18 +41,22 @@ class Reducer(
             }
 
             is AppEvent.RemoveTabEvent -> {
-                if (state.tabs.size > 1) {
-                    val tabs = state.tabs.filterNot { it.id == event.tabId }
-                    val selectedTabId = if (state.selectedTabId == event.tabId) {
-                        // Select the tab just before the deleted one, or the first tab
-                        val nextSelectedTabIndex = max(
-                            0,
-                            state.tabs.indexOfFirst { it.id == event.tabId } - 1,
-                        )
-                        tabs[nextSelectedTabIndex].id
-                    } else state.selectedTabId
-                    state.copy(tabs = tabs, selectedTabId = selectedTabId)
-                } else state
+                val tabs = state.tabs
+                    .filterNot { it.id == event.tabId }
+                    .ifEmpty {
+                        // Add a default tab if the last tab was closed
+                        listOf(TabData())
+                    }
+
+                val selectedTabId = if (state.selectedTabId == event.tabId) {
+                    // Select the tab just before the deleted one, or the first tab
+                    val nextSelectedTabIndex = max(
+                        0,
+                        state.tabs.indexOfFirst { it.id == event.tabId } - 1,
+                    )
+                    tabs[nextSelectedTabIndex].id
+                } else state.selectedTabId
+                state.copy(tabs = tabs, selectedTabId = selectedTabId)
             }
             //endregion
 
