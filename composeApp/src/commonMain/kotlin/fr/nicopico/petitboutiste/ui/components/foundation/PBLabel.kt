@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.utils.compose.Slot
+import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.typography
@@ -24,17 +25,27 @@ fun PBLabel(
     label: String,
     modifier: Modifier = Modifier,
     orientation: PBLabelOrientation = PBLabelOrientation.Vertical,
+    hint: Slot? = null,
     content: Slot,
 ) {
+    val labelWithHint: Slot = hint.optionalSlot { hint ->
+        Row {
+            Text(label, style = JewelTheme.typography.medium, modifier = Modifier.weight(1f))
+            hint()
+        }
+    } ?: {
+        Text(label, style = JewelTheme.typography.medium)
+    }
+
     if (orientation == PBLabelOrientation.Vertical) {
         Column(modifier) {
-            Text(label, style = JewelTheme.typography.medium)
+            labelWithHint()
             Spacer(Modifier.height(4.dp))
             content()
         }
     } else {
         Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-            Text(label, style = JewelTheme.typography.medium)
+            labelWithHint()
             Spacer(Modifier.width(4.dp))
             content()
         }

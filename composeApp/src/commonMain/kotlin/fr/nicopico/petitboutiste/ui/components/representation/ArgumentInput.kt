@@ -13,6 +13,7 @@ import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
+import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 
 @Composable
 fun ArgumentInput(
@@ -26,7 +27,12 @@ fun ArgumentInput(
     }
 
     Column(modifier = modifier) {
-        PBLabel(argument.label) {
+        PBLabel(
+            label = argument.label,
+            hint = argument.hint?.optionalSlot { hint ->
+                ArgumentHint(hint)
+            }
+        ) {
             when (argument.type) {
                 is FileType -> {
                     PBFileSelector(
