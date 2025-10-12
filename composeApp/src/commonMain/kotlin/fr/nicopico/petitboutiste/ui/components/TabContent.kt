@@ -50,6 +50,22 @@ fun TabContent(
         mutableStateOf(null)
     }
 
+    // As ByteItem.Single do not have a definition, we use the same representation for all of them.
+    // The same representation will be used for full-payload representation, when there is no definition.
+    // (note that it is possible to create a Group with a single byte)
+    var noDefinitionRepresentation by remember {
+        mutableStateOf(Representation(DataRenderer.Off))
+    }
+
+    val fullPayload: ByteItem.Group? = remember(inputData, definitions, noDefinitionRepresentation) {
+        if (definitions.isEmpty()) {
+            ByteItem.Group.createFullPayload(
+                dataString = inputData,
+                representation = noDefinitionRepresentation,
+            )
+        } else null
+    }
+
     // Ensure the definition is up to date for `selectedByteItem`
     LaunchedEffect(definitions) {
         if (selectedByteItem is ByteItem.Group) {
@@ -61,12 +77,6 @@ fun TabContent(
                 (selectedByteItem as ByteItem.Group).copy(definition = updatedDefinition)
             } else null
         }
-    }
-
-    // As ByteItem.Single do not have a definition, we use the same representation for all of them
-    // (note that it is possible to create a Group with a single byte)
-    var singleByteRepresentation by remember {
-        mutableStateOf(Representation(DataRenderer.Off))
     }
 
     DesktopScaffold(
@@ -126,21 +136,21 @@ fun TabContent(
                 )
             }
         },
-        tools = selectedByteItem.optionalSlot { selectedByteItem ->
+        tools = (selectedByteItem ?: fullPayload).optionalSlot { renderedByteItem ->
             ByteItemRender(
-                byteItem = selectedByteItem,
-                representation = if (selectedByteItem is ByteItem.Group) {
-                    selectedByteItem.definition.representation
-                } else singleByteRepresentation,
+                byteItem = renderedByteItem,
+                representation = if (renderedByteItem is ByteItem.Group) {
+                    renderedByteItem.definition.representation
+                } else noDefinitionRepresentation,
                 onRepresentationChanged = { representation ->
-                    if (selectedByteItem is ByteItem.Group) {
-                        val currentDefinition = selectedByteItem.definition
+                    if (renderedByteItem is ByteItem.Group && renderedByteItem != fullPayload) {
+                        val currentDefinition = renderedByteItem.definition
                         if (representation != currentDefinition.representation) {
                             val updatedDefinition = currentDefinition.copy(representation = representation)
                             onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(currentDefinition, updatedDefinition))
                         }
                     } else {
-                        singleByteRepresentation = representation
+                        noDefinitionRepresentation = representation
                     }
                 },
                 modifier = Modifier.padding(16.dp),

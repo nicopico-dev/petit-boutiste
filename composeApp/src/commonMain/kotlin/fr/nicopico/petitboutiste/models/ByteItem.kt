@@ -1,5 +1,8 @@
 package fr.nicopico.petitboutiste.models
 
+import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.representation.Representation
+
 private val BYTE_VALUE_REGEX = Regex("[a-fA-F0-9]{2}")
 
 sealed class ByteItem {
@@ -68,6 +71,35 @@ sealed class ByteItem {
 
         override fun toString(): String {
             return bytes.joinToString(separator = "")
+        }
+
+        companion object {
+            fun createFullPayload(
+                dataString: DataString,
+                representation: Representation,
+            ): Group {
+                return Group(
+                    bytes = dataString.hexString.windowed(2, 2),
+                    definition = ByteGroupDefinition(
+                        indexes = 0..<(dataString.hexString.length / 2),
+                        representation = representation,
+                    )
+                )
+            }
+
+            fun forPreview(
+                index: Int,
+                data: String,
+                name: String? = null,
+            ): Group {
+                return Group(
+                    bytes = data.windowed(2, 2),
+                    definition = ByteGroupDefinition(
+                        indexes = index..<(index + (data.length / 2)),
+                        name = name,
+                    ),
+                )
+            }
         }
     }
 }
