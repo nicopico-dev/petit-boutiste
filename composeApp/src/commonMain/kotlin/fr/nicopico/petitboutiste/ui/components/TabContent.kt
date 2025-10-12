@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -112,9 +111,10 @@ fun TabContent(
                         } else null
                     },
                     byteItems = byteItems,
+                    modifier = Modifier.weight(1f),
                 )
 
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.height(16.dp))
 
                 PBTextArea(
                     label = "Scratchpad",
@@ -122,7 +122,7 @@ fun TabContent(
                     onValueChange = { scratch = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 200.dp, max = 200.dp)
+                        .height(150.dp)
                 )
             }
         },
