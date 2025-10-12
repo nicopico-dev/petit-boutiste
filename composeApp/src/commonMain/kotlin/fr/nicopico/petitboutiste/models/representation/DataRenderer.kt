@@ -37,6 +37,7 @@ enum class DataRenderer(
         val label: String,
         val type: ArgumentType<*>,
         val defaultValue: ArgValue? = null,
+        val hint: String? = null,
     )
 
     operator fun invoke(byteArray: ByteArray, argumentValues: ArgumentValues): String? {
