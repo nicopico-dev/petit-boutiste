@@ -8,34 +8,6 @@ import org.jetbrains.jewel.ui.component.ListComboBox
 import org.jetbrains.jewel.ui.component.SimpleListItem
 import kotlin.math.max
 
-@Deprecated("Use PBLabel to define a label")
-@OptIn(ExperimentalJewelApi::class)
-@Composable
-fun <T : Any> PBDropdown(
-    items: List<T>,
-    onItemSelected: (T) -> Unit,
-    modifier: Modifier = Modifier,
-    selection: T? = null,
-    label: String? = null,
-    getItemLabel: (T) -> String = { it.toString() },
-) {
-    val actualDropdown = @Composable {
-        PBDropdown(
-            items = items,
-            onItemSelected = onItemSelected,
-            modifier = modifier,
-            selection = selection,
-            getItemLabel = getItemLabel,
-        )
-    }
-
-    if (label != null) {
-        PBLabel(label) {
-            actualDropdown()
-        }
-    } else actualDropdown()
-}
-
 @OptIn(ExperimentalJewelApi::class)
 @Composable
 fun <T : Any> PBDropdown(

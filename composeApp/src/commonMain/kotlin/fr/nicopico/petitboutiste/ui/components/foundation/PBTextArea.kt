@@ -1,46 +1,18 @@
 package fr.nicopico.petitboutiste.ui.components.foundation
 
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.jetbrains.jewel.foundation.ExperimentalJewelApi
 import org.jetbrains.jewel.ui.Outline
 import org.jetbrains.jewel.ui.component.TextArea
-
-@Deprecated("Use PBLabel to define a label")
-@OptIn(ExperimentalJewelApi::class)
-@Composable
-fun PBTextArea(
-    value: String,
-    label: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    isError: Boolean = false,
-    maxFieldWidth: Dp = Dp.Unspecified,
-) {
-    PBLabel(label, modifier) {
-        PBTextArea(
-            value = value,
-            onValueChange = onValueChange,
-            isError = isError,
-            modifier = Modifier
-                .widthIn(max = maxFieldWidth)
-                .fillMaxWidth()
-                .fillMaxHeight(),
-        )
-    }
-}
 
 @OptIn(ExperimentalJewelApi::class)
 @Composable

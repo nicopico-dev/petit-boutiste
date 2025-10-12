@@ -25,25 +25,6 @@ import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
 import java.io.File
 
-@Deprecated("Use PBLabel to define a label")
-@Composable
-fun PBFileSelector(
-    onFileSelected: (File?) -> Unit,
-    modifier: Modifier = Modifier,
-    selection: File? = null,
-    label: String? = null,
-) {
-    val actualFileSelector = @Composable {
-        PBFileSelector(onFileSelected, selection = selection, modifier = modifier)
-    }
-
-    if (label != null) {
-        PBLabel(label) {
-            actualFileSelector()
-        }
-    } else actualFileSelector()
-}
-
 @Composable
 fun PBFileSelector(
     onFileSelected: (File?) -> Unit,
@@ -106,17 +87,6 @@ private fun PBFileSelectorPreview() {
             )
 
             PBFileSelector(
-                selection = File("/tmp/example.txt"),
-                onFileSelected = { }
-            )
-
-            PBFileSelector(
-                label = "Choose a file",
-                onFileSelected = { }
-            )
-
-            PBFileSelector(
-                label = "Choose a file",
                 selection = File("/tmp/example.txt"),
                 onFileSelected = { }
             )

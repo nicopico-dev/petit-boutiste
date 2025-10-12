@@ -26,6 +26,7 @@ import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
+import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
@@ -124,16 +125,17 @@ fun TabContent(
 
                 Spacer(Modifier.height(16.dp))
 
-                PBTextArea(
-                    label = "Scratchpad",
-                    value = scratchpad,
-                    onValueChange = {
-                        onCurrentTabEvent(CurrentTabEvent.UpdateScratchpadEvent(it))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                )
+                PBLabel("Scratchpad") {
+                    PBTextArea(
+                        value = scratchpad,
+                        onValueChange = {
+                            onCurrentTabEvent(CurrentTabEvent.UpdateScratchpadEvent(it))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                    )
+                }
             }
         },
         tools = (selectedByteItem ?: fullPayload).optionalSlot { renderedByteItem ->
