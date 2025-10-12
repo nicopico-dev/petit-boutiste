@@ -58,6 +58,28 @@ class Reducer(
                 } else state.selectedTabId
                 state.copy(tabs = tabs, selectedTabId = selectedTabId)
             }
+
+            is AppEvent.DuplicateTabEvent -> {
+                // Copy the tab with a new ID to separate them
+                val sourceTab = state.tabs.first { it.id == event.tabId }
+                val duplicatedTab = sourceTab.copy(
+                    id = TabId.create(),
+                    name = sourceTab.name?.let { "$it (copy)" },
+                )
+                val duplicateIndex = state.tabs.indexOf(sourceTab) + 1
+
+                val newTabs = state.tabs
+                    .toMutableList()
+                    .apply {
+                        add(duplicateIndex, duplicatedTab)
+                    }
+                    .toList()
+
+                state.copy(
+                    tabs = newTabs,
+                    selectedTabId = duplicatedTab.id,
+                )
+            }
             //endregion
 
             //region Current Tab

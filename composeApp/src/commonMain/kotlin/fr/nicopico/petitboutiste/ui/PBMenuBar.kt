@@ -34,6 +34,13 @@ fun FrameWindowScope.PBMenuBar(
                 }
             )
             Item(
+                text = "Duplicate Tab",
+                shortcut = KeyShortcut(Key.T, meta = true, shift = true),
+                onClick = {
+                    onEvent(AppEvent.DuplicateTabEvent(currentTab.id))
+                }
+            )
+            Item(
                 text = "Close Tab",
                 icon = warningIcon,
                 shortcut = KeyShortcut(Key.W, meta = true),
