@@ -40,14 +40,15 @@ sealed class ByteItem {
         val incomplete: Boolean = false,
     ) : ByteItem() {
 
+        @Deprecated("Use for preview only")
         constructor(
             index: Int,
-            bytes: String,
+            data: String,
             name: String? = null,
         ) : this(
-            bytes = bytes.windowed(2, 2),
+            bytes = data.windowed(2, 2),
             definition = ByteGroupDefinition(
-                indexes = index..<(index + (bytes.length / 2)),
+                indexes = index..<(index + (data.length / 2)),
                 name = name,
             ),
         )
@@ -84,20 +85,6 @@ sealed class ByteItem {
                         indexes = 0..<(dataString.hexString.length / 2),
                         representation = representation,
                     )
-                )
-            }
-
-            fun forPreview(
-                index: Int,
-                data: String,
-                name: String? = null,
-            ): Group {
-                return Group(
-                    bytes = data.windowed(2, 2),
-                    definition = ByteGroupDefinition(
-                        indexes = index..<(index + (data.length / 2)),
-                        name = name,
-                    ),
                 )
             }
         }
