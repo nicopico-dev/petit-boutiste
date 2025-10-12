@@ -17,6 +17,7 @@ import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
 import fr.nicopico.petitboutiste.ui.AppContent
+import fr.nicopico.petitboutiste.ui.AppShortcuts
 import fr.nicopico.petitboutiste.ui.PBMenuBar
 import fr.nicopico.petitboutiste.ui.PBTitleBar
 import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
@@ -69,7 +70,9 @@ fun main() {
                 content = {
                     PBMenuBar(currentTab, onEvent = ::onEvent)
                     PBTitleBar(appState, onEvent = ::onEvent)
-                    AppContent(appState, onEvent = ::onEvent)
+                    AppShortcuts(onEvent = ::onEvent) {
+                        AppContent(appState, onEvent = ::onEvent)
+                    }
                 }
             )
         }

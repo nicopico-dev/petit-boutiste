@@ -80,6 +80,19 @@ class Reducer(
                     selectedTabId = duplicatedTab.id,
                 )
             }
+
+            is AppEvent.CycleTabEvent -> {
+                val currentIndex = state.tabs.indexOf(state.selectedTab)
+                val nextIndex = when {
+                    event.cycleForward && currentIndex == state.tabs.lastIndex -> 0
+                    event.cycleForward -> currentIndex + 1
+                    currentIndex == 0 -> state.tabs.lastIndex
+                    else -> currentIndex - 1
+                }
+
+                val nextTab = state.tabs[nextIndex]
+                state.copy(selectedTabId = nextTab.id)
+            }
             //endregion
 
             //region Current Tab
