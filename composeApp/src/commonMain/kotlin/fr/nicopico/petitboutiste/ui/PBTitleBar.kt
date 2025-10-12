@@ -76,6 +76,9 @@ fun DecoratedWindowScope.PBTitleBar(
     val selectedTab by remember(appState) {
         derivedStateOf { appState.selectedTab }
     }
+    val selectedTabIndex by remember(appState, selectedTab) {
+        derivedStateOf { appState.tabs.indexOf(selectedTab) }
+    }
 
     TitleBar(
         modifier.newFullscreenControls().height(50.dp)
@@ -92,7 +95,7 @@ fun DecoratedWindowScope.PBTitleBar(
                     .height(50.dp)
                     .widthIn(min = 150.dp),
                 menuContent = {
-                    appState.tabs.forEach { tabData ->
+                    appState.tabs.forEachIndexed { index, tabData ->
                         selectableItem(
                             selected = tabData.id == appState.selectedTabId,
                             onClick = { onEvent(AppEvent.SelectTabEvent(tabData.id)) },
@@ -101,7 +104,12 @@ fun DecoratedWindowScope.PBTitleBar(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(vertical = 4.dp)
                                 ) {
-                                    TabItem(tabData, Modifier.weight(1f), fullChangeIndicator = true)
+                                    TabItem(
+                                        tabData,
+                                        tabNum = index + 1,
+                                        modifier = Modifier.weight(1f),
+                                        fullChangeIndicator = true
+                                    )
 
                                     if (appState.tabs.size > 1) {
                                         Spacer(Modifier.width(16.dp))
@@ -135,6 +143,7 @@ fun DecoratedWindowScope.PBTitleBar(
                 content = {
                     TabItem(
                         selectedTab,
+                        tabNum = selectedTabIndex + 1,
                         Modifier.padding(end = 16.dp),
                     )
                 },
@@ -158,6 +167,7 @@ fun DecoratedWindowScope.PBTitleBar(
 @Composable
 private fun TabItem(
     tabData: TabData,
+    tabNum: Int,
     modifier: Modifier = Modifier,
     fullChangeIndicator: Boolean = false,
 ) {
@@ -168,7 +178,7 @@ private fun TabItem(
             modifier = modifier,
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(name ?: "Untitled")
+                Text(name ?: "Untitled $tabNum")
 
                 if (templateData != null) {
                     Row {
