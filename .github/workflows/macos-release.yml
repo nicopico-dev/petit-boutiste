@@ -35,7 +35,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build macOS application
-        run: ./gradlew :composeApp:createReleaseDistributable
+        run: ./gradlew -PappVersion=${{ github.event.inputs.version }} :composeApp:createReleaseDistributable
 
       - name: Find APP file
         id: find-app
