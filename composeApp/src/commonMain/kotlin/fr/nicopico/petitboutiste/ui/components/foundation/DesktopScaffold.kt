@@ -15,7 +15,7 @@ import org.jetbrains.jewel.ui.component.rememberSplitLayoutState
 @Composable
 fun DesktopScaffold(
     main: Slot,
-    definitions: Slot,
+    side: Slot,
     tools: Slot? = null,
 ) {
     val dividerStyle = JewelThemeUtils.dividerStyle
@@ -32,7 +32,7 @@ fun DesktopScaffold(
                 secondPaneMinWidth = 100.dp,
             )
         } ?: main,
-        second = definitions,
+        second = side,
         state = rememberSplitLayoutState(0.70f),
         dividerStyle = dividerStyle,
         draggableWidth = 16.dp,
