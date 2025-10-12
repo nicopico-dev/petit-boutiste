@@ -58,7 +58,7 @@ fun TabContent(
     }
 
     val fullPayload: ByteItem.Group? = remember(inputData, definitions, noDefinitionRepresentation) {
-        if (definitions.isEmpty()) {
+        if (inputData.isNotEmpty() && definitions.isEmpty()) {
             ByteItem.Group.createFullPayload(
                 dataString = inputData,
                 representation = noDefinitionRepresentation,
