@@ -67,102 +67,84 @@ class HexStringExtTest {
             ByteItem.Single(0, "1A"),
             ByteItem.Group(
                 bytes = listOf("2B", "3C"),
-                definition = ByteGroupDefinition(1..2, "TestGroup"),
+                definition = groupDefinition,
             ),
             ByteItem.Single(3, "4D"),
         )
-        assertEquals(expected, byteItems)
+        assertContentEquals(expected, byteItems)
     }
 
     @Test
     fun `toByteItems creates multiple groups`() {
         // Given a hex string and multiple group definitions
         val hexString = HexString("1A2B3C4D5E6F")
-        val groupDefinitions = listOf(
-            ByteGroupDefinition(0..1, "Group1"),
-            ByteGroupDefinition(3..4, "Group2")
-        )
+        val group1Definition = ByteGroupDefinition(0..1, "Group1")
+        val group2Definition = ByteGroupDefinition(3..4, "Group2")
 
         // When converting to byte items with the group definitions
-        val byteItems = hexString.toByteItems(groupDefinitions)
+        val byteItems = hexString.toByteItems(listOf(group1Definition, group2Definition))
 
         // Then the result contains both groups and ungrouped singles
         val expected = listOf(
             ByteItem.Group(
                 listOf("1A", "2B"),
-                ByteGroupDefinition(
-                    indexes = 0..1,
-                    name = "Group1"
-                ),
+                group1Definition,
             ),
             ByteItem.Single(2, "3C"),
             ByteItem.Group(
                 listOf("4D", "5E"),
-                ByteGroupDefinition(
-                    indexes = 3..4,
-                    name = "Group2"
-                ),
+                group2Definition,
             ),
             ByteItem.Single(5, "6F")
         )
-        assertEquals(expected, byteItems)
+        assertContentEquals(expected, byteItems)
     }
 
     @Test
     fun `toByteItems ignores overlapping groups`() {
         // Given a hex string and overlapping group definitions
         val hexString = HexString("1A2B3C4D")
-        val groupDefinitions = listOf(
-            ByteGroupDefinition(0..2, "Group1"),
-            ByteGroupDefinition(1..3, "Group2") // Overlaps with Group1
-        )
+        val group1Definition = ByteGroupDefinition(0..2, "Group1")
+        // Overlaps with Group1
+        val group2Definition = ByteGroupDefinition(1..3, "Group2")
 
         // When converting to byte items with the group definitions
-        val byteItems = hexString.toByteItems(groupDefinitions)
+        val byteItems = hexString.toByteItems(listOf(group1Definition, group2Definition))
 
         // Then the result contains only the first group
         val expected = listOf(
             ByteItem.Group(
                 listOf("1A", "2B", "3C"),
-                ByteGroupDefinition(
-                    indexes = 0..2,
-                    name = "Group1",
-                ),
+                group1Definition,
             ),
             ByteItem.Single(3, "4D")
         )
-        assertEquals(expected, byteItems)
+        assertContentEquals(expected, byteItems)
     }
 
     @Test
     fun `toByteItems marks out-of-bounds definitions`() {
         // Given a hex string and an invalid group definition
         val hexString = HexString("1A2B3C4D")
-        val groupDefinitions = listOf(
-            ByteGroupDefinition(1..2, "Valid (completely in bound)"),
-            ByteGroupDefinition(3..5, "Valid (end out of bounds)"),
-            ByteGroupDefinition(6..10, "Invalid: start outside of bounds")
-        )
+        val groupDefinition1 = ByteGroupDefinition(1..2, "Valid (completely in bound)")
+        val groupDefinition2 = ByteGroupDefinition(3..5, "Valid (end out of bounds)")
+        val groupDefinition3 = ByteGroupDefinition(6..10, "Invalid: start outside of bounds")
 
         // When converting to byte items with the group definitions
-        val byteItems = hexString.toByteItems(groupDefinitions)
+        val byteItems = hexString.toByteItems(
+            listOf(groupDefinition1, groupDefinition2, groupDefinition3)
+        )
 
         // Then only the valid group is included
         val expected = listOf(
             ByteItem.Single(0, "1A"),
             ByteItem.Group(
                 listOf("2B", "3C"),
-                ByteGroupDefinition(
-                    indexes = 1..2,
-                    name = "Valid (completely in bound)",
-                )
+                groupDefinition1
             ),
             ByteItem.Group(
                 listOf("4D"),
-                ByteGroupDefinition(
-                    indexes = 3..5,
-                    name = "Valid (end out of bounds)",
-                ),
+                groupDefinition2,
                 incomplete = true,
             ),
         )
