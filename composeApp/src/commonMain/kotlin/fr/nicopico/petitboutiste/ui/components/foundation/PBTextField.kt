@@ -38,7 +38,7 @@ fun PBTextField(
     }
 
     // Observe changes to the text
-    LaunchedEffect(value) {
+    LaunchedEffect(state) {
         snapshotFlow { state.text.toString() }
             .drop(1)
             .distinctUntilChanged()
