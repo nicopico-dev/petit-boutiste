@@ -39,6 +39,7 @@ fun TabContent(
     inputData: DataString,
     definitions: List<ByteGroupDefinition> = emptyList(),
     inputType: InputType = InputType.HEX,
+    scratchpad: String = "",
     onCurrentTabEvent: (CurrentTabEvent) -> Unit = {},
 ) {
     val byteItems = remember(inputData, definitions) {
@@ -48,9 +49,6 @@ fun TabContent(
     var selectedByteItem: ByteItem? by remember {
         mutableStateOf(null)
     }
-
-    // TODO Save scratchpad with the tab data
-    var scratch by remember { mutableStateOf("") }
 
     // Ensure the definition is up to date for `selectedByteItem`
     LaunchedEffect(definitions) {
@@ -118,8 +116,10 @@ fun TabContent(
 
                 PBTextArea(
                     label = "Scratchpad",
-                    value = scratch,
-                    onValueChange = { scratch = it },
+                    value = scratchpad,
+                    onValueChange = {
+                        onCurrentTabEvent(CurrentTabEvent.UpdateScratchpadEvent(it))
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)

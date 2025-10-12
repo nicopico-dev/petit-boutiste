@@ -8,5 +8,6 @@ fun TabData.toTemplate(
     fallbackName: String
 ) = Template(
     name = name ?: fallbackName,
-    definitions = groupDefinitions
+    definitions = groupDefinitions,
+    scratchpad = scratchpad,
 )

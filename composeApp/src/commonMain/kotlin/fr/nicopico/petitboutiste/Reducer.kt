@@ -99,6 +99,15 @@ class Reducer(
                 }
             }
 
+            is AppEvent.CurrentTabEvent.UpdateScratchpadEvent -> {
+                state.updateCurrentTab {
+                    copy(
+                        scratchpad = event.scratchpad,
+                        templateData = templateData?.copy(definitionsHaveChanged = true),
+                    )
+                }
+            }
+
             //region Templates
             is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
                 val template = runBlocking {
@@ -107,6 +116,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         groupDefinitions = template.definitions,
+                        scratchpad = template.scratchpad,
                         templateData = TabTemplateData(event.templateFile),
                     )
                 }

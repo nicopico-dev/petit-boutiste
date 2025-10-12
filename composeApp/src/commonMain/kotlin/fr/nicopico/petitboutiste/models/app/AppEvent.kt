@@ -22,6 +22,7 @@ sealed class AppEvent {
         ): CurrentTabEvent()
         data class DeleteDefinitionEvent(val definition: ByteGroupDefinition): CurrentTabEvent()
         data object ClearAllDefinitionsEvent : CurrentTabEvent()
+        data class UpdateScratchpadEvent(val scratchpad: String): CurrentTabEvent()
 
         data class LoadTemplateEvent(val templateFile: File) : CurrentTabEvent()
         data class SaveTemplateEvent(val templateFile: File, val updateExisting: Boolean) : CurrentTabEvent()

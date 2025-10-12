@@ -32,6 +32,7 @@ fun AppScreen(
             inputData = selectedTab.inputData,
             definitions = selectedTab.groupDefinitions,
             inputType = selectedTab.inputType,
+            scratchpad = selectedTab.scratchpad,
             onCurrentTabEvent = { currentTabEvent ->
                 onAppEvent(currentTabEvent)
             },
