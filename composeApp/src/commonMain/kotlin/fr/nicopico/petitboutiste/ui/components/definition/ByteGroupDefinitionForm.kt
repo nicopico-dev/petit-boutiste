@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelPosition
+import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.jewel.ui.component.DefaultButton
@@ -82,12 +82,13 @@ fun ByteGroupDefinitionForm(
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.End,
     ) {
         PBTextField(
             label = "Name (optional)",
             value = name,
             onValueChange = { name = it },
-            labelPosition = PBLabelPosition.Start,
+            labelOrientation = PBLabelOrientation.Horizontal,
             maxFieldWidth = fieldMaxWidth,
         )
 
@@ -95,7 +96,7 @@ fun ByteGroupDefinitionForm(
             label = "Start",
             value = startIndexInput,
             onValueChange = { startIndexInput = it },
-            labelPosition = PBLabelPosition.Start,
+            labelOrientation = PBLabelOrientation.Horizontal,
             isError = startIndexError != null,
             maxFieldWidth = fieldMaxWidth,
         )
@@ -104,7 +105,7 @@ fun ByteGroupDefinitionForm(
             label = "End",
             value = endIndexInput,
             onValueChange = { endIndexInput = it },
-            labelPosition = PBLabelPosition.Start,
+            labelOrientation = PBLabelOrientation.Horizontal,
             isError = endIndexError != null,
             maxFieldWidth = fieldMaxWidth,
         )

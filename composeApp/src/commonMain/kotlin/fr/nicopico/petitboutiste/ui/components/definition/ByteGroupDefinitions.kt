@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
@@ -78,7 +79,9 @@ fun ByteGroupDefinitions(
                             onDefinitionSaved = { savedDefinition ->
                                 onUpdateDefinition(definition, savedDefinition)
                             },
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 16.dp)
+                                .align(Alignment.End),
                         )
                     }
                 )

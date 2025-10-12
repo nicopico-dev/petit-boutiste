@@ -3,8 +3,6 @@ package fr.nicopico.petitboutiste.ui.components.foundation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
@@ -27,6 +25,7 @@ import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
 import java.io.File
 
+@Deprecated("Use PBLabel to define a label")
 @Composable
 fun PBFileSelector(
     onFileSelected: (File?) -> Unit,
@@ -34,14 +33,26 @@ fun PBFileSelector(
     selection: File? = null,
     label: String? = null,
 ) {
+    val actualFileSelector = @Composable {
+        PBFileSelector(onFileSelected, selection = selection, modifier = modifier)
+    }
+
+    if (label != null) {
+        PBLabel(label) {
+            actualFileSelector()
+        }
+    } else actualFileSelector()
+}
+
+@Composable
+fun PBFileSelector(
+    onFileSelected: (File?) -> Unit,
+    modifier: Modifier = Modifier,
+    selection: File? = null,
+) {
     val coroutineScope = rememberCoroutineScope()
 
     Column(modifier) {
-        if (label != null) {
-            Text(label, style = JewelTheme.typography.medium)
-            Spacer(Modifier.height(4.dp))
-        }
-
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             val state = remember(selection) {
                 TextFieldState(selection?.name ?: "")

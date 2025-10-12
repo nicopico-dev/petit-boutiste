@@ -1,11 +1,8 @@
 package fr.nicopico.petitboutiste.ui.components.foundation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
@@ -18,12 +15,10 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.jetbrains.jewel.foundation.ExperimentalJewelApi
-import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Outline
-import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextArea
-import org.jetbrains.jewel.ui.typography
 
+@Deprecated("Use PBLabel to define a label")
 @OptIn(ExperimentalJewelApi::class)
 @Composable
 fun PBTextArea(
@@ -33,6 +28,27 @@ fun PBTextArea(
     modifier: Modifier = Modifier,
     isError: Boolean = false,
     maxFieldWidth: Dp = Dp.Unspecified,
+) {
+    PBLabel(label, modifier) {
+        PBTextArea(
+            value = value,
+            onValueChange = onValueChange,
+            isError = isError,
+            modifier = Modifier
+                .widthIn(max = maxFieldWidth)
+                .fillMaxWidth()
+                .fillMaxHeight(),
+        )
+    }
+}
+
+@OptIn(ExperimentalJewelApi::class)
+@Composable
+fun PBTextArea(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    isError: Boolean = false,
 ) {
     val state = remember(value) {
         TextFieldState(value)
@@ -48,17 +64,10 @@ fun PBTextArea(
             }
     }
 
-    Column(modifier) {
-        Text(label, style = JewelTheme.typography.medium)
-        Spacer(Modifier.size(4.dp))
-        TextArea(
-            state = state,
-            modifier = Modifier
-                .widthIn(max = maxFieldWidth)
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            outline = if (isError) Outline.Error else Outline.None,
-            decorationBoxModifier = Modifier.padding(4.dp)
-        )
-    }
+    TextArea(
+        state = state,
+        modifier = modifier,
+        outline = if (isError) Outline.Error else Outline.None,
+        decorationBoxModifier = Modifier.padding(4.dp)
+    )
 }
