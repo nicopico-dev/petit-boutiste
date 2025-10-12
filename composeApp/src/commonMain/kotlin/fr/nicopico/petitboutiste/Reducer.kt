@@ -103,7 +103,6 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         scratchpad = event.scratchpad,
-                        templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
             }
