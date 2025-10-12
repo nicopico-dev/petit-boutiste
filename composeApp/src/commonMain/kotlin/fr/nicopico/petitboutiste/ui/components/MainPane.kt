@@ -74,7 +74,7 @@ fun MainPane(
             )
 
             InputType.BASE64 -> Base64Input(
-                value = inputData as? Base64String ?: Base64String(""),
+                value = inputData as? Base64String ?: Base64String(),
                 onValueChange = { onInputDataChanged(it) },
                 modifier = inputModifier
             )
