@@ -45,4 +45,5 @@ private val InputType.label: String
     get() = when (this) {
         InputType.HEX -> "HEX"
         InputType.BINARY -> "BIN"
+        InputType.BASE64 -> "B64"
     }
