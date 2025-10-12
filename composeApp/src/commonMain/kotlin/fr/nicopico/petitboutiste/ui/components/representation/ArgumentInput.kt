@@ -40,7 +40,6 @@ fun ArgumentInput(
             }
 
             is ArgumentType.StringType -> {
-                // FIXME The value does not seem to change after the first render (protobuf)
                 PBTextField(
                     label = argument.label,
                     value = value ?: "",

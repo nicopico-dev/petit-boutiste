@@ -3,6 +3,7 @@ package fr.nicopico.petitboutiste.ui.components
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
+import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
@@ -37,6 +39,7 @@ fun TabContent(
     inputData: DataString,
     definitions: List<ByteGroupDefinition> = emptyList(),
     inputType: InputType = InputType.HEX,
+    scratchpad: String = "",
     onCurrentTabEvent: (CurrentTabEvent) -> Unit = {},
 ) {
     val byteItems = remember(inputData, definitions) {
@@ -83,30 +86,45 @@ fun TabContent(
                 modifier = Modifier.padding(16.dp),
             )
         },
-        definitions = {
-            ByteGroupDefinitions(
-                definitions = definitions,
-                onAddDefinition = { definition ->
-                    onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
-                },
-                onUpdateDefinition = { source, update ->
-                    onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(source, update))
-                },
-                onDeleteDefinition = { definition ->
-                    onCurrentTabEvent(CurrentTabEvent.DeleteDefinitionEvent(definition))
-                },
-                selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
-                onDefinitionSelected = { definition ->
-                    // Select the ByteGroup matching this definition
-                    selectedByteItem = if (definition != null) {
-                        byteItems.firstOrNull {
-                            it is ByteItem.Group && it.definition == definition
-                        }
-                    } else null
-                },
-                byteItems = byteItems,
-                modifier = Modifier.padding(16.dp),
-            )
+        side = {
+            Column(Modifier.padding(16.dp)) {
+                ByteGroupDefinitions(
+                    definitions = definitions,
+                    onAddDefinition = { definition ->
+                        onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
+                    },
+                    onUpdateDefinition = { source, update ->
+                        onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(source, update))
+                    },
+                    onDeleteDefinition = { definition ->
+                        onCurrentTabEvent(CurrentTabEvent.DeleteDefinitionEvent(definition))
+                    },
+                    selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
+                    onDefinitionSelected = { definition ->
+                        // Select the ByteGroup matching this definition
+                        selectedByteItem = if (definition != null) {
+                            byteItems.firstOrNull {
+                                it is ByteItem.Group && it.definition == definition
+                            }
+                        } else null
+                    },
+                    byteItems = byteItems,
+                    modifier = Modifier.weight(1f),
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                PBTextArea(
+                    label = "Scratchpad",
+                    value = scratchpad,
+                    onValueChange = {
+                        onCurrentTabEvent(CurrentTabEvent.UpdateScratchpadEvent(it))
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                )
+            }
         },
         tools = selectedByteItem.optionalSlot { selectedByteItem ->
             ByteItemRender(

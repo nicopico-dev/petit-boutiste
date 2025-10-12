@@ -76,6 +76,7 @@ private data class PersistedTab(
     val inputHex: String,
     val inputType: InputType,
     val groupDefinitions: List<ByteGroupDefinition>,
+    val scratchpad: String,
     val templateFilePath: String?,
     val templateDefinitionsChanged: Boolean,
 )
@@ -86,6 +87,7 @@ private fun TabData.toPersisted(): PersistedTab = PersistedTab(
     inputHex = inputData.hexString,
     inputType = inputType,
     groupDefinitions = groupDefinitions,
+    scratchpad = scratchpad,
     templateFilePath = templateData?.templateFile?.path,
     templateDefinitionsChanged = templateData?.definitionsHaveChanged ?: false,
 )
@@ -103,6 +105,7 @@ private fun PersistedTab.toTabData(): TabData {
         inputData = data,
         inputType = inputType,
         groupDefinitions = groupDefinitions,
+        scratchpad = scratchpad,
         templateData = templateFilePath?.let { path ->
             TabTemplateData(
                 templateFile = File(path),
