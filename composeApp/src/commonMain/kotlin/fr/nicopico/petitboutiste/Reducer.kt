@@ -61,7 +61,9 @@ class Reducer(
 
             is AppEvent.DuplicateTabEvent -> {
                 // Copy the tab with a new ID to separate them
-                val sourceTab = state.tabs.first { it.id == event.tabId }
+                val sourceTab = state.tabs.firstOrNull { it.id == event.tabId }
+                    ?: return state
+
                 val duplicatedTab = sourceTab.copy(
                     id = TabId.create(),
                     name = sourceTab.name?.let { "$it (copy)" },
