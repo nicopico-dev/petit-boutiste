@@ -10,6 +10,7 @@ import fr.nicopico.petitboutiste.models.ui.TabTemplateData
 import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import kotlinx.coroutines.runBlocking
+import kotlin.math.max
 
 class Reducer(
     private val templateManager: TemplateManager,
@@ -40,13 +41,59 @@ class Reducer(
             }
 
             is AppEvent.RemoveTabEvent -> {
-                if (state.tabs.size > 1) {
-                    val tabs = state.tabs.filterNot { it.id == event.tabId }
-                    val selectedTabId = if (state.selectedTabId == event.tabId) {
-                        tabs.first().id
-                    } else state.selectedTabId
-                    state.copy(tabs = tabs, selectedTabId = selectedTabId)
-                } else state
+                val tabs = state.tabs
+                    .filterNot { it.id == event.tabId }
+                    .ifEmpty {
+                        // Add a default tab if the last tab was closed
+                        listOf(TabData())
+                    }
+
+                val selectedTabId = if (state.selectedTabId == event.tabId) {
+                    // Select the tab just before the deleted one, or the first tab
+                    val nextSelectedTabIndex = max(
+                        0,
+                        state.tabs.indexOfFirst { it.id == event.tabId } - 1,
+                    )
+                    tabs[nextSelectedTabIndex].id
+                } else state.selectedTabId
+                state.copy(tabs = tabs, selectedTabId = selectedTabId)
+            }
+
+            is AppEvent.DuplicateTabEvent -> {
+                // Copy the tab with a new ID to separate them
+                val sourceTab = state.tabs.firstOrNull { it.id == event.tabId }
+                    ?: return state
+
+                val duplicatedTab = sourceTab.copy(
+                    id = TabId.create(),
+                    name = sourceTab.name?.let { "$it (copy)" },
+                )
+                val duplicateIndex = state.tabs.indexOf(sourceTab) + 1
+
+                val newTabs = state.tabs
+                    .toMutableList()
+                    .apply {
+                        add(duplicateIndex, duplicatedTab)
+                    }
+                    .toList()
+
+                state.copy(
+                    tabs = newTabs,
+                    selectedTabId = duplicatedTab.id,
+                )
+            }
+
+            is AppEvent.CycleTabEvent -> {
+                val currentIndex = state.tabs.indexOf(state.selectedTab)
+                val nextIndex = when {
+                    event.cycleForward && currentIndex == state.tabs.lastIndex -> 0
+                    event.cycleForward -> currentIndex + 1
+                    currentIndex == 0 -> state.tabs.lastIndex
+                    else -> currentIndex - 1
+                }
+
+                val nextTab = state.tabs[nextIndex]
+                state.copy(selectedTabId = nextTab.id)
             }
             //endregion
 

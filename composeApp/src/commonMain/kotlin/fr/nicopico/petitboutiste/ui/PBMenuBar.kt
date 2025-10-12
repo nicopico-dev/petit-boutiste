@@ -25,6 +25,31 @@ fun FrameWindowScope.PBMenuBar(
     val warningIcon by rememberResourcePainterProvider(AllIconsKeys.General.Warning).getPainter()
 
     MenuBar {
+        Menu("File", mnemonic = 'F') {
+            Item(
+                text = "New Tab",
+                shortcut = KeyShortcut(Key.T, meta = true),
+                onClick = {
+                    onEvent(AppEvent.AddNewTabEvent)
+                }
+            )
+            Item(
+                text = "Duplicate Tab",
+                shortcut = KeyShortcut(Key.T, meta = true, shift = true),
+                onClick = {
+                    onEvent(AppEvent.DuplicateTabEvent(currentTab.id))
+                }
+            )
+            Item(
+                text = "Close Tab",
+                icon = warningIcon,
+                shortcut = KeyShortcut(Key.W, meta = true),
+                onClick = {
+                    // TODO Ask confirmation, or allow undo
+                    onEvent(AppEvent.RemoveTabEvent(currentTab.id))
+                }
+            )
+        }
         Menu("Template", mnemonic = 'T') {
             Item(
                 text = "Load template",

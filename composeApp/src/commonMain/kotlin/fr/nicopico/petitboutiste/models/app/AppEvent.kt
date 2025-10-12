@@ -11,6 +11,8 @@ sealed class AppEvent {
     data class SelectTabEvent(val tabId: TabId) : AppEvent()
     data class RenameTabEvent(val tabId: TabId, val tabName: String) : AppEvent()
     data class RemoveTabEvent(val tabId: TabId) : AppEvent()
+    data class DuplicateTabEvent(val tabId: TabId) : AppEvent()
+    data class CycleTabEvent(val cycleForward: Boolean) : AppEvent()
 
     sealed class CurrentTabEvent : AppEvent() {
         data class ChangeInputTypeEvent(val type: InputType) : CurrentTabEvent()
