@@ -10,6 +10,7 @@ import fr.nicopico.petitboutiste.models.ui.TabTemplateData
 import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import kotlinx.coroutines.runBlocking
+import kotlin.math.max
 
 class Reducer(
     private val templateManager: TemplateManager,
@@ -43,7 +44,12 @@ class Reducer(
                 if (state.tabs.size > 1) {
                     val tabs = state.tabs.filterNot { it.id == event.tabId }
                     val selectedTabId = if (state.selectedTabId == event.tabId) {
-                        tabs.first().id
+                        // Select the tab just before the deleted one, or the first tab
+                        val nextSelectedTabIndex = max(
+                            0,
+                            state.tabs.indexOfFirst { it.id == event.tabId } - 1,
+                        )
+                        tabs[nextSelectedTabIndex].id
                     } else state.selectedTabId
                     state.copy(tabs = tabs, selectedTabId = selectedTabId)
                 } else state
