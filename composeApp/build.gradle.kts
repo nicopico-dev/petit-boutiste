@@ -9,7 +9,20 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
-version = "2.0.2"
+//region Version management
+val isCi = System.getenv("CI")?.equals("true", ignoreCase = true) == true
+val appVersionProp = findProperty("appVersion")?.toString()
+
+version = if (isCi) {
+    require(!appVersionProp.isNullOrBlank()) {
+        "CI=true: appVersion Gradle property is required (use -PappVersion=x.y.z)"
+    }
+    appVersionProp
+} else {
+    appVersionProp
+        ?: "255.255.65535" // Default for development
+}
+//endregion
 
 kotlin {
     jvm("desktop")
