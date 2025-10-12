@@ -29,6 +29,8 @@ jobs:
           distribution: 'jetbrains'
           java-version: '21'
           cache: 'gradle'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Make Gradle wrapper executable
         if: ${{ !env.ACT }}
