@@ -116,7 +116,6 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         groupDefinitions = template.definitions,
-                        scratchpad = template.scratchpad,
                         templateData = TabTemplateData(event.templateFile),
                     )
                 }

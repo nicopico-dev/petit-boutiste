@@ -9,5 +9,4 @@ import kotlin.uuid.ExperimentalUuidApi
 data class Template(
     val name: String,
     val definitions: List<ByteGroupDefinition> = emptyList(),
-    val scratchpad: String = "",
 )
