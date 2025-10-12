@@ -9,7 +9,7 @@ class Base64String(
     val base64String: String = base64.encode(byteArray)
 
     override val hexString: String
-        get() = byteArray.toHexString()
+        get() = byteArray.toHexString(HexFormat.UpperCase)
 
     override fun isNotEmpty() = base64String.isNotEmpty()
 
