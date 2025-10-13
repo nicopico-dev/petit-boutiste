@@ -3,12 +3,15 @@ package fr.nicopico.petitboutiste.ui.components.representation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
@@ -20,6 +23,7 @@ fun ArgumentInput(
     argument: DataRenderer.Argument,
     userValue: ArgValue?,
     onValueChanged: (ArgValue?) -> Unit,
+    completeArguments: ArgumentValues,
     modifier: Modifier = Modifier.Companion,
 ) {
     val value: ArgValue? = remember(argument, userValue) {
@@ -56,6 +60,8 @@ fun ArgumentInput(
 
                 is ArgumentType.ChoiceType<*> -> {
                     with(argument.type) {
+                        val choices by getChoices(completeArguments).collectAsStateWithLifecycle(emptyList())
+                        // TODO Display a loading indicator while waiting for data to be loaded
                         PBDropdown(
                             items = choices,
                             selection = value?.let(::convertFrom),

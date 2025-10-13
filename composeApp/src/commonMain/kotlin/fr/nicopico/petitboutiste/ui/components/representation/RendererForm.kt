@@ -44,6 +44,7 @@ fun RendererForm(
                         !showSubmitButton,
                     )
                 },
+                completeArguments = argumentValues,
                 modifier = modifier.fillMaxWidth()
             )
         }
