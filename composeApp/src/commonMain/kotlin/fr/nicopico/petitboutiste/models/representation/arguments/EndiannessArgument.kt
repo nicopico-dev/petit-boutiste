@@ -15,6 +15,9 @@ val EndiannessArgument = DataRenderer.Argument(
         choiceConverter = Endianness::name,
     ),
     defaultValue = DEFAULT.name,
+    hint = """BigEndian: left-to-right
+        |LittleEndian: right-to-left
+    """.trimMargin()
 )
 
 fun DataRenderer.getEndianness(argumentValues: ArgumentValues): Endianness {

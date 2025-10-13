@@ -3,6 +3,8 @@ package fr.nicopico.petitboutiste.ui.components.definition
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -13,7 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelPosition
+import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
+import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.jewel.ui.component.DefaultButton
@@ -82,32 +85,33 @@ fun ByteGroupDefinitionForm(
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.End,
     ) {
-        PBTextField(
-            label = "Name (optional)",
-            value = name,
-            onValueChange = { name = it },
-            labelPosition = PBLabelPosition.Start,
-            maxFieldWidth = fieldMaxWidth,
-        )
+        PBLabel("Name (optional)", orientation = Horizontal) {
+            PBTextField(
+                value = name,
+                onValueChange = { name = it },
+                modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+            )
+        }
 
-        PBTextField(
-            label = "Start",
-            value = startIndexInput,
-            onValueChange = { startIndexInput = it },
-            labelPosition = PBLabelPosition.Start,
-            isError = startIndexError != null,
-            maxFieldWidth = fieldMaxWidth,
-        )
+        PBLabel("Start", orientation = Horizontal) {
+            PBTextField(
+                value = startIndexInput,
+                onValueChange = { startIndexInput = it },
+                isError = startIndexError != null,
+                modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+            )
+        }
 
-        PBTextField(
-            label = "End",
-            value = endIndexInput,
-            onValueChange = { endIndexInput = it },
-            labelPosition = PBLabelPosition.Start,
-            isError = endIndexError != null,
-            maxFieldWidth = fieldMaxWidth,
-        )
+        PBLabel("End", orientation = Horizontal) {
+            PBTextField(
+                value = endIndexInput,
+                onValueChange = { endIndexInput = it },
+                isError = endIndexError != null,
+                modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+            )
+        }
 
         DefaultButton(
             content = { Text(text = "Save definition") },

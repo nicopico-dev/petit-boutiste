@@ -3,8 +3,6 @@ package fr.nicopico.petitboutiste.ui.components.foundation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
@@ -32,16 +30,10 @@ fun PBFileSelector(
     onFileSelected: (File?) -> Unit,
     modifier: Modifier = Modifier,
     selection: File? = null,
-    label: String? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     Column(modifier) {
-        if (label != null) {
-            Text(label, style = JewelTheme.typography.medium)
-            Spacer(Modifier.height(4.dp))
-        }
-
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             val state = remember(selection) {
                 TextFieldState(selection?.name ?: "")
@@ -95,17 +87,6 @@ private fun PBFileSelectorPreview() {
             )
 
             PBFileSelector(
-                selection = File("/tmp/example.txt"),
-                onFileSelected = { }
-            )
-
-            PBFileSelector(
-                label = "Choose a file",
-                onFileSelected = { }
-            )
-
-            PBFileSelector(
-                label = "Choose a file",
                 selection = File("/tmp/example.txt"),
                 onFileSelected = { }
             )

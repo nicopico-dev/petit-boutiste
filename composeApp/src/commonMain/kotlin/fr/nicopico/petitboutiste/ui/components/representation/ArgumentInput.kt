@@ -11,7 +11,9 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector
+import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
+import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 
 @Composable
 fun ArgumentInput(
@@ -25,42 +27,45 @@ fun ArgumentInput(
     }
 
     Column(modifier = modifier) {
-        when (argument.type) {
-            is FileType -> {
-                PBFileSelector(
-                    label = argument.label,
-                    onFileSelected = { file ->
-                        onValueChanged(
-                            file?.let { FileType.convertTo(it) }
-                        )
-                    },
-                    selection = value?.let(FileType::convertFrom),
-                    modifier = Modifier.fillMaxWidth()
-                )
+        PBLabel(
+            label = argument.label,
+            hint = argument.hint?.optionalSlot { hint ->
+                ArgumentHint(hint)
             }
-
-            is ArgumentType.StringType -> {
-                PBTextField(
-                    label = argument.label,
-                    value = value ?: "",
-                    onValueChange = onValueChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            is ArgumentType.ChoiceType<*> -> {
-                with(argument.type) {
-                    PBDropdown(
-                        label = argument.label,
-                        items = choices,
-                        selection = value?.let(::convertFrom),
-                        onItemSelected = { choice ->
-                            onValueChanged(convertChoice(choice))
-                        }
+        ) {
+            when (argument.type) {
+                is FileType -> {
+                    PBFileSelector(
+                        onFileSelected = { file ->
+                            onValueChanged(
+                                file?.let { FileType.convertTo(it) }
+                            )
+                        },
+                        selection = value?.let(FileType::convertFrom),
+                        modifier = Modifier.fillMaxWidth()
                     )
+                }
+
+                is ArgumentType.StringType -> {
+                    PBTextField(
+                        value = value ?: "",
+                        onValueChange = onValueChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+
+                is ArgumentType.ChoiceType<*> -> {
+                    with(argument.type) {
+                        PBDropdown(
+                            items = choices,
+                            selection = value?.let(::convertFrom),
+                            onItemSelected = { choice ->
+                                onValueChanged(convertChoice(choice))
+                            }
+                        )
+                    }
                 }
             }
         }
-
     }
 }

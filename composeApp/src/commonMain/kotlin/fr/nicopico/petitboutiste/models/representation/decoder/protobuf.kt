@@ -19,11 +19,17 @@ val PROTOBUF_ARGUMENTS = listOf(
         key = ARG_PROTO_FILE_KEY,
         label = "Protobuf '.desc' file",
         type = FileType,
+        // TODO Check the command to use to compile a desc file
+        hint = """Compiled from the .proto file(s) using:
+            | `$ protoc --descriptor_set_out=/PATH/TO/output.desc --include_imports /PATH/TO/PROTO/*.proto --proto_path /PATH/TO/PROTO/`
+            | Note that PATH must be absolute and cannot use '~'
+        """.trimMargin()
     ),
     Argument(
         key = ARG_MESSAGE_TYPE_KEY,
         label = "MessageType",
         type = StringType,
+        hint = "Name of the message, as defined in the .proto file"
     ),
 )
 
