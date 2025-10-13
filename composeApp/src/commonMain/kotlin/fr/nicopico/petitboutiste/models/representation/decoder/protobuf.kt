@@ -21,7 +21,8 @@ val PROTOBUF_ARGUMENTS = listOf(
         type = FileType,
         // TODO Check the command to use to compile a desc file
         hint = """Compiled from the .proto file(s) using:
-            | `$ protoc --descriptor_set_out=/PATH/TO/output.desc --include_imports=/PATH/TO/PROTO/*.proto`
+            | `$ protoc --descriptor_set_out=/PATH/TO/output.desc --include_imports /PATH/TO/PROTO/*.proto --proto_path /PATH/TO/PROTO/`
+            | Note that PATH must be absolute and cannot use '~'
         """.trimMargin()
     ),
     Argument(
