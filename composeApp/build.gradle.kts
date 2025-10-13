@@ -69,6 +69,13 @@ kotlin {
                 exclude(group = "org.jetbrains.compose.material")
             }
             implementation(libs.kotlinx.coroutinesSwing)
+
+            implementation(kotlin("script-jvm"))
+            implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host")
+            implementation("org.jetbrains.kotlin:kotlin-scripting-common")
+            implementation("org.jetbrains.kotlin:kotlin-script-runtime")
+            // Optional if you want @file:DependsOn/@file:Repository in user scripts
+            implementation("org.jetbrains.kotlin:kotlin-scripting-dependencies")
         }
     }
 }
