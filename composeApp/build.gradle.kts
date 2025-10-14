@@ -58,6 +58,12 @@ kotlin {
 
             implementation(libs.protobuf.java)
             implementation(libs.protobuf.java.util)
+
+            // kotlin("something") -> "org.jetbrains.kotlin:kotlin-something
+            implementation(kotlin("scripting-jvm"))
+            implementation(kotlin("scripting-jvm-host"))
+            implementation(kotlin("scripting-common"))
+            implementation(kotlin("script-runtime"))
         }
 
         commonTest.dependencies {
@@ -69,13 +75,6 @@ kotlin {
                 exclude(group = "org.jetbrains.compose.material")
             }
             implementation(libs.kotlinx.coroutinesSwing)
-
-            implementation(kotlin("script-jvm"))
-            implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host")
-            implementation("org.jetbrains.kotlin:kotlin-scripting-common")
-            implementation("org.jetbrains.kotlin:kotlin-script-runtime")
-            // Optional if you want @file:DependsOn/@file:Repository in user scripts
-            implementation("org.jetbrains.kotlin:kotlin-scripting-dependencies")
         }
     }
 }
