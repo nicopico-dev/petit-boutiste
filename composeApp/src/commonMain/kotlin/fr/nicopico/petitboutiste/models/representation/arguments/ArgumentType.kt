@@ -1,5 +1,7 @@
 package fr.nicopico.petitboutiste.models.representation.arguments
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -23,10 +25,17 @@ sealed class ArgumentType<T : Any>(
 
     data class ChoiceType<T: Any>(
         private val type: KClass<T>,
-        val choices: List<T>,
+        val getChoices: (ArgumentValues) -> Flow<List<T>>,
         private val argValueConverter: (ArgValue) -> T,
         private val choiceConverter: (T) -> ArgValue,
     ) : ArgumentType<T>(type) {
+
+        constructor(
+            type: KClass<T>,
+            choices: List<T>,
+            argValueConverter: (ArgValue) -> T,
+            choiceConverter: (T) -> ArgValue,
+        ) : this(type, { flowOf(choices) }, argValueConverter, choiceConverter)
 
         override fun convertFrom(argValue: String): T = argValueConverter(argValue)
         override fun convertTo(value: T): ArgValue = choiceConverter(value)
