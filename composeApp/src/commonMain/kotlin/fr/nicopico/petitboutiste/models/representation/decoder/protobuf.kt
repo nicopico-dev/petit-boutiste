@@ -39,7 +39,7 @@ val PROTOBUF_ARGUMENTS = listOf(
             getChoices = { arguments ->
                 // TODO Listen for changes in the arguments instead of polling
                 callbackFlow {
-                    var previousFile:File? = null
+                    var previousFile: File? = null
                     while (isActive) {
                         val protoFileArgument =
                             DataRenderer.Protobuf.getArgumentValue<File>(ARG_PROTO_FILE_KEY, arguments)
