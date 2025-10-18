@@ -16,8 +16,11 @@ val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 data class Representation(
     val dataRenderer: DataRenderer,
     val argumentValues: ArgumentValues = emptyArgumentValues(),
-    val submitted: Boolean = false,
+    val submitCount: Int = 0,
 )
+
+val Representation.submitted: Boolean
+    get() = submitCount > 0
 
 val Representation.isOff: Boolean
     get() = dataRenderer == DataRenderer.Off
