@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import java.io.File
-import java.net.URLClassLoader
 import kotlin.reflect.typeOf
 import kotlin.script.experimental.api.EvaluationResult
 import kotlin.script.experimental.api.ResultWithDiagnostics
@@ -67,11 +66,5 @@ class ScriptHost(
 
             host.eval(file.toScriptSource(), compilationCfg, evalCfg)
         }
-    }
-
-    private fun defaultClasspath(): List<File> {
-        // Fallback to the app’s own classpath
-        val urls = (ClassLoader.getSystemClassLoader() as? URLClassLoader)?.urLs.orEmpty()
-        return urls.mapNotNull { it.toURI().path?.let(::File) }.filter { it.exists() }
     }
 }
