@@ -16,22 +16,29 @@ import fr.nicopico.petitboutiste.models.representation.decoder.decodeText
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeUnsignedInteger
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeUserScript
 
+private val CUSTOM_LABEL_DEFAULT: String? = null
+private const val REQUIRE_USER_VALIDATION_DEFAULT: Boolean = false
+
 enum class DataRenderer(
     val arguments: List<Argument> = emptyList(),
-    val requireUserValidation: Boolean = false,
-    val customLabel: String? = null,
+    val customLabel: String? = CUSTOM_LABEL_DEFAULT,
+    val requireUserValidation: Boolean = REQUIRE_USER_VALIDATION_DEFAULT,
 ) {
     Off,
     Binary,
     Hexadecimal,
     Integer(EndiannessArgument),
-    UnsignedInteger(listOf(EndiannessArgument), customLabel = "Integer (unsigned)"),
+    UnsignedInteger(EndiannessArgument, customLabel = "Integer (unsigned)"),
     Text(EndiannessArgument, CharsetArgument),
     Protobuf(PROTOBUF_ARGUMENTS, requireUserValidation = true),
     UserScript(USER_SCRIPT_ARGUMENTS, customLabel = "User script", requireUserValidation = true),
     ;
 
-    constructor(vararg arguments: Argument) : this(arguments.toList())
+    constructor(
+        vararg arguments: Argument,
+        customLabel: String? = CUSTOM_LABEL_DEFAULT,
+        requireUserValidation: Boolean = REQUIRE_USER_VALIDATION_DEFAULT,
+    ) : this(arguments.toList(), customLabel, requireUserValidation)
 
     val label: String get() = customLabel ?: name
 
