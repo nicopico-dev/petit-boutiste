@@ -39,9 +39,6 @@ fun DataRenderer.decodeUserScript(byteArray: ByteArray, argumentValues: Argument
         }
     }
 
-    // FIXME The script does not run again when click "Render"
-    //  the user need to reselect the script file
-    // on the other hand, the script is run again automatically when the input changes !
     log("Running user script $scriptFile on ${byteArray.toHexString()}...")
     val result = runBlocking {
         host.evalFile(scriptFile)
