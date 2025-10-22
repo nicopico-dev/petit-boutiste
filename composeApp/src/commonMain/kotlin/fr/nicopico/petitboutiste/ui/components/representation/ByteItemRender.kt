@@ -36,6 +36,7 @@ import org.jetbrains.jewel.ui.component.Divider
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextArea
 import org.jetbrains.jewel.ui.typography
+import kotlin.math.max
 
 @Composable
 fun ByteItemRender(
@@ -44,7 +45,7 @@ fun ByteItemRender(
     onRepresentationChanged: (Representation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val rendererOutput by remember(byteItem, representation) {
+    val rendererOutput: RenderResult by remember(byteItem, representation) {
         derivedStateOf {
             if (representation.isReady) {
                 representation.render(byteItem)
@@ -76,7 +77,7 @@ fun ByteItemRender(
                     onRepresentationChanged(
                         representation.copy(
                             dataRenderer = dataRenderer,
-                            submitted = false,
+                            submitCount = 0,
                         )
                     )
                 },
@@ -105,7 +106,9 @@ fun ByteItemRender(
                     onRepresentationChanged(
                         representation.copy(
                             argumentValues = argumentValues,
-                            submitted = submit,
+                            submitCount = if (submit) {
+                                representation.incrementedSubmitCount()
+                            } else representation.submitCount,
                         )
                     )
                 },
@@ -145,5 +148,15 @@ fun ByteItemRender(
                     .padding(top = 8.dp, end = 8.dp, bottom = 8.dp),
             )
         }
+    }
+}
+
+private fun Representation.incrementedSubmitCount(): Int {
+    return if (dataRenderer.requireUserValidation) {
+        // Increment `submitCount` each time to force a re-render
+        submitCount + 1
+    } else {
+        // Keep `submitCount` at 1
+        max(1, submitCount + 1)
     }
 }

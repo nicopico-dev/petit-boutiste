@@ -58,6 +58,12 @@ kotlin {
 
             implementation(libs.protobuf.java)
             implementation(libs.protobuf.java.util)
+
+            // kotlin("something") -> "org.jetbrains.kotlin:kotlin-something
+            implementation(kotlin("scripting-jvm"))
+            implementation(kotlin("scripting-jvm-host"))
+            implementation(kotlin("scripting-common"))
+            implementation(kotlin("script-runtime"))
         }
 
         commonTest.dependencies {
