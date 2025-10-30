@@ -13,6 +13,10 @@ class Base64String(
 
     override fun isNotEmpty() = base64String.isNotEmpty()
 
+    override fun toString(): String {
+        return "Base64String(base64String='$base64String')"
+    }
+
     companion object {
         private val base64: Base64 = Base64.withPadding(Base64.PaddingOption.PRESENT_OPTIONAL)
 

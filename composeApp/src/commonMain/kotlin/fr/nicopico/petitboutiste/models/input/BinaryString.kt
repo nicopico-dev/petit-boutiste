@@ -19,6 +19,10 @@ class BinaryString(
 
     override fun isNotEmpty() = binaryString.isNotEmpty()
 
+    override fun toString(): String {
+        return "BinaryString(binaryString='$binaryString')"
+    }
+
     companion object {
         fun parse(input: String): BinaryString? {
             return try {

@@ -12,6 +12,10 @@ class HexString(
 
     override fun isNotEmpty() = hexString.isNotEmpty()
 
+    override fun toString(): String {
+        return "HexString(hexString='$hexString')"
+    }
+
     companion object {
         fun parse(input: String): HexString? {
             return try {
