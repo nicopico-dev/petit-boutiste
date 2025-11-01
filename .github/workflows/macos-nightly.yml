@@ -1,0 +1,132 @@
+name: MacOS Nightly
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-nightly:
+    name: Check for main branch changes
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      should_run: ${{ steps.decision.outputs.should_run }}
+    steps:
+      - name: Decide whether to run nightly build
+        id: decision
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const eventName = context.eventName;
+            if (eventName !== 'schedule') {
+              core.info(`Event "${eventName}" triggered the workflow; proceeding with build.`);
+              core.setOutput('should_run', 'true');
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const workflowFile = 'nightly-build.yml';
+
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: workflowFile,
+              branch: 'main',
+              status: 'success',
+              per_page: 1,
+            });
+
+            if (!runs.data.workflow_runs.length) {
+              core.info('No previous successful nightly runs found; building.');
+              core.setOutput('should_run', 'true');
+              return;
+            }
+
+            const lastRun = runs.data.workflow_runs[0];
+            const lastSha = lastRun.head_sha;
+            core.info(`Last successful nightly run used commit ${lastSha}. Current commit is ${context.sha}.`);
+
+            if (lastSha === context.sha) {
+              core.info('Latest commit already built in the previous nightly run; skipping.');
+              core.setOutput('should_run', 'false');
+              return;
+            }
+
+            try {
+              const comparison = await github.rest.repos.compareCommits({
+                owner,
+                repo,
+                base: lastSha,
+                head: context.sha,
+              });
+
+              core.info(`Comparison status: ${comparison.data.status}. Ahead by ${comparison.data.ahead_by} commits.`);
+
+              if (comparison.data.status === 'identical' || comparison.data.ahead_by === 0) {
+                core.info('No new commits on main since the previous nightly; skipping build.');
+                core.setOutput('should_run', 'false');
+                return;
+              }
+
+              core.info('Detected new commits on main since the last nightly; proceeding with build.');
+              core.setOutput('should_run', 'true');
+            } catch (error) {
+              core.warning(`Failed to compare commits due to: ${error.message}. Proceeding with build.`);
+              core.setOutput('should_run', 'true');
+            }
+
+  build-nightly:
+    name: Build nightly distributable
+    runs-on: macos-latest
+    needs: check-nightly
+    if: needs.check-nightly.outputs.should_run == 'true' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        if: ${{ !env.ACT }}
+        with:
+          distribution: 'jetbrains'
+          java-version: '21'
+          cache: 'gradle'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Make Gradle wrapper executable
+        if: ${{ !env.ACT }}
+        run: chmod +x ./gradlew
+
+      - name: Build macOS nightly application
+        run: |
+          APP_VERSION=$(date -u +%Y.%m.%d)-nightly
+          ./gradlew -PappVersion=$APP_VERSION :composeApp:createReleaseDistributable
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+
+      - name: Find APP file
+        id: find-app
+        run: |
+          APP_PATH=$(find composeApp/build/compose/binaries/main-release/app -name "*.app" -type d | head -n 1)
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
+          echo "APP_NAME=$(basename \"$APP_PATH\")" >> $GITHUB_ENV
+
+      - name: Create ZIP archive
+        run: |
+          cd $(dirname "$APP_PATH")
+          zip -r "$APP_NAME.zip" "$APP_NAME"
+          echo "ZIP_PATH=$(pwd)/$APP_NAME.zip" >> $GITHUB_ENV
+
+      - name: Upload nightly artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-app-${{ env.APP_VERSION }}
+          path: ${{ env.ZIP_PATH }}
+          retention-days: 7
