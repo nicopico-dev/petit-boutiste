@@ -29,7 +29,8 @@ jobs:
             }
 
             const { owner, repo } = context.repo;
-            const workflowFile = 'nightly-build.yml';
+            // TODO NPI const workflowFile = 'macos-nightly.yml';
+            const workflowFile = 'macos-release.yml';
 
             const runs = await github.rest.actions.listWorkflowRuns({
               owner,
@@ -83,7 +84,7 @@ jobs:
     name: Build nightly distributable
     runs-on: macos-latest
     needs: check-nightly
-    if: needs.check-nightly.outputs.should_run == 'true' && github.ref == 'refs/heads/main'
+    if: needs.check-nightly.outputs.should_run == 'true' # TODO NPI && github.ref == 'refs/heads/main'
     permissions:
       contents: read
 
@@ -107,7 +108,7 @@ jobs:
 
       - name: Build macOS nightly application
         run: |
-          APP_VERSION=$(date -u +%Y.%m.%d)-nightly
+          APP_VERSION=$(date -u +%d.%m.%Y)
           ./gradlew -PappVersion=$APP_VERSION :composeApp:createReleaseDistributable
           echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
 
