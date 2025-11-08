@@ -132,7 +132,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: nighlty/${{ needs.prepare-nightly.outputs.nightly_version }}
+          tag_name: nightly/${{ needs.prepare-nightly.outputs.nightly_version }}
           name: Nightly v${{ needs.prepare-nightly.outputs.nightly_version }}
           body: ${{ github.event.inputs.release_notes }}
           draft: false
