@@ -29,17 +29,31 @@ jobs:
             }
 
             const { owner, repo } = context.repo;
-            // FIXME NPI const workflowFile = 'macos-nightly.yml';
-            const workflowFile = 'macos-release.yml';
+            const workflowFile = 'macos-nightly.yml';
 
-            const runs = await github.rest.actions.listWorkflowRuns({
-              owner,
-              repo,
-              workflow_id: workflowFile,
-              branch: 'main',
-              status: 'success',
-              per_page: 1,
-            });
+            // The workflow file may not exist on the remote repository (404).
+            // Guard the API call so we treat "workflow not found" as "no previous runs".
+            let runs;
+            try {
+              runs = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: workflowFile,
+                branch: 'main',
+                status: 'success',
+                per_page: 1,
+              });
+            } catch (error) {
+              // If the workflow file doesn't exist (404) or other error happens,
+              // log and proceed with the build as if no previous successful runs exist.
+              if (error.status === 404) {
+                core.warning(`Workflow file "${workflowFile}" not found in remote repo; proceeding with build.`);
+              } else {
+                core.warning(`Failed to list workflow runs for "${workflowFile}": ${error.message}. Proceeding with build.`);
+              }
+              core.setOutput('should_run', 'true');
+              return;
+            }
 
             if (!runs.data.workflow_runs.length) {
               core.info('No previous successful nightly runs found; building.');
