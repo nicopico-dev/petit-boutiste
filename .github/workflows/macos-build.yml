@@ -6,6 +6,10 @@ on:
       version:
         required: true
         type: string
+      version_prefix:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   build:
@@ -47,8 +51,9 @@ jobs:
       - name: Create ZIP archive
         run: |
           cd $(dirname "$APP_PATH")
-          zip -r "$APP_NAME.zip" "$APP_NAME"
-          echo "ZIP_PATH=$(pwd)/$APP_NAME.zip" >> $GITHUB_ENV
+          ZIP_NAME="${APP_NAME%.app}-${{ inputs.version_prefix }}${{ inputs.version }}.zip"
+          zip -r "$ZIP_NAME" "$APP_NAME"
+          echo "ZIP_PATH=$(pwd)/$ZIP_NAME" >> $GITHUB_ENV
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

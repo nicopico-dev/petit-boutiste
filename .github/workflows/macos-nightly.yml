@@ -113,6 +113,7 @@ jobs:
     needs: prepare-nightly
     uses: ./.github/workflows/macos-build.yml
     with:
+      version_prefix: 'nightly-'
       version: ${{ needs.prepare-nightly.outputs.nightly_version }}
 
   release:
