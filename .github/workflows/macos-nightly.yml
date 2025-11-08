@@ -1,0 +1,140 @@
+name: MacOS Nightly
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-nightly:
+    name: Check for main branch changes
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      should_run: ${{ steps.decision.outputs.should_run }}
+    steps:
+      - name: Decide whether to run nightly build
+        id: decision
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const eventName = context.eventName;
+            if (eventName !== 'schedule') {
+              core.info(`Event "${eventName}" triggered the workflow; proceeding with build.`);
+              core.setOutput('should_run', 'true');
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const workflowFile = 'macos-nightly.yml';
+
+            // The workflow file may not exist on the remote repository (404).
+            // Guard the API call so we treat "workflow not found" as "no previous runs".
+            let runs;
+            try {
+              runs = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: workflowFile,
+                branch: 'main',
+                status: 'success',
+                per_page: 1,
+              });
+            } catch (error) {
+              // If the workflow file doesn't exist (404) or other error happens,
+              // log and proceed with the build as if no previous successful runs exist.
+              if (error.status === 404) {
+                core.warning(`Workflow file "${workflowFile}" not found in remote repo; proceeding with build.`);
+              } else {
+                core.warning(`Failed to list workflow runs for "${workflowFile}": ${error.message}. Proceeding with build.`);
+              }
+              core.setOutput('should_run', 'true');
+              return;
+            }
+
+            if (!runs.data.workflow_runs.length) {
+              core.info('No previous successful nightly runs found; building.');
+              core.setOutput('should_run', 'true');
+              return;
+            }
+
+            const lastRun = runs.data.workflow_runs[0];
+            const lastSha = lastRun.head_sha;
+            core.info(`Last successful nightly run used commit ${lastSha}. Current commit is ${context.sha}.`);
+
+            if (lastSha === context.sha) {
+              core.info('Latest commit already built in the previous nightly run; skipping.');
+              core.setOutput('should_run', 'false');
+              return;
+            }
+
+            try {
+              const comparison = await github.rest.repos.compareCommits({
+                owner,
+                repo,
+                base: lastSha,
+                head: context.sha,
+              });
+
+              core.info(`Comparison status: ${comparison.data.status}. Ahead by ${comparison.data.ahead_by} commits.`);
+
+              if (comparison.data.status === 'identical' || comparison.data.ahead_by === 0) {
+                core.info('No new commits on main since the previous nightly; skipping build.');
+                core.setOutput('should_run', 'false');
+                return;
+              }
+
+              core.info('Detected new commits on main since the last nightly; proceeding with build.');
+              core.setOutput('should_run', 'true');
+            } catch (error) {
+              core.warning(`Failed to compare commits due to: ${error.message}. Proceeding with build.`);
+              core.setOutput('should_run', 'true');
+            }
+
+  prepare-nightly:
+    name: Prepare nightly version
+    runs-on: ubuntu-latest
+    needs: check-nightly
+    if: needs.check-nightly.outputs.should_run == 'true'
+    outputs:
+      nightly_version: ${{ steps.set_version.outputs.nightly_version }}
+    steps:
+      - name: Compute APP_VERSION
+        id: set_version
+        run: |
+          APP_VERSION=$(date -u +%d.%m.%Y)
+          echo "nightly_version=$APP_VERSION" >> $GITHUB_OUTPUT
+
+  build-nightly:
+    name: Build nightly distributable
+    needs: prepare-nightly
+    uses: ./.github/workflows/macos-build.yml
+    with:
+      version_prefix: 'nightly-'
+      version: ${{ needs.prepare-nightly.outputs.nightly_version }}
+
+  release:
+    name: Release nightly
+    needs:
+    - build-nightly
+    - prepare-nightly # to get access to nightly_version output
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Print version
+        run: |
+          echo "Version: '${{ needs.prepare-nightly.outputs.nightly_version }}'"
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly/${{ needs.prepare-nightly.outputs.nightly_version }}
+          name: Nightly v${{ needs.prepare-nightly.outputs.nightly_version }}
+          body: ${{ github.event.inputs.release_notes }}
+          draft: false
+          prerelease: true
+          files: ${{ needs.build-nightly.outputs.zip_path }}
