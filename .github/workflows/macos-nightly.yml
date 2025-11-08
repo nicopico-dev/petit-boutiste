@@ -137,4 +137,4 @@ jobs:
           body: ${{ github.event.inputs.release_notes }}
           draft: false
           prerelease: true
-          files: ${{ needs.build.outputs.zip_path }}
+          files: ${{ needs.build-nightly.outputs.zip_path }}
