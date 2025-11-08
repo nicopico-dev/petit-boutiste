@@ -14,50 +14,9 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        if: ${{ !env.ACT }}
-        with:
-          distribution: 'jetbrains'
-          java-version: '21'
-          cache: 'gradle'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Make Gradle wrapper executable
-        if: ${{ !env.ACT }}
-        run: chmod +x ./gradlew
-
-      - name: Build macOS application
-        run: ./gradlew -PappVersion=${{ github.event.inputs.version }} :composeApp:createReleaseDistributable
-
-      - name: Find APP file
-        id: find-app
-        run: |
-          APP_PATH=$(find composeApp/build/compose/binaries/main-release/app -name "*.app" -type d | head -n 1)
-          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
-          echo "APP_NAME=$(basename "$APP_PATH")" >> $GITHUB_ENV
-
-      - name: Create ZIP archive
-        run: |
-          cd $(dirname "$APP_PATH")
-          zip -r "$APP_NAME.zip" "$APP_NAME"
-          echo "ZIP_PATH=$(pwd)/$APP_NAME.zip" >> $GITHUB_ENV
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-package
-          path: ${{ env.ZIP_PATH }}
-          retention-days: 1
+    uses: ./.github/workflows/macos-build.yml
+    with:
+      version: ${{ github.event.inputs.version }}
 
   release:
     needs: build
@@ -66,18 +25,6 @@ jobs:
       contents: write
 
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app-package
-          path: ./artifacts
-
-      - name: Find ZIP file
-        id: find-zip
-        run: |
-          ZIP_PATH=$(find ./artifacts -name "*.zip" | head -n 1)
-          echo "ZIP_PATH=$ZIP_PATH" >> $GITHUB_ENV
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -86,4 +33,4 @@ jobs:
           body: ${{ github.event.inputs.release_notes }}
           draft: false
           prerelease: false
-          files: ${{ env.ZIP_PATH }}
+          files: ${{ needs.build.outputs.zip_path }}

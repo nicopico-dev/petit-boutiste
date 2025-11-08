@@ -82,52 +82,9 @@ jobs:
 
   build-nightly:
     name: Build nightly distributable
-    runs-on: macos-latest
+    uses: ./.github/workflows/macos-build.yml
+    with:
+      # TODO Pass the date as dd-mm-YYYY (shell: `date -u +%d.%m.%Y`)
+      version: 08.11.2025
     needs: check-nightly
     if: needs.check-nightly.outputs.should_run == 'true' # TODO NPI && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        if: ${{ !env.ACT }}
-        with:
-          distribution: 'jetbrains'
-          java-version: '21'
-          cache: 'gradle'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Make Gradle wrapper executable
-        if: ${{ !env.ACT }}
-        run: chmod +x ./gradlew
-
-      - name: Build macOS nightly application
-        run: |
-          APP_VERSION=$(date -u +%d.%m.%Y)
-          ./gradlew -PappVersion=$APP_VERSION :composeApp:createReleaseDistributable
-          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
-
-      - name: Find APP file
-        id: find-app
-        run: |
-          APP_PATH=$(find composeApp/build/compose/binaries/main-release/app -name "*.app" -type d | head -n 1)
-          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
-          echo "APP_NAME=$(basename \"$APP_PATH\")" >> $GITHUB_ENV
-
-      - name: Create ZIP archive
-        run: |
-          cd $(dirname "$APP_PATH")
-          zip -r "$APP_NAME.zip" "$APP_NAME"
-          echo "ZIP_PATH=$(pwd)/$APP_NAME.zip" >> $GITHUB_ENV
-
-      - name: Upload nightly artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: nightly-app-${{ env.APP_VERSION }}
-          path: ${{ env.ZIP_PATH }}
-          retention-days: 7

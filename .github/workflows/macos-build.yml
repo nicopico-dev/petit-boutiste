@@ -1,0 +1,68 @@
+name: macos-build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: macos-latest
+    permissions:
+      contents: read
+
+    outputs:
+      zip_path: ${{ steps.set-output.outputs.zip_path }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        if: ${{ !env.ACT }}
+        with:
+          distribution: 'jetbrains'
+          java-version: '21'
+          cache: 'gradle'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Make Gradle wrapper executable
+        if: ${{ !env.ACT }}
+        run: chmod +x ./gradlew
+
+      - name: Build macOS application
+        run: ./gradlew -PappVersion=${{ inputs.version }} :composeApp:createReleaseDistributable
+
+      - name: Find APP file
+        id: find-app
+        run: |
+          APP_PATH=$(find composeApp/build/compose/binaries/main-release/app -name "*.app" -type d | head -n 1)
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
+          echo "APP_NAME=$(basename "$APP_PATH")" >> $GITHUB_ENV
+
+      - name: Create ZIP archive
+        run: |
+          cd $(dirname "$APP_PATH")
+          zip -r "$APP_NAME.zip" "$APP_NAME"
+          echo "ZIP_PATH=$(pwd)/$APP_NAME.zip" >> $GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-package
+          path: ${{ env.ZIP_PATH }}
+          retention-days: 1
+
+      # Set the job output so callers can access the path to the .zip
+      - name: Set job output (zip_path)
+        id: set-output
+        env:
+          ZIP_PATH: ${{ env.ZIP_PATH }}
+        run: |
+          # Use the GITHUB_OUTPUT file to expose a step output
+          # Note: Using a run step to emit the value that will be picked by the job outputs mapping above.
+          echo "zip_path=${ZIP_PATH}" >> $GITHUB_OUTPUT
