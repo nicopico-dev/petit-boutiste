@@ -11,13 +11,13 @@ import org.jetbrains.jewel.intui.window.styling.dark
 import org.jetbrains.jewel.intui.window.styling.light
 import org.jetbrains.jewel.ui.ComponentStyling
 import org.jetbrains.jewel.window.styling.TitleBarStyle
-import org.jetbrains.skiko.SystemTheme
-import org.jetbrains.skiko.currentSystemTheme
 
 @Composable
 fun PetitBoutisteTheme(content: @Composable () -> Unit) {
     // TODO Follow system theme changes
-    val isDark = currentSystemTheme == SystemTheme.DARK
+    // Disable dark mode until is properly handled
+    //  val isDark = currentSystemTheme == SystemTheme.DARK
+    val isDark = false
 
     IntUiTheme(
         theme = if (isDark) JewelTheme.darkThemeDefinition() else JewelTheme.lightThemeDefinition(),
