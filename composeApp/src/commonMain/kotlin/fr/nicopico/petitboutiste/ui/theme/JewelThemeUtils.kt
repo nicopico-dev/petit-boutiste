@@ -1,6 +1,7 @@
 package fr.nicopico.petitboutiste.ui.theme
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -22,6 +23,13 @@ import org.jetbrains.skiko.currentSystemTheme
 
 @Suppress("ClassName")
 object JewelThemeUtils {
+
+    private val _darkMode = mutableStateOf(currentSystemTheme == SystemTheme.DARK)
+    var darkMode: Boolean
+        get() = _darkMode.value
+        set(value) {
+            _darkMode.value = value
+        }
 
     val dividerStyle: DividerStyle
         @Composable
@@ -50,27 +58,40 @@ object JewelThemeUtils {
             }
         }
 
-    private val isDarkTheme = currentSystemTheme == SystemTheme.DARK
-
     object colors {
-        val iconOnLightTint = hexColor("FF6C707E")
-        val iconOnDarkTint = hexColor("FFCED0D6")
+        val titleBarIconTint = hexColor("FFCED0D6")
 
-        val iconTint: Color
-            get() = if (isDarkTheme) iconOnDarkTint else iconOnLightTint
+        val subTextColor: Color
+            @Composable
+            get() = Color.Gray
 
-        // TODO Use JewelTheme.colorPalette instead
-        val subTextColor = Color.Gray
-        val dangerousActionColor = Color.Red
-        val errorColor = Color.Red
+        val dangerousActionColor: Color
+            @Composable
+            get() = if (darkMode) {
+                JewelTheme.colorPalette.red[6]
+            } else JewelTheme.colorPalette.red[3]
 
-        val accentColor: Color = hexColor("FF1F3D91")
-        val accentContainer: Color = hexColor("FFDEE4F8")
+        val errorColor: Color
+            @Composable
+            get() = if (darkMode) {
+                JewelTheme.colorPalette.red[6]
+            } else JewelTheme.colorPalette.red[3]
 
-        // TODO Use JewelTheme.globalColors.border.normal
+        val accentColor: Color
+            @Composable
+            get() = if (darkMode) {
+                JewelTheme.colorPalette.blue[10]
+            } else JewelTheme.colorPalette.blue[0]
+
+        val accentContainer: Color
+            @Composable
+            get() = if (darkMode) {
+                JewelTheme.colorPalette.gray[2]
+            } else JewelTheme.colorPalette.blue[10]
+
         val borderColor: Color
             @Composable
-            get() = Color.LightGray
+            get() = JewelTheme.globalColors.borders.normal
 
         val inputBackgroundColor: Color
             @Composable
@@ -78,7 +99,9 @@ object JewelThemeUtils {
 
         val windowBackgroundColor: Color
             @Composable
-            get() = JewelTheme.colorPalette.gray[11]
+            get() = if (darkMode) {
+                JewelTheme.colorPalette.gray[0]
+            } else JewelTheme.colorPalette.gray[11]
     }
 
     object typography {

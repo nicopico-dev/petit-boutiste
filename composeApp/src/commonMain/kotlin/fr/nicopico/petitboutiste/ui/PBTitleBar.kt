@@ -153,7 +153,7 @@ fun DecoratedWindowScope.PBTitleBar(
 
             Divider(
                 orientation = Orientation.Vertical,
-                color = JewelThemeUtils.colors.iconOnDarkTint,
+                color = JewelThemeUtils.colors.titleBarIconTint,
                 modifier = Modifier
                     .height(20.dp)
                     .padding(horizontal = 4.dp),
@@ -306,7 +306,7 @@ private fun ToolbarItem(
                     Icon(
                         key = iconKey,
                         contentDescription = label,
-                        tint = JewelThemeUtils.colors.iconOnDarkTint,
+                        tint = JewelThemeUtils.colors.titleBarIconTint,
                     )
                 },
                 modifier = Modifier.size(height = 35.dp, width = 30.dp),
