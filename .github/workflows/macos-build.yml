@@ -51,7 +51,9 @@ jobs:
       - name: Create ZIP archive
         run: |
           cd $(dirname "$APP_PATH")
-          ZIP_NAME="${APP_NAME%.app}-${{ inputs.version_prefix }}${{ inputs.version }}.zip"
+          BASE_NAME="${APP_NAME%.app}"
+          BASE_NAME="${BASE_NAME// /-}"
+          ZIP_NAME="${BASE_NAME}-${{ inputs.version_prefix }}${{ inputs.version }}.zip"
           zip -r "$ZIP_NAME" "$APP_NAME"
           echo "ZIP_PATH=$(pwd)/$ZIP_NAME" >> $GITHUB_ENV
 
