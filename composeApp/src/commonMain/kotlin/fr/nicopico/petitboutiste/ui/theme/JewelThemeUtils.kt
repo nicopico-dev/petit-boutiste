@@ -91,7 +91,9 @@ object JewelThemeUtils {
 
         val borderColor: Color
             @Composable
-            get() = JewelTheme.globalColors.borders.normal
+            get() = if (darkMode) {
+                JewelTheme.colorPalette.gray[2]
+            } else JewelTheme.colorPalette.gray[9]
 
         val inputBackgroundColor: Color
             @Composable
