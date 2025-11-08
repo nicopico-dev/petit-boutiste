@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="composeApp [desktop + hot-reload]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="petit-boutiste [desktop + hot-reload]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="env">
         <map>
