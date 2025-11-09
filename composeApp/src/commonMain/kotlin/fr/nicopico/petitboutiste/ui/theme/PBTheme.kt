@@ -3,6 +3,7 @@ package fr.nicopico.petitboutiste.ui.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
@@ -16,7 +17,6 @@ import org.jetbrains.jewel.ui.ComponentStyling
 import org.jetbrains.jewel.window.styling.DecoratedWindowStyle
 import org.jetbrains.jewel.window.styling.TitleBarStyle
 import org.jetbrains.skiko.SystemTheme
-import org.jetbrains.skiko.currentSystemTheme
 
 enum class PBTheme {
     System,
@@ -26,10 +26,12 @@ enum class PBTheme {
 
 val PBTheme.isDark: Boolean
     @Composable
-    get() = remember(this, currentSystemTheme) {
-        this == PBTheme.Dark
-            // TODO Follow system theme changes
-            || (this == PBTheme.System && currentSystemTheme == SystemTheme.DARK)
+    get() {
+        val systemTheme by observeSystemTheme()
+        return remember(this, systemTheme) {
+            this == PBTheme.Dark
+                || (this == PBTheme.System && systemTheme == SystemTheme.DARK)
+        }
     }
 
 val AppTheme = compositionLocalOf { PBTheme.System }
