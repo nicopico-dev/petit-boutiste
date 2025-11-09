@@ -3,9 +3,9 @@ package fr.nicopico.petitboutiste.ui.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import fr.nicopico.petitboutiste.utils.hexColor
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.theme.colorPalette
+import org.jetbrains.jewel.ui.util.fromArgbHexStringOrNull
 
 val PBTheme.colors: PBThemeColors
     @Composable
@@ -38,7 +38,8 @@ private class PBThemeColorsImpl(
 
     override val titleBarIconTint: Color
         @Composable
-        get() = hexColor("FFCED0D6")!!
+        get() = Color.fromArgbHexStringOrNull("FFCED0D6")
+            ?: Color.Unspecified
 
     override val subTextColor: Color
         @Composable

@@ -26,7 +26,7 @@ enum class PBTheme {
 
 val PBTheme.isDark: Boolean
     @Composable
-    get() = remember(this) {
+    get() = remember(this, currentSystemTheme) {
         this == PBTheme.Dark
             // TODO Follow system theme changes
             || (this == PBTheme.System && currentSystemTheme == SystemTheme.DARK)

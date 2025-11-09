@@ -68,8 +68,8 @@ fun RenameTabDialog(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                // The text does not have the correct color
-                // if we do not reapply the theme here 🤷
+                // DialogWindow creates a new composition root that does not inherit the parent theme,
+                // so we need to reapply the theme here to ensure correct text color and styling.
                 appTheme {
                     Text("Rename this tab")
                 }
