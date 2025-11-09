@@ -16,36 +16,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.nicopico.petitboutiste.models.input.Base64String
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
 import org.jetbrains.jewel.ui.component.Text
 
+/**
+ * Generic, factored input field for data-like strings.
+ */
 @Composable
-fun Base64Input(
-    value: Base64String,
+fun <T : DataString> DataInput(
+    value: T,
+    adapter: DataInputAdapter<T>,
     onValueChange: (DataString) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var input by remember(value) {
-        mutableStateOf(value.base64String)
+        mutableStateOf(adapter.toText(value))
     }
-    var isError: Boolean by remember(value) {
+    var isError by remember(value) {
         mutableStateOf(false)
     }
 
     BasicTextField(
-        value = input,
-        onValueChange = {
+        value = adapter.formatForDisplay(input),
+        onValueChange = { newText ->
+            val sanitized = adapter.sanitize(newText)
             isError = false
-            input = it
+            input = sanitized
 
-            val dataString = Base64String.parse(input)
-            if (dataString != null) {
-                onValueChange(dataString)
-            } else {
-                isError = true
-            }
+            if (adapter.isValid(sanitized)) {
+                if (adapter.isReady(sanitized)) {
+                    val parsed = adapter.parse(sanitized)
+                    if (parsed != null) {
+                        onValueChange(parsed)
+                        input = adapter.toText(parsed)
+                    } else isError = true
+                }
+            } else isError = true
         },
         textStyle = JewelThemeUtils.typography.data,
         modifier = modifier
@@ -58,7 +65,7 @@ fun Base64Input(
             ) {
                 if (input.isEmpty()) {
                     Text(
-                        text = "Paste BASE64 string here",
+                        text = adapter.placeholder,
                         color = Color.Gray,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
