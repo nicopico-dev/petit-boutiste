@@ -1,6 +1,8 @@
 package fr.nicopico.petitboutiste.ui.theme
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
@@ -30,21 +32,23 @@ val PBTheme.isDark: Boolean
             || (this == PBTheme.System && currentSystemTheme == SystemTheme.DARK)
     }
 
+val AppTheme = compositionLocalOf { PBTheme.System }
+
 @Composable
 operator fun PBTheme.invoke(
     content: @Composable () -> Unit,
 ) {
-    // TODO Remove this
-    JewelThemeUtils.appTheme = this
-
-    IntUiTheme(
-        theme = if (isDark) JewelTheme.darkThemeDefinition() else JewelTheme.lightThemeDefinition(),
-        styling = ComponentStyling.default()
-            .decoratedWindow(
-                titleBarStyle = if (isDark) TitleBarStyle.dark() else TitleBarStyle.light(),
-                windowStyle = if (isDark) DecoratedWindowStyle.dark() else DecoratedWindowStyle.light(),
-            )
+    CompositionLocalProvider(
+        AppTheme provides this
     ) {
-        content()
+        IntUiTheme(
+            theme = if (isDark) JewelTheme.darkThemeDefinition() else JewelTheme.lightThemeDefinition(),
+            styling = ComponentStyling.default()
+                .decoratedWindow(
+                    titleBarStyle = if (isDark) TitleBarStyle.dark() else TitleBarStyle.light(),
+                    windowStyle = if (isDark) DecoratedWindowStyle.dark() else DecoratedWindowStyle.light(),
+                ),
+            content = content,
+        )
     }
 }

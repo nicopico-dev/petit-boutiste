@@ -21,7 +21,8 @@ import fr.nicopico.petitboutiste.ui.AppContent
 import fr.nicopico.petitboutiste.ui.AppShortcuts
 import fr.nicopico.petitboutiste.ui.PBMenuBar
 import fr.nicopico.petitboutiste.ui.PBTitleBar
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.invoke
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.jewel.ui.component.painterResource
@@ -79,7 +80,7 @@ fun main() {
                         AppContent(
                             appState,
                             onEvent = ::onEvent,
-                            modifier = Modifier.background(JewelThemeUtils.colors.windowBackgroundColor),
+                            modifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
                         )
                     }
                 }

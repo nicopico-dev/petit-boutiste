@@ -8,7 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.typography
 
 /**
  * Generic, factored input field for data-like strings.
@@ -46,6 +47,6 @@ fun <T : DataString> DataInput(
         },
         isError = isError,
         modifier = modifier,
-        textStyle = JewelThemeUtils.typography.data,
+        textStyle = AppTheme.current.typography.data,
     )
 }

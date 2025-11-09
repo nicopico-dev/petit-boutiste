@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
@@ -58,7 +59,7 @@ fun RenameTabDialog(
         content = {
             Column(
                 Modifier
-                    .background(JewelThemeUtils.colors.windowBackgroundColor)
+                    .background(AppTheme.current.colors.windowBackgroundColor)
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {

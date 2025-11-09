@@ -20,7 +20,8 @@ import fr.nicopico.petitboutiste.ui.components.input.InputTypeToggle
 import fr.nicopico.petitboutiste.ui.components.input.base64.Base64Input
 import fr.nicopico.petitboutiste.ui.components.input.bin.BinaryInput
 import fr.nicopico.petitboutiste.ui.components.input.hex.HexInput
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.typography
 import org.jetbrains.jewel.ui.component.Text
 
 @Composable
@@ -41,7 +42,7 @@ fun MainPane(
         Box(Modifier.fillMaxWidth()) {
             Text(
                 text = "Data Input",
-                style = JewelThemeUtils.typography.title,
+                style = AppTheme.current.typography.title,
                 modifier = Modifier.padding(bottom = 8.dp).align(Alignment.Center)
             )
 

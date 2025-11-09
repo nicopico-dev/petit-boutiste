@@ -28,7 +28,9 @@ import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
+import fr.nicopico.petitboutiste.ui.theme.styles
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.Outline
@@ -54,7 +56,7 @@ fun ByteItemRender(
     }
 
     Row(
-        modifier.border(1.dp, JewelThemeUtils.colors.borderColor),
+        modifier.border(1.dp, AppTheme.current.colors.borderColor),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Column(
@@ -87,7 +89,7 @@ fun ByteItemRender(
 
             Divider(
                 orientation = Orientation.Horizontal,
-                style = JewelThemeUtils.dividerStyle,
+                style = AppTheme.current.styles.dividerStyle,
                 modifier = Modifier
                     .padding(
                         top = 16.dp,
@@ -118,7 +120,7 @@ fun ByteItemRender(
 
         Divider(
             orientation = Orientation.Vertical,
-            style = JewelThemeUtils.dividerStyle,
+            style = AppTheme.current.styles.dividerStyle,
             modifier = Modifier.fillMaxHeight().padding(vertical = 16.dp)
         )
 
@@ -141,7 +143,7 @@ fun ByteItemRender(
                 },
                 textStyle = JewelTheme.typography.h2TextStyle,
                 undecorated = false,
-                decorationBoxModifier = Modifier.background(JewelThemeUtils.colors.windowBackgroundColor),
+                decorationBoxModifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
                 modifier = Modifier
                     .widthIn(min = 200.dp)
                     .fillMaxSize()

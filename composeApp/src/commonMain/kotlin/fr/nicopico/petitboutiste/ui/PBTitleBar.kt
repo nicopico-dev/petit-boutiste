@@ -30,8 +30,9 @@ import fr.nicopico.petitboutiste.models.app.AppState
 import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.ui.dialog.RenameTabDialog
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import kotlinx.coroutines.launch
@@ -103,7 +104,7 @@ fun DecoratedWindowScope.PBTitleBar(
                                                 Icon(
                                                     key = AllIconsKeys.General.Close,
                                                     contentDescription = CLOSE_TAB_DESCRIPTION,
-                                                    tint = JewelThemeUtils.colors.dangerousActionColor,
+                                                    tint = AppTheme.current.colors.dangerousActionColor,
                                                 )
                                             },
                                             modifier = Modifier.size(20.dp),
@@ -138,7 +139,7 @@ fun DecoratedWindowScope.PBTitleBar(
 
             Divider(
                 orientation = Orientation.Vertical,
-                color = JewelThemeUtils.colors.titleBarIconTint,
+                color = AppTheme.current.colors.titleBarIconTint,
                 modifier = Modifier
                     .height(20.dp)
                     .padding(horizontal = 4.dp),
@@ -181,14 +182,14 @@ private fun TabItem(
                             text = templateData.templateFile.name,
                             maxLines = 1,
                             fontStyle = FontStyle.Italic,
-                            color = JewelThemeUtils.colors.subTextColor,
+                            color = AppTheme.current.colors.subTextColor,
                             style = TextStyle.Default.copy(fontSize = 12.sp)
                         )
 
                         if (templateData.definitionsHaveChanged) {
                             Text(
                                 text = if (fullChangeIndicator) "(Modified)" else "*",
-                                color = JewelThemeUtils.colors.subTextColor,
+                                color = AppTheme.current.colors.subTextColor,
                                 style = TextStyle.Default.copy(
                                     fontSize = if (fullChangeIndicator) 12.sp else 14.sp
                                 ),
@@ -338,7 +339,7 @@ private fun ToolbarItem(
                     Icon(
                         key = iconKey,
                         contentDescription = label,
-                        tint = JewelThemeUtils.colors.titleBarIconTint,
+                        tint = AppTheme.current.colors.titleBarIconTint,
                     )
                 },
                 modifier = Modifier.size(height = 35.dp, width = 30.dp),
