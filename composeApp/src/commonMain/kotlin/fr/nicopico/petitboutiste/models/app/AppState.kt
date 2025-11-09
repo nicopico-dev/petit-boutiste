@@ -3,10 +3,12 @@ package fr.nicopico.petitboutiste.models.app
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
+import fr.nicopico.petitboutiste.ui.theme.PBTheme
 
 data class AppState(
     val tabs: List<TabData> = listOf(TabData(inputData = HexString("FF00"))),
     val selectedTabId: TabId = tabs.first().id,
+    val appTheme: PBTheme = PBTheme.System,
 ) {
     init {
         require(selectedTabId in tabs.map { it.id }) {

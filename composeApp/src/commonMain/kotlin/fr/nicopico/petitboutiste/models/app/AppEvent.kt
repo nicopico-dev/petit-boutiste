@@ -4,6 +4,7 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.models.ui.TabId
+import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import java.io.File
 
 sealed class AppEvent {
@@ -13,6 +14,7 @@ sealed class AppEvent {
     data class RemoveTabEvent(val tabId: TabId) : AppEvent()
     data class DuplicateTabEvent(val tabId: TabId) : AppEvent()
     data class CycleTabEvent(val cycleForward: Boolean) : AppEvent()
+    data class SwitchAppThemeEvent(val appTheme: PBTheme) : AppEvent()
 
     sealed class CurrentTabEvent : AppEvent() {
         data class ChangeInputTypeEvent(val type: InputType) : CurrentTabEvent()

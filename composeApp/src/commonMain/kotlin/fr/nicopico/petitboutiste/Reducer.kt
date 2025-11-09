@@ -22,6 +22,10 @@ class Reducer(
     operator fun invoke(state: AppState, event: AppEvent): AppState {
         log("Received event: $event...")
         return when (event) {
+            is AppEvent.SwitchAppThemeEvent -> {
+                state.copy(appTheme = event.appTheme)
+            }
+
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
                 val newTab = TabData()

@@ -1,6 +1,7 @@
 package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,18 +37,17 @@ import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
+import fr.nicopico.petitboutiste.models.app.AppEvent.SwitchAppThemeEvent
 import fr.nicopico.petitboutiste.models.app.AppState
 import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.PBTheme
+import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.ExperimentalJewelApi
-import org.jetbrains.jewel.foundation.GlobalColors
-import org.jetbrains.jewel.foundation.theme.JewelTheme
-import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
-import org.jetbrains.jewel.intui.standalone.theme.light
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Divider
@@ -161,6 +161,16 @@ fun DecoratedWindowScope.PBTitleBar(
 
             TemplateToolbar(tabData = selectedTab, onEvent)
         }
+
+        SwitchThemeButton(
+            theme = appState.appTheme,
+            onThemeSelected = { theme ->
+                onEvent(SwitchAppThemeEvent(theme))
+            },
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(end = 16.dp),
+        )
     }
 }
 
@@ -287,6 +297,43 @@ private fun TemplateToolbar(
                 }
             }
         }
+    )
+}
+
+@Composable
+private fun SwitchThemeButton(
+    theme: PBTheme,
+    onThemeSelected: (PBTheme) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val nextTheme = run {
+        val indexOfCurrent = PBTheme.entries.indexOf(theme)
+        val indexOfNext = (indexOfCurrent + 1) % PBTheme.entries.size
+        PBTheme.entries[indexOfNext]
+    }
+
+    fun currentThemeLabel(theme: PBTheme) = when (theme) {
+        PBTheme.System -> "Follow system"
+        PBTheme.Light -> "Light theme"
+        PBTheme.Dark -> "Dark theme"
+    }
+    val nextThemeLabel = when (nextTheme) {
+        PBTheme.System -> "follow system theme"
+        PBTheme.Light -> "force light theme"
+        PBTheme.Dark -> "force dark theme"
+    }
+
+    ToolbarItem(
+        iconKey = when (theme) {
+            PBTheme.System -> PBIcons.themeSystem
+            PBTheme.Light -> PBIcons.themeLight
+            PBTheme.Dark -> PBIcons.themeDark
+        },
+        label = "${currentThemeLabel(theme)}. Click to $nextThemeLabel",
+        onClick = {
+            onThemeSelected(nextTheme)
+        },
+        modifier = modifier,
     )
 }
 

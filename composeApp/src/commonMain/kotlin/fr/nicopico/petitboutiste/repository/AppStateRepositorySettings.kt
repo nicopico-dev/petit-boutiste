@@ -13,6 +13,7 @@ import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
 import fr.nicopico.petitboutiste.models.ui.TabTemplateData
+import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -32,7 +33,8 @@ class AppStateRepositorySettings(
     override fun save(appState: AppState) {
         val persisted = PersistedAppState(
             tabs = appState.tabs.map { it.toPersisted() },
-            selectedTabId = appState.selectedTabId.value
+            selectedTabId = appState.selectedTabId.value,
+            appTheme = appState.appTheme.name,
         )
         encodeAndStore(key, persisted)
     }
@@ -54,9 +56,16 @@ class AppStateRepositorySettings(
         val selected = TabId(persisted.selectedTabId)
         val selectedTabId = if (finalTabs.any { it.id == selected }) selected else finalTabs.first().id
 
+        val appTheme = try {
+            PBTheme.valueOf(persisted.appTheme)
+        } catch (_: IllegalArgumentException) {
+            PBTheme.System
+        }
+
         return AppState(
             tabs = finalTabs,
             selectedTabId = selectedTabId,
+            appTheme = appTheme,
         ).also {
             log("Restoring app state -> $it")
         }
@@ -67,6 +76,7 @@ class AppStateRepositorySettings(
 private data class PersistedAppState(
     val tabs: List<PersistedTab>,
     val selectedTabId: String,
+    val appTheme: String = PBTheme.System.name,
 )
 
 @Serializable

@@ -60,7 +60,7 @@ fun main() {
             appState = reducer(appState, event)
         }
 
-        PetitBoutisteTheme {
+        PetitBoutisteTheme(appState.appTheme) {
             DecoratedWindow(
                 title = "Petit Boutiste",
                 icon = painterResource("icons/app-icon.png"),
