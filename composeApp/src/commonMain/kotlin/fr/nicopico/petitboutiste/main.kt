@@ -23,8 +23,8 @@ import fr.nicopico.petitboutiste.ui.PBMenuBar
 import fr.nicopico.petitboutiste.ui.PBTitleBar
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.ui.theme.followSystemTheme
 import fr.nicopico.petitboutiste.ui.theme.invoke
+import fr.nicopico.petitboutiste.ui.theme.system.followSystemTheme
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.jewel.ui.component.painterResource
 import org.jetbrains.jewel.window.DecoratedWindow

@@ -22,9 +22,9 @@ import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
-import fr.nicopico.petitboutiste.ui.theme.adaptWindowAppearance
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.invoke
+import fr.nicopico.petitboutiste.ui.theme.system.adaptWindowAppearance
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text

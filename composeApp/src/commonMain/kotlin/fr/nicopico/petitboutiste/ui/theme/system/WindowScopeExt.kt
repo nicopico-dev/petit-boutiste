@@ -1,9 +1,12 @@
-package fr.nicopico.petitboutiste.ui.theme
+package fr.nicopico.petitboutiste.ui.theme.system
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.window.DialogWindowScope
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
+import fr.nicopico.petitboutiste.ui.theme.isDark
 import java.awt.Color as AwtColor
 
 @Composable

@@ -79,7 +79,6 @@ kotlin {
     }
 }
 
-
 compose.desktop {
     application {
         mainClass = "fr.nicopico.petitboutiste.MainKt"
@@ -101,6 +100,9 @@ compose.desktop {
             // licenseFile = rootProject.file("LICENSE")
 
             modules("jdk.unsupported")
+
+            // Per-platform resources
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
 
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
 

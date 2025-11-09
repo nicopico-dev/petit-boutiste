@@ -38,3 +38,4 @@ plugins {
 }
 
 include(":composeApp")
+include(":macosBridge")
