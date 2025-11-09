@@ -1,6 +1,5 @@
 package fr.nicopico.petitboutiste.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -58,7 +57,7 @@ fun MainPane(
         // Render the appropriate input component based on the selected input type
         val inputModifier = Modifier
             .heightIn(max = 120.dp)
-            .background(JewelThemeUtils.colors.inputBackgroundColor)
+            .fillMaxWidth()
         when (inputType) {
             InputType.HEX -> HexInput(
                 value = inputData,

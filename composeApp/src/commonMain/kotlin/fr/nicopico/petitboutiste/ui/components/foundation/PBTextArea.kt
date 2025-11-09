@@ -7,10 +7,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.jetbrains.jewel.foundation.ExperimentalJewelApi
+import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Outline
 import org.jetbrains.jewel.ui.component.TextArea
 
@@ -21,6 +23,7 @@ fun PBTextArea(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isError: Boolean = false,
+    textStyle: TextStyle = JewelTheme.defaultTextStyle,
 ) {
     val state = remember(value) {
         TextFieldState(value)
@@ -40,6 +43,7 @@ fun PBTextArea(
         state = state,
         modifier = modifier,
         outline = if (isError) Outline.Error else Outline.None,
-        decorationBoxModifier = Modifier.padding(4.dp)
+        decorationBoxModifier = Modifier.padding(4.dp),
+        textStyle = textStyle,
     )
 }
