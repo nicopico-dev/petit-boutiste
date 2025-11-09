@@ -12,7 +12,6 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.selectedTab
-import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.getScreenCharacteristics
 import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
@@ -23,7 +22,7 @@ import fr.nicopico.petitboutiste.ui.AppShortcuts
 import fr.nicopico.petitboutiste.ui.PBMenuBar
 import fr.nicopico.petitboutiste.ui.PBTitleBar
 import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
-import fr.nicopico.petitboutiste.ui.theme.PetitBoutisteTheme
+import fr.nicopico.petitboutiste.ui.theme.invoke
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.jewel.ui.component.painterResource
 import org.jetbrains.jewel.window.DecoratedWindow
@@ -52,7 +51,10 @@ fun main() {
         var appState by rememberSaveable {
             mutableStateOf(appStateRepository.restore())
         }
-        val currentTab: TabData by remember {
+        val appTheme by remember(appState) {
+            derivedStateOf { appState.appTheme }
+        }
+        val currentTab by remember {
             derivedStateOf { appState.selectedTab }
         }
 
@@ -60,7 +62,7 @@ fun main() {
             appState = reducer(appState, event)
         }
 
-        PetitBoutisteTheme(appState.appTheme) {
+        appTheme {
             DecoratedWindow(
                 title = "Petit Boutiste",
                 icon = painterResource("icons/app-icon.png"),
