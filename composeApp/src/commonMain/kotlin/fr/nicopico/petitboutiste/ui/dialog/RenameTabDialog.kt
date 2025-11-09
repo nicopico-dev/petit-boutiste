@@ -22,7 +22,9 @@ import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.adaptWindowAppearance
 import fr.nicopico.petitboutiste.ui.theme.colors
+import fr.nicopico.petitboutiste.ui.theme.invoke
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
@@ -57,13 +59,20 @@ fun RenameTabDialog(
             size = DpSize(250.dp, 140.dp),
         ),
         content = {
+            adaptWindowAppearance()
+            val appTheme = AppTheme.current
+
             Column(
                 Modifier
-                    .background(AppTheme.current.colors.windowBackgroundColor)
+                    .background(appTheme.colors.windowBackgroundColor)
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text("Rename this tab")
+                // The text does not have the correct color
+                // if we do not reapply the theme here 🤷
+                appTheme {
+                    Text("Rename this tab")
+                }
 
                 TextField(
                     state = textFieldState,
