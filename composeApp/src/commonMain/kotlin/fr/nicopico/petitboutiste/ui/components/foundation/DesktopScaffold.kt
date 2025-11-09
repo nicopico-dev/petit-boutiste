@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.utils.compose.Slot
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import org.jetbrains.jewel.ui.component.HorizontalSplitLayout
@@ -18,7 +19,7 @@ fun DesktopScaffold(
     side: Slot,
     tools: Slot? = null,
 ) {
-    val dividerStyle = JewelThemeUtils.dividerStyle
+    val dividerStyle = AppTheme.current.styles.dividerStyle
 
     HorizontalSplitLayout(
         first = tools?.optionalSlot { tools ->

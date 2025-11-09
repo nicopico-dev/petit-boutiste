@@ -10,7 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
@@ -70,7 +71,7 @@ fun PBFileSelector(
             Text(
                 selection.parent,
                 style = JewelTheme.typography.small,
-                color = JewelThemeUtils.colors.subTextColor,
+                color = AppTheme.current.colors.subTextColor,
                 modifier = Modifier.padding(start = 4.dp, top = 2.dp)
             )
         }

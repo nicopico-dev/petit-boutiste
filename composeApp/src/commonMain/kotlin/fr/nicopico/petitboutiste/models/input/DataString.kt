@@ -5,7 +5,7 @@ package fr.nicopico.petitboutiste.models.input
  * This interface is implemented by classes that represent specific types of data strings,
  * such as hexadecimal strings.
  */
-interface DataString {
+sealed interface DataString {
     /**
      * The normalized hexadecimal representation of the data.
      */

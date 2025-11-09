@@ -27,7 +27,8 @@ import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.renderAsString
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.Slot
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
@@ -57,11 +58,11 @@ fun ByteGroupDefinitionItem(
             .border(
                 width = 1.dp,
                 color = if (incomplete || invalidDefinition) {
-                    JewelThemeUtils.colors.errorColor
-                } else JewelThemeUtils.colors.borderColor,
+                    AppTheme.current.colors.errorColor
+                } else AppTheme.current.colors.borderColor,
                 shape = RoundedCornerShape(4.dp)
             )
-            .background(if (selected) JewelThemeUtils.colors.accentContainer else Color.Transparent)
+            .background(if (selected) AppTheme.current.colors.accentContainer else Color.Transparent)
             .padding(16.dp)
     ) {
         Row {
@@ -113,7 +114,7 @@ fun ByteGroupDefinitionItem(
                     Icon(
                         key = AllIconsKeys.General.Delete,
                         contentDescription = "Remove byte group",
-                        tint = JewelThemeUtils.colors.dangerousActionColor,
+                        tint = AppTheme.current.colors.dangerousActionColor,
                     )
                 },
                 onClick = onDelete,

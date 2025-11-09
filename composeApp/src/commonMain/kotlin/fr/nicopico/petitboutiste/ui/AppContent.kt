@@ -15,6 +15,7 @@ import fr.nicopico.petitboutiste.ui.components.TabContent
 fun AppContent(
     appState: AppState,
     onEvent: (AppEvent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val selectedTab by remember(appState) {
         derivedStateOf {
@@ -24,7 +25,7 @@ fun AppContent(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         // Main app screen with the selected tab's data
         TabContent(
             inputData = selectedTab.inputData,

@@ -30,7 +30,10 @@ import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.name
 import fr.nicopico.petitboutiste.models.extensions.size
-import fr.nicopico.petitboutiste.ui.theme.JewelThemeUtils
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
+import fr.nicopico.petitboutiste.ui.theme.styles
+import fr.nicopico.petitboutiste.ui.theme.typography
 import fr.nicopico.petitboutiste.utils.preview.ByteItemsParameterProvider
 import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import org.jetbrains.jewel.ui.component.Text
@@ -59,7 +62,7 @@ fun HexDisplay(
             // TODO The scrollbar sometimes overlap at the bottom of the container
             VerticallyScrollableContainer(
                 scrollState = gridState as ScrollableState,
-                style = JewelThemeUtils.scrollbarStyle,
+                style = AppTheme.current.styles.scrollbarStyle,
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.FixedSize(COLUMN_WIDTH),
@@ -92,20 +95,20 @@ fun HexDisplay(
                                 .let {
                                     when (item) {
                                         is ByteItem.Single -> it
-                                        is ByteItem.Group if item.incomplete -> it.border(1.dp, JewelThemeUtils.colors.errorColor)
-                                        is ByteItem.Group -> it.border(1.dp, JewelThemeUtils.colors.accentColor)
+                                        is ByteItem.Group if item.incomplete -> it.border(1.dp, AppTheme.current.colors.errorColor)
+                                        is ByteItem.Group -> it.border(1.dp, AppTheme.current.colors.accentColor)
                                     }
                                 }
                                 .let {
                                     if (item == selectedByteItem) {
-                                        it.background(JewelThemeUtils.colors.accentContainer)
+                                        it.background(AppTheme.current.colors.accentContainer)
                                     } else it
                                 }
                                 .padding(4.dp)
                         ) {
                             Text(
                                 text = item.toString(),
-                                style = JewelThemeUtils.typography.data,
+                                style = AppTheme.current.typography.data,
                             )
 
                             val index = if (item.firstIndex != item.lastIndex) {
@@ -125,7 +128,7 @@ fun HexDisplay(
                                 style = TextStyle(
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 8.sp,
-                                    color = JewelThemeUtils.colors.accentColor,
+                                    color = AppTheme.current.colors.accentColor,
                                 ),
                                 softWrap = false,
                                 maxLines = 1,
