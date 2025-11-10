@@ -22,12 +22,12 @@ fun observeSystemTheme(): State<SystemTheme> {
     }
 
     DisposableEffect(Unit) {
-        MacosBridge.jniStartObservingTheme()
+        MacosBridge.startObservingTheme()
 
         // TODO Update systemTheme
 
         onDispose {
-            MacosBridge.jniStopObservingTheme()
+            MacosBridge.stopObservingTheme()
         }
     }
 

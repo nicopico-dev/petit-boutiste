@@ -29,6 +29,7 @@ kotlin {
 
     compilerOptions {
         freeCompilerArgs.add("-Xwhen-guards")
+        optIn.add("kotlin.concurrent.atomics.ExperimentalAtomicApi")
     }
 
     jvmToolchain {
@@ -86,6 +87,7 @@ compose.desktop {
         // JAVA_HOME must point to a JBR-21 or more recent
         // ex: ~/Library/Java/JavaVirtualMachines/jbr-21.0.6/Contents/Home
         javaHome = System.getenv("JAVA_HOME")
+        jvmArgs.add("-Xcheck:jni") // Add debug information to JNI calls
 
         buildTypes.release.proguard {
             configurationFiles.from(project.file("compose-desktop.pro"))

@@ -1,6 +1,8 @@
 package fr.nicopico.macos
 
 import fr.nicopico.macos.jni.JNIEnvVar
+import fr.nicopico.macos.jni.JNI_EDETACHED
+import fr.nicopico.macos.jni.JNI_OK
 import fr.nicopico.macos.jni.JNI_VERSION_1_8
 import fr.nicopico.macos.jni.JavaVMVar
 import fr.nicopico.macos.jni.jclass
@@ -42,6 +44,7 @@ fun jniOnLoad(vm: CPointer<JavaVMVar>, reserved: CPointer<*>?): jint {
 @Suppress("unused")
 @CName("Java_fr_nicopico_macos_MacosBridge_jniStartObservingTheme")
 fun jniStartObservingTheme(env: CPointer<JNIEnvVar>, clazz: jclass) {
+    log("Starting observing theme")
     ensureCachedIds(env)
 
     // Register the notification observer on the main queue
@@ -61,14 +64,17 @@ fun jniStartObservingTheme(env: CPointer<JNIEnvVar>, clazz: jclass) {
             `object` = null,
             queue = NSOperationQueue.mainQueue,
             usingBlock = { _: NSNotification? ->
+                log("MacOS theme changed!!")
                 onMacosThemeChanged()
             }
         )
     }
 }
 
+@Suppress("unused")
 @CName("Java_fr_nicopico_macos_MacosBridge_jniStopObservingTheme")
 fun jniStopObservingTheme(jniEnv: CPointer<JNIEnvVar>, clazz: jclass) {
+    log("Stop observing theme")
     val center = NSDistributedNotificationCenter.defaultCenter()
     gObserverToken?.let { token ->
         dispatch_async(dispatch_get_main_queue()) {
@@ -78,8 +84,22 @@ fun jniStopObservingTheme(jniEnv: CPointer<JNIEnvVar>, clazz: jclass) {
     }
 }
 
+private fun onMacosThemeChanged() {
+    withJvmEnv { env ->
+        ensureCachedIds(env)
+
+        val jni = env.pointed.pointed!!
+
+        // CallStaticVoidMethod is too hard to use, I wasn't able to figure it out.
+        // Kotlin/Native should use `CallStaticVoidMethodA`, with an array of jvalue for the arguments.
+        // If the function takes no arguments, pass `null`.
+        jni.CallStaticVoidMethodA!!(env, gMacosBridgeClass, gNotifyMethodId, null)
+    }
+}
+
 private fun ensureCachedIds(env: CPointer<JNIEnvVar>) {
     if (gMacosBridgeClass != null && gNotifyMethodId != null) return
+    log("Cache MacosBridge notifyMethodId")
 
     // Ensure all memory allocated in this block is freed when exiting the block
     memScoped {
@@ -90,6 +110,7 @@ private fun ensureCachedIds(env: CPointer<JNIEnvVar>) {
         val localClass = jni.FindClass!!(env, "fr/nicopico/macos/MacosBridge".cstr.ptr)
         gMacosBridgeClass = jni.NewGlobalRef!!(env, localClass) as jclass
         jni.DeleteLocalRef!!(env, localClass) // localClass is no longer needed, cleanup
+        log("gMacosBridgeClass = $gMacosBridgeClass")
 
         gNotifyMethodId = jni.GetStaticMethodID!!(
             env,
@@ -99,38 +120,57 @@ private fun ensureCachedIds(env: CPointer<JNIEnvVar>) {
             // `(Ljava/lang/String;)V` would be a function with a String parameter, returning Void
             "()V".cstr.ptr,
         )
+        log("gNotifyMethodId = $gNotifyMethodId")
     }
 }
 
-private fun onMacosThemeChanged() {
+private inline fun withJvmEnv(block: (CPointer<JNIEnvVar>) -> Unit) {
     val vm = gJvm ?: return
 
     memScoped {
         // NOTE: no-arg alloc is an *extension* function and must be imported
         // -> `import kotlinx.cinterop.alloc`
         val envVar = alloc<CPointerVar<JNIEnvVar>>()
+        val jvmFns = vm.pointed.pointed!!
 
-        val attachResult = vm.pointed.pointed!!.AttachCurrentThread!!(
+        val res = jvmFns.GetEnv!!(
             vm,
             envVar.ptr.reinterpret(),
-            null,
+            JNI_VERSION_1_8,
         )
-        if (attachResult != 0) return@memScoped
 
-        val env = envVar.value ?: run {
-            vm.pointed.pointed!!.DetachCurrentThread!!(vm)
-            return@memScoped
+        // Attach/Detach the JNI thread only if necessary
+        var attachedHere = false
+        val env: CPointer<JNIEnvVar> = when (res) {
+            JNI_OK -> envVar.value!! // already attached
+            JNI_EDETACHED -> {
+                log("Re-attach JNI thread")
+                jvmFns.AttachCurrentThread!!(vm, envVar.ptr.reinterpret(), null)
+                    .check("AttachCurrentThread") { return }
+                attachedHere = true
+                envVar.value!!
+            }
+            else -> return@memScoped
         }
 
-        ensureCachedIds(env)
-
-        val jni = env.pointed.pointed!!
-
-        // CallStaticVoidMethod is too hard to use, I wasn't able to figure it out.
-        // Kotlin/Native should use `CallStaticVoidMethodA`, with an array of jvalue for the arguments.
-        // If the function takes no arguments, pass `null`.
-        jni.CallStaticVoidMethodA!!(env, gMacosBridgeClass, gNotifyMethodId, null)
-
-        vm.pointed.pointed!!.DetachCurrentThread!!(vm)
+        try {
+            block(env)
+        } finally {
+            if (attachedHere) {
+                jvmFns.DetachCurrentThread!!(vm)
+                    .check("DetachCurrentThread") { return }
+            }
+        }
     }
+}
+
+private inline fun Int.check(context: String, onFail: () -> Nothing) {
+    if (this != 0) {
+        log("$context error: $this")
+        onFail()
+    }
+}
+
+private fun log(msg: String) {
+    println("[JNI] $msg")
 }
