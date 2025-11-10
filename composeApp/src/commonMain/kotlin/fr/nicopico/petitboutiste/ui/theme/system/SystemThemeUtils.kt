@@ -6,8 +6,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import fr.nicopico.macos.MacosBridge
-import fr.nicopico.macos.observeTheme
-import fr.nicopico.petitboutiste.log
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
 
@@ -24,13 +22,12 @@ fun observeSystemTheme(): State<SystemTheme> {
     }
 
     DisposableEffect(Unit) {
-        MacosBridge().observeTheme()
-            .also {
-                log("Observe MacOS Theme: $it")
-            }
+        MacosBridge.jniStartObservingTheme()
+
+        // TODO Update systemTheme
 
         onDispose {
-            // TODO
+            MacosBridge.jniStopObservingTheme()
         }
     }
 
