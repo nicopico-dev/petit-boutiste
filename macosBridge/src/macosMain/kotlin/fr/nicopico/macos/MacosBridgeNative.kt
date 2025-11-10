@@ -94,6 +94,9 @@ private fun onMacosThemeChanged() {
         // Kotlin/Native should use `CallStaticVoidMethodA`, with an array of jvalue for the arguments.
         // If the function takes no arguments, pass `null`.
         jni.CallStaticVoidMethodA!!(env, gMacosBridgeClass, gNotifyMethodId, null)
+
+        // Ensure there was no exception thrown by the notify method
+        checkJniException(env)
     }
 }
 
@@ -164,6 +167,23 @@ private inline fun withJvmEnv(block: (CPointer<JNIEnvVar>) -> Unit) {
     }
 }
 
+private fun checkJniException(env: CPointer<JNIEnvVar>) {
+    val jni = env.pointed.pointed!!
+
+    val hasException = jni.ExceptionCheck!!(env) != 0.toUByte()
+    if (hasException) {
+        // Log Java stacktrace to stderr
+        jni.ExceptionDescribe!!(env)
+
+        // Clear the exception
+        jni.ExceptionClear!!(env)
+    }
+}
+
+/**
+ * Use this function to check C-style function return values.
+ * If the value is different from 0, [onFail] will execute and the caller execution flow will be interrupted.
+ */
 private inline fun Int.check(context: String, onFail: () -> Nothing) {
     if (this != 0) {
         log("$context error: $this")
