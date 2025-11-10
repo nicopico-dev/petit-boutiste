@@ -2,10 +2,10 @@ package fr.nicopico.petitboutiste.ui.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import fr.nicopico.petitboutiste.ui.theme.system.observeSystemTheme
+import fr.nicopico.macos.MacosBridge
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
 import org.jetbrains.jewel.intui.standalone.theme.darkThemeDefinition
@@ -18,6 +18,7 @@ import org.jetbrains.jewel.ui.ComponentStyling
 import org.jetbrains.jewel.window.styling.DecoratedWindowStyle
 import org.jetbrains.jewel.window.styling.TitleBarStyle
 import org.jetbrains.skiko.SystemTheme
+import org.jetbrains.skiko.currentSystemTheme
 
 enum class PBTheme {
     System,
@@ -28,11 +29,13 @@ enum class PBTheme {
 val PBTheme.isDark: Boolean
     @Composable
     get() {
-        val systemTheme by observeSystemTheme()
-        return remember(this, systemTheme) {
-            this == PBTheme.Dark
-                || (this == PBTheme.System && systemTheme == SystemTheme.DARK)
-        }
+        return if (this == PBTheme.System) {
+            // TODO Ensure this is not called on every composition
+            val systemTheme by MacosBridge
+                .observeThemeChanges()
+                .collectAsState(initial = currentSystemTheme)
+            systemTheme == SystemTheme.DARK
+        } else this == PBTheme.Dark
     }
 
 val AppTheme = compositionLocalOf { PBTheme.System }
@@ -44,6 +47,7 @@ operator fun PBTheme.invoke(
     CompositionLocalProvider(
         AppTheme provides this
     ) {
+        val isDark = isDark
         IntUiTheme(
             theme = if (isDark) JewelTheme.darkThemeDefinition() else JewelTheme.lightThemeDefinition(),
             styling = ComponentStyling.default()

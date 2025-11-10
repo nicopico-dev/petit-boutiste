@@ -1,13 +1,21 @@
 package fr.nicopico.macos
 
 import fr.nicopico.petitboutiste.log
-import kotlin.concurrent.atomics.AtomicBoolean
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
+import org.jetbrains.skiko.SystemTheme
+import org.jetbrains.skiko.currentSystemTheme
 
 object MacosBridge {
 
+    //region JNI
     private const val LIBRARY_NAME = "macos_bridge"
 
     init {
+        // FIXME Fail gracefully if the library is not available (aka do not crash!)
         loadNativeLibrary(LIBRARY_NAME)
     }
 
@@ -29,26 +37,25 @@ object MacosBridge {
         level = DeprecationLevel.HIDDEN,
     )
     fun notifyThemeChanged() {
-        log("Theme has changed!")
+        _notificationFlow.tryEmit(Unit)
     }
+    //endregion
 
-    //region Public API
-    private val observing = AtomicBoolean(false)
+    private val _notificationFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    fun startObservingTheme() {
-        if (observing.compareAndSet(expectedValue = false, newValue = true)) {
+    private val notificationFlow = _notificationFlow
+        .onStart {
             log("Started observing theme...")
             @Suppress("DEPRECATION")
             jniStartObservingTheme()
         }
-    }
-
-    fun stopObservingTheme() {
-        if (observing.compareAndSet(expectedValue = true, newValue = false)) {
+        .onCompletion {
             log("Stop observing theme...")
             @Suppress("DEPRECATION")
             jniStopObservingTheme()
         }
+
+    fun observeThemeChanges(): Flow<SystemTheme> {
+        return notificationFlow.map { currentSystemTheme }
     }
-    //endregion
 }
