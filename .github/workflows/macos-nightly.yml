@@ -141,7 +141,7 @@ jobs:
         with:
           tag_name: nightly/${{ needs.prepare-nightly.outputs.nightly_version }}
           name: Nightly v${{ needs.prepare-nightly.outputs.nightly_version }}
-          body: ${{ github.event.inputs.release_notes }}
+          generate_release_notes: true
           draft: false
           prerelease: true
           files: dist/*.zip

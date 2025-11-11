@@ -7,10 +7,6 @@ on:
         description: 'Release version'
         required: true
         default: '1.0.0'
-      release_notes:
-        description: 'Release notes'
-        required: false
-        default: 'New release'
 
 jobs:
   build:
@@ -42,7 +38,7 @@ jobs:
         with:
           tag_name: v${{ github.event.inputs.version }}
           name: Release v${{ github.event.inputs.version }}
-          body: ${{ github.event.inputs.release_notes }}
+          generate_release_notes: true
           draft: false
           prerelease: false
           files: dist/*.zip
