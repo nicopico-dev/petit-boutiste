@@ -67,17 +67,26 @@ fun TabContent(
         } else null
     }
 
-    // Ensure the definition is up to date for `selectedByteItem`
-    LaunchedEffect(definitions) {
-        if (selectedByteItem is ByteItem.Group) {
-            val updatedDefinition = definitions.firstOrNull {
-                it.indexes == (selectedByteItem as ByteItem.Group).definition.indexes
+    // Ensure `selectedByteItem` is up to date
+    LaunchedEffect(inputData, definitions) {
+        val update = when (val selectedByteItem = selectedByteItem) {
+            is ByteItem.Single -> {
+                byteItems
+                    .filterIsInstance<ByteItem.Single>()
+                    .firstOrNull {
+                        it.index == selectedByteItem.index
+                    }
             }
-
-            selectedByteItem = if (updatedDefinition != null) {
-                (selectedByteItem as ByteItem.Group).copy(definition = updatedDefinition)
-            } else null
+            is ByteItem.Group -> {
+                byteItems
+                    .filterIsInstance<ByteItem.Group>()
+                    .firstOrNull {
+                        it.definition.id == selectedByteItem.definition.id
+                    }
+            }
+            null -> null
         }
+        selectedByteItem = update
     }
 
     DesktopScaffold(
