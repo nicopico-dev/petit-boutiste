@@ -4,6 +4,7 @@
 
 # Ensure our own code is not removed by shrinking
 -keep,includedescriptorclasses class fr.nicopico.petitboutiste.** { *; }
+-keep,includedescriptorclasses class fr.nicopico.macos.** { *; }
 
 # Jewel
 -dontoptimize # required for DecoratedWindow

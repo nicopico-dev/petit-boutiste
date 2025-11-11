@@ -29,6 +29,7 @@ kotlin {
 
     compilerOptions {
         freeCompilerArgs.add("-Xwhen-guards")
+        optIn.add("kotlin.concurrent.atomics.ExperimentalAtomicApi")
     }
 
     jvmToolchain {
@@ -79,7 +80,6 @@ kotlin {
     }
 }
 
-
 compose.desktop {
     application {
         mainClass = "fr.nicopico.petitboutiste.MainKt"
@@ -87,6 +87,7 @@ compose.desktop {
         // JAVA_HOME must point to a JBR-21 or more recent
         // ex: ~/Library/Java/JavaVirtualMachines/jbr-21.0.6/Contents/Home
         javaHome = System.getenv("JAVA_HOME")
+        // jvmArgs.add("-Xcheck:jni") // Print JNI logs to console (really verbose !)
 
         buildTypes.release.proguard {
             configurationFiles.from(project.file("compose-desktop.pro"))
@@ -102,6 +103,9 @@ compose.desktop {
 
             modules("jdk.unsupported")
 
+            // Per-platform resources
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
+
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
 
             macOS {
@@ -112,3 +116,14 @@ compose.desktop {
         }
     }
 }
+
+// Ensure macOS native bridge is built and copied before building composeApp
+// This makes :composeApp:build depend on :macosBridge:buildAndCopyMacosBridge
+// so the libmacos_bridge.dylib is available under composeApp/resources before packaging.
+tasks
+    // We cannot use `tasks.named("prepareAppResources")`
+    // because this task is created lazily
+    .matching { it.name == "prepareAppResources" }
+    .configureEach {
+        dependsOn(":macosBridge:buildAndCopyMacosBridge")
+    }

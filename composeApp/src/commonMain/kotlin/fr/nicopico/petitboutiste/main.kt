@@ -24,6 +24,7 @@ import fr.nicopico.petitboutiste.ui.PBTitleBar
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.invoke
+import fr.nicopico.petitboutiste.ui.theme.system.followSystemTheme
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.jewel.ui.component.painterResource
 import org.jetbrains.jewel.window.DecoratedWindow
@@ -40,9 +41,10 @@ const val APP_ID = "fr.nicopico.petitboutiste"
 
 fun main() {
     FileKit.init(appId = APP_ID)
-    // Ensure File dialogs have as native appearance on macOS
-    // https://filekit.mintlify.app/dialogs/file-picker#customizing-the-dialog
-    System.setProperty("apple.awt.application.appearance", "system")
+    // - Necessary for PBTheme.System
+    // - Also ensure File dialogs have as native appearance on macOS
+    //   https://filekit.mintlify.app/dialogs/file-picker#customizing-the-dialog
+    followSystemTheme()
 
     application {
         val screenCharacteristics = getScreenCharacteristics()

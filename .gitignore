@@ -17,3 +17,4 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 .java-version
+/composeApp/resources/macos-arm64/libs/libmacos_bridge.dylib

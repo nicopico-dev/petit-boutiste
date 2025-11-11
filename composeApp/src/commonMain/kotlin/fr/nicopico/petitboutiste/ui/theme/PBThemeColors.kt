@@ -32,6 +32,8 @@ interface PBThemeColors {
         @Composable get
 }
 
+// TODO Add smooth transitions between light and dark themes
+//  https://michaelevans.org/blog/2025/07/01/smooth-theme-transitions-in-compose-with-animated-colorschemes/
 private class PBThemeColorsImpl(
     private val theme: PBTheme,
 ) : PBThemeColors {
