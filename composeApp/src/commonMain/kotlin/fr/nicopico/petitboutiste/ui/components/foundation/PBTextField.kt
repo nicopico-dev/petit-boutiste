@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import fr.nicopico.petitboutiste.utils.jewel.updateStateValue
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.jetbrains.jewel.ui.Outline
@@ -20,6 +21,10 @@ fun PBTextField(
 ) {
     val state = remember(value) {
         TextFieldState(value)
+    }
+
+    LaunchedEffect(value) {
+        state.updateStateValue(value)
     }
 
     // Observe changes to the text
