@@ -117,18 +117,18 @@ jobs:
       version: ${{ needs.prepare-nightly.outputs.nightly_version }}
 
   release:
-    name: Release nightly
+    name: Create nightly release on GitHub
     needs:
     - build-nightly
     - prepare-nightly # to get access to nightly_version output
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Print version
+      - name: Add logs for debugging
         run: |
           echo "Version: '${{ needs.prepare-nightly.outputs.nightly_version }}'"
+          echo "Files: '${{ needs.build-nightly.outputs.zip_path }}'"
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

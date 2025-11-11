@@ -14,17 +14,22 @@ on:
 
 jobs:
   build:
+    name: Build release distributable
     uses: ./.github/workflows/macos-build.yml
     with:
       version: ${{ github.event.inputs.version }}
 
   release:
+    name: Create release on GitHub
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
+      - name: Add logs for debugging
+        run: |
+          echo "Version: '${{ github.event.inputs.version }}'"
+          echo "Files: '${{ needs.build.outputs.zip_path }}'"
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
