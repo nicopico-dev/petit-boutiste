@@ -116,3 +116,14 @@ compose.desktop {
         }
     }
 }
+
+// Ensure macOS native bridge is built and copied before building composeApp
+// This makes :composeApp:build depend on :macosBridge:buildAndCopyMacosBridge
+// so the libmacos_bridge.dylib is available under composeApp/resources before packaging.
+tasks
+    // We cannot use `tasks.named("prepareAppResources")`
+    // because this task is created lazily
+    .matching { it.name == "prepareAppResources" }
+    .configureEach {
+        dependsOn(":macosBridge:buildAndCopyMacosBridge")
+    }
