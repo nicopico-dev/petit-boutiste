@@ -117,24 +117,31 @@ jobs:
       version: ${{ needs.prepare-nightly.outputs.nightly_version }}
 
   release:
-    name: Release nightly
+    name: Create nightly release on GitHub
     needs:
     - build-nightly
     - prepare-nightly # to get access to nightly_version output
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Print version
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-package
+          path: dist
+      - name: Add logs for debugging
         run: |
           echo "Version: '${{ needs.prepare-nightly.outputs.nightly_version }}'"
+          echo "Downloaded files in dist:"
+          ls -la dist || true
       - name: Create GitHub Release
+        if: ${{ !env.ACT }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: nightly/${{ needs.prepare-nightly.outputs.nightly_version }}
           name: Nightly v${{ needs.prepare-nightly.outputs.nightly_version }}
-          body: ${{ github.event.inputs.release_notes }}
+          generate_release_notes: true
           draft: false
           prerelease: true
-          files: ${{ needs.build-nightly.outputs.zip_path }}
+          files: dist/*.zip

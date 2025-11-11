@@ -16,10 +16,8 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: read
-
     outputs:
       zip_path: ${{ steps.set-output.outputs.zip_path }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
