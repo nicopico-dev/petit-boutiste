@@ -245,7 +245,7 @@ private fun TemplateToolbar(
         label = "Load template",
         iconKey = AllIconsKeys.General.OpenDisk,
         onClick = {
-            // FIXME Factorize with PBMenuBar
+            // TODO Factorize with PBMenuBar
             scope.launch {
                 showFileDialog(
                     title = "Load template",
@@ -261,7 +261,7 @@ private fun TemplateToolbar(
         label = "Save template",
         iconKey = AllIconsKeys.Actions.MenuSaveall,
         onClick = {
-            // FIXME Factorize with PBMenuBar
+            // TODO Factorize with PBMenuBar
             if (tabData.templateData != null) {
                 onEvent(
                     CurrentTabEvent.SaveTemplateEvent(

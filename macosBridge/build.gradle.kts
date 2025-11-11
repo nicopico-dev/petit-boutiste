@@ -32,7 +32,7 @@ kotlin {
     }
 }
 
-// TODO Call this task automatically (on which tasks ?)
+// FIXME Call this task automatically (on which tasks ?)
 tasks.register<Copy>("buildAndCopyMacosBridge") {
     dependsOn("linkReleaseSharedMacosBridge")
 

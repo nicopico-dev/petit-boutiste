@@ -30,7 +30,6 @@ val PBTheme.isDark: Boolean
     @Composable
     get() {
         return if (this == PBTheme.System) {
-            // TODO Ensure this is not called on every composition
             val systemTheme by MacosBridge
                 .observeThemeChanges()
                 .collectAsState(initial = currentSystemTheme)
