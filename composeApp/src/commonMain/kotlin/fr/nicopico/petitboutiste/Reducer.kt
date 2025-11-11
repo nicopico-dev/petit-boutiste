@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste
 
+import fr.nicopico.petitboutiste.models.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.AppState
 import fr.nicopico.petitboutiste.models.app.selectedTab
@@ -117,7 +118,8 @@ class Reducer(
             is AppEvent.CurrentTabEvent.AddDefinitionEvent -> {
                 state.updateCurrentTab {
                     copy(
-                        groupDefinitions = groupDefinitions + event.definition,
+                        groupDefinitions = (groupDefinitions + event.definition)
+                            .sortedWith(ByteGroupDefinitionSorter),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
@@ -129,7 +131,7 @@ class Reducer(
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
                     copy(
-                        groupDefinitions = updatedDefinitions,
+                        groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
