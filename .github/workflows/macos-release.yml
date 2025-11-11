@@ -26,11 +26,18 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-package
+          path: dist
       - name: Add logs for debugging
         run: |
           echo "Version: '${{ github.event.inputs.version }}'"
-          echo "Files: '${{ needs.build.outputs.zip_path }}'"
+          echo "Downloaded files in dist:"
+          ls -la dist || true
       - name: Create GitHub Release
+        if: ${{ !env.ACT }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version }}
@@ -38,4 +45,4 @@ jobs:
           body: ${{ github.event.inputs.release_notes }}
           draft: false
           prerelease: false
-          files: ${{ needs.build.outputs.zip_path }}
+          files: dist/*.zip
