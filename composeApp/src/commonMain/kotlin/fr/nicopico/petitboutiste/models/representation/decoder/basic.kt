@@ -15,9 +15,19 @@ fun DataRenderer.decodeBinary(byteArray: ByteArray): String {
     }
 }
 
+private val customHexFormat = HexFormat {
+    upperCase = true
+    bytes {
+        byteSeparator = " "
+    }
+    number {
+        removeLeadingZeros = false
+    }
+}
+
 fun DataRenderer.decodeHexadecimal(byteArray: ByteArray): String {
     require(this == DataRenderer.Hexadecimal)
-    return byteArray.toHexString(HexFormat.UpperCase)
+    return byteArray.toHexString(customHexFormat)
 }
 
 fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
