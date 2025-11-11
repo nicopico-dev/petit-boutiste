@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
@@ -22,28 +23,23 @@ fun <T : DataString> DataInput(
     modifier: Modifier = Modifier,
 ) {
     var input by remember(value) {
-        mutableStateOf(adapter.toText(value))
+        mutableStateOf(adapter.getNormalizedString(value))
     }
     var isError by remember(value) {
         mutableStateOf(false)
     }
 
     PBTextArea(
-        value = adapter.formatForDisplay(input),
+        value = input,
         onValueChange = { newText ->
-            val sanitized = adapter.sanitize(newText)
-            isError = false
-            input = sanitized
+            val parsed = adapter.parse(newText)
+            input = newText
 
-            if (adapter.isValid(sanitized)) {
-                if (adapter.isReady(sanitized)) {
-                    val parsed = adapter.parse(sanitized)
-                    if (parsed != null) {
-                        onValueChange(parsed)
-                        input = adapter.toText(parsed)
-                    } else isError = true
-                }
-            } else isError = true
+            isError = (parsed == null)
+            if (parsed != null && parsed != value) {
+
+                onValueChange(parsed)
+            }
         },
         isError = isError,
         modifier = modifier,

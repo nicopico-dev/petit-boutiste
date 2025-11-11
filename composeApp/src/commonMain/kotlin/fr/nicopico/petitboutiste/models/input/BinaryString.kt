@@ -19,6 +19,18 @@ class BinaryString(
 
     override fun isNotEmpty() = binaryString.isNotEmpty()
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is BinaryString) return false
+
+        // 'other' is smart-cast to BinaryString
+        return binaryString == other.binaryString
+    }
+
+    override fun hashCode(): Int {
+        return binaryString.hashCode()
+    }
+
     override fun toString(): String {
         return "BinaryString(binaryString='$binaryString')"
     }

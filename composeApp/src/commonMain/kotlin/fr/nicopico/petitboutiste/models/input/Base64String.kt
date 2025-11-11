@@ -13,6 +13,16 @@ class Base64String(
 
     override fun isNotEmpty() = base64String.isNotEmpty()
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Base64String) return false
+        return base64String == other.base64String
+    }
+
+    override fun hashCode(): Int {
+        return base64String.hashCode()
+    }
+
     override fun toString(): String {
         return "Base64String(base64String='$base64String')"
     }

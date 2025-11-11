@@ -9,6 +9,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.utils.jewel.updateStateValue
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.jetbrains.jewel.foundation.ExperimentalJewelApi
@@ -25,8 +26,12 @@ fun PBTextArea(
     isError: Boolean = false,
     textStyle: TextStyle = JewelTheme.defaultTextStyle,
 ) {
-    val state = remember(value) {
+    val state = remember {
         TextFieldState(value)
+    }
+
+    LaunchedEffect(value) {
+        state.updateStateValue(value)
     }
 
     // Observe changes to the text
