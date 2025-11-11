@@ -19,6 +19,7 @@ kotlin {
         }
         compilations.getByName("main") {
             cinterops {
+                @Suppress("unused")
                 val jni by creating {
                     packageName = "fr.nicopico.macos.jni"
                     val javaHome = File(System.getProperty("java.home"))
@@ -32,7 +33,6 @@ kotlin {
     }
 }
 
-// FIXME Call this task automatically (on which tasks ?)
 tasks.register<Copy>("buildAndCopyMacosBridge") {
     dependsOn("linkReleaseSharedMacosBridge")
 

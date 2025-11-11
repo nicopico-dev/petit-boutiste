@@ -161,7 +161,9 @@ private inline fun withJvmEnv(block: (CPointer<JNIEnvVar>) -> Unit) {
         } finally {
             if (attachedHere) {
                 jvmFns.DetachCurrentThread!!(vm)
-                    .check("DetachCurrentThread") { return }
+                    .check("DetachCurrentThread") {
+                        return
+                    }
             }
         }
     }
@@ -181,8 +183,12 @@ private fun checkJniException(env: CPointer<JNIEnvVar>) {
 }
 
 /**
- * Use this function to check C-style function return values.
- * If the value is different from 0, [onFail] will execute and the caller execution flow will be interrupted.
+ * Validate C-style function return values (0 means success)
+ *
+ * @param context Error context (usually the name of the function)
+ * @param onFail block executed when the return value indicates an error.
+ * Must contain a `return` or throw an exception to stop the execution flow of the caller.
+ * This requirement is compile-checked as the block must return `Nothing`
  */
 private inline fun Int.check(context: String, onFail: () -> Nothing) {
     if (this != 0) {
