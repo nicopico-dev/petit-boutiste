@@ -37,7 +37,7 @@ fun <T : DataString> DataInput(
 
             isError = (parsed == null)
             if (parsed != null && parsed != value) {
-                log("initial value: $value, parsed: $parsed -> onValueChange")
+
                 onValueChange(parsed)
             }
         },

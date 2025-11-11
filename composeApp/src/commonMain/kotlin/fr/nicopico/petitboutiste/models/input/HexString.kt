@@ -14,7 +14,7 @@ class HexString(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other !is HexString) return false
 
         other as HexString
 

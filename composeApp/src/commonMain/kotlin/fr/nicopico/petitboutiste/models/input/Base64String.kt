@@ -15,10 +15,7 @@ class Base64String(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Base64String
-
+        if (other !is Base64String) return false
         return base64String == other.base64String
     }
 

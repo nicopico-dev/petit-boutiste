@@ -21,10 +21,9 @@ class BinaryString(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other !is BinaryString) return false
 
-        other as BinaryString
-
+        // 'other' is smart-cast to BinaryString
         return binaryString == other.binaryString
     }
 
