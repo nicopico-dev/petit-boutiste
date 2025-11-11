@@ -12,6 +12,19 @@ class HexString(
 
     override fun isNotEmpty() = hexString.isNotEmpty()
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HexString
+
+        return hexString == other.hexString
+    }
+
+    override fun hashCode(): Int {
+        return hexString.hashCode()
+    }
+
     override fun toString(): String {
         return "HexString(hexString='$hexString')"
     }

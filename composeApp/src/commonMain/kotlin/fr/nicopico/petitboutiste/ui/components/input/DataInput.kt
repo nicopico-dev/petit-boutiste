@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
@@ -31,11 +32,12 @@ fun <T : DataString> DataInput(
     PBTextArea(
         value = input,
         onValueChange = { newText ->
+            val parsed = adapter.parse(newText)
             input = newText
 
-            val parsed = adapter.parse(newText)
             isError = (parsed == null)
-            if (parsed != null) {
+            if (parsed != null && parsed != value) {
+                log("initial value: $value, parsed: $parsed -> onValueChange")
                 onValueChange(parsed)
             }
         },
