@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.composeHotReload)
 
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.skydoves.stabilityAnalyzer)
 }
 
 //region Version management
@@ -79,6 +78,16 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
+}
+
+// use `./gradlew compileKotlinDesktop --rerun-tasks` to generate the reports
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose-compiler")
+    metricsDestination = layout.buildDirectory.dir("compose-compiler")
+
+    stabilityConfigurationFiles = listOf(
+        layout.projectDirectory.file("compose-stability.config")
+    )
 }
 
 compose.desktop {
