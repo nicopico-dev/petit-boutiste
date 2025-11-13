@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.models.representation
 
+import androidx.compose.runtime.Immutable
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgKey
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
@@ -42,6 +43,7 @@ enum class DataRenderer(
 
     val label: String get() = customLabel ?: name
 
+    @Immutable
     class Argument(
         val key: ArgKey,
         val label: String,
