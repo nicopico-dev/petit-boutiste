@@ -1,6 +1,5 @@
 package fr.nicopico.macos
 
-import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.logError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +26,10 @@ object MacosBridge {
     }
 
     @JvmStatic
+    @Deprecated("JNI only. Use log() instead")
+    external fun jniLog(message: String)
+
+    @JvmStatic
     @Deprecated(
         "JNI only. Use startObservingTheme() instead",
     )
@@ -48,6 +51,20 @@ object MacosBridge {
     }
     //endregion
 
+    private var sendLogToPlatform = true
+
+    fun log(msg: String) {
+        if (!sendLogToPlatform) return
+        try {
+            @Suppress("DEPRECATION")
+            jniLog(msg)
+        } catch (_: UnsatisfiedLinkError) {
+            sendLogToPlatform = false
+            logError("Cannot send log to platform, native library is unavailable")
+        }
+    }
+
+    //region macOS Theme
     private val _notificationFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     private val subscriptionCount = AtomicInt(0)
 
@@ -86,4 +103,5 @@ object MacosBridge {
             "Subscription count for MacOS theme changes cannot be less than 0"
         }
     }
+    //endregion
 }
