@@ -8,6 +8,7 @@ import fr.nicopico.macos.jni.JavaVMVar
 import fr.nicopico.macos.jni.jclass
 import fr.nicopico.macos.jni.jint
 import fr.nicopico.macos.jni.jmethodID
+import fr.nicopico.macos.jni.jstring
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CPointerVar
 import kotlinx.cinterop.alloc
@@ -17,8 +18,10 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.toKString
 import kotlinx.cinterop.value
 import platform.Foundation.NSDistributedNotificationCenter
+import platform.Foundation.NSLog
 import platform.Foundation.NSNotification
 import platform.Foundation.NSOperationQueue
 import platform.darwin.dispatch_async
@@ -39,8 +42,28 @@ fun jniOnLoad(vm: CPointer<JavaVMVar>, reserved: CPointer<*>?): jint {
     return JNI_VERSION_1_8
 }
 
-// Follow JNI naming: Java_<package>_<class>_<method>
+// CName must follow JNI naming: Java_<package>_<class>_<method>
 // IMPORTANT: these elements should match the *target* -> the function with the `external` modifier
+
+@Suppress("unused")
+@CName("Java_fr_nicopico_macos_MacosBridge_jniLog")
+fun jniLog(env: CPointer<JNIEnvVar>, clazz: jclass, jmessage: jstring) {
+    val jni = env.pointed.pointed!!
+
+    memScoped {
+        val utfChars = jni.GetStringUTFChars!!(env, jmessage, null)
+            ?: return
+
+        try {
+            val message = utfChars.toKString()
+            NSLog(message)
+        } finally {
+            jni.ReleaseStringUTFChars!!(env, jmessage, utfChars)
+        }
+    }
+}
+
+//region Observe macOS Theme
 @Suppress("unused")
 @CName("Java_fr_nicopico_macos_MacosBridge_jniStartObservingTheme")
 fun jniStartObservingTheme(env: CPointer<JNIEnvVar>, clazz: jclass) {
@@ -99,6 +122,7 @@ private fun onMacosThemeChanged() {
         checkJniException(env)
     }
 }
+//endregion
 
 private fun ensureCachedIds(env: CPointer<JNIEnvVar>) {
     if (gMacosBridgeClass != null && gNotifyMethodId != null) return

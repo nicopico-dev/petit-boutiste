@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste
 
+import fr.nicopico.macos.MacosBridge
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -10,8 +11,10 @@ private fun timestamp(): String = LocalDateTime.now().format(TIMESTAMP_FORMATTER
 
 fun log(msg: String) {
     println("[${timestamp()}] $msg")
+    MacosBridge.log(msg)
 }
 
 fun logError(msg: String) {
     System.err.println("[${timestamp()}] $msg")
+    MacosBridge.log("ERROR: $msg")
 }
