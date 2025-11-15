@@ -15,6 +15,7 @@ plugins {
 
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.cash.licensee)
+    alias(libs.plugins.skydoves.stabilityAnalyzer)
 }
 
 //region Version management
