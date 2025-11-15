@@ -107,6 +107,8 @@ fun ByteGroupDefinitions(
                             val definition = ByteGroupDefinition(
                                 indexes = nextIndex..nextIndex
                             )
+                            // Open the new definition automatically
+                            openedDefinition = definition
                             onAddDefinition(definition)
                         },
                     )
