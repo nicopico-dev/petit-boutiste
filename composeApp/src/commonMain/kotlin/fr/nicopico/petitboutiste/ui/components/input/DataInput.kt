@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
