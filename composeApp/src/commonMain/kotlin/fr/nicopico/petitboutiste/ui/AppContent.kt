@@ -16,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.skydoves.compose.stability.runtime.TraceRecomposition
 import fr.nicopico.petitboutiste.models.app.AppState
 import fr.nicopico.petitboutiste.ui.components.TabContent
 import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 
+@TraceRecomposition
 @Composable
 fun AppContent(
     appState: AppState,
