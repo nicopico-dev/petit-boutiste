@@ -85,7 +85,9 @@ object RepresentationSerializer : KSerializer<Representation> {
         return when (obj["dataRenderer"]?.jsonPrimitive?.content) {
             // UnsignedInteger was replaced with a Signedness renderer parameter in Integer renderer
             "UnsignedInteger" -> {
-                val endianness = obj["endianness"]?.jsonPrimitive?.content ?: "BigEndian"
+                val endianness = (obj["argumentValues"] as? JsonObject)
+                    ?.get("endianness")?.jsonPrimitive?.content
+                    ?: "BigEndian"
                 rep("Integer", mapOf("endianness" to endianness, "signedness" to "Unsigned"))
             }
             else -> obj
