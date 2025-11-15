@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
-import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
@@ -61,9 +60,7 @@ fun ByteGroupDefinitions(
             openedDefinition == (it as? ByteItem.Group)?.definition
         }
         if (index != -1) {
-            launch {
-                lazyListState.animateScrollToItem(index)
-            }
+            lazyListState.animateScrollToItem(index)
         }
     }
 
@@ -109,7 +106,7 @@ fun ByteGroupDefinitions(
                                 .align(Alignment.End),
                         )
                     },
-                    displayForm = openedDefinition == definition ,
+                    displayForm = openedDefinition == definition,
                     onToggleDisplayForm = { display ->
                         openedDefinition = if (display) definition else null
                     },
