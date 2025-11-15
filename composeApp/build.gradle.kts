@@ -8,12 +8,14 @@ import ext.configureDesktopApplication
 
 plugins {
     id("compose-desktop-convention")
-
-    alias(libs.plugins.kotlinSerialization)
     id("detekt-convention")
     id("kover-convention")
     id("licensee-convention")
     id("versioning-convention")
+
+
+    alias(libs.plugins.kotlinSerialization)
+	alias(libs.plugins.skydoves.stabilityAnalyzer)
 }
 
 configureDesktopApplication(
