@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
 
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.skydoves.stabilityAnalyzer)
 }
 
 //region Version management
