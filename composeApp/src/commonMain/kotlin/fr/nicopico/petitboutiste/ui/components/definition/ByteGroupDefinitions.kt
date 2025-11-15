@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -43,6 +48,22 @@ fun ByteGroupDefinitions(
         }
     }
 
+    var openedDefinition by remember {
+        mutableStateOf<ByteGroupDefinition?>(null)
+    }
+
+    // Auto-scroll to opened definition
+    val lazyListState = rememberLazyListState()
+    LaunchedEffect(openedDefinition) {
+        if (openedDefinition == null) return@LaunchedEffect
+        val index = byteItems.indexOfFirst {
+            openedDefinition == (it as? ByteItem.Group)?.definition
+        }
+        if (index != -1) {
+            lazyListState.animateScrollToItem(index)
+        }
+    }
+
     Column(modifier) {
         Text(
             "Definitions",
@@ -51,7 +72,8 @@ fun ByteGroupDefinitions(
         )
 
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            state = lazyListState,
         ) {
             items(definitions) { definition ->
                 val byteGroup = byteItems.firstOrNull {
@@ -83,7 +105,11 @@ fun ByteGroupDefinitions(
                                 .padding(start = 16.dp, top = 16.dp)
                                 .align(Alignment.End),
                         )
-                    }
+                    },
+                    displayForm = openedDefinition == definition,
+                    onToggleDisplayForm = { display ->
+                        openedDefinition = if (display) definition else null
+                    },
                 )
             }
 
@@ -97,6 +123,8 @@ fun ByteGroupDefinitions(
                             val definition = ByteGroupDefinition(
                                 indexes = nextIndex..nextIndex
                             )
+                            // Open the new definition automatically
+                            openedDefinition = definition
                             onAddDefinition(definition)
                         },
                     )
