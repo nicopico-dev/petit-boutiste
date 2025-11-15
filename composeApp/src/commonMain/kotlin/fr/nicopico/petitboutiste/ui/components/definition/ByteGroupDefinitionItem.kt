@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -22,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.isOff
@@ -46,11 +43,10 @@ fun ByteGroupDefinitionItem(
     byteGroup: ByteItem.Group? = null,
     invalidDefinition: Boolean = false,
     form: Slot? = null,
+    displayForm: Boolean = false,
+    onToggleDisplayForm: (Boolean) -> Unit,
 ) {
     val incomplete = byteGroup?.incomplete ?: false
-    var displayForm by remember(definition.id) {
-        mutableStateOf(false)
-    }
 
     Column(
         modifier = modifier
@@ -134,7 +130,7 @@ fun ByteGroupDefinitionItem(
                         )
                     },
                     onClick = {
-                        displayForm = !displayForm
+                        onToggleDisplayForm(!displayForm)
                     },
                     modifier = Modifier.align(Alignment.CenterVertically),
                 )

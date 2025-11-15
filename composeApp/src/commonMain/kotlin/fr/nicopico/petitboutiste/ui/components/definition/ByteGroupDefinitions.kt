@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -41,6 +44,9 @@ fun ByteGroupDefinitions(
                 previousDefinitionEnd = definition.indexes.last
             }
         }
+    }
+    var openedDefinition by remember {
+        mutableStateOf<ByteGroupDefinition?>(null)
     }
 
     Column(modifier) {
@@ -83,7 +89,11 @@ fun ByteGroupDefinitions(
                                 .padding(start = 16.dp, top = 16.dp)
                                 .align(Alignment.End),
                         )
-                    }
+                    },
+                    displayForm = openedDefinition == definition ,
+                    onToggleDisplayForm = { display ->
+                        openedDefinition = if (display) definition else null
+                    },
                 )
             }
 
