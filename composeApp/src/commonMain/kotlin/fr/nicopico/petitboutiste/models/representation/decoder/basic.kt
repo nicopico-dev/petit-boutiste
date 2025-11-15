@@ -2,9 +2,11 @@ package fr.nicopico.petitboutiste.models.representation.decoder
 
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Endianness
+import fr.nicopico.petitboutiste.models.representation.Signedness
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.getCharset
 import fr.nicopico.petitboutiste.models.representation.arguments.getEndianness
+import fr.nicopico.petitboutiste.models.representation.arguments.getSignedness
 import java.math.BigInteger
 
 fun DataRenderer.decodeBinary(byteArray: ByteArray): String {
@@ -35,15 +37,11 @@ fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentVal
     if (getEndianness(argumentValues) == Endianness.LittleEndian) {
         byteArray.reverse()
     }
-    return BigInteger(byteArray).toString(10)
-}
-
-fun DataRenderer.decodeUnsignedInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
-    require(this == DataRenderer.UnsignedInteger)
-    if (getEndianness(argumentValues) == Endianness.LittleEndian) {
-        byteArray.reverse()
+    return if (getSignedness(argumentValues) == Signedness.Signed) {
+        BigInteger(byteArray).toString(10)
+    } else {
+        BigInteger(1, byteArray).toString(10)
     }
-    return BigInteger(1, byteArray).toString(10)
 }
 
 fun DataRenderer.decodeText(byteArray: ByteArray, argumentValues: ArgumentValues): String {
