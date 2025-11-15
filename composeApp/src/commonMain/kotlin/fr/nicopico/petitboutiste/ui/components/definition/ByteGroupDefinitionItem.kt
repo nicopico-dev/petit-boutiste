@@ -103,6 +103,7 @@ fun ByteGroupDefinitionItem(
                     Text(
                         text = valueText,
                         style = JewelTheme.typography.consoleTextStyle,
+                        fontSize = 1.em,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
