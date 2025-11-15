@@ -3,13 +3,14 @@ package fr.nicopico.petitboutiste.ui.components.foundation
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.utils.compose.Slot
-import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import org.jetbrains.jewel.ui.component.HorizontalSplitLayout
+import org.jetbrains.jewel.ui.component.SplitLayoutState
 import org.jetbrains.jewel.ui.component.VerticalSplitLayout
 import org.jetbrains.jewel.ui.component.rememberSplitLayoutState
 
@@ -22,17 +23,23 @@ fun DesktopScaffold(
     val dividerStyle = AppTheme.current.styles.dividerStyle
 
     HorizontalSplitLayout(
-        first = tools?.optionalSlot { tools ->
+        first = {
+            val verticalSplitLayoutState = remember(tools != null) {
+                SplitLayoutState(
+                    initialSplitFraction = if (tools != null) 0.67f else 1f
+                )
+            }
+
             VerticalSplitLayout(
                 first = main,
-                second = tools,
-                state = rememberSplitLayoutState(0.67f),
+                second = tools ?: {},
+                state = verticalSplitLayoutState,
                 dividerStyle = dividerStyle,
                 draggableWidth = 16.dp,
                 firstPaneMinWidth = 200.dp,
-                secondPaneMinWidth = 100.dp,
+                secondPaneMinWidth = if (tools != null) 100.dp else 0.dp,
             )
-        } ?: main,
+        },
         second = side,
         state = rememberSplitLayoutState(0.70f),
         dividerStyle = dividerStyle,
