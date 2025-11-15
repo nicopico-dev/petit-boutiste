@@ -8,6 +8,7 @@ import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentVa
 import fr.nicopico.petitboutiste.utils.json.RepresentationSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 
@@ -16,6 +17,7 @@ val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 data class Representation(
     val dataRenderer: DataRenderer,
     val argumentValues: ArgumentValues = emptyArgumentValues(),
+    @Transient
     val submitCount: Int = 0,
 )
 

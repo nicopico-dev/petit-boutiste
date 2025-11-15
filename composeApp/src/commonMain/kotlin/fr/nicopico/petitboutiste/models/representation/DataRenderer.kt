@@ -7,6 +7,7 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.CharsetArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.EndiannessArgument
+import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
 import fr.nicopico.petitboutiste.models.representation.decoder.PROTOBUF_ARGUMENTS
 import fr.nicopico.petitboutiste.models.representation.decoder.USER_SCRIPT_ARGUMENTS
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeBinary
@@ -14,7 +15,6 @@ import fr.nicopico.petitboutiste.models.representation.decoder.decodeHexadecimal
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeInteger
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeProtobuf
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeText
-import fr.nicopico.petitboutiste.models.representation.decoder.decodeUnsignedInteger
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeUserScript
 
 private val CUSTOM_LABEL_DEFAULT: String? = null
@@ -28,8 +28,7 @@ enum class DataRenderer(
     Off,
     Binary,
     Hexadecimal,
-    Integer(EndiannessArgument),
-    UnsignedInteger(EndiannessArgument, customLabel = "Integer (unsigned)"),
+    Integer(EndiannessArgument, SignednessArgument),
     Text(EndiannessArgument, CharsetArgument),
     Protobuf(PROTOBUF_ARGUMENTS, requireUserValidation = true),
     UserScript(USER_SCRIPT_ARGUMENTS, customLabel = "User script", requireUserValidation = true),
@@ -58,7 +57,6 @@ enum class DataRenderer(
             Binary -> decodeBinary(byteArray)
             Hexadecimal -> decodeHexadecimal(byteArray)
             Integer -> decodeInteger(byteArray, argumentValues)
-            UnsignedInteger -> decodeUnsignedInteger(byteArray, argumentValues)
             Text -> decodeText(byteArray, argumentValues)
             Protobuf -> decodeProtobuf(byteArray, argumentValues)
             UserScript -> decodeUserScript(byteArray, argumentValues)

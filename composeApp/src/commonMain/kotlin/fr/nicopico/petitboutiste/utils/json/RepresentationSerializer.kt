@@ -49,15 +49,9 @@ object RepresentationSerializer : KSerializer<Representation> {
     // Handle legacy format with RepresentationFormat
     private fun transformLegacy(element: JsonElement): JsonElement {
         val obj = element as? JsonObject ?: return element
-        val type = obj["type"] ?: return element
+        val type = obj["type"]
+            ?: return migrateRemovedRenderer(obj)
         val typeName = type.jsonPrimitive.content
-        fun rep(renderer: String, args: Map<String, String> = emptyMap()): JsonObject {
-            return buildJsonObject {
-                put("dataRenderer", JsonPrimitive(renderer))
-                val argsObj = JsonObject(args.mapValues { JsonPrimitive(it.value) })
-                put("argumentValues", argsObj)
-            }
-        }
         return when {
             typeName.endsWith(".Binary") -> rep("Binary")
             typeName.endsWith(".Hexadecimal") -> rep("Hexadecimal")
@@ -76,6 +70,27 @@ object RepresentationSerializer : KSerializer<Representation> {
                 rep(renderer, arguments)
             }
             else -> element
+        }
+    }
+
+    fun rep(renderer: String, args: Map<String, String> = emptyMap()): JsonObject {
+        return buildJsonObject {
+            put("dataRenderer", JsonPrimitive(renderer))
+            val argsObj = JsonObject(args.mapValues { JsonPrimitive(it.value) })
+            put("argumentValues", argsObj)
+        }
+    }
+
+    private fun migrateRemovedRenderer(obj: JsonObject): JsonElement {
+        return when (obj["dataRenderer"]?.jsonPrimitive?.content) {
+            // UnsignedInteger was replaced with a Signedness renderer parameter in Integer renderer
+            "UnsignedInteger" -> {
+                val endianness = (obj["argumentValues"] as? JsonObject)
+                    ?.get("endianness")?.jsonPrimitive?.content
+                    ?: "BigEndian"
+                rep("Integer", mapOf("endianness" to endianness, "signedness" to "Unsigned"))
+            }
+            else -> obj
         }
     }
 }
