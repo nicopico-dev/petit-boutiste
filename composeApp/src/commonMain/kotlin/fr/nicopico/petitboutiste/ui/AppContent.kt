@@ -7,10 +7,12 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.skydoves.compose.stability.runtime.TraceRecomposition
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.AppState
 import fr.nicopico.petitboutiste.ui.components.TabContent
 
+@TraceRecomposition
 @Composable
 fun AppContent(
     appState: AppState,
