@@ -31,7 +31,8 @@ import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.components.representation.ByteGroupRepresentationForm
-import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
+import fr.nicopico.petitboutiste.utils.compute
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
@@ -63,7 +64,7 @@ fun ByteGroupDefinitionForm(
     val startIndexError by remember(definition) {
         derivedStateOf {
             if (startIndexInput.isNotEmpty()) {
-                val startIndex = startIndexInput.toIntOrNull()
+                val startIndex = compute(startIndexInput)
                 when {
                     startIndex == null -> "Must be a number"
                     startIndex < 0 -> "Must be a positive number"
@@ -75,8 +76,8 @@ fun ByteGroupDefinitionForm(
     val endIndexError by remember(definition) {
         derivedStateOf {
             if (endIndexInput.isNotEmpty()) {
-                val startIndex = startIndexInput.toIntOrNull()
-                val endIndex = endIndexInput.toIntOrNull()
+                val startIndex = compute(startIndexInput)
+                val endIndex = compute(endIndexInput)
                 when {
                     endIndex == null -> "Must be a number"
                     endIndex < (startIndex ?: 0) -> "Must be greater than or equal to Start"
@@ -96,7 +97,7 @@ fun ByteGroupDefinitionForm(
     val saveDefinition: () -> Unit = {
         if (isValid) {
             val definitionToSave = definition.copy(
-                indexes = startIndexInput.toInt()..endIndexInput.toInt(),
+            	indexes = compute(startIndexInput)!!..compute(endIndexInput)!!,
                 name = name.ifBlank { null },
                 representation = representation,
             )
