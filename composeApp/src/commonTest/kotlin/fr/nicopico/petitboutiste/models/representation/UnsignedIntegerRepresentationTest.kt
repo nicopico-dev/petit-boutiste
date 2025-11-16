@@ -1,6 +1,7 @@
 package fr.nicopico.petitboutiste.models.representation
 
 import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,7 +12,12 @@ class UnsignedIntegerRepresentationTest {
 
     @BeforeTest
     fun setUp() {
-        representation = Representation(DataRenderer.UnsignedInteger)
+        representation = Representation(
+            DataRenderer.Integer,
+            argumentValues = mapOf(
+                SignednessArgument.key to Signedness.Unsigned.name
+            )
+        )
     }
 
     @Test
