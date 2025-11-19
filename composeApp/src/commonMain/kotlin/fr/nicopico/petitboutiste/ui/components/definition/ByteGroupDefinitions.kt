@@ -52,17 +52,7 @@ fun ByteGroupDefinitions(
         mutableStateOf<ByteGroupDefinition?>(null)
     }
 
-    // Auto-scroll to opened definition
     val lazyListState = rememberLazyListState()
-    LaunchedEffect(openedDefinition) {
-        if (openedDefinition == null) return@LaunchedEffect
-        val index = byteItems.indexOfFirst {
-            openedDefinition == (it as? ByteItem.Group)?.definition
-        }
-        if (index != -1) {
-            lazyListState.animateScrollToItem(index)
-        }
-    }
 
     Column(modifier) {
         Text(
@@ -130,6 +120,17 @@ fun ByteGroupDefinitions(
                     )
                 }
             }
+        }
+    }
+
+    // Auto-scroll to opened definition
+    LaunchedEffect(openedDefinition) {
+        if (openedDefinition == null) return@LaunchedEffect
+        val index = definitions
+            .indexOfFirst { openedDefinition == it }
+
+        if (index != -1) {
+            lazyListState.animateScrollToItem(index)
         }
     }
 }
