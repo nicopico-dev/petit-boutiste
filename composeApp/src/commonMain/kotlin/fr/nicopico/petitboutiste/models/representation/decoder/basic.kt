@@ -27,16 +27,15 @@ private val customHexFormat = HexFormat {
     }
 }
 
-fun DataRenderer.decodeHexadecimal(byteArray: ByteArray): String {
+fun DataRenderer.decodeHexadecimal(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.Hexadecimal)
+    applyEndiannessInPlace(byteArray, argumentValues)
     return byteArray.toHexString(customHexFormat)
 }
 
 fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.Integer)
-    if (getEndianness(argumentValues) == Endianness.LittleEndian) {
-        byteArray.reverse()
-    }
+    applyEndiannessInPlace(byteArray, argumentValues)
     return if (getSignedness(argumentValues) == Signedness.Signed) {
         BigInteger(byteArray).toString(10)
     } else {
@@ -46,9 +45,16 @@ fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentVal
 
 fun DataRenderer.decodeText(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.Text)
+    applyEndiannessInPlace(byteArray, argumentValues)
+    val charset = getCharset(argumentValues)
+    return String(byteArray, charset)
+}
+
+private fun DataRenderer.applyEndiannessInPlace(
+    byteArray: ByteArray,
+    argumentValues: ArgumentValues,
+) {
     if (getEndianness(argumentValues) == Endianness.LittleEndian) {
         byteArray.reverse()
     }
-    val charset = getCharset(argumentValues)
-    return String(byteArray, charset)
 }

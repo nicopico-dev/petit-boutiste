@@ -27,7 +27,7 @@ enum class DataRenderer(
 ) {
     Off,
     Binary,
-    Hexadecimal,
+    Hexadecimal(EndiannessArgument),
     Integer(EndiannessArgument, SignednessArgument),
     Text(EndiannessArgument, CharsetArgument),
     Protobuf(PROTOBUF_ARGUMENTS, requireUserValidation = true),
@@ -55,7 +55,7 @@ enum class DataRenderer(
         return when (this) {
             Off -> ""
             Binary -> decodeBinary(byteArray)
-            Hexadecimal -> decodeHexadecimal(byteArray)
+            Hexadecimal -> decodeHexadecimal(byteArray, argumentValues)
             Integer -> decodeInteger(byteArray, argumentValues)
             Text -> decodeText(byteArray, argumentValues)
             Protobuf -> decodeProtobuf(byteArray, argumentValues)
