@@ -3,6 +3,7 @@ package fr.nicopico.petitboutiste.ui.components.representation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,8 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.log
@@ -32,13 +36,17 @@ import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
+import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.Outline
 import org.jetbrains.jewel.ui.component.Divider
+import org.jetbrains.jewel.ui.component.IconActionButton
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextArea
+import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
+import java.awt.datatransfer.StringSelection
 import kotlin.math.max
 
 @Composable
@@ -126,32 +134,58 @@ fun ByteItemRender(
         )
 
         if (representation.isReady) {
-            TextArea(
-                state = remember(rendererOutput) {
-                    TextFieldState(
-                        initialText = when (val output = rendererOutput) {
-                            is RenderResult.Success -> output.data
-                            is RenderResult.Error -> "[ERROR] ${output.message}"
-                            is RenderResult.None -> ""
-                        }
-                    )
-                },
-                readOnly = true,
-                outline = when (rendererOutput) {
-                    is RenderResult.Success -> Outline.None
-                    is RenderResult.Error -> Outline.Error
-                    is RenderResult.None -> Outline.Warning
-                },
-                textStyle = JewelTheme.typography.consoleTextStyle.copy(
-                    fontSize = 16.sp,
-                ),
-                undecorated = false,
-                decorationBoxModifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
+            Box(
                 modifier = Modifier
                     .widthIn(min = 200.dp)
                     .fillMaxSize()
                     .padding(top = 8.dp, end = 8.dp, bottom = 8.dp),
-            )
+            ) {
+                TextArea(
+                    state = remember(rendererOutput) {
+                        TextFieldState(
+                            initialText = when (val output = rendererOutput) {
+                                is RenderResult.Success -> output.data
+                                is RenderResult.Error -> "[ERROR] ${output.message}"
+                                is RenderResult.None -> ""
+                            }
+                        )
+                    },
+                    readOnly = true,
+                    outline = when (rendererOutput) {
+                        is RenderResult.Success -> Outline.None
+                        is RenderResult.Error -> Outline.Error
+                        is RenderResult.None -> Outline.Warning
+                    },
+                    textStyle = JewelTheme.typography.consoleTextStyle.copy(
+                        fontSize = 16.sp,
+                    ),
+                    undecorated = false,
+                    decorationBoxModifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
+                    modifier = Modifier.fillMaxSize(),
+                )
+
+                Column(
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val scope = rememberCoroutineScope()
+                    val clipboard = LocalClipboard.current
+                    IconActionButton(
+                        key = AllIconsKeys.Actions.Copy,
+                        contentDescription = "Copy to clipboard",
+                        enabled = rendererOutput is RenderResult.Success,
+                        onClick = {
+                            val data = (rendererOutput as RenderResult.Success).data.trim()
+                            val clipEntry = ClipEntry(StringSelection(data))
+                            scope.launch {
+                                clipboard.setClipEntry(clipEntry)
+                            }
+                        },
+                    )
+                }
+            }
         }
     }
 }
