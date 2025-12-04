@@ -22,8 +22,9 @@ private val customHexFormat = HexFormat {
     bytes {
         byteSeparator = ""
 
-        bytesPerGroup = 2
+        // Unicode Thin Space (https://www.compart.com/en/unicode/U+2009)
         groupSeparator = "\u2009"
+        bytesPerGroup = 2
 
         bytesPerLine = 8
     }
