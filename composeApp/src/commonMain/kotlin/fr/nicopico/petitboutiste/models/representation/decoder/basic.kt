@@ -20,7 +20,13 @@ fun DataRenderer.decodeBinary(byteArray: ByteArray): String {
 private val customHexFormat = HexFormat {
     upperCase = true
     bytes {
-        byteSeparator = " "
+        byteSeparator = ""
+
+        // Unicode Thin Space (https://www.compart.com/en/unicode/U+2009)
+        groupSeparator = "\u2009"
+        bytesPerGroup = 2
+
+        bytesPerLine = 8
     }
     number {
         removeLeadingZeros = false
