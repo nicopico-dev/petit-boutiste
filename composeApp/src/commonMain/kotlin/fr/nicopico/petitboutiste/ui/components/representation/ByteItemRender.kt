@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.log
+import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
@@ -36,6 +37,7 @@ import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
@@ -180,7 +182,12 @@ fun ByteItemRender(
                             val data = (rendererOutput as RenderResult.Success).data.trim()
                             val clipEntry = ClipEntry(StringSelection(data))
                             scope.launch {
-                                clipboard.setClipEntry(clipEntry)
+                                try {
+                                    clipboard.setClipEntry(clipEntry)
+                                } catch (e: Exception) {
+                                    ensureActive()
+                                    logError("Failed to copy rendering to clipboard: $e")
+                                }
                             }
                         },
                     )
