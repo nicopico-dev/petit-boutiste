@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
@@ -141,7 +142,9 @@ fun ByteItemRender(
                     is RenderResult.Error -> Outline.Error
                     is RenderResult.None -> Outline.Warning
                 },
-                textStyle = JewelTheme.typography.h2TextStyle,
+                textStyle = JewelTheme.typography.consoleTextStyle.copy(
+                    fontSize = 16.sp,
+                ),
                 undecorated = false,
                 decorationBoxModifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
                 modifier = Modifier
