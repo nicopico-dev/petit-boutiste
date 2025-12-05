@@ -38,7 +38,7 @@ class Reducer(
             is AppEvent.RenameTabEvent -> {
                 state.copy(
                     tabs = state.tabs.update(event.tabId) {
-                        TabData(name = event.tabName)
+                        copy(name = event.tabName)
                     }
                 )
             }
@@ -68,7 +68,7 @@ class Reducer(
                     ?: return state
 
                 val duplicatedTab = sourceTab.copy(
-                    id = TabId.Companion.create(),
+                    id = TabId.create(),
                     name = sourceTab.name?.let { "$it (copy)" },
                 )
                 val duplicateIndex = state.tabs.indexOf(sourceTab) + 1
@@ -103,19 +103,19 @@ class Reducer(
             //region Current Tab
             is AppEvent.CurrentTabEvent.ChangeInputTypeEvent -> {
                 state.updateCurrentTab {
-                    TabData(inputType = event.type)
+                    copy(inputType = event.type)
                 }
             }
 
             is AppEvent.CurrentTabEvent.ChangeInputDataEvent -> {
                 state.updateCurrentTab {
-                    TabData(inputData = event.data)
+                    copy(inputData = event.data)
                 }
             }
 
             is AppEvent.CurrentTabEvent.AddDefinitionEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         groupDefinitions = (groupDefinitions + event.definition)
                             .sortedWith(ByteGroupDefinitionSorter),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
@@ -128,7 +128,7 @@ class Reducer(
                     val updatedDefinitions = groupDefinitions.map { definition ->
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
-                    TabData(
+                    copy(
                         groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
@@ -137,7 +137,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.DeleteDefinitionEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         groupDefinitions = groupDefinitions - event.definition,
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
@@ -146,13 +146,13 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.ClearAllDefinitionsEvent -> {
                 state.updateCurrentTab {
-                    TabData(groupDefinitions = emptyList(), templateData = null)
+                    copy(groupDefinitions = emptyList(), templateData = null)
                 }
             }
 
             is AppEvent.CurrentTabEvent.UpdateScratchpadEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         scratchpad = event.scratchpad,
                     )
                 }
@@ -164,7 +164,7 @@ class Reducer(
                     templateManager.loadTemplate(event.templateFile)
                 }
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         groupDefinitions = template.definitions,
                         templateData = TabTemplateData(event.templateFile),
                     )
@@ -180,7 +180,7 @@ class Reducer(
                 }
 
                 state.updateCurrentTab {
-                    TabData(templateData = TabTemplateData(event.templateFile))
+                    copy(templateData = TabTemplateData(event.templateFile))
                 }
             }
 
@@ -190,7 +190,7 @@ class Reducer(
                 }
                 state.updateCurrentTab {
                     // TODO Handle duplicate or conflicting definitions
-                    TabData(groupDefinitions = groupDefinitions + template.definitions)
+                    copy(groupDefinitions = groupDefinitions + template.definitions)
                 }
             }
             //endregion
