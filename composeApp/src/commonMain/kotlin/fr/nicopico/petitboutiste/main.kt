@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import fr.nicopico.petitboutiste.models.app.AppEvent
+import fr.nicopico.petitboutiste.models.app.Reducer
 import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.ui.getScreenCharacteristics
 import fr.nicopico.petitboutiste.repository.AppStateRepository

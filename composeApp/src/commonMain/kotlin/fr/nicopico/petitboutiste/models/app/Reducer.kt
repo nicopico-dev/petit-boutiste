@@ -1,9 +1,7 @@
-package fr.nicopico.petitboutiste
+package fr.nicopico.petitboutiste.models.app
 
+import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.models.ByteGroupDefinitionSorter
-import fr.nicopico.petitboutiste.models.app.AppEvent
-import fr.nicopico.petitboutiste.models.app.AppState
-import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
@@ -40,7 +38,7 @@ class Reducer(
             is AppEvent.RenameTabEvent -> {
                 state.copy(
                     tabs = state.tabs.update(event.tabId) {
-                        copy(name = event.tabName)
+                        TabData(name = event.tabName)
                     }
                 )
             }
@@ -70,7 +68,7 @@ class Reducer(
                     ?: return state
 
                 val duplicatedTab = sourceTab.copy(
-                    id = TabId.create(),
+                    id = TabId.Companion.create(),
                     name = sourceTab.name?.let { "$it (copy)" },
                 )
                 val duplicateIndex = state.tabs.indexOf(sourceTab) + 1
@@ -105,19 +103,19 @@ class Reducer(
             //region Current Tab
             is AppEvent.CurrentTabEvent.ChangeInputTypeEvent -> {
                 state.updateCurrentTab {
-                    copy(inputType = event.type)
+                    TabData(inputType = event.type)
                 }
             }
 
             is AppEvent.CurrentTabEvent.ChangeInputDataEvent -> {
                 state.updateCurrentTab {
-                    copy(inputData = event.data)
+                    TabData(inputData = event.data)
                 }
             }
 
             is AppEvent.CurrentTabEvent.AddDefinitionEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         groupDefinitions = (groupDefinitions + event.definition)
                             .sortedWith(ByteGroupDefinitionSorter),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
@@ -130,7 +128,7 @@ class Reducer(
                     val updatedDefinitions = groupDefinitions.map { definition ->
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
-                    copy(
+                    TabData(
                         groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
@@ -139,7 +137,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.DeleteDefinitionEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         groupDefinitions = groupDefinitions - event.definition,
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
@@ -148,13 +146,13 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.ClearAllDefinitionsEvent -> {
                 state.updateCurrentTab {
-                    copy(groupDefinitions = emptyList(), templateData = null)
+                    TabData(groupDefinitions = emptyList(), templateData = null)
                 }
             }
 
             is AppEvent.CurrentTabEvent.UpdateScratchpadEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         scratchpad = event.scratchpad,
                     )
                 }
@@ -166,7 +164,7 @@ class Reducer(
                     templateManager.loadTemplate(event.templateFile)
                 }
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         groupDefinitions = template.definitions,
                         templateData = TabTemplateData(event.templateFile),
                     )
@@ -182,7 +180,7 @@ class Reducer(
                 }
 
                 state.updateCurrentTab {
-                    copy(templateData = TabTemplateData(event.templateFile))
+                    TabData(templateData = TabTemplateData(event.templateFile))
                 }
             }
 
@@ -192,7 +190,7 @@ class Reducer(
                 }
                 state.updateCurrentTab {
                     // TODO Handle duplicate or conflicting definitions
-                    copy(groupDefinitions = groupDefinitions + template.definitions)
+                    TabData(groupDefinitions = groupDefinitions + template.definitions)
                 }
             }
             //endregion
