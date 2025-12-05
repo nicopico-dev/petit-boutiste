@@ -12,6 +12,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.FrameWindowScope
+import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent.CycleTabEvent
 import fr.nicopico.petitboutiste.utils.compose.Slot
@@ -21,10 +22,9 @@ import fr.nicopico.petitboutiste.utils.compose.Slot
  */
 @Composable
 @Suppress("UnusedReceiverParameter")
-fun FrameWindowScope.AppShortcuts(
-    onEvent: (AppEvent) -> Unit,
-    content: Slot,
-) {
+fun FrameWindowScope.AppShortcuts(content: Slot) {
+    val onEvent = LocalOnAppEvent.current
+
     Box(
         modifier = Modifier.onKeyEvent { keyEvent ->
             if (keyEvent.type == KeyEventType.KeyDown) {

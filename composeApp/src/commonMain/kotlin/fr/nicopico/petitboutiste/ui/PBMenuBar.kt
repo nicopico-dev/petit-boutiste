@@ -7,6 +7,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
+import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.ui.TabData
@@ -19,10 +20,10 @@ import org.jetbrains.jewel.ui.painter.rememberResourcePainterProvider
 @Composable
 fun FrameWindowScope.PBMenuBar(
     currentTab: TabData,
-    onEvent: (AppEvent) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val warningIcon by rememberResourcePainterProvider(AllIconsKeys.General.Warning).getPainter()
+    val onEvent = LocalOnAppEvent.current
 
     MenuBar {
         Menu("File", mnemonic = 'F') {

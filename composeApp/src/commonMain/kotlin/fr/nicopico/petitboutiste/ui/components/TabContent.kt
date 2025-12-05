@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
@@ -41,8 +42,9 @@ fun TabContent(
     definitions: List<ByteGroupDefinition> = emptyList(),
     inputType: InputType = InputType.HEX,
     scratchpad: String = "",
-    onCurrentTabEvent: (CurrentTabEvent) -> Unit = {},
 ) {
+    val onCurrentTabEvent: (CurrentTabEvent) -> Unit = LocalOnAppEvent.current
+
     val byteItems = remember(inputData, definitions) {
         inputData.toByteItems(definitions)
     }

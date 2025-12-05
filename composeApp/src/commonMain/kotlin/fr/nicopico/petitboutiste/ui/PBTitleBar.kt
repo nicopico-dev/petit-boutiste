@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.app.AppEvent.SwitchAppThemeEvent
@@ -57,7 +58,6 @@ private const val CLOSE_TAB_DESCRIPTION = "Close tab"
 fun DecoratedWindowScope.PBTitleBar(
     appState: AppState,
     modifier: Modifier = Modifier,
-    onEvent: (AppEvent) -> Unit,
 ) {
     val selectedTab by remember(appState) {
         derivedStateOf { appState.selectedTab }
@@ -65,6 +65,7 @@ fun DecoratedWindowScope.PBTitleBar(
     val selectedTabIndex by remember(appState, selectedTab) {
         derivedStateOf { appState.tabs.indexOf(selectedTab) }
     }
+    val onEvent = LocalOnAppEvent.current
 
     TitleBar(
         modifier.newFullscreenControls().height(50.dp)
@@ -135,7 +136,7 @@ fun DecoratedWindowScope.PBTitleBar(
                 },
             )
 
-            TabToolbar(tabData = selectedTab, onEvent)
+            TabToolbar(tabData = selectedTab)
 
             Divider(
                 orientation = Orientation.Vertical,
@@ -145,7 +146,7 @@ fun DecoratedWindowScope.PBTitleBar(
                     .padding(horizontal = 4.dp),
             )
 
-            TemplateToolbar(tabData = selectedTab, onEvent)
+            TemplateToolbar(tabData = selectedTab)
         }
 
         SwitchThemeButton(
@@ -207,9 +208,9 @@ private fun TabItem(
 @Composable
 private fun TabToolbar(
     tabData: TabData,
-    onEvent: (AppEvent) -> Unit,
 ) {
     var showRenameDialog by remember { mutableStateOf(false) }
+    val onEvent = LocalOnAppEvent.current
 
     ToolbarItem(
         label = "Edit tab name",
@@ -237,9 +238,9 @@ private fun TabToolbar(
 @Composable
 private fun TemplateToolbar(
     tabData: TabData,
-    onEvent: (AppEvent) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
+    val onEvent = LocalOnAppEvent.current
 
     ToolbarItem(
         label = "Load template",
