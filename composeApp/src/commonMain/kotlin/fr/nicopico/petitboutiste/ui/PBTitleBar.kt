@@ -123,7 +123,7 @@ fun DecoratedWindowScope.PBTitleBar(
                     selectableItem(
                         selected = false,
                         iconKey = AllIconsKeys.General.Add,
-                        onClick = { onEvent(AppEvent.AddNewTabEvent) },
+                        onClick = { onEvent(AppEvent.AddNewTabEvent()) },
                         content = { Text("Add a new tab") },
                     )
                 },

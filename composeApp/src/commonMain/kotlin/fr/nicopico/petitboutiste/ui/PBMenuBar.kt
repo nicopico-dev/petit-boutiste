@@ -31,7 +31,7 @@ fun FrameWindowScope.PBMenuBar(
                 text = "New Tab",
                 shortcut = KeyShortcut(Key.T, meta = true),
                 onClick = {
-                    onEvent(AppEvent.AddNewTabEvent)
+                    onEvent(AppEvent.AddNewTabEvent())
                 }
             )
             Item(

@@ -10,6 +10,8 @@ class BinaryString(
     // Convert binary to hex for DataString interface
     override val hexString: String = binaryToHex(binaryString)
 
+    val byteCount: Int = binaryString.length / 8
+
     init {
         // Ensure the binary string length is a multiple of 8 or empty
         require(binaryString.isEmpty() || binaryString.length % 8 == 0) {

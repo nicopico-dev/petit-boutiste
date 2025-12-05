@@ -25,14 +25,22 @@ import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.logError
+import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.app.AppEvent
+import fr.nicopico.petitboutiste.models.extensions.name
+import fr.nicopico.petitboutiste.models.input.BinaryString
+import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
+import fr.nicopico.petitboutiste.models.ui.InputType
+import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
@@ -191,6 +199,18 @@ fun ByteItemRender(
                             }
                         },
                     )
+
+                    val onEvent = LocalOnAppEvent.current
+
+                    IconActionButton(
+                        key = AllIconsKeys.Actions.OpenNewTab,
+                        contentDescription = "Open in new tab",
+                        enabled = representation.allowOpenInNewTab() && rendererOutput is RenderResult.Success,
+                        onClick = {
+                            val tabData = prepareTabData(byteItem.name, representation, rendererOutput)
+                            onEvent(AppEvent.AddNewTabEvent(tabData))
+                        },
+                    )
                 }
             }
         }
@@ -204,5 +224,52 @@ private fun Representation.incrementedSubmitCount(): Int {
     } else {
         // Keep `submitCount` at 1
         max(1, submitCount + 1)
+    }
+}
+
+private fun Representation.allowOpenInNewTab(): Boolean {
+    return dataRenderer == DataRenderer.Hexadecimal
+        || dataRenderer == DataRenderer.Binary
+}
+
+private fun prepareTabData(
+    tabName: String?,
+    representation: Representation,
+    renderResult: RenderResult,
+): TabData? {
+    val rendering = (renderResult as? RenderResult.Success)?.data
+        ?: return null
+
+    return when (representation.dataRenderer) {
+        DataRenderer.Hexadecimal -> {
+            val inputData = HexString(rendering)
+            TabData(
+                name = tabName,
+                inputData = inputData,
+                groupDefinitions = listOf(
+                    ByteGroupDefinition(
+                        indexes = 0..<inputData.byteCount,
+                        representation = representation,
+                    )
+                ),
+            )
+        }
+
+        DataRenderer.Binary -> {
+            val inputData = BinaryString(rendering)
+            TabData(
+                name = tabName,
+                inputType = InputType.BINARY,
+                inputData = inputData,
+                groupDefinitions = listOf(
+                    ByteGroupDefinition(
+                        indexes = 0..<inputData.byteCount,
+                        representation = representation,
+                    )
+                ),
+            )
+        }
+
+        else -> null
     }
 }

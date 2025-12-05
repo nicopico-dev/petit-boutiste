@@ -3,12 +3,14 @@ package fr.nicopico.petitboutiste.models.app
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.ui.InputType
+import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import java.io.File
 
 sealed class AppEvent {
-    data object AddNewTabEvent : AppEvent()
+    data class AddNewTabEvent(val tabData: TabData? = null) : AppEvent()
+
     data class SelectTabEvent(val tabId: TabId) : AppEvent()
     data class RenameTabEvent(val tabId: TabId, val tabName: String) : AppEvent()
     data class RemoveTabEvent(val tabId: TabId) : AppEvent()

@@ -27,7 +27,7 @@ class Reducer(
 
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
-                val newTab = TabData()
+                val newTab = event.tabData ?: TabData()
                 state.copy(tabs = state.tabs + newTab, selectedTabId = newTab.id)
             }
 
