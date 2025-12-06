@@ -21,7 +21,7 @@ import kotlin.time.Duration.Companion.seconds
 private const val ARG_PROTO_FILE_KEY = "protoFile"
 private const val ARG_MESSAGE_TYPE_KEY = "messageType"
 
-val PROTOBUF_ARGUMENTS = listOf(
+val protobufArguments = listOf(
     Argument(
         key = ARG_PROTO_FILE_KEY,
         label = "Protobuf '.desc' file",
