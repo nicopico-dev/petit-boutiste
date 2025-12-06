@@ -1,11 +1,13 @@
 package fr.nicopico.petitboutiste.models.representation.decoder
 
+import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteItems
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.RenderResult
+import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.render
@@ -55,6 +57,16 @@ fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: Argumen
 private val RenderResult.output: String
     get() = when (this) {
         is RenderResult.Error -> "ERROR($message)"
-        is RenderResult.None -> "<NONE>"
+        is RenderResult.None -> ""
         is RenderResult.Success -> this.data
     }
+
+fun Representation.getSubTemplateDefinitions(): List<ByteGroupDefinition> {
+    val templateFile: File = dataRenderer.getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)
+        ?: return emptyList()
+
+    val template = runBlocking {
+        templateManager.loadTemplate(templateFile)
+    }
+    return template.definitions
+}

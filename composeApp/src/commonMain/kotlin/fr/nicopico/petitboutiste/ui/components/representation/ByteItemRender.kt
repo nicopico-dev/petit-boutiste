@@ -32,11 +32,13 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.extensions.name
+import fr.nicopico.petitboutiste.models.extensions.rawHexString
 import fr.nicopico.petitboutiste.models.input.BinaryString
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.models.ui.InputType
@@ -207,7 +209,7 @@ fun ByteItemRender(
                         contentDescription = "Open in new tab",
                         enabled = representation.allowOpenInNewTab() && rendererOutput is RenderResult.Success,
                         onClick = {
-                            val tabData = prepareTabData(byteItem.name, representation, rendererOutput)
+                            val tabData = prepareTabData(byteItem, representation, rendererOutput)
                             onEvent(AppEvent.AddNewTabEvent(tabData))
                         },
                     )
@@ -230,13 +232,15 @@ private fun Representation.incrementedSubmitCount(): Int {
 private fun Representation.allowOpenInNewTab(): Boolean {
     return dataRenderer == DataRenderer.Hexadecimal
         || dataRenderer == DataRenderer.Binary
+        || dataRenderer == DataRenderer.SubTemplate
 }
 
 private fun prepareTabData(
-    tabName: String?,
+    byteItem: ByteItem,
     representation: Representation,
     renderResult: RenderResult,
 ): TabData? {
+    val tabName = byteItem.name
     val rendering = (renderResult as? RenderResult.Success)?.data
         ?: return null
 
@@ -267,6 +271,17 @@ private fun prepareTabData(
                         representation = representation,
                     )
                 ),
+            )
+        }
+
+        DataRenderer.SubTemplate -> {
+            val inputData = HexString(byteItem.rawHexString)
+            val definitions: List<ByteGroupDefinition> = representation.getSubTemplateDefinitions()
+            TabData(
+                name = tabName,
+                inputType = InputType.HEX,
+                inputData = inputData,
+                groupDefinitions = definitions,
             )
         }
 
