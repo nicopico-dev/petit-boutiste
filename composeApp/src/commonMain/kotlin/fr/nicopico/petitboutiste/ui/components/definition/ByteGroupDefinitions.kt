@@ -25,6 +25,7 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.createDefinitionId
+import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.moveStart
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.OutlinedButton
@@ -84,6 +85,7 @@ fun ByteGroupDefinitions(
                                 val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
                                     definition = definition.copy(
                                         id = createDefinitionId(),
+                                        name = definition.name?.incrementIndexSuffix(),
                                         indexes = with(definition.indexes) {
                                             moveStart(endInclusive + 1)
                                         },
