@@ -1,5 +1,7 @@
 package fr.nicopico.petitboutiste.ui.components.definition
 
+import androidx.compose.foundation.ContextMenuArea
+import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,8 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.app.AppEvent
+import fr.nicopico.petitboutiste.models.createDefinitionId
+import fr.nicopico.petitboutiste.utils.moveStart
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
@@ -53,6 +59,7 @@ fun ByteGroupDefinitions(
     }
 
     val lazyListState = rememberLazyListState()
+    val onEvent = LocalOnAppEvent.current
 
     Column(modifier) {
         Text(
@@ -70,37 +77,55 @@ fun ByteGroupDefinitions(
                     it is ByteItem.Group && it.definition == definition
                 } as? ByteItem.Group
 
-                ByteGroupDefinitionItem(
-                    definition = definition,
-                    byteGroup = byteGroup,
-                    selected = definition == selectedDefinition,
-                    modifier = Modifier.clickable {
-                        if (definition != selectedDefinition) {
-                            onDefinitionSelected(definition)
-                        } else {
-                            onDefinitionSelected(null)
-                        }
-                    },
-                    onDelete = {
-                        onDeleteDefinition(definition)
-                    },
-                    invalidDefinition = definition in invalidDefinitions,
-                    form = {
-                        ByteGroupDefinitionForm(
-                            definition = definition,
-                            onDefinitionSaved = { savedDefinition ->
-                                onUpdateDefinition(definition, savedDefinition)
-                            },
-                            modifier = Modifier
-                                .padding(start = 16.dp, top = 16.dp)
-                                .align(Alignment.End),
+                ContextMenuArea(
+                    items = {
+                        listOf(
+                            ContextMenuItem("Duplicate this definition") {
+                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
+                                    definition = definition.copy(
+                                        id = createDefinitionId(),
+                                        indexes = with(definition.indexes) {
+                                            moveStart(endInclusive + 1)
+                                        },
+                                    )
+                                )
+                                onEvent(event)
+                            }
                         )
-                    },
-                    displayForm = openedDefinition == definition,
-                    onToggleDisplayForm = { display ->
-                        openedDefinition = if (display) definition else null
-                    },
-                )
+                    }
+                ) {
+                    ByteGroupDefinitionItem(
+                        definition = definition,
+                        byteGroup = byteGroup,
+                        selected = definition == selectedDefinition,
+                        modifier = Modifier.clickable {
+                            if (definition != selectedDefinition) {
+                                onDefinitionSelected(definition)
+                            } else {
+                                onDefinitionSelected(null)
+                            }
+                        },
+                        onDelete = {
+                            onDeleteDefinition(definition)
+                        },
+                        invalidDefinition = definition in invalidDefinitions,
+                        form = {
+                            ByteGroupDefinitionForm(
+                                definition = definition,
+                                onDefinitionSaved = { savedDefinition ->
+                                    onUpdateDefinition(definition, savedDefinition)
+                                },
+                                modifier = Modifier
+                                    .padding(start = 16.dp, top = 16.dp)
+                                    .align(Alignment.End),
+                            )
+                        },
+                        displayForm = openedDefinition == definition,
+                        onToggleDisplayForm = { display ->
+                            openedDefinition = if (display) definition else null
+                        },
+                    )
+                }
             }
 
             item {

@@ -8,13 +8,12 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Serializable
-data class ByteGroupDefinition
-@OptIn(ExperimentalUuidApi::class) constructor(
+data class ByteGroupDefinition(
     @Serializable(with = IntRangeSerializer::class)
     val indexes: IntRange,
     val name: String? = null,
     val representation: Representation = DEFAULT_REPRESENTATION,
-    val id: String = Uuid.random().toString(),
+    val id: String = createDefinitionId(),
 ) {
     init {
         require(indexes.first >= 0 && indexes.last >= indexes.first) {
@@ -22,6 +21,9 @@ data class ByteGroupDefinition
         }
     }
 }
+
+@OptIn(ExperimentalUuidApi::class)
+fun createDefinitionId(): String = Uuid.random().toString()
 
 object ByteGroupDefinitionSorter : Comparator<ByteGroupDefinition> {
     override fun compare(o1: ByteGroupDefinition, o2: ByteGroupDefinition): Int {
