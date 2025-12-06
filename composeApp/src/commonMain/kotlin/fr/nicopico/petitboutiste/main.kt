@@ -1,16 +1,19 @@
 package fr.nicopico.petitboutiste
 
 import androidx.compose.foundation.background
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import fr.nicopico.petitboutiste.models.app.AppEvent
+import fr.nicopico.petitboutiste.models.app.OnAppEvent
+import fr.nicopico.petitboutiste.models.app.Reducer
 import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.ui.getScreenCharacteristics
 import fr.nicopico.petitboutiste.repository.AppStateRepository
@@ -39,6 +42,10 @@ private val reducer = Reducer(
 
 const val APP_ID = "fr.nicopico.petitboutiste"
 
+val LocalOnAppEvent = staticCompositionLocalOf<OnAppEvent> {
+    { /* no-op */ }
+}
+
 fun main() {
     FileKit.init(appId = APP_ID)
     // - Necessary for PBTheme.System
@@ -61,8 +68,8 @@ fun main() {
             derivedStateOf { appState.selectedTab }
         }
 
-        fun onEvent(event: AppEvent) {
-            appState = reducer(appState, event)
+        val onEvent: OnAppEvent = remember {
+            { event -> appState = reducer(appState, event) }
         }
 
         appTheme {
@@ -76,14 +83,15 @@ fun main() {
                 },
                 state = windowState,
                 content = {
-                    PBMenuBar(currentTab, onEvent = ::onEvent)
-                    PBTitleBar(appState, onEvent = ::onEvent)
-                    AppShortcuts(onEvent = ::onEvent) {
-                        AppContent(
-                            appState,
-                            onEvent = ::onEvent,
-                            modifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
-                        )
+                    CompositionLocalProvider(LocalOnAppEvent provides { onEvent(it) }) {
+                        PBMenuBar(currentTab)
+                        PBTitleBar(appState)
+                        AppShortcuts {
+                            AppContent(
+                                appState = appState,
+                                modifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
+                            )
+                        }
                     }
                 }
             )

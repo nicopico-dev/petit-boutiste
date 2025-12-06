@@ -26,7 +26,7 @@ private val customHexFormat = HexFormat {
         groupSeparator = "\u2009"
         bytesPerGroup = 2
 
-        bytesPerLine = 8
+        bytesPerLine = 16
     }
     number {
         removeLeadingZeros = false

@@ -41,7 +41,7 @@ class AppStateRepositorySettings(
 
     override fun restore(): AppState {
         val persisted = decodeOrNull<PersistedAppState>(key)
-            ?: return AppState().also { log("Restoring app state (default) -> $it") }
+            ?: return AppState().also { log("No persisted AppState, using default -> $it") }
 
         val tabs = persisted.tabs.mapNotNull { pt ->
             try {

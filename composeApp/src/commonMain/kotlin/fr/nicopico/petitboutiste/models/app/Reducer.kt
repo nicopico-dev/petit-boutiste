@@ -1,9 +1,7 @@
-package fr.nicopico.petitboutiste
+package fr.nicopico.petitboutiste.models.app
 
+import fr.nicopico.petitboutiste.log
 import fr.nicopico.petitboutiste.models.ByteGroupDefinitionSorter
-import fr.nicopico.petitboutiste.models.app.AppEvent
-import fr.nicopico.petitboutiste.models.app.AppState
-import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
@@ -29,7 +27,7 @@ class Reducer(
 
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
-                val newTab = TabData()
+                val newTab = event.tabData ?: TabData()
                 state.copy(tabs = state.tabs + newTab, selectedTabId = newTab.id)
             }
 

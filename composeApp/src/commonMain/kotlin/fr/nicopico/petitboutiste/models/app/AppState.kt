@@ -12,7 +12,7 @@ data class AppState(
 ) {
     init {
         require(selectedTabId in tabs.map { it.id }) {
-            "`selectedTabId` $selectedTabId must be present in `tabs` ${tabs.joinToString()}"
+            "`selectedTabId` $selectedTabId must be present in `tabs` ${tabs.joinToString { it.id.toString() }}"
         }
     }
 }

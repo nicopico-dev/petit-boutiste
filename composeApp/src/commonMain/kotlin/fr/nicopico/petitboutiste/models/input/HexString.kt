@@ -7,8 +7,10 @@ class HexString(
     override val hexString: String = rawHexString.normalizeHexString()
 
     init {
-        require(hexString.length % 2 == 0) { "HexString must have an even length" }
+        require(hexString.length % 2 == 0) { "HexString \"$hexString\" must have an even length" }
     }
+
+    val byteCount: Int = hexString.length / 2
 
     override fun isNotEmpty() = hexString.isNotEmpty()
 
