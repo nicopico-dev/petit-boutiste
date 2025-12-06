@@ -289,7 +289,7 @@ private fun prepareTabData(
                 groupDefinitions = definitions,
                 templateData = templateFile?.let {
                     TabTemplateData(
-                        templateFile = templateFile,
+                        templateFile = it,
                     )
                 }
             )
