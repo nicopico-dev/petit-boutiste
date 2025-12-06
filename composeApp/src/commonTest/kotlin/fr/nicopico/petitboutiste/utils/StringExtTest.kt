@@ -30,6 +30,18 @@ class StringExtTest {
     }
 
     @Test
+    fun `should increment an indexed text with dash separator`() {
+        // GIVEN
+        val original = "COUNTER-4"
+
+        // WHEN
+        val actual = original.incrementIndexSuffix()
+
+        // THEN
+        assertEquals("COUNTER-5", actual)
+    }
+
+    @Test
     fun `should add an index to non-indexed text`() {
         // GIVEN
         val original = "COUNTER"
