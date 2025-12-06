@@ -25,6 +25,7 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.app.AppEvent
 import fr.nicopico.petitboutiste.models.createDefinitionId
+import fr.nicopico.petitboutiste.utils.moveStart
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
@@ -84,7 +85,7 @@ fun ByteGroupDefinitions(
                                     definition = definition.copy(
                                         id = createDefinitionId(),
                                         indexes = with(definition.indexes) {
-                                            (endInclusive + 1)..(endInclusive + 1 + endInclusive - start)
+                                            moveStart(endInclusive + 1)
                                         },
                                     )
                                 )
