@@ -39,10 +39,12 @@ import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
+import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFile
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.models.ui.TabData
+import fr.nicopico.petitboutiste.models.ui.TabTemplateData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
@@ -59,6 +61,7 @@ import org.jetbrains.jewel.ui.component.TextArea
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
 import java.awt.datatransfer.StringSelection
+import java.io.File
 import kotlin.math.max
 
 @Composable
@@ -276,12 +279,19 @@ private fun prepareTabData(
 
         DataRenderer.SubTemplate -> {
             val inputData = HexString(byteItem.rawHexString)
+            val templateFile: File? = representation.getSubTemplateFile()
             val definitions: List<ByteGroupDefinition> = representation.getSubTemplateDefinitions()
+            
             TabData(
                 name = tabName,
                 inputType = InputType.HEX,
                 inputData = inputData,
                 groupDefinitions = definitions,
+                templateData = templateFile?.let {
+                    TabTemplateData(
+                        templateFile = it,
+                    )
+                }
             )
         }
 

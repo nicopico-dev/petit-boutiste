@@ -61,8 +61,12 @@ private val RenderResult.output: String
         is RenderResult.Success -> this.data
     }
 
+fun Representation.getSubTemplateFile(): File? {
+    return dataRenderer.getArgumentValue<File>(ARG_TEMPLATE_FILE_KEY, argumentValues)
+}
+
 fun Representation.getSubTemplateDefinitions(): List<ByteGroupDefinition> {
-    val templateFile: File = dataRenderer.getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)
+    val templateFile: File = getSubTemplateFile()
         ?: return emptyList()
 
     val template = runBlocking {
