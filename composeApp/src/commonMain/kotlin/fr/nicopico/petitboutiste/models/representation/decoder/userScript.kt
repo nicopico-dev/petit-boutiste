@@ -18,7 +18,7 @@ import kotlin.script.experimental.api.valueOrNull
 
 private const val ARG_USER_SCRIPT_FILE_KEY = "protoFile"
 
-val USER_SCRIPT_ARGUMENTS = listOf(
+val userScriptArguments = listOf(
     Argument(
         key = ARG_USER_SCRIPT_FILE_KEY,
         label = "script file",
