@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.ByteGroupDefinition
@@ -31,10 +30,7 @@ import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
-import org.jetbrains.jewel.foundation.theme.JewelTheme
-import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
-import org.jetbrains.jewel.ui.component.Text
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 
 @Composable
 fun TabContent(
@@ -175,25 +171,10 @@ fun TabContent(
 @Preview
 @Composable
 private fun AppScreenPreview() {
-    WrapForPreview {
-        Column {
-            val labelTextStyle = JewelTheme.createDefaultTextStyle(fontWeight = FontWeight.Bold)
-
-            // Preview with Hex input
-            Text("Hex Input Preview", style = labelTextStyle)
-            TabContent(
-                HexString(rawHexString = "33DAADDAAD"),
-                inputType = InputType.HEX
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            // Preview with Binary input
-            Text("Binary Input Preview", style = labelTextStyle)
-            TabContent(
-                HexString(rawHexString = "33DAADDAAD"),
-                inputType = InputType.BINARY
-            )
-        }
+    WrapForPreviewDesktop {
+        TabContent(
+            HexString(rawHexString = "33DAADDAAD"),
+            inputType = InputType.HEX,
+        )
     }
 }

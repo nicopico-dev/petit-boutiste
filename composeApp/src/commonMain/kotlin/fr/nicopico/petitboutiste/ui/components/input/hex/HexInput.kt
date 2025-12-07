@@ -1,19 +1,16 @@
 package fr.nicopico.petitboutiste.ui.components.input.hex
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.input.Base64String
 import fr.nicopico.petitboutiste.models.input.BinaryString
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.ui.components.input.DataInput
 import fr.nicopico.petitboutiste.utils.preview.HexStringParameterProvider
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 
 @Composable
 fun HexInput(
@@ -40,12 +37,7 @@ fun HexInput(
 @Preview
 @Composable
 private fun HexInputPreview() {
-    val parameterProvider = remember { HexStringParameterProvider() }
-    WrapForPreview {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            parameterProvider.values.forEach { hexString ->
-                HexInput(hexString, onValueChange = {})
-            }
-        }
+    WrapForPreviewDesktop(HexStringParameterProvider()) {
+        HexInput(it, onValueChange = {})
     }
 }
