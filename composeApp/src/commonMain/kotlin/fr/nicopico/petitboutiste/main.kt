@@ -22,6 +22,7 @@ import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
 import fr.nicopico.petitboutiste.ui.AppContent
 import fr.nicopico.petitboutiste.ui.AppShortcuts
+import fr.nicopico.petitboutiste.ui.PBIcons
 import fr.nicopico.petitboutiste.ui.PBMenuBar
 import fr.nicopico.petitboutiste.ui.PBTitleBar
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
@@ -29,7 +30,6 @@ import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.invoke
 import fr.nicopico.petitboutiste.ui.theme.system.followSystemTheme
 import io.github.vinceglb.filekit.FileKit
-import org.jetbrains.jewel.ui.component.painterResource
 import org.jetbrains.jewel.window.DecoratedWindow
 
 private val windowStateRepository = WindowStateRepository()
@@ -75,7 +75,7 @@ fun main() {
         appTheme {
             DecoratedWindow(
                 title = "Petit Boutiste",
-                icon = painterResource("icons/app-icon.png"),
+                icon = PBIcons.app,
                 onCloseRequest = {
                     windowStateRepository.save(windowState, screenCharacteristics)
                     appStateRepository.save(appState)
