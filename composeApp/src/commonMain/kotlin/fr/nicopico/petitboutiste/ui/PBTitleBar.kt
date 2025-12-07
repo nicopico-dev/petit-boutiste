@@ -75,6 +75,12 @@ fun DecoratedWindowScope.PBTitleBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Icon(
+                PBIcons.app,
+                contentDescription = null,
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+            )
+
             // TODO Dropdown is deprecated but ListComboBox is a bit ugly...
             Dropdown(
                 modifier = Modifier
