@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.ui.components.foundation
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +17,6 @@ import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.OutlinedButton
@@ -81,14 +81,17 @@ fun PBFileSelector(
 @Preview
 @Composable
 private fun PBFileSelectorPreview() {
-    WrapForPreview {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    WrapForPreview(modifier = Modifier.padding(8.dp)) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(8.dp),
+        ) {
             PBFileSelector(
                 onFileSelected = { }
             )
 
             PBFileSelector(
-                selection = File("/tmp/example.txt"),
+                selection = File("/path/to/example.txt"),
                 onFileSelected = { }
             )
         }
