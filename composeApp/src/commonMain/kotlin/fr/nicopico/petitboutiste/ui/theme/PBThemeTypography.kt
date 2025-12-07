@@ -25,15 +25,25 @@ private class PBThemeTypographyImpl : PBThemeTypography {
 
     override val title : TextStyle
         @Composable
-        get() = JewelTheme.createDefaultTextStyle(
-            fontWeight = FontWeight.Bold,
-            fontSize = JewelTheme.defaultTextStyle.fontSize * 1.1,
-        )
+        get() {
+            val defaultFontSize = JewelTheme.defaultTextStyle.fontSize
+            return remember(this, defaultFontSize) {
+                JewelTheme.createDefaultTextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = defaultFontSize * 1.1,
+                )
+            }
+        }
 
     override val data: TextStyle
         @Composable
-        get() = JewelTheme.createDefaultTextStyle(
-            fontFamily = FontFamily.Monospace,
-            fontSize = JewelTheme.defaultTextStyle.fontSize * 1.2,
-        )
+        get() {
+            val defaultFontSize = JewelTheme.defaultTextStyle.fontSize
+            return remember(this, defaultFontSize) {
+                JewelTheme.createDefaultTextStyle(
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = defaultFontSize * 1.2,
+                )
+            }
+        }
 }
