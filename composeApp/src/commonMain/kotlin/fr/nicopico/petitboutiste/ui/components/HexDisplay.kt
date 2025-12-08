@@ -100,7 +100,10 @@ fun HexDisplay(
                                             AppTheme.current.colors.errorColor
                                         )
 
-                                        is ByteItem.Group -> it.border(1.dp, AppTheme.current.colors.accentColor)
+                                        is ByteItem.Group -> it.border(
+                                            1.dp,
+                                            AppTheme.current.colors.accentColor
+                                        )
                                     }
                                 }
                                 .let {
