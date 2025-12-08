@@ -21,7 +21,11 @@
 
 # Protobuf (desktop target)
 # Using protobuf-java (not lite). Keep all protobuf types to avoid stripping reflective methods used by JsonFormat and descriptors.
--keep class com.google.protobuf.** { *; }
+-keep class com.google.protobuf.** { *; } # Might be too good
+
+# KTS (Scripting)
+-keep class org.jetbrains.kotlin.cli.** { *; }
+-keep class org.jetbrains.** { *; } # Might be too big
 
 # Suppress optional platform integrations not present on desktop
 -dontwarn com.google.appengine.**
