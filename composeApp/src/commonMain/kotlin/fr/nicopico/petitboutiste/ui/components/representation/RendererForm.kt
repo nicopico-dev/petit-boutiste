@@ -4,6 +4,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -12,7 +13,8 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
@@ -45,7 +47,7 @@ fun RendererForm(
                     )
                 },
                 completeArguments = argumentValues,
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
@@ -63,15 +65,25 @@ fun RendererForm(
     }
 }
 
+private object DataRenderParameterProvider : PreviewParameterProvider<DataRenderer> {
+    override val values: Sequence<DataRenderer> = sequenceOf(
+        DataRenderer.Hexadecimal,
+        DataRenderer.Text,
+        DataRenderer.Protobuf,
+        DataRenderer.SubTemplate,
+    )
+}
+
 @Preview
 @Composable
 private fun RendererFormPreview() {
-    WrapForPreview {
+    WrapForPreviewDesktop(DataRenderParameterProvider) { dataRenderer ->
         RendererForm(
-            DataRenderer.Protobuf.arguments,
+            dataRenderer.arguments,
             values = emptyArgumentValues(),
-            showSubmitButton = true,
+            showSubmitButton = dataRenderer.requireUserValidation,
             onArgumentsChange = { _, _ -> },
+            modifier = Modifier.padding(8.dp),
         )
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -17,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +35,7 @@ import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.ui.theme.typography
 import fr.nicopico.petitboutiste.utils.preview.ByteItemsParameterProvider
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.VerticallyScrollableContainer
 
@@ -95,8 +95,15 @@ fun HexDisplay(
                                 .let {
                                     when (item) {
                                         is ByteItem.Single -> it
-                                        is ByteItem.Group if item.incomplete -> it.border(1.dp, AppTheme.current.colors.errorColor)
-                                        is ByteItem.Group -> it.border(1.dp, AppTheme.current.colors.accentColor)
+                                        is ByteItem.Group if item.incomplete -> it.border(
+                                            1.dp,
+                                            AppTheme.current.colors.errorColor
+                                        )
+
+                                        is ByteItem.Group -> it.border(
+                                            1.dp,
+                                            AppTheme.current.colors.accentColor
+                                        )
                                     }
                                 }
                                 .let {
@@ -145,14 +152,10 @@ fun HexDisplay(
 @Preview
 @Composable
 private fun HexDisplayPreview() {
-    val parameterProvider = remember { ByteItemsParameterProvider() }
-    WrapForPreview {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            parameterProvider.values.forEach { byteItems ->
-                HexDisplay(
-                    byteItems = byteItems,
-                )
-            }
-        }
+    WrapForPreviewDesktop(ByteItemsParameterProvider()) { byteItems ->
+        HexDisplay(
+            byteItems = byteItems,
+            modifier = Modifier.height(50.dp),
+        )
     }
 }

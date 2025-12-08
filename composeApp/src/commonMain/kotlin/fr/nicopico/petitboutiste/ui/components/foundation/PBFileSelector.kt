@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.ui.components.foundation
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,9 +15,9 @@ import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.OutlinedButton
@@ -78,19 +79,21 @@ fun PBFileSelector(
     }
 }
 
+private object FileSelectionParameterProvider : PreviewParameterProvider<File?> {
+    override val values: Sequence<File?> = sequenceOf(
+        null,
+        File("/path/to/example.txt"),
+    )
+}
+
 @Preview
 @Composable
 private fun PBFileSelectorPreview() {
-    WrapForPreview {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            PBFileSelector(
-                onFileSelected = { }
-            )
-
-            PBFileSelector(
-                selection = File("/tmp/example.txt"),
-                onFileSelected = { }
-            )
-        }
+    WrapForPreviewDesktop(FileSelectionParameterProvider) {
+        PBFileSelector(
+            modifier = Modifier.padding(8.dp),
+            onFileSelected = {},
+            selection = it,
+        )
     }
 }

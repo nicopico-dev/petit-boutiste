@@ -18,7 +18,7 @@ import fr.nicopico.petitboutiste.models.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreview
+import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
@@ -125,12 +125,10 @@ fun ByteGroupDefinitionForm(
 @Preview
 @Composable
 private fun ByteGroupDefinitionFormPreview() {
-    WrapForPreview {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ByteGroupDefinitionForm(
-                definition = ByteGroupDefinition(2..5, "Test Group"),
-                onDefinitionSaved = {},
-            )
-        }
+    WrapForPreviewDesktop {
+        ByteGroupDefinitionForm(
+            definition = ByteGroupDefinition(2..5, "Test Group"),
+            onDefinitionSaved = {},
+        )
     }
 }
