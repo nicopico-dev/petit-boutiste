@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
@@ -17,6 +18,7 @@ import fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
+import kotlinx.coroutines.flow.catch
 
 @Composable
 fun ArgumentInput(
@@ -24,7 +26,7 @@ fun ArgumentInput(
     userValue: ArgValue?,
     onValueChanged: (ArgValue?) -> Unit,
     completeArguments: ArgumentValues,
-    modifier: Modifier = Modifier.Companion,
+    modifier: Modifier = Modifier,
 ) {
     val value: ArgValue? = remember(argument, userValue) {
         userValue ?: argument.defaultValue
@@ -60,7 +62,13 @@ fun ArgumentInput(
 
                 is ArgumentType.ChoiceType<*> -> {
                     with(argument.type) {
-                        val choices by getChoices(completeArguments).collectAsStateWithLifecycle(emptyList())
+                        val choices by getChoices(completeArguments)
+                            .catch { error ->
+                                // TODO Bubble up the error to the UI
+                                logError("Error parsing choices for $argument: $error")
+                                emit(emptyList())
+                            }
+                            .collectAsStateWithLifecycle(emptyList())
                         // TODO Display a loading indicator while waiting for data to be loaded
                         PBDropdown(
                             items = choices,
