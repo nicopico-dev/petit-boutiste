@@ -35,8 +35,7 @@ fun <T : DataString> DataInput(
             input = newText
 
             isError = (parsed == null)
-            if (parsed != null && parsed != value) {
-
+            if (parsed != null) {
                 onValueChange(parsed)
             }
         },
