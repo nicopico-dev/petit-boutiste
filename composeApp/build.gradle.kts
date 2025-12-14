@@ -1,3 +1,4 @@
+import app.cash.licensee.SpdxId
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
 
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.cash.licensee)
 }
 
 //region Version management
@@ -137,3 +139,27 @@ tasks
     .configureEach {
         dependsOn(":macosBridge:buildAndCopyMacosBridge")
     }
+
+licensee {
+    with(SpdxId) {
+        allow(Apache_20)
+        allow(MIT)
+        allow(BSD_3_Clause)
+
+        allowUrl("https://github.com/hypfvieh/dbus-java/blob/master/LICENSE") {
+            because("MIT (self-hosted)")
+        }
+
+        allowUrl("https://github.com/vinceglb/FileKit/blob/main/LICENSE") {
+            because("MIT (self-hosted)")
+        }
+
+        ignoreDependencies(
+            groupId = "com.jetbrains.intellij.platform",
+            artifactId = "icons",
+            options = {
+                because("Apache 2.0 (see https://github.com/JetBrains/intellij-community)")
+            }
+        )
+    }
+}
