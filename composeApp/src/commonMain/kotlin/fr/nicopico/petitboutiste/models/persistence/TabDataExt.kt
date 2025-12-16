@@ -15,4 +15,5 @@ fun TabData.toTemplate(
 ) = Template(
     name = name ?: fallbackName,
     definitions = groupDefinitions,
+    scratchpad = scratchpad,
 )
