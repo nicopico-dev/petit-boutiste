@@ -171,47 +171,5 @@ fun FrameWindowScope.PBMenuBar(
                 }
             )
         }
-
-        Menu("Legacy templates") {
-            Item(
-                text = "Export legacy templates to folder",
-                onClick = {
-                    scope.launch {
-                        showFileDialog(
-                            title = "Select export folder for legacy templates",
-                            operation = FileDialogOperation.ChooseFolder,
-                        ) { selectedFolder ->
-                            onEvent(AppEvent.ExportLegacyTemplatesEvent(selectedFolder))
-                        }
-                    }
-                }
-            )
-
-            Item(
-                text = "Convert legacy templates bundle to folder",
-                onClick = {
-                    scope.launch {
-                        showFileDialog(
-                            title = "Select legacy templates bundle to export",
-                            operation = FileDialogOperation.ChooseFile("json"),
-                        ) { selectedFile ->
-                            val outputFolder = selectedFile.parentFile
-                            onEvent(AppEvent.ConvertLegacyTemplatesBundleEvent(selectedFile, outputFolder))
-                        }
-                    }
-                }
-            )
-
-            Separator()
-
-            Item(
-                text = "Clear all legacy templates",
-                icon = warningIcon,
-                onClick = {
-                    // TODO Ask confirmation
-                    onEvent(AppEvent.ClearAllLegacyTemplates)
-                }
-            )
-        }
     }
 }
