@@ -1,132 +1,75 @@
 # Petit Boutiste
 
-Petit Boutiste is a desktop application for analyzing and interpreting hexadecimal and binary data. It provides a user-friendly interface for working with binary data formats, allowing you to define and visualize byte groups with different representations.
-
 ![screenshot.png](screenshot.png)
+
+## General purpose of the project
+
+Petit Boutiste is a desktop tool to explore and understand raw byte data. Paste or type data (typically in hexadecimal or binary), define meaningful byte groups, and instantly view multiple human‑readable representations such as integers, text, and other. Built with Kotlin Multiplatform and Compose Multiplatform, it focuses on a fast, convenient workflow for day‑to‑day binary inspection.
 
 ## Features
 
 - Input and display data in hexadecimal or binary format
-- Toggle between hex and binary input modes
-- Define named groups of bytes
-- Interpret byte groups as different data types:
+- Quick toggle between HEX, BIN, and BASE64 input modes
+- Define named byte groups and visualize selections
+- Render groups as:
   - Raw hexadecimal
   - Binary
-  - Integer values (with configurable endianness, unsigned or signed)
-  - Text (with configurable endianness and charset)
-  - Protobuf, with a `.desc` file compiled using a command like:
+  - Integer values (configurable endianness, signed/unsigned)
+  - Text (configurable charset and endianness)
+  - Protocol Buffers using a `.desc` file, e.g.:
     - `protoc --include_imports foo.proto --descriptor_set_out=foo.desc`
-- Save and load templates for reuse with similar data structures
-- Export and import templates for sharing
-- Multi-tab interface for working with multiple data sets simultaneously
+  - Custom rendering logic with Kotlin Script (KTS)
+  - Sub-template for repeating elements
+- Save, load, export, and import templates to reuse structures
+- Multi‑tab interface to work on several datasets at once
 
-## Getting Started
+## Development
 
 ### Prerequisites
 
 - JDK 11 or later
 
-### Running the Application
+### Build
 
-You can run the application using Gradle:
+```bash
+./gradlew build
+```
+
+### Run (desktop)
 
 ```bash
 ./gradlew :composeApp:run
 ```
 
-For faster development with hot reload:
+### Hot reload (Compose)
 
 ```bash
 ./gradlew :composeApp:composeHotRun
 ```
 
-### Building a distributable application
-
-You can build a distributable application for the OS running the build:
+### Create a distributable
 
 ```bash
 ./gradlew :composeApp:createReleaseDistributable
 ```
 
-This will create packages in the following formats depending on your OS:
-- macOS: APP
-- Windows: EXE
-- Linux: DEB/RPM
+Packages are generated for the host OS (macOS: APP, Windows: EXE, Linux: DEB/RPM).
 
-## Testing
+### Tests
 
-### Running Tests
-
-To run all tests:
+- Run all tests:
 
 ```bash
 ./gradlew test
 ```
 
-To run a specific test:
+- Run a specific test (example):
 
 ```bash
 ./gradlew test --tests "fr.nicopico.petitboutiste.models.HexStringTest"
 ```
 
-### Test Structure
+Test sources follow the main package layout. Common tests are in `composeApp/src/commonTest/`; platform‑specific ones are in `composeApp/src/<platform>Test/`.
 
-- Tests are organized in the same package structure as the main code
-- Common tests are located in `composeApp/src/commonTest/`
-- Platform-specific tests are located in `composeApp/src/<platform>Test/`
-
-## Project Structure
-
-### Key Components
-
-#### Models
-
-- `DataString`: Interface for different string representations (hex, binary)
-- `HexString`: Represents a normalized hexadecimal string
-- `BinaryString`: Represents a normalized binary string (sequence of 0s and 1s)
-- `ByteItem`: Sealed class representing either a single byte or a group of bytes
-  - `ByteItem.Single`: Represents a single byte (two hex characters)
-  - `ByteItem.Group`: Represents a named group of bytes
-- `ByteGroupDefinition`: Defines a group of bytes with a name and representation format
-- `RepresentationFormat`: Defines how a byte group should be interpreted
-  - `Hexadecimal`: Raw hex representation
-  - `Integer`: Numeric interpretation with configurable endianness
-  - `Text`: Text interpretation with configurable charset and endianness
-- `InputType`: Enum defining supported input types (HEX, BINARY)
-- `TabId`: Value class representing a unique identifier for a tab
-- `TabData`: Represents the data for a single tab, including its input data, input type, and group definitions
-
-#### UI Components
-
-- `AppScreen`: Main application screen with multi-pane layout
-- `HexInput`: Component for inputting hexadecimal data
-- `BinaryInput`: Component for inputting binary data
-- `InputTypeToggle`: Component for switching between hex and binary input modes
-- `HexDisplay`: Component for displaying hexadecimal data with byte groups
-- `ByteGroupDefinitions`: Component for managing byte group definitions
-- `TemplateManagement`: Component for saving, loading, and sharing templates
-- `TabBar`: Component for managing multiple data tabs
-
-### Code Organization
-
-- `fr.nicopico.petitboutiste`
-  - `models`: Data models and business logic
-  - `repository`: Data persistence and management
-  - `ui`: User interface components
-    - `components`: Reusable UI components
-    - `infra`: Infrastructure code for UI (previews, state savers)
-
-## Development
-
-### Technology Stack
-
-- Kotlin Multiplatform
-- Compose Multiplatform for UI
-- Kotlinx Serialization for JSON serialization
-- Multiplatform Settings for preferences
-
-### Building from Source
-
-1. Clone the repository
-2. Open the project in IntelliJ IDEA or Android Studio
-3. Build and run using the Gradle tasks mentioned above
+## License
+This project is licensed under the [MPL-2.0 License](LICENSE)
