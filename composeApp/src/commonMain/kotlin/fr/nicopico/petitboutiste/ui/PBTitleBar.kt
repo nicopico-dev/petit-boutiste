@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ *  License, v. 2.0. If a copy of the MPL was not distributed with this
+ *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -258,7 +264,12 @@ private fun TemplateToolbar(
                     title = "Load template",
                     operation = FileDialogOperation.ChooseFile("json")
                 ) { selectedFile ->
-                    onEvent(CurrentTabEvent.LoadTemplateEvent(selectedFile))
+                    onEvent(
+                        CurrentTabEvent.LoadTemplateEvent(
+                            selectedFile,
+                            definitionsOnly = false,
+                        )
+                    )
                 }
             }
         },

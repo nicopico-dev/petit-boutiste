@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ *  License, v. 2.0. If a copy of the MPL was not distributed with this
+ *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.runtime.Composable
@@ -64,7 +70,12 @@ fun FrameWindowScope.PBMenuBar(
                             title = "Load template",
                             operation = FileDialogOperation.ChooseFile("json")
                         ) { selectedFile ->
-                            onEvent(CurrentTabEvent.LoadTemplateEvent(selectedFile))
+                            onEvent(
+                                CurrentTabEvent.LoadTemplateEvent(
+                                    selectedFile,
+                                    definitionsOnly = false,
+                                )
+                            )
                         }
                     }
                 }
@@ -126,7 +137,12 @@ fun FrameWindowScope.PBMenuBar(
                         // No-op
                         return@Item
                     }
-                    onEvent(CurrentTabEvent.LoadTemplateEvent(currentTab.templateData.templateFile))
+                    onEvent(
+                        CurrentTabEvent.LoadTemplateEvent(
+                            currentTab.templateData.templateFile,
+                            definitionsOnly = true,
+                        )
+                    )
                 }
             )
 
