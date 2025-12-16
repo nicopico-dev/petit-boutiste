@@ -30,7 +30,10 @@ sealed class AppEvent {
         data object ClearAllDefinitionsEvent : CurrentTabEvent()
         data class UpdateScratchpadEvent(val scratchpad: String): CurrentTabEvent()
 
-        data class LoadTemplateEvent(val templateFile: File) : CurrentTabEvent()
+        data class LoadTemplateEvent(
+            val templateFile: File,
+            val definitionsOnly: Boolean,
+        ) : CurrentTabEvent()
         data class SaveTemplateEvent(val templateFile: File, val updateExisting: Boolean) : CurrentTabEvent()
         data class AddDefinitionsFromTemplateEvent(val templateFile: File) : CurrentTabEvent()
     }

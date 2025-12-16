@@ -154,6 +154,9 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         scratchpad = event.scratchpad,
+                        templateData = templateData?.copy(
+                            definitionsHaveChanged = true
+                        )
                     )
                 }
             }
@@ -166,7 +169,10 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         groupDefinitions = template.definitions,
-                        scratchpad = template.scratchpad,
+                        scratchpad = if (event.definitionsOnly) {
+                            // Keep current scratchpad
+                            this.scratchpad
+                        } else template.scratchpad,
                         templateData = TabTemplateData(event.templateFile),
                     )
                 }

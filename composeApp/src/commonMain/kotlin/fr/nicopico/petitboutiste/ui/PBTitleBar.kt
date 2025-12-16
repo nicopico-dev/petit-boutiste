@@ -258,7 +258,12 @@ private fun TemplateToolbar(
                     title = "Load template",
                     operation = FileDialogOperation.ChooseFile("json")
                 ) { selectedFile ->
-                    onEvent(CurrentTabEvent.LoadTemplateEvent(selectedFile))
+                    onEvent(
+                        CurrentTabEvent.LoadTemplateEvent(
+                            selectedFile,
+                            definitionsOnly = false,
+                        )
+                    )
                 }
             }
         },
