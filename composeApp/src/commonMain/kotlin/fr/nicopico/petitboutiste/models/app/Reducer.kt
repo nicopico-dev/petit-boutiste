@@ -6,14 +6,12 @@ import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.models.ui.TabData
 import fr.nicopico.petitboutiste.models.ui.TabId
 import fr.nicopico.petitboutiste.models.ui.TabTemplateData
-import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import kotlinx.coroutines.runBlocking
 import kotlin.math.max
 
 class Reducer(
     private val templateManager: TemplateManager,
-    private val legacyTemplateManager: LegacyTemplateManager,
 ) {
 
     // TODO Handle Concurrent changes to the AppState
@@ -196,28 +194,6 @@ class Reducer(
             //endregion
             //endregion
 
-            //region Legacy templates
-            is AppEvent.ExportLegacyTemplatesEvent -> {
-                runBlocking {
-                    legacyTemplateManager.exportLegacyTemplates(event.exportFolder)
-                }
-                state
-            }
-
-            is AppEvent.ConvertLegacyTemplatesBundleEvent -> {
-                runBlocking {
-                    legacyTemplateManager.convertLegacyTemplates(event.bundleFile, event.exportFolder)
-                }
-                state
-            }
-
-            AppEvent.ClearAllLegacyTemplates -> {
-                runBlocking {
-                    legacyTemplateManager.deleteAllLegacyTemplates()
-                }
-                state
-            }
-            //endregion
         }.also {
             log("  -> $it")
         }

@@ -17,7 +17,6 @@ import fr.nicopico.petitboutiste.models.app.Reducer
 import fr.nicopico.petitboutiste.models.app.selectedTab
 import fr.nicopico.petitboutiste.models.ui.getScreenCharacteristics
 import fr.nicopico.petitboutiste.repository.AppStateRepository
-import fr.nicopico.petitboutiste.repository.LegacyTemplateManager
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
 import fr.nicopico.petitboutiste.ui.AppContent
@@ -37,7 +36,6 @@ private val appStateRepository = AppStateRepository()
 
 private val reducer = Reducer(
     templateManager = TemplateManager(),
-    legacyTemplateManager = LegacyTemplateManager(),
 )
 
 const val APP_ID = "fr.nicopico.petitboutiste"

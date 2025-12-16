@@ -34,8 +34,4 @@ sealed class AppEvent {
         data class SaveTemplateEvent(val templateFile: File, val updateExisting: Boolean) : CurrentTabEvent()
         data class AddDefinitionsFromTemplateEvent(val templateFile: File) : CurrentTabEvent()
     }
-
-    data class ExportLegacyTemplatesEvent(val exportFolder: File): AppEvent()
-    data class ConvertLegacyTemplatesBundleEvent(val bundleFile: File, val exportFolder: File): AppEvent()
-    data object ClearAllLegacyTemplates : AppEvent()
 }
