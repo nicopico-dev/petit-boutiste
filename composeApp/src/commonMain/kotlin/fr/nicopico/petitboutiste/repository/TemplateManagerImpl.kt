@@ -77,14 +77,18 @@ private fun Representation.updateFileArgumentPaths(
         .map { it.key }
     val updatedArgValues = argumentValues
         .mapValues { (key, value) ->
-            if (key in fileKeys) {
-                transform(value)
-            } else value
+            if (key in fileKeys) transform(value) else value
         }
 
     return copy(argumentValues = updatedArgValues)
 }
 
 private fun File.relativePath(baseDir: Path): String {
-    return absoluteFile.toPath().relativeTo(baseDir).toString()
+    val filePath = absoluteFile.toPath()
+    return try {
+        filePath.relativeTo(baseDir).toString()
+    } catch (_: IllegalArgumentException) {
+        // Fallback to absolute path when paths do not share a common root
+        filePath.toString()
+    }
 }
