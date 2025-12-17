@@ -11,7 +11,6 @@ import fr.nicopico.petitboutiste.models.ByteItem
 import fr.nicopico.petitboutiste.models.extensions.toByteArray
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
-import fr.nicopico.petitboutiste.utils.json.RepresentationSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -19,7 +18,7 @@ import kotlinx.serialization.Transient
 val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 
 @OptIn(ExperimentalSerializationApi::class)
-@Serializable(with = RepresentationSerializer::class)
+@Serializable
 data class Representation(
     val dataRenderer: DataRenderer,
     val argumentValues: ArgumentValues = emptyArgumentValues(),

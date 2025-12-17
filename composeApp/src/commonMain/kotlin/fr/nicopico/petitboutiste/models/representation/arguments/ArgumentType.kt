@@ -20,13 +20,13 @@ sealed class ArgumentType<T : Any>(
     fun matches(expectedType: KClass<*>): Boolean = type.java.isAssignableFrom(expectedType.java)
 
     data object FileType : ArgumentType<File>(File::class) {
-        override fun convertFrom(argValue: String): File = File(argValue).absoluteFile
+        override fun convertFrom(argValue: ArgValue): File = File(argValue).absoluteFile
         override fun convertTo(value: File): ArgValue = value.absolutePath
     }
 
     data object StringType : ArgumentType<String>(String::class) {
-        override fun convertFrom(argValue: String): String = argValue
-        override fun convertTo(value: String): String = value
+        override fun convertFrom(argValue: ArgValue): String = argValue
+        override fun convertTo(value: String): ArgValue = value
     }
 
     data class ChoiceType<T: Any>(
@@ -43,7 +43,7 @@ sealed class ArgumentType<T : Any>(
             choiceConverter: (T) -> ArgValue,
         ) : this(type, { flowOf(choices) }, argValueConverter, choiceConverter)
 
-        override fun convertFrom(argValue: String): T = argValueConverter(argValue)
+        override fun convertFrom(argValue: ArgValue): T = argValueConverter(argValue)
         override fun convertTo(value: T): ArgValue = choiceConverter(value)
 
         @Suppress("UNCHECKED_CAST")
