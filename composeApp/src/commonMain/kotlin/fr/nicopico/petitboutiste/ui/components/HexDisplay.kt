@@ -33,15 +33,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.extensions.name
-import fr.nicopico.petitboutiste.models.extensions.size
+import fr.nicopico.petitboutiste.models.analysis.ByteItem
+import fr.nicopico.petitboutiste.models.analysis.name
+import fr.nicopico.petitboutiste.models.analysis.size
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.ui.theme.typography
-import fr.nicopico.petitboutiste.utils.preview.ByteItemsParameterProvider
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
+import fr.nicopico.petitboutiste.utils.compose.preview.ByteItemsParameterProvider
+import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.VerticallyScrollableContainer
 

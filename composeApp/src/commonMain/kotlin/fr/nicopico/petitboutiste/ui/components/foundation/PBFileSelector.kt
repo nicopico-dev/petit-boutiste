@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
+import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.jetbrains.jewel.foundation.theme.JewelTheme

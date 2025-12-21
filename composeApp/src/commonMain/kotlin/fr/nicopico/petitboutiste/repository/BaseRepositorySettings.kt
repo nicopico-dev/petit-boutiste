@@ -7,7 +7,7 @@
 package fr.nicopico.petitboutiste.repository
 
 import com.russhwolf.settings.Settings
-import fr.nicopico.petitboutiste.logError
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 

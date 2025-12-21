@@ -1,8 +1,7 @@
 package fr.nicopico.petitboutiste.models.input
 
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.analysis.ByteItem
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

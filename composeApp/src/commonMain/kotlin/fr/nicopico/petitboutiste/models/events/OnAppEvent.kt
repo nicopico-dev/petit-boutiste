@@ -4,6 +4,6 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.app
+package fr.nicopico.petitboutiste.models.events
 
 typealias OnAppEvent = (AppEvent) -> Unit

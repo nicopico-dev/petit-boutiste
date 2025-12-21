@@ -4,15 +4,12 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.app
+package fr.nicopico.petitboutiste.models.events
 
-import fr.nicopico.petitboutiste.log
-import fr.nicopico.petitboutiste.models.ByteGroupDefinitionSorter
+import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
-import fr.nicopico.petitboutiste.models.ui.TabData
-import fr.nicopico.petitboutiste.models.ui.TabId
-import fr.nicopico.petitboutiste.models.ui.TabTemplateData
 import fr.nicopico.petitboutiste.repository.TemplateManager
+import fr.nicopico.petitboutiste.utils.log
 import kotlinx.coroutines.runBlocking
 import kotlin.math.max
 

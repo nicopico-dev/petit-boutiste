@@ -1,6 +1,6 @@
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.analysis.ByteItem
 import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
 import kotlin.test.BeforeTest
 import kotlin.test.Test

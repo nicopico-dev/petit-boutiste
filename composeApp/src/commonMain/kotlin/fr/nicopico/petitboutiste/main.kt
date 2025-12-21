@@ -18,10 +18,10 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import fr.nicopico.petitboutiste.models.app.OnAppEvent
-import fr.nicopico.petitboutiste.models.app.Reducer
-import fr.nicopico.petitboutiste.models.app.selectedTab
-import fr.nicopico.petitboutiste.models.ui.getScreenCharacteristics
+import fr.nicopico.petitboutiste.models.events.OnAppEvent
+import fr.nicopico.petitboutiste.models.events.Reducer
+import fr.nicopico.petitboutiste.models.events.selectedTab
+import fr.nicopico.petitboutiste.models.persistence.getScreenCharacteristics
 import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository

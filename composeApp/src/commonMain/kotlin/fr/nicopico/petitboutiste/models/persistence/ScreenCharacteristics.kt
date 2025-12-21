@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.ui
+package fr.nicopico.petitboutiste.models.persistence
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity

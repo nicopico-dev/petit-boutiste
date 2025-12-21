@@ -21,22 +21,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.app.AppEvent.CurrentTabEvent
-import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.analysis.ByteItem
+import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
+import fr.nicopico.petitboutiste.models.events.InputType
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.input.toByteItems
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
-import fr.nicopico.petitboutiste.models.ui.InputType
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
+import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 
 @Composable
 fun TabContent(

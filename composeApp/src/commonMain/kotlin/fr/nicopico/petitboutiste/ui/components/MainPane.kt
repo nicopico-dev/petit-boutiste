@@ -18,10 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.models.analysis.ByteItem
+import fr.nicopico.petitboutiste.models.events.InputType
 import fr.nicopico.petitboutiste.models.input.DataString
-import fr.nicopico.petitboutiste.models.ui.InputType
+import fr.nicopico.petitboutiste.models.input.toByteItems
 import fr.nicopico.petitboutiste.ui.components.input.InputTypeToggle
 import fr.nicopico.petitboutiste.ui.components.input.base64.Base64Input
 import fr.nicopico.petitboutiste.ui.components.input.bin.BinaryInput

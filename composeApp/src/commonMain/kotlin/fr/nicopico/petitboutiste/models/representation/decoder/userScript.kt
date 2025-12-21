@@ -6,14 +6,14 @@
 
 package fr.nicopico.petitboutiste.models.representation.decoder
 
-import fr.nicopico.petitboutiste.log
-import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.scripting.PetitBoutisteApi
 import fr.nicopico.petitboutiste.scripting.ScriptHost
+import fr.nicopico.petitboutiste.utils.log
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import kotlin.script.experimental.api.ResultValue

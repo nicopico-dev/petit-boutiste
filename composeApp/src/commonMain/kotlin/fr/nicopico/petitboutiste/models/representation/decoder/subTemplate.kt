@@ -6,10 +6,10 @@
 
 package fr.nicopico.petitboutiste.models.representation.decoder
 
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.extensions.toByteItems
+import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.analysis.ByteItem
 import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.input.toByteItems
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.RenderResult

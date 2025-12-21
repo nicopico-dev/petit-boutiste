@@ -4,10 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.extensions
-
-import fr.nicopico.petitboutiste.models.input.BinaryString
-import fr.nicopico.petitboutiste.models.input.HexString
+package fr.nicopico.petitboutiste.models.input
 
 /**
  * Convert HexString to BinaryString

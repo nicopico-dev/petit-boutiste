@@ -8,18 +8,18 @@ package fr.nicopico.petitboutiste.repository
 
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
-import fr.nicopico.petitboutiste.log
-import fr.nicopico.petitboutiste.logError
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.app.AppState
+import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.events.AppState
+import fr.nicopico.petitboutiste.models.events.InputType
+import fr.nicopico.petitboutiste.models.events.TabData
+import fr.nicopico.petitboutiste.models.events.TabId
+import fr.nicopico.petitboutiste.models.events.TabTemplateData
 import fr.nicopico.petitboutiste.models.input.Base64String
 import fr.nicopico.petitboutiste.models.input.BinaryString
 import fr.nicopico.petitboutiste.models.input.HexString
-import fr.nicopico.petitboutiste.models.ui.InputType
-import fr.nicopico.petitboutiste.models.ui.TabData
-import fr.nicopico.petitboutiste.models.ui.TabId
-import fr.nicopico.petitboutiste.models.ui.TabTemplateData
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
+import fr.nicopico.petitboutiste.utils.log
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File

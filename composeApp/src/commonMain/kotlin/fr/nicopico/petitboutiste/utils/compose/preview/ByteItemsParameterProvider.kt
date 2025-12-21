@@ -4,9 +4,9 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.utils.preview
+package fr.nicopico.petitboutiste.utils.compose.preview
 
-import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.analysis.ByteItem
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 @Suppress("DEPRECATION")

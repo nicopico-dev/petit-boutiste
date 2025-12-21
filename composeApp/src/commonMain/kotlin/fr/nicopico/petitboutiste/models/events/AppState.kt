@@ -4,11 +4,9 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.app
+package fr.nicopico.petitboutiste.models.events
 
 import fr.nicopico.petitboutiste.models.input.HexString
-import fr.nicopico.petitboutiste.models.ui.TabData
-import fr.nicopico.petitboutiste.models.ui.TabId
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 
 data class AppState(

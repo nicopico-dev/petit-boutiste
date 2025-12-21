@@ -14,8 +14,8 @@ import fr.nicopico.petitboutiste.models.input.BinaryString
 import fr.nicopico.petitboutiste.models.input.DataString
 import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.ui.components.input.DataInput
-import fr.nicopico.petitboutiste.utils.preview.BinaryStringParameterProvider
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
+import fr.nicopico.petitboutiste.utils.compose.preview.BinaryStringParameterProvider
+import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 
 @Composable
 fun BinaryInput(

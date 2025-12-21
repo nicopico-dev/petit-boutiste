@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste
+package fr.nicopico.petitboutiste.utils
 
 import fr.nicopico.macos.MacosBridge
 import java.time.LocalDateTime
