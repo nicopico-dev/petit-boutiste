@@ -6,14 +6,26 @@
 
 package fr.nicopico.petitboutiste.calculator
 
-fun compute(formula: String): Int? {
-    val tokens = tokenize(formula) ?: return null
+fun compute(
+    formula: String,
+    variables: Map<String, Int> = emptyMap(),
+): Int? {
+    val resolvedFormula = resolveFormula(formula, variables)
+    val tokens = tokenize(resolvedFormula) ?: return null
     return try {
         val parser = Parser(tokens)
         parser.parseExpression()
     } catch (_: Exception) {
         null
     }
+}
+
+fun resolveFormula(formula: String, variables: Map<String, Int>): String {
+    var updated = formula
+    variables.forEach { (key, value) ->
+        updated = updated.replace(oldValue = "[[$key]]", newValue = value.toString(), ignoreCase = false)
+    }
+    return updated
 }
 
 private fun tokenize(formula: String): List<String>? {
