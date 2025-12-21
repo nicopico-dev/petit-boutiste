@@ -40,6 +40,28 @@ class CalculatorTest {
     }
 
     @Test
+    fun `should replace variables by their values`() {
+        assertEquals(
+            3,
+            compute(
+                "1 + [[LENGTH]]",
+                mapOf("LENGTH" to 2)
+            )
+        )
+        assertEquals(
+            5,
+            compute(
+                "[[A]] + [[B]]",
+                mapOf(
+                    "A" to 2,
+                    "B" to 3,
+
+                )
+            )
+        )
+    }
+
+    @Test
     fun `should ignore invalid formulas`() {
         assertNull(compute("1 + 2a"))
         assertNull(compute("test"))

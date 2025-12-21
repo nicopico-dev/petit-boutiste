@@ -31,9 +31,8 @@ import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
-import fr.nicopico.petitboutiste.utils.compute
 import fr.nicopico.petitboutiste.ui.components.representation.ByteGroupRepresentationForm
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
+import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
