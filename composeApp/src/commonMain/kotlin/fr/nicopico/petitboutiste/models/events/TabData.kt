@@ -6,9 +6,9 @@
 
 package fr.nicopico.petitboutiste.models.events
 
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.input.DataString
-import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import java.io.File
 import java.util.UUID
 

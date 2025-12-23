@@ -6,8 +6,8 @@
 
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.models.analysis.ByteItem
-import fr.nicopico.petitboutiste.models.analysis.toByteArray
+import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.toByteArray
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.utils.logError

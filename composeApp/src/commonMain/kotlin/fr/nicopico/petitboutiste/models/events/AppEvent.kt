@@ -6,8 +6,8 @@
 
 package fr.nicopico.petitboutiste.models.events
 
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import java.io.File
 

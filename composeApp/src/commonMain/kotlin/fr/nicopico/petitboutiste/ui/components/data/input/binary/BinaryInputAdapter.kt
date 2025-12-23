@@ -4,10 +4,10 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components.input.bin
+package fr.nicopico.petitboutiste.ui.components.data.input.binary
 
-import fr.nicopico.petitboutiste.models.input.BinaryString
-import fr.nicopico.petitboutiste.ui.components.input.DataInputAdapter
+import fr.nicopico.petitboutiste.models.data.BinaryString
+import fr.nicopico.petitboutiste.ui.components.data.input.DataInputAdapter
 
 object BinaryInputAdapter : DataInputAdapter<BinaryString> {
 

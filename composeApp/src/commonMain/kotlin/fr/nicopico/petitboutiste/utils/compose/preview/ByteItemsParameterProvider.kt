@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.utils.compose.preview
 
-import fr.nicopico.petitboutiste.models.analysis.ByteItem
+import fr.nicopico.petitboutiste.models.definition.ByteItem
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 @Suppress("DEPRECATION")

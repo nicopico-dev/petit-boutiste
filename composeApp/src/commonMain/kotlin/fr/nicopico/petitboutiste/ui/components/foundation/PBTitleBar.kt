@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui
+package fr.nicopico.petitboutiste.ui.components.foundation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +38,7 @@ import fr.nicopico.petitboutiste.models.events.TabData
 import fr.nicopico.petitboutiste.models.events.selectedTab
 import fr.nicopico.petitboutiste.ui.dialog.RenameTabDialog
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.PBIcons
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation

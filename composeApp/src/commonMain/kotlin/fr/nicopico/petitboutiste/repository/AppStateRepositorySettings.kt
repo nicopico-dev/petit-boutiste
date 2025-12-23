@@ -8,15 +8,15 @@ package fr.nicopico.petitboutiste.repository
 
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.data.Base64String
+import fr.nicopico.petitboutiste.models.data.BinaryString
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.events.AppState
 import fr.nicopico.petitboutiste.models.events.InputType
 import fr.nicopico.petitboutiste.models.events.TabData
 import fr.nicopico.petitboutiste.models.events.TabId
 import fr.nicopico.petitboutiste.models.events.TabTemplateData
-import fr.nicopico.petitboutiste.models.input.Base64String
-import fr.nicopico.petitboutiste.models.input.BinaryString
-import fr.nicopico.petitboutiste.models.input.HexString
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.utils.log
 import fr.nicopico.petitboutiste.utils.logError

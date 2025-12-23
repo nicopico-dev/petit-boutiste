@@ -4,10 +4,10 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components.input.hex
+package fr.nicopico.petitboutiste.ui.components.data.input.hexadecimal
 
-import fr.nicopico.petitboutiste.models.input.HexString
-import fr.nicopico.petitboutiste.ui.components.input.DataInputAdapter
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.ui.components.data.input.DataInputAdapter
 
 object HexInputAdapter : DataInputAdapter<HexString> {
 

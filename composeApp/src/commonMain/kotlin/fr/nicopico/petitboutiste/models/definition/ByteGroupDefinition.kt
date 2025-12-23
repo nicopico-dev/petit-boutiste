@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.analysis
+package fr.nicopico.petitboutiste.models.definition
 
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.Representation

@@ -27,10 +27,10 @@ import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
 import fr.nicopico.petitboutiste.ui.AppContent
 import fr.nicopico.petitboutiste.ui.AppShortcuts
-import fr.nicopico.petitboutiste.ui.PBIcons
-import fr.nicopico.petitboutiste.ui.PBMenuBar
-import fr.nicopico.petitboutiste.ui.PBTitleBar
+import fr.nicopico.petitboutiste.ui.components.foundation.PBMenuBar
+import fr.nicopico.petitboutiste.ui.components.foundation.PBTitleBar
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.PBIcons
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.invoke
 import fr.nicopico.petitboutiste.ui.theme.system.followSystemTheme

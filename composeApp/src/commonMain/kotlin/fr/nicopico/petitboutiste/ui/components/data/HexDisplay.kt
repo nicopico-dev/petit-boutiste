@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components
+package fr.nicopico.petitboutiste.ui.components.data
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -33,9 +33,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.nicopico.petitboutiste.models.analysis.ByteItem
-import fr.nicopico.petitboutiste.models.analysis.name
-import fr.nicopico.petitboutiste.models.analysis.size
+import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.name
+import fr.nicopico.petitboutiste.models.definition.size
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles

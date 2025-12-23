@@ -4,9 +4,9 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components.input
+package fr.nicopico.petitboutiste.ui.components.data.input
 
-import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.data.DataString
 
 interface DataInputAdapter<T: DataString> {
     /**

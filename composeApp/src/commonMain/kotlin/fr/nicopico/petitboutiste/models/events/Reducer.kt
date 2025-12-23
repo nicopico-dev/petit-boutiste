@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.events
 
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinitionSorter
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.utils.log

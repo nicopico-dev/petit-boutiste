@@ -1,6 +1,6 @@
 package fr.nicopico.petitboutiste.models
 
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import kotlinx.serialization.json.Json
 import kotlin.test.Test

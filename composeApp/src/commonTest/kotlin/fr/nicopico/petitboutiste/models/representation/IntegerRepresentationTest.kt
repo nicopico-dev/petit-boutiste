@@ -1,6 +1,6 @@
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.models.analysis.ByteItem
+import fr.nicopico.petitboutiste.models.definition.ByteItem
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

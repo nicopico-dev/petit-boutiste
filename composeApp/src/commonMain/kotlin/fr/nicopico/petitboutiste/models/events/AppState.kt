@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.events
 
-import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 
 data class AppState(

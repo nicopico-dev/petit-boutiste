@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components
+package fr.nicopico.petitboutiste.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
@@ -21,13 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.analysis.ByteItem
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.data.toByteItems
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.events.InputType
-import fr.nicopico.petitboutiste.models.input.DataString
-import fr.nicopico.petitboutiste.models.input.HexString
-import fr.nicopico.petitboutiste.models.input.toByteItems
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions

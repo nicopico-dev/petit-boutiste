@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui
+package fr.nicopico.petitboutiste.ui.components.foundation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components.input
+package fr.nicopico.petitboutiste.ui.components.data.input
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,7 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.typography

@@ -4,10 +4,10 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.input
+package fr.nicopico.petitboutiste.models.data
 
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.analysis.ByteItem
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteItem
 import kotlin.math.min
 
 fun DataString.toByteItems(

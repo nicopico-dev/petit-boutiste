@@ -4,10 +4,10 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components.input.base64
+package fr.nicopico.petitboutiste.ui.components.data.input.base64
 
-import fr.nicopico.petitboutiste.models.input.Base64String
-import fr.nicopico.petitboutiste.ui.components.input.DataInputAdapter
+import fr.nicopico.petitboutiste.models.data.Base64String
+import fr.nicopico.petitboutiste.ui.components.data.input.DataInputAdapter
 
 object Base64InputAdapter : DataInputAdapter<Base64String> {
 

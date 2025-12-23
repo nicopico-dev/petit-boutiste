@@ -20,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField

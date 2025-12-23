@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.input
+package fr.nicopico.petitboutiste.models.data
 
 import kotlin.io.encoding.Base64
 

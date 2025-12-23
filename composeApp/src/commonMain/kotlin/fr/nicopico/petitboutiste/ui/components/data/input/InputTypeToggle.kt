@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components.input
+package fr.nicopico.petitboutiste.ui.components.data.input
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

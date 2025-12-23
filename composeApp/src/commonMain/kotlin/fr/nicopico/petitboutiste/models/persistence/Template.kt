@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.persistence
 
-import fr.nicopico.petitboutiste.models.analysis.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
 

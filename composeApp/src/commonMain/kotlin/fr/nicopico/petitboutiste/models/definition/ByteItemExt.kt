@@ -4,10 +4,10 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.analysis
+package fr.nicopico.petitboutiste.models.definition
 
-import fr.nicopico.petitboutiste.models.analysis.ByteItem.Group
-import fr.nicopico.petitboutiste.models.analysis.ByteItem.Single
+import fr.nicopico.petitboutiste.models.definition.ByteItem.Group
+import fr.nicopico.petitboutiste.models.definition.ByteItem.Single
 
 val ByteItem.name: String?
     get() = when (this) {

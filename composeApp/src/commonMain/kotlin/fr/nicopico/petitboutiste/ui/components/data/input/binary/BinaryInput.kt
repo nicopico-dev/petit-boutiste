@@ -4,16 +4,16 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.ui.components.input.bin
+package fr.nicopico.petitboutiste.ui.components.data.input.binary
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import fr.nicopico.petitboutiste.models.input.Base64String
-import fr.nicopico.petitboutiste.models.input.BinaryString
-import fr.nicopico.petitboutiste.models.input.DataString
-import fr.nicopico.petitboutiste.models.input.HexString
-import fr.nicopico.petitboutiste.ui.components.input.DataInput
+import fr.nicopico.petitboutiste.models.data.Base64String
+import fr.nicopico.petitboutiste.models.data.BinaryString
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.ui.components.data.input.DataInput
 import fr.nicopico.petitboutiste.utils.compose.preview.BinaryStringParameterProvider
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 

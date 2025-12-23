@@ -4,9 +4,9 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.analysis
+package fr.nicopico.petitboutiste.models.definition
 
-import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.representation.Representation
 
 private val BYTE_VALUE_REGEX = Regex("[a-fA-F0-9]{2}")

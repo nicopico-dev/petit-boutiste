@@ -6,8 +6,8 @@
 
 package fr.nicopico.petitboutiste.utils.compose.preview
 
-import fr.nicopico.petitboutiste.models.input.BinaryString
-import fr.nicopico.petitboutiste.models.input.DataString
+import fr.nicopico.petitboutiste.models.data.BinaryString
+import fr.nicopico.petitboutiste.models.data.DataString
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 class BinaryStringParameterProvider(
