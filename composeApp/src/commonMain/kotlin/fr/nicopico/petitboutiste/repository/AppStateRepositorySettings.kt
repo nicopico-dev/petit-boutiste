@@ -12,11 +12,11 @@ import fr.nicopico.petitboutiste.models.data.Base64String
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.events.AppState
-import fr.nicopico.petitboutiste.models.events.InputType
-import fr.nicopico.petitboutiste.models.events.TabData
-import fr.nicopico.petitboutiste.models.events.TabId
-import fr.nicopico.petitboutiste.models.events.TabTemplateData
+import fr.nicopico.petitboutiste.state.AppState
+import fr.nicopico.petitboutiste.state.InputType
+import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.state.TabId
+import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.utils.log
 import fr.nicopico.petitboutiste.utils.logError

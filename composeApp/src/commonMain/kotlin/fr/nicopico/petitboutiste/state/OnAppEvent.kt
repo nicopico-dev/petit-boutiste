@@ -4,13 +4,6 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.events
+package fr.nicopico.petitboutiste.state
 
-/**
- * Enum representing the different types of input supported by the application.
- */
-enum class InputType {
-    HEX,
-    BINARY,
-    BASE64,
-}
+typealias OnAppEvent = (AppEvent) -> Unit

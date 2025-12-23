@@ -14,9 +14,9 @@ import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.models.events.AppEvent
-import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
-import fr.nicopico.petitboutiste.models.events.TabData
+import fr.nicopico.petitboutiste.state.AppEvent
+import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
+import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import kotlinx.coroutines.launch

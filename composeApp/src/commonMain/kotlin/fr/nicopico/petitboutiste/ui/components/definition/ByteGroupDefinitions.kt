@@ -30,7 +30,7 @@ import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
-import fr.nicopico.petitboutiste.models.events.AppEvent
+import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.moveStart
 import org.jetbrains.jewel.foundation.theme.JewelTheme

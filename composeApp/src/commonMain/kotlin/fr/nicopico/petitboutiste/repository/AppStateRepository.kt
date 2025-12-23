@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.repository
 
-import fr.nicopico.petitboutiste.models.events.AppState
+import fr.nicopico.petitboutiste.state.AppState
 
 interface AppStateRepository {
 

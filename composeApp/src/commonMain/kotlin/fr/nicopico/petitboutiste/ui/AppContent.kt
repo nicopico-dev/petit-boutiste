@@ -16,7 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.models.events.AppState
+import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 
 @Composable

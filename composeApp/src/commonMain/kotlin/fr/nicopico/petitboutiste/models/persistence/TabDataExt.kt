@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.persistence
 
-import fr.nicopico.petitboutiste.models.events.TabData
+import fr.nicopico.petitboutiste.state.TabData
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
