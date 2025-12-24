@@ -6,53 +6,24 @@
 
 package fr.nicopico.petitboutiste.ui
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.state.AppState
-import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
+import fr.nicopico.petitboutiste.state.TabData
 
 @Composable
 fun AppContent(
-    appState: AppState,
+    tabData: TabData,
     modifier: Modifier = Modifier,
 ) {
-    val selectedTab by remember(appState) {
-        derivedStateOf {
-            appState.tabs.first {
-                it.id == appState.selectedTabId
-            }
-        }
-    }
-
     Column(modifier = modifier.fillMaxSize()) {
         // Main app screen with the selected tab's data
         TabContent(
-            inputData = selectedTab.inputData,
-            definitions = selectedTab.groupDefinitions,
-            inputType = selectedTab.inputType,
-            scratchpad = selectedTab.scratchpad,
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun AppContentPreview() {
-    WrapForPreviewDesktop {
-        AppContent(
-            AppState(),
-            modifier = Modifier.size(
-                width = 400.dp,
-                height = 300.dp
-            )
+            inputData = tabData.inputData,
+            definitions = tabData.groupDefinitions,
+            inputType = tabData.inputType,
+            scratchpad = tabData.scratchpad,
         )
     }
 }

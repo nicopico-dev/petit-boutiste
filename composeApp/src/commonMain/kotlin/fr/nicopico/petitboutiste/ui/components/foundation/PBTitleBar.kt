@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,9 +32,8 @@ import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.state.AppEvent.SwitchAppThemeEvent
-import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.selectedTab
+import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.ui.dialog.RenameTabDialog
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.PBIcons
@@ -63,15 +61,10 @@ private const val CLOSE_TAB_DESCRIPTION = "Close tab"
 @OptIn(ExperimentalFoundationApi::class, ExperimentalJewelApi::class)
 @Composable
 fun DecoratedWindowScope.PBTitleBar(
-    appState: AppState,
+    tabsState: TabsState,
+    appTheme: PBTheme,
     modifier: Modifier = Modifier,
 ) {
-    val selectedTab by remember(appState) {
-        derivedStateOf { appState.selectedTab }
-    }
-    val selectedTabIndex by remember(appState, selectedTab) {
-        derivedStateOf { appState.tabs.indexOf(selectedTab) }
-    }
     val onEvent = LocalOnAppEvent.current
 
     TitleBar(
@@ -95,9 +88,9 @@ fun DecoratedWindowScope.PBTitleBar(
                     .height(50.dp)
                     .widthIn(min = 150.dp),
                 menuContent = {
-                    appState.tabs.forEachIndexed { index, tabData ->
+                    tabsState.tabs.forEachIndexed { index, tabData ->
                         selectableItem(
-                            selected = tabData.id == appState.selectedTabId,
+                            selected = tabData.id == tabsState.selectedTabId,
                             onClick = { onEvent(AppEvent.SelectTabEvent(tabData.id)) },
                             content = {
                                 Row(
@@ -111,7 +104,7 @@ fun DecoratedWindowScope.PBTitleBar(
                                         fullChangeIndicator = true
                                     )
 
-                                    if (appState.tabs.size > 1) {
+                                    if (tabsState.tabs.size > 1) {
                                         Spacer(Modifier.width(16.dp))
                                         IconButton(
                                             content = {
@@ -142,14 +135,14 @@ fun DecoratedWindowScope.PBTitleBar(
                 },
                 content = {
                     TabItem(
-                        selectedTab,
-                        tabNum = selectedTabIndex + 1,
+                        tabsState.selectedTab,
+                        tabNum = tabsState.selectedTabIndex + 1,
                         Modifier.padding(end = 16.dp),
                     )
                 },
             )
 
-            TabToolbar(tabData = selectedTab)
+            TabToolbar(tabData = tabsState.selectedTab)
 
             Divider(
                 orientation = Orientation.Vertical,
@@ -159,11 +152,11 @@ fun DecoratedWindowScope.PBTitleBar(
                     .padding(horizontal = 4.dp),
             )
 
-            TemplateToolbar(tabData = selectedTab)
+            TemplateToolbar(tabData = tabsState.selectedTab)
         }
 
         SwitchThemeButton(
-            theme = appState.appTheme,
+            theme = appTheme,
             onThemeSelected = { theme ->
                 onEvent(SwitchAppThemeEvent(theme))
             },

@@ -6,49 +6,11 @@
 
 package fr.nicopico.petitboutiste
 
-import androidx.compose.foundation.background
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import fr.nicopico.petitboutiste.models.persistence.getScreenCharacteristics
-import fr.nicopico.petitboutiste.repository.AppStateRepository
-import fr.nicopico.petitboutiste.repository.TemplateManager
-import fr.nicopico.petitboutiste.repository.WindowStateRepository
-import fr.nicopico.petitboutiste.state.OnAppEvent
-import fr.nicopico.petitboutiste.state.Reducer
-import fr.nicopico.petitboutiste.state.selectedTab
-import fr.nicopico.petitboutiste.ui.AppContent
-import fr.nicopico.petitboutiste.ui.AppShortcuts
-import fr.nicopico.petitboutiste.ui.components.foundation.PBMenuBar
-import fr.nicopico.petitboutiste.ui.components.foundation.PBTitleBar
-import fr.nicopico.petitboutiste.ui.theme.AppTheme
-import fr.nicopico.petitboutiste.ui.theme.PBIcons
-import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.ui.theme.invoke
 import fr.nicopico.petitboutiste.ui.theme.system.followSystemTheme
 import io.github.vinceglb.filekit.FileKit
-import org.jetbrains.jewel.window.DecoratedWindow
-
-private val windowStateRepository = WindowStateRepository()
-private val appStateRepository = AppStateRepository()
-
-private val reducer = Reducer(
-    templateManager = TemplateManager(),
-)
 
 const val APP_ID = "fr.nicopico.petitboutiste"
-
-val LocalOnAppEvent = staticCompositionLocalOf<OnAppEvent> {
-    { /* no-op */ }
-}
 
 fun main() {
     FileKit.init(appId = APP_ID)
@@ -58,47 +20,8 @@ fun main() {
     followSystemTheme()
 
     application {
-        val screenCharacteristics = getScreenCharacteristics()
-        val windowState = rememberSaveable {
-            windowStateRepository.restore(screenCharacteristics) ?: WindowState()
-        }
-        var appState by rememberSaveable {
-            mutableStateOf(appStateRepository.restore())
-        }
-        val appTheme by remember(appState) {
-            derivedStateOf { appState.appTheme }
-        }
-        val currentTab by remember {
-            derivedStateOf { appState.selectedTab }
-        }
-
-        val onEvent: OnAppEvent = remember {
-            { event -> appState = reducer(appState, event) }
-        }
-
-        appTheme {
-            DecoratedWindow(
-                title = "Petit Boutiste",
-                icon = PBIcons.app,
-                onCloseRequest = {
-                    windowStateRepository.save(windowState, screenCharacteristics)
-                    appStateRepository.save(appState)
-                    exitApplication()
-                },
-                state = windowState,
-                content = {
-                    CompositionLocalProvider(LocalOnAppEvent provides { onEvent(it) }) {
-                        PBMenuBar(currentTab)
-                        PBTitleBar(appState)
-                        AppShortcuts {
-                            AppContent(
-                                appState = appState,
-                                modifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
-                            )
-                        }
-                    }
-                }
-            )
-        }
+        PetitBoutiste(
+            onAppClose = { exitApplication() },
+        )
     }
 }
