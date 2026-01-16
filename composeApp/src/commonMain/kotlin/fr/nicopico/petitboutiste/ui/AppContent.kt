@@ -22,7 +22,6 @@ fun AppContent(
         TabContent(
             inputData = tabData.inputData,
             definitions = tabData.groupDefinitions,
-            inputType = tabData.inputType,
             scratchpad = tabData.scratchpad,
         )
     }

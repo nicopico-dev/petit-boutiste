@@ -46,7 +46,6 @@ import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFil
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.InputType
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
@@ -272,7 +271,6 @@ private fun prepareTabData(
             val inputData = BinaryString(rendering)
             TabData(
                 name = tabName,
-                inputType = InputType.BINARY,
                 inputData = inputData,
                 groupDefinitions = listOf(
                     ByteGroupDefinition(
@@ -290,7 +288,6 @@ private fun prepareTabData(
 
             TabData(
                 name = tabName,
-                inputType = InputType.HEX,
                 inputData = inputData,
                 groupDefinitions = definitions,
                 templateData = templateFile?.let {

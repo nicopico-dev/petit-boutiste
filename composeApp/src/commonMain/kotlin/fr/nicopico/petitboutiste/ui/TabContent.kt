@@ -29,7 +29,6 @@ import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
-import fr.nicopico.petitboutiste.state.InputType
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
@@ -42,7 +41,6 @@ import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 fun TabContent(
     inputData: DataString,
     definitions: List<ByteGroupDefinition> = emptyList(),
-    inputType: InputType = InputType.HEX,
     scratchpad: String = "",
 ) {
     val onCurrentTabEvent: (CurrentTabEvent) -> Unit = LocalOnAppEvent.current
@@ -103,7 +101,6 @@ fun TabContent(
                 },
                 selectedByteItem = selectedByteItem,
                 onByteItemSelected = { selectedByteItem = it },
-                inputType = inputType,
                 onInputTypeChanged = { inputType ->
                     onCurrentTabEvent(CurrentTabEvent.ChangeInputTypeEvent(inputType))
                 },
@@ -180,7 +177,6 @@ private fun AppScreenPreview() {
     WrapForPreviewDesktop {
         TabContent(
             HexString(rawHexString = "33DAADDAAD"),
-            inputType = InputType.HEX,
         )
     }
 }

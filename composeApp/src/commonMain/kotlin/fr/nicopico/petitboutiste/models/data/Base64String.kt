@@ -6,11 +6,14 @@
 
 package fr.nicopico.petitboutiste.models.data
 
+import fr.nicopico.petitboutiste.state.InputType
 import kotlin.io.encoding.Base64
 
 class Base64String(
     private val byteArray: ByteArray = ByteArray(0),
 ) : DataString {
+
+    override val inputType: InputType = InputType.BASE64
 
     val base64String: String = base64.encode(byteArray)
 

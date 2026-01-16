@@ -6,9 +6,13 @@
 
 package fr.nicopico.petitboutiste.models.data
 
+import fr.nicopico.petitboutiste.state.InputType
+
 class BinaryString(
     rawBinaryString: String
 ) : DataString {
+
+    override val inputType: InputType = InputType.BINARY
 
     // The original binary string (normalized)
     val binaryString: String = rawBinaryString.normalizeBinaryString()

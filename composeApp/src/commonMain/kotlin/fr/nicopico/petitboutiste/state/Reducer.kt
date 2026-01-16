@@ -6,6 +6,10 @@
 
 package fr.nicopico.petitboutiste.state
 
+import fr.nicopico.petitboutiste.models.data.Base64String
+import fr.nicopico.petitboutiste.models.data.BinaryString
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.repository.TemplateManager
@@ -104,7 +108,13 @@ class Reducer(
             //region Current Tab
             is AppEvent.CurrentTabEvent.ChangeInputTypeEvent -> {
                 state.updateCurrentTab {
-                    copy(inputType = event.type)
+                    val hexString = HexString(inputData.hexString)
+                    val updatedData: DataString = when (event.type) {
+                        InputType.HEX -> hexString
+                        InputType.BINARY -> BinaryString.fromHexString(hexString)
+                        InputType.BASE64 -> Base64String.fromHexString(hexString)
+                    }
+                    copy(inputData = updatedData)
                 }
             }
 

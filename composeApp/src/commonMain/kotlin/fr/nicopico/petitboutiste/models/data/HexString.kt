@@ -6,9 +6,13 @@
 
 package fr.nicopico.petitboutiste.models.data
 
+import fr.nicopico.petitboutiste.state.InputType
+
 class HexString(
     rawHexString: String
 ) : DataString {
+
+    override val inputType: InputType = InputType.HEX
 
     override val hexString: String = rawHexString.normalizeHexString()
 

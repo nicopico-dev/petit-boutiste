@@ -39,7 +39,6 @@ fun MainPane(
     byteItems: List<ByteItem> = inputData.toByteItems(),
     selectedByteItem: ByteItem? = null,
     onByteItemSelected: (ByteItem?) -> Unit = {},
-    inputType: InputType = InputType.HEX,
     onInputTypeChanged: (InputType) -> Unit = {},
 ) {
     Column(
@@ -54,7 +53,7 @@ fun MainPane(
             )
 
             InputTypeToggle(
-                inputType,
+                inputData.inputType,
                 onInputTypeChanged,
                 Modifier.align(Alignment.CenterEnd)
             )
@@ -66,7 +65,7 @@ fun MainPane(
         val inputModifier = Modifier
             .heightIn(max = 120.dp)
             .fillMaxWidth()
-        when (inputType) {
+        when (inputData.inputType) {
             InputType.HEX -> HexInput(
                 value = inputData,
                 onValueChange = { onInputDataChanged(it) },

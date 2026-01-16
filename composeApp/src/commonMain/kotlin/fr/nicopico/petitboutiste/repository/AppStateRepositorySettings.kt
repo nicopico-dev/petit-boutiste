@@ -101,7 +101,7 @@ private fun TabData.toPersisted(): PersistedTab = PersistedTab(
     id = id.value,
     name = name,
     inputHex = inputData.hexString,
-    inputType = inputType,
+    inputType = inputData.inputType,
     groupDefinitions = groupDefinitions,
     scratchpad = scratchpad,
     templateFilePath = templateData?.templateFile?.path,
@@ -119,7 +119,6 @@ private fun PersistedTab.toTabData(): TabData {
         id = TabId(id),
         name = name,
         inputData = data,
-        inputType = inputType,
         groupDefinitions = groupDefinitions,
         scratchpad = scratchpad,
         templateData = templateFilePath?.let { path ->

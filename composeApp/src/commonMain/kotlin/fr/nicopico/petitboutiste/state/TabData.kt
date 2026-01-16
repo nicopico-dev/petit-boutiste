@@ -29,7 +29,6 @@ data class TabData(
     val id: TabId = TabId.create(),
     val name: String? = null,
     val inputData: DataString = HexString(""),
-    val inputType: InputType = InputType.HEX,
     val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
     val scratchpad: String = "",
     val templateData: TabTemplateData? = null,
