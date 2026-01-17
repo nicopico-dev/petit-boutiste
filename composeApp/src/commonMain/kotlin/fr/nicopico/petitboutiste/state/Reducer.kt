@@ -114,21 +114,27 @@ class Reducer(
                         InputType.BINARY -> BinaryString.fromHexString(hexString)
                         InputType.BASE64 -> Base64String.fromHexString(hexString)
                     }
-                    copy(inputData = updatedData)
+                    copy(
+                        rendering = rendering.copy(inputData = updatedData),
+                    )
                 }
             }
 
             is AppEvent.CurrentTabEvent.ChangeInputDataEvent -> {
                 state.updateCurrentTab {
-                    copy(inputData = event.data)
+                    copy(
+                        rendering = rendering.copy(inputData = event.data)
+                    )
                 }
             }
 
             is AppEvent.CurrentTabEvent.AddDefinitionEvent -> {
                 state.updateCurrentTab {
                     copy(
-                        groupDefinitions = (groupDefinitions + event.definition)
-                            .sortedWith(ByteGroupDefinitionSorter),
+                        rendering = rendering.copy(
+                            groupDefinitions = (groupDefinitions + event.definition)
+                                .sortedWith(ByteGroupDefinitionSorter),
+                        ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
@@ -140,7 +146,9 @@ class Reducer(
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
                     copy(
-                        groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
+                        rendering = rendering.copy(
+                            groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
+                        ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
@@ -149,7 +157,9 @@ class Reducer(
             is AppEvent.CurrentTabEvent.DeleteDefinitionEvent -> {
                 state.updateCurrentTab {
                     copy(
-                        groupDefinitions = groupDefinitions - event.definition,
+                        rendering = rendering.copy(
+                            groupDefinitions = groupDefinitions - event.definition,
+                        ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     )
                 }
@@ -157,7 +167,12 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.ClearAllDefinitionsEvent -> {
                 state.updateCurrentTab {
-                    copy(groupDefinitions = emptyList(), templateData = null)
+                    copy(
+                        rendering = rendering.copy(
+                            groupDefinitions = emptyList(),
+                        ),
+                        templateData = null
+                    )
                 }
             }
 
@@ -179,7 +194,7 @@ class Reducer(
                 }
                 state.updateCurrentTab {
                     copy(
-                        groupDefinitions = template.definitions,
+                        rendering = rendering.copy(groupDefinitions = template.definitions),
                         scratchpad = if (event.definitionsOnly) {
                             // Keep current scratchpad
                             this.scratchpad
@@ -208,7 +223,11 @@ class Reducer(
                 }
                 state.updateCurrentTab {
                     // TODO Handle duplicate or conflicting definitions
-                    copy(groupDefinitions = groupDefinitions + template.definitions)
+                    copy(
+                        rendering = rendering.copy(
+                            groupDefinitions = groupDefinitions + template.definitions,
+                        )
+                    )
                 }
             }
             //endregion

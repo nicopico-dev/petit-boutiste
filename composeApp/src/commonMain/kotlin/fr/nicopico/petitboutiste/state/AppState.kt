@@ -10,7 +10,13 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 
 data class AppState(
-    val tabs: List<TabData> = listOf(TabData(inputData = HexString("FF00"))),
+    val tabs: List<TabData> = listOf(
+        TabData(
+            rendering = TabDataRendering(
+                inputData = HexString("FF00"),
+            )
+        )
+    ),
     val selectedTabId: TabId = tabs.first().id,
     val appTheme: PBTheme = PBTheme.System,
 ) {

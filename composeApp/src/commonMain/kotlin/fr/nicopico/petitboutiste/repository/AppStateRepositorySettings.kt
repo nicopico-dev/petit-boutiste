@@ -15,6 +15,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.InputType
 import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.state.TabDataRendering
 import fr.nicopico.petitboutiste.state.TabId
 import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
@@ -118,8 +119,10 @@ private fun PersistedTab.toTabData(): TabData {
     return TabData(
         id = TabId(id),
         name = name,
-        inputData = data,
-        groupDefinitions = groupDefinitions,
+        rendering = TabDataRendering(
+            inputData = data,
+            groupDefinitions = groupDefinitions,
+        ),
         scratchpad = scratchpad,
         templateData = templateFilePath?.let { path ->
             TabTemplateData(

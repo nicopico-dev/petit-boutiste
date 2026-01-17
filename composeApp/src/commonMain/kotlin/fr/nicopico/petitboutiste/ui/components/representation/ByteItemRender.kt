@@ -50,6 +50,7 @@ import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.state.TabDataRendering
 import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
@@ -262,12 +263,14 @@ private fun prepareTabData(
             val inputData = HexString(rendering)
             TabData(
                 name = tabName,
-                inputData = inputData,
-                groupDefinitions = listOf(
-                    ByteGroupDefinition(
-                        indexes = 0..<inputData.byteCount,
-                        representation = representation,
-                    )
+                rendering = TabDataRendering(
+                    inputData = inputData,
+                    groupDefinitions = listOf(
+                        ByteGroupDefinition(
+                            indexes = 0..<inputData.byteCount,
+                            representation = representation,
+                        )
+                    ),
                 ),
             )
         }
@@ -276,13 +279,15 @@ private fun prepareTabData(
             val inputData = BinaryString(rendering)
             TabData(
                 name = tabName,
-                inputData = inputData,
-                groupDefinitions = listOf(
-                    ByteGroupDefinition(
-                        indexes = 0..<inputData.byteCount,
-                        representation = representation,
-                    )
-                ),
+                rendering = TabDataRendering(
+                    inputData = inputData,
+                    groupDefinitions = listOf(
+                        ByteGroupDefinition(
+                            indexes = 0..<inputData.byteCount,
+                            representation = representation,
+                        )
+                    ),
+                )
             )
         }
 
@@ -293,8 +298,10 @@ private fun prepareTabData(
 
             TabData(
                 name = tabName,
-                inputData = inputData,
-                groupDefinitions = definitions,
+                rendering = TabDataRendering(
+                    inputData = inputData,
+                    groupDefinitions = definitions,
+                ),
                 templateData = templateFile?.let {
                     TabTemplateData(
                         templateFile = it,
