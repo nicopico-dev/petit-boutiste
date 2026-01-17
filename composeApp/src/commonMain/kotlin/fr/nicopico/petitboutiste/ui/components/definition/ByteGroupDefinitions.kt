@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
@@ -81,8 +82,8 @@ fun ByteGroupDefinitions(
         ) {
             items(definitions) { definition ->
                 val byteGroup = byteItems.firstOrNull {
-                    it is ByteItem.Group && it.definition == definition
-                } as? ByteItem.Group
+                    it is ByteGroup && it.definition == definition
+                } as? ByteGroup
 
                 ContextMenuArea(
                     items = {

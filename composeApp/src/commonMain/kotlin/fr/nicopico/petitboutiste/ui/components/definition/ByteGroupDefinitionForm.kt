@@ -133,7 +133,7 @@ fun ByteGroupDefinitionForm(
 private fun ByteGroupDefinitionFormPreview() {
     WrapForPreviewDesktop {
         ByteGroupDefinitionForm(
-            definition = ByteGroupDefinition(2..5, "Test Group"),
+            definition = ByteGroupDefinition(2..5, "Test ByteGroup"),
             onDefinitionSaved = {},
         )
     }

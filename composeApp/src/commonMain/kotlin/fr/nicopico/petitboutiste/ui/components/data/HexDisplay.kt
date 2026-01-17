@@ -33,7 +33,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.definition.size
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
@@ -83,13 +85,13 @@ fun HexDisplay(
                         contentType = { it::class },
                         span = { byteItem ->
                             when (byteItem) {
-                                is ByteItem.Group -> {
+                                is ByteGroup -> {
                                     // Limit the span to the maximum number of columns per row
                                     val span = minOf(byteItem.size, maxColumnsPerRow)
                                     GridItemSpan(span)
                                 }
 
-                                is ByteItem.Single -> GridItemSpan(1)
+                                is SingleByte -> GridItemSpan(1)
                             }
                         },
                     ) { item ->
@@ -100,13 +102,13 @@ fun HexDisplay(
                                 .clickable { onByteItemClicked(item) }
                                 .let {
                                     when (item) {
-                                        is ByteItem.Single -> it
-                                        is ByteItem.Group if item.incomplete -> it.border(
+                                        is SingleByte -> it
+                                        is ByteGroup if item.incomplete -> it.border(
                                             1.dp,
                                             AppTheme.current.colors.errorColor
                                         )
 
-                                        is ByteItem.Group -> it.border(
+                                        is ByteGroup -> it.border(
                                             1.dp,
                                             AppTheme.current.colors.accentColor
                                         )

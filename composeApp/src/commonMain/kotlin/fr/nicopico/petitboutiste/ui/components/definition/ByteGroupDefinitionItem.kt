@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.renderAsString
@@ -51,7 +51,7 @@ fun ByteGroupDefinitionItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    byteGroup: ByteItem.Group? = null,
+    byteGroup: ByteGroup? = null,
     invalidDefinition: Boolean = false,
     form: Slot? = null,
     displayForm: Boolean = false,

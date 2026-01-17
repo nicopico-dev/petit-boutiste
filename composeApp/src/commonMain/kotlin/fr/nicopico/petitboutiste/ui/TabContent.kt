@@ -23,8 +23,11 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.SingleByte
+import fr.nicopico.petitboutiste.models.definition.createFullPayload
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
@@ -49,16 +52,16 @@ fun TabContent(
         mutableStateOf(null)
     }
 
-    // As ByteItem.Single do not have a definition, we use the same representation for all of them.
+    // As ByteItem.SingleByte do not have a definition, we use the same representation for all of them.
     // The same representation will be used for full-payload representation, when there is no definition.
-    // (note that it is possible to create a Group with a single byte)
+    // (note that it is possible to create a ByteGroup with a single byte)
     var noDefinitionRepresentation by remember {
         mutableStateOf(Representation(DataRenderer.Off))
     }
 
-    val fullPayload: ByteItem.Group? = remember(inputData, definitions, noDefinitionRepresentation) {
+    val fullPayload: ByteGroup? = remember(inputData, definitions, noDefinitionRepresentation) {
         if (inputData.isNotEmpty() && definitions.isEmpty()) {
-            ByteItem.Group.createFullPayload(
+            createFullPayload(
                 dataString = inputData,
                 representation = noDefinitionRepresentation,
             )
@@ -68,16 +71,16 @@ fun TabContent(
     // Ensure `selectedByteItem` is up to date
     LaunchedEffect(inputData, definitions) {
         val update = when (val selectedByteItem = selectedByteItem) {
-            is ByteItem.Single -> {
+            is SingleByte -> {
                 byteItems
-                    .filterIsInstance<ByteItem.Single>()
+                    .filterIsInstance<SingleByte>()
                     .firstOrNull {
                         it.index == selectedByteItem.index
                     }
             }
-            is ByteItem.Group -> {
+            is ByteGroup -> {
                 byteItems
-                    .filterIsInstance<ByteItem.Group>()
+                    .filterIsInstance<ByteGroup>()
                     .firstOrNull {
                         it.definition.id == selectedByteItem.definition.id
                     }
@@ -116,12 +119,12 @@ fun TabContent(
                     onDeleteDefinition = { definition ->
                         onCurrentTabEvent(CurrentTabEvent.DeleteDefinitionEvent(definition))
                     },
-                    selectedDefinition = (selectedByteItem as? ByteItem.Group)?.definition,
+                    selectedDefinition = (selectedByteItem as? ByteGroup)?.definition,
                     onDefinitionSelected = { definition ->
                         // Select the ByteGroup matching this definition
                         selectedByteItem = if (definition != null) {
                             byteItems.firstOrNull {
-                                it is ByteItem.Group && it.definition == definition
+                                it is ByteGroup && it.definition == definition
                             }
                         } else null
                     },
@@ -147,11 +150,11 @@ fun TabContent(
         tools = (selectedByteItem ?: fullPayload).optionalSlot { renderedByteItem ->
             ByteItemRender(
                 byteItem = renderedByteItem,
-                representation = if (renderedByteItem is ByteItem.Group) {
+                representation = if (renderedByteItem is ByteGroup) {
                     renderedByteItem.definition.representation
                 } else noDefinitionRepresentation,
                 onRepresentationChanged = { representation ->
-                    if (renderedByteItem is ByteItem.Group && renderedByteItem != fullPayload) {
+                    if (renderedByteItem is ByteGroup && renderedByteItem != fullPayload) {
                         val currentDefinition = renderedByteItem.definition
                         if (representation != currentDefinition.representation) {
                             val updatedDefinition = currentDefinition.copy(representation = representation)

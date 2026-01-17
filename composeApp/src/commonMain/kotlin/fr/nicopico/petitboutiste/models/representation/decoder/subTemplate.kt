@@ -8,8 +8,8 @@ package fr.nicopico.petitboutiste.models.representation.decoder
 
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.RenderResult
@@ -47,7 +47,7 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
 
     val dataString = HexString(byteArray.toHexString())
     val parsedData = dataString.toByteItems(template.definitions)
-        .filterIsInstance<ByteItem.Group>()
+        .filterIsInstance<ByteGroup>()
         .associate { group ->
             val groupName = group.name ?: "UNNAMED (${group.definition.indexes})"
             val groupValue = group.definition.representation.render(group).output

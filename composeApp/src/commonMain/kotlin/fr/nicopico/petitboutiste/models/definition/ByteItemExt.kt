@@ -6,25 +6,22 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
-import fr.nicopico.petitboutiste.models.definition.ByteItem.Group
-import fr.nicopico.petitboutiste.models.definition.ByteItem.Single
-
 val ByteItem.name: String?
     get() = when (this) {
-        is Group -> name
-        is Single -> null
+        is ByteGroup -> name
+        is SingleByte -> null
     }
 
 val ByteItem.size: Int
     get() = when (this) {
-        is Group -> bytes.size
-        is Single -> 1
+        is ByteGroup -> bytes.size
+        is SingleByte -> 1
     }
 
 val ByteItem.rawHexString: String
     get() = when (this) {
-        is Group -> bytes.joinToString(separator = "")
-        is Single -> value
+        is ByteGroup -> bytes.joinToString(separator = "")
+        is SingleByte -> value
     }
 
 fun ByteItem.toByteArray(): ByteArray {
