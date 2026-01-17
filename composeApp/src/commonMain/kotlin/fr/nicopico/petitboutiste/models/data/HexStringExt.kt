@@ -6,8 +6,10 @@
 
 package fr.nicopico.petitboutiste.models.data
 
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.min
@@ -19,7 +21,7 @@ suspend fun DataString.toByteItems(
 
     if (groupDefinitions.isEmpty()) {
         return@withContext bytes.mapIndexed { index, value ->
-            ByteItem.Single(index, value)
+            SingleByte(index, value)
         }
     }
 
@@ -36,7 +38,7 @@ suspend fun DataString.toByteItems(
     for (definition in validGroupDefinitions) {
         // Add single bytes before the current group
         while (currentIndex < definition.indexes.first) {
-            result.add(ByteItem.Single(currentIndex, bytes[currentIndex]))
+            result.add(SingleByte(currentIndex, bytes[currentIndex]))
             currentIndex++
         }
 
@@ -51,7 +53,7 @@ suspend fun DataString.toByteItems(
         // Add the group
         val groupBytes = (definition.indexes.first..endIndex).map { bytes[it] }
         result.add(
-            ByteItem.Group(
+            ByteGroup(
                 bytes = groupBytes,
                 definition = definition,
                 incomplete = endIndex < definition.indexes.last
@@ -62,7 +64,7 @@ suspend fun DataString.toByteItems(
 
     // Add remaining single bytes after the last group
     while (currentIndex < bytes.size) {
-        result.add(ByteItem.Single(currentIndex, bytes[currentIndex]))
+        result.add(SingleByte(currentIndex, bytes[currentIndex]))
         currentIndex++
     }
 

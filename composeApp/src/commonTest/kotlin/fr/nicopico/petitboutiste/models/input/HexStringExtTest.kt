@@ -2,8 +2,9 @@ package fr.nicopico.petitboutiste.models.input
 
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -32,12 +33,12 @@ class HexStringExtTest {
         // When converting to byte items
         val byteItems = hexString.toByteItems()
 
-        // Then the result is a list of ByteItem.Single objects
+        // Then the result is a list of ByteItem.SingleByte objects
         val expected = listOf(
-            ByteItem.Single(0, "1A"),
-            ByteItem.Single(1, "2B"),
-            ByteItem.Single(2, "3C"),
-            ByteItem.Single(3, "4D"),
+            SingleByte(0, "1A"),
+            SingleByte(1, "2B"),
+            SingleByte(2, "3C"),
+            SingleByte(3, "4D"),
         )
         assertEquals(expected, byteItems)
     }
@@ -50,8 +51,8 @@ class HexStringExtTest {
         // When converting to byte items
         val byteItems = hexString.toByteItems()
 
-        // Then the result is a list with a single ByteItem.Single
-        val expected = listOf(ByteItem.Single(0, "FF"))
+        // Then the result is a list with a single ByteItem.SingleByte
+        val expected = listOf(SingleByte(0, "FF"))
         assertEquals(expected, byteItems)
     }
 
@@ -66,12 +67,12 @@ class HexStringExtTest {
 
         // Then the result contains a group and ungrouped singles
         val expected = listOf(
-            ByteItem.Single(0, "1A"),
-            ByteItem.Group(
+            SingleByte(0, "1A"),
+            ByteGroup(
                 bytes = listOf("2B", "3C"),
                 definition = groupDefinition,
             ),
-            ByteItem.Single(3, "4D"),
+            SingleByte(3, "4D"),
         )
         assertContentEquals(expected, byteItems)
     }
@@ -88,16 +89,16 @@ class HexStringExtTest {
 
         // Then the result contains both groups and ungrouped singles
         val expected = listOf(
-            ByteItem.Group(
+            ByteGroup(
                 listOf("1A", "2B"),
                 group1Definition,
             ),
-            ByteItem.Single(2, "3C"),
-            ByteItem.Group(
+            SingleByte(2, "3C"),
+            ByteGroup(
                 listOf("4D", "5E"),
                 group2Definition,
             ),
-            ByteItem.Single(5, "6F")
+            SingleByte(5, "6F")
         )
         assertContentEquals(expected, byteItems)
     }
@@ -115,11 +116,11 @@ class HexStringExtTest {
 
         // Then the result contains only the first group
         val expected = listOf(
-            ByteItem.Group(
+            ByteGroup(
                 listOf("1A", "2B", "3C"),
                 group1Definition,
             ),
-            ByteItem.Single(3, "4D")
+            SingleByte(3, "4D")
         )
         assertContentEquals(expected, byteItems)
     }
@@ -139,12 +140,12 @@ class HexStringExtTest {
 
         // Then only the valid group is included
         val expected = listOf(
-            ByteItem.Single(0, "1A"),
-            ByteItem.Group(
+            SingleByte(0, "1A"),
+            ByteGroup(
                 listOf("2B", "3C"),
                 groupDefinition1
             ),
-            ByteItem.Group(
+            ByteGroup(
                 listOf("4D"),
                 groupDefinition2,
                 incomplete = true,
