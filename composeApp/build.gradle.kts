@@ -36,6 +36,7 @@ kotlin {
 
     compilerOptions {
         freeCompilerArgs.add("-Xwhen-guards")
+        freeCompilerArgs.add("-Xexplicit-backing-fields")
         optIn.add("kotlin.concurrent.atomics.ExperimentalAtomicApi")
     }
 
@@ -61,6 +62,7 @@ kotlin {
 
             implementation(libs.bundles.jewel)
 
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.multiplatform.settings)
             implementation(libs.filekit.dialogs)
@@ -77,6 +79,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
 
         desktopMain.dependencies {

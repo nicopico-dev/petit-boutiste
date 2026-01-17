@@ -8,7 +8,9 @@ package fr.nicopico.petitboutiste.state
 
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteItem
 import java.io.File
 import java.util.UUID
 
@@ -22,6 +24,7 @@ value class TabId(val value: String) {
     }
 }
 
+// TODO Extract rendering inputs to a separate object
 /**
  * Represents the data for a single tab, including its input data, input type, and group definitions
  */
@@ -32,7 +35,20 @@ data class TabData(
     val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
     val scratchpad: String = "",
     val templateData: TabTemplateData? = null,
-)
+) {
+    private var byteItems: List<ByteItem>? = null
+
+    val isRendered: Boolean
+        get() = byteItems != null
+
+    suspend fun renderByteItems(): List<ByteItem> {
+        // TODO Critical section!
+        if (byteItems == null) {
+            byteItems = inputData.toByteItems(groupDefinitions)
+        }
+        return byteItems!!
+    }
+}
 
 data class TabTemplateData(
     val templateFile: File,

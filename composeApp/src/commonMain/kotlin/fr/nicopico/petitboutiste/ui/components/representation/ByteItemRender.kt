@@ -21,10 +21,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -78,12 +80,13 @@ fun ByteItemRender(
     onRepresentationChanged: (Representation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val rendererOutput: RenderResult by remember(byteItem, representation) {
-        derivedStateOf {
-            if (representation.isReady) {
-                representation.render(byteItem)
-            } else RenderResult.None
-        }
+    var rendererOutput: RenderResult by remember {
+        mutableStateOf(RenderResult.None)
+    }
+    LaunchedEffect(byteItem, representation) {
+        rendererOutput = if (representation.isReady) {
+            representation.render(byteItem)
+        } else RenderResult.None
     }
 
     Row(

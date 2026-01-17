@@ -39,13 +39,11 @@ private val json = Json {
     prettyPrintIndent = "  "
 }
 
-fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
+suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.SubTemplate)
     val templateFile: File = getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)!!
 
-    val template = runBlocking {
-        templateManager.loadTemplate(templateFile)
-    }
+    val template = templateManager.loadTemplate(templateFile)
 
     val dataString = HexString(byteArray.toHexString())
     val parsedData = dataString.toByteItems(template.definitions)

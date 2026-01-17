@@ -2,6 +2,7 @@ package fr.nicopico.petitboutiste.models.representation
 
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,7 +17,7 @@ class BinaryRepresentationTest {
     }
 
     @Test
-    fun `Binary representation returns binary with grouped bytes, split into 4-bit groups`() {
+    fun `Binary representation returns binary with grouped bytes, split into 4-bit groups`() = runTest {
         // GIVEN
         // a ByteItem with multiple bytes
         val byteItem = ByteItem.Group(
@@ -34,7 +35,7 @@ class BinaryRepresentationTest {
     }
 
     @Test
-    fun `getRepresentation returns binary representation for a single byte`() {
+    fun `getRepresentation returns binary representation for a single byte`() = runTest {
         // GIVEN
         // a ByteItem with a single byte
         val byteItem = ByteItem.Single(0, "FF")
@@ -49,7 +50,7 @@ class BinaryRepresentationTest {
     }
 
     @Test
-    fun `getRepresentation handles zero bytes correctly`() {
+    fun `getRepresentation handles zero bytes correctly`() = runTest {
         // GIVEN
         // a ByteItem with a byte value of zero
         val byteItem = ByteItem.Single(0, "00")
