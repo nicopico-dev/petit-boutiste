@@ -9,9 +9,9 @@ package fr.nicopico.petitboutiste.utils.compose.preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
-import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 private val VERTICAL_SPACE = 8.dp
 

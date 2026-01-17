@@ -6,8 +6,8 @@
 
 package fr.nicopico.petitboutiste.utils.compose.preview
 
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 @Suppress("DEPRECATION")
 class ByteItemsParameterProvider(

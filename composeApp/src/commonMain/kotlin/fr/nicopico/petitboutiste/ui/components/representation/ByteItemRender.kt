@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -69,6 +70,7 @@ import java.awt.datatransfer.StringSelection
 import java.io.File
 import kotlin.math.max
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ByteItemRender(
     byteItem: ByteItem,

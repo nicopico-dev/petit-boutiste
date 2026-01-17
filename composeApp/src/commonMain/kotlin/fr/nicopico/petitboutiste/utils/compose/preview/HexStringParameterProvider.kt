@@ -6,9 +6,9 @@
 
 package fr.nicopico.petitboutiste.utils.compose.preview
 
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
-import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 class HexStringParameterProvider(
     override val values: Sequence<DataString> = sequenceOf(

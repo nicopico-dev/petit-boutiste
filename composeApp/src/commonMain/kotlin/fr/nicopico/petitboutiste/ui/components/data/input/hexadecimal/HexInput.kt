@@ -6,10 +6,10 @@
 
 package fr.nicopico.petitboutiste.ui.components.data.input.hexadecimal
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import fr.nicopico.petitboutiste.models.data.Base64String
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.DataString

@@ -6,9 +6,9 @@
 
 package fr.nicopico.petitboutiste.utils.compose.preview
 
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.DataString
-import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 class BinaryStringParameterProvider(
     override val values: Sequence<DataString> = sequenceOf(
