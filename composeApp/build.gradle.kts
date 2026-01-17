@@ -119,8 +119,7 @@ compose.desktop {
             packageVersion = version.toString()
             vendor = "Nicolas PICON"
 
-            // TODO Add license
-            // licenseFile = rootProject.file("LICENSE")
+            licenseFile = rootProject.file("LICENSE")
 
             modules("jdk.unsupported")
 
