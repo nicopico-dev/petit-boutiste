@@ -24,17 +24,27 @@ value class TabId(val value: String) {
     }
 }
 
-// TODO Extract rendering inputs to a separate object
 /**
  * Represents the data for a single tab, including its input data, input type, and group definitions
  */
 data class TabData(
     val id: TabId = TabId.create(),
     val name: String? = null,
-    val inputData: DataString = HexString(""),
-    val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
+    val rendering: TabDataRendering = TabDataRendering(),
     val scratchpad: String = "",
     val templateData: TabTemplateData? = null,
+) {
+    val inputData = rendering.inputData
+    val groupDefinitions = rendering.groupDefinitions
+    val isRendered: Boolean
+        get() = rendering.isRendered
+
+    suspend fun renderByteItems(): List<ByteItem> = rendering.renderByteItems()
+}
+
+data class TabDataRendering(
+    val inputData: DataString = HexString(""),
+    val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
 ) {
     private var byteItems: List<ByteItem>? = null
 
