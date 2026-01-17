@@ -28,8 +28,6 @@ class HexString(
         if (this === other) return true
         if (other !is HexString) return false
 
-        other as HexString
-
         return hexString == other.hexString
     }
 

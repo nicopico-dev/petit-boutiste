@@ -9,7 +9,6 @@ package fr.nicopico.petitboutiste.ui.components.data.input.base64
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import fr.nicopico.petitboutiste.models.data.Base64String
-import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.ui.components.data.input.DataInput
@@ -21,11 +20,12 @@ fun Base64Input(
     modifier: Modifier = Modifier,
 ) {
 
-    // TODO Convert binary and hex to base64
     val base64Value = when (value) {
         is Base64String -> value
-        is BinaryString -> Base64String()
-        is HexString -> Base64String()
+        else -> {
+            val hexString = HexString(value.hexString)
+            Base64String.fromHexString(hexString)
+        }
     }
 
     DataInput(
