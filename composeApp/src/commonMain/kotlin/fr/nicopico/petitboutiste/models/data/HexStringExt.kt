@@ -8,15 +8,19 @@ package fr.nicopico.petitboutiste.models.data
 
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.math.min
 
-fun DataString.toByteItems(
+suspend fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList()
-): List<ByteItem> {
+): List<ByteItem> = withContext(Dispatchers.Default) {
     val bytes = hexString.windowed(2, 2)
 
     if (groupDefinitions.isEmpty()) {
-        return bytes.mapIndexed { index, value -> ByteItem.Single(index, value) }
+        return@withContext bytes.mapIndexed { index, value ->
+            ByteItem.Single(index, value)
+        }
     }
 
     // Ignore definitions that are completely outside the bounds of the payload,
@@ -62,5 +66,5 @@ fun DataString.toByteItems(
         currentIndex++
     }
 
-    return result
+    return@withContext result
 }

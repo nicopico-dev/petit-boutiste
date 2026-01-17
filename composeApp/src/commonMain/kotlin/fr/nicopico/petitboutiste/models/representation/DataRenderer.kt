@@ -60,7 +60,7 @@ enum class DataRenderer(
         val hint: String? = null,
     )
 
-    operator fun invoke(byteArray: ByteArray, argumentValues: ArgumentValues): String? {
+    suspend operator fun invoke(byteArray: ByteArray, argumentValues: ArgumentValues): String? {
         return when (this) {
             Off -> ""
             Binary -> decodeBinary(byteArray)

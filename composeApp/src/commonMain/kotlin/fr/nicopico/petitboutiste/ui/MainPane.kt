@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.data.DataString
-import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.state.InputType
 import fr.nicopico.petitboutiste.ui.components.data.HexDisplay
@@ -34,9 +33,9 @@ import org.jetbrains.jewel.ui.component.Text
 @Composable
 fun MainPane(
     inputData: DataString,
+    byteItems: List<ByteItem>,
     onInputDataChanged: (DataString) -> Unit,
     modifier: Modifier = Modifier.Companion,
-    byteItems: List<ByteItem> = inputData.toByteItems(),
     selectedByteItem: ByteItem? = null,
     onByteItemSelected: (ByteItem?) -> Unit = {},
     onInputTypeChanged: (InputType) -> Unit = {},

@@ -4,6 +4,7 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -12,7 +13,7 @@ import kotlin.test.assertTrue
 class HexStringExtTest {
 
     @Test
-    fun `toByteItems converts empty hex string to empty list`() {
+    fun `toByteItems converts empty hex string to empty list`() = runTest {
         // Given an empty hex string
         val hexString = HexString("")
 
@@ -24,7 +25,7 @@ class HexStringExtTest {
     }
 
     @Test
-    fun `toByteItems converts hex string to list of single byte items`() {
+    fun `toByteItems converts hex string to list of single byte items`() = runTest {
         // Given a hex string
         val hexString = HexString("1A2B3C4D")
 
@@ -42,7 +43,7 @@ class HexStringExtTest {
     }
 
     @Test
-    fun `toByteItems handles single byte hex string`() {
+    fun `toByteItems handles single byte hex string`() = runTest {
         // Given a hex string with a single byte
         val hexString = HexString("FF")
 
@@ -55,7 +56,7 @@ class HexStringExtTest {
     }
 
     @Test
-    fun `toByteItems creates a group from a range of bytes`() {
+    fun `toByteItems creates a group from a range of bytes`() = runTest {
         // Given a hex string and a group definition
         val hexString = HexString("1A2B3C4D")
         val groupDefinition = ByteGroupDefinition(1..2, "TestGroup")
@@ -76,7 +77,7 @@ class HexStringExtTest {
     }
 
     @Test
-    fun `toByteItems creates multiple groups`() {
+    fun `toByteItems creates multiple groups`() = runTest {
         // Given a hex string and multiple group definitions
         val hexString = HexString("1A2B3C4D5E6F")
         val group1Definition = ByteGroupDefinition(0..1, "Group1")
@@ -102,7 +103,7 @@ class HexStringExtTest {
     }
 
     @Test
-    fun `toByteItems ignores overlapping groups`() {
+    fun `toByteItems ignores overlapping groups`() = runTest {
         // Given a hex string and overlapping group definitions
         val hexString = HexString("1A2B3C4D")
         val group1Definition = ByteGroupDefinition(0..2, "Group1")
@@ -124,7 +125,7 @@ class HexStringExtTest {
     }
 
     @Test
-    fun `toByteItems marks out-of-bounds definitions`() {
+    fun `toByteItems marks out-of-bounds definitions`() = runTest {
         // Given a hex string and an invalid group definition
         val hexString = HexString("1A2B3C4D")
         val groupDefinition1 = ByteGroupDefinition(1..2, "Valid (completely in bound)")
