@@ -50,7 +50,7 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
         .filterIsInstance<ByteGroup>()
         .associate { group ->
             val groupName = group.name ?: "UNNAMED (${group.definition.indexes})"
-            val groupValue = group.definition.representation.render(group).output
+            val groupValue = group.getOrComputeRendering().output
 
             groupName to groupValue
         }

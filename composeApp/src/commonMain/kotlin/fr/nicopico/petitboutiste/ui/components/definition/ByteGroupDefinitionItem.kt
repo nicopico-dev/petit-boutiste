@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.isReady
-import fr.nicopico.petitboutiste.models.representation.renderAsString
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.Slot
@@ -108,7 +108,7 @@ fun ByteGroupDefinitionItem(
                         && !definition.representation.isOff
                         && definition.representation.isReady
                     ) {
-                        definition.representation.renderAsString(byteGroup)
+                        byteGroup.getOrComputeRendering().asString()
                     } else null
                 }
 

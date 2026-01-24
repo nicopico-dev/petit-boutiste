@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.name
@@ -86,7 +87,12 @@ fun ByteItemRender(
     }
     LaunchedEffect(byteItem, representation) {
         rendererOutput = if (representation.isReady) {
-            representation.render(byteItem)
+            // Use cached rendering for ByteGroup if the representation matches its definition
+            if (byteItem is ByteGroup && representation == byteItem.definition.representation) {
+                byteItem.getOrComputeRendering()
+            } else {
+                representation.render(byteItem)
+            }
         } else RenderResult.None
     }
 

@@ -6,6 +6,11 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
+import fr.nicopico.petitboutiste.models.representation.RenderResult
+import fr.nicopico.petitboutiste.models.representation.render
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+
 data class ByteGroup(
     val bytes: List<String>,
     val definition: ByteGroupDefinition,
@@ -22,6 +27,29 @@ data class ByteGroup(
         }
         require(bytes.all { it.length == 2 }) {
             "Each bytes must have a length of 2"
+        }
+    }
+
+    private var _cachedRenderResult: RenderResult? = null
+    private val renderMutex = Mutex()
+
+    /**
+     * Gets the cached rendering result or computes it on first access.
+     * The rendering is computed using the definition's representation and cached for reuse.
+     * Thread-safe lazy initialization using a mutex.
+     */
+    suspend fun getOrComputeRendering(): RenderResult {
+        // Fast path: return cached value if available
+        _cachedRenderResult?.let { return it }
+
+        // Slow path: compute and cache the rendering
+        return renderMutex.withLock {
+            // Double-check after acquiring lock
+            _cachedRenderResult?.let { return it }
+
+            val result = definition.representation.render(this)
+            _cachedRenderResult = result
+            result
         }
     }
 
