@@ -15,6 +15,7 @@ import kotlin.script.experimental.api.EvaluationResult
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.ScriptEvaluationConfiguration
+import kotlin.script.experimental.api.compilerOptions
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.providedProperties
 import kotlin.script.experimental.host.toScriptSource
@@ -49,6 +50,9 @@ class ScriptHost(
                         classLoader = cl,
                         wholeClasspath = true,
                     )
+                    // Add the pre-release compiler options enabled in the app `build.gradle.kts`
+                    // to ensure compatibility with the app's compilation settings
+                    compilerOptions.append("-Xexplicit-backing-fields")
                 }
                 providedProperties(
                     "args" to typeOf<List<String>>(),
