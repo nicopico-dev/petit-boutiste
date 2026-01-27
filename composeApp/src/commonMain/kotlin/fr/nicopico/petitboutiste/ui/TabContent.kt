@@ -69,7 +69,7 @@ fun TabContent(
     }
 
     // Ensure `selectedByteItem` is up to date
-    LaunchedEffect(inputData, definitions) {
+    LaunchedEffect(byteItems, definitions) {
         val update = when (val selectedByteItem = selectedByteItem) {
             is SingleByte -> {
                 byteItems
