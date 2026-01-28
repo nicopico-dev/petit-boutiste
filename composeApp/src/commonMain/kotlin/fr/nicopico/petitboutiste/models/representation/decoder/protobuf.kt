@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.time.Duration.Companion.seconds
@@ -75,7 +74,7 @@ val protobufArguments = listOf(
 private val protobufPrinter = JsonFormat.printer()
     .preservingProtoFieldNames()
 
-fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: ArgumentValues): String {
+suspend fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.Protobuf)
     return decodeProtobufPayload(
         payload = byteArray,
@@ -110,8 +109,8 @@ private suspend fun getMessageTypeDescriptors(protoFile: File): List<Descriptors
  * @param protoFile Protobuf definition `.desc` file
  * @param messageType name of the messageType to use for decoding
  */
-private fun decodeProtobufPayload(payload: ByteArray, protoFile: File, messageType: String): String {
-    val messageTypeDescriptor = runBlocking { getMessageTypeDescriptors(protoFile) }
+private suspend fun decodeProtobufPayload(payload: ByteArray, protoFile: File, messageType: String): String {
+    val messageTypeDescriptor = getMessageTypeDescriptors(protoFile)
         .firstOrNull { it.name == messageType }
         ?: throw IllegalArgumentException("Message type $messageType not found in .proto file")
 

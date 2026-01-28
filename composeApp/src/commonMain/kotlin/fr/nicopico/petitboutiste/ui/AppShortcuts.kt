@@ -19,8 +19,8 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.FrameWindowScope
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.models.app.AppEvent
-import fr.nicopico.petitboutiste.models.app.AppEvent.CycleTabEvent
+import fr.nicopico.petitboutiste.state.AppEvent
+import fr.nicopico.petitboutiste.state.AppEvent.CycleTabEvent
 import fr.nicopico.petitboutiste.utils.compose.Slot
 
 /**

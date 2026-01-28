@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
 
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.cash.licensee)
@@ -36,7 +35,11 @@ kotlin {
     jvm("desktop")
 
     compilerOptions {
+        // NOTE: Pre-release options must be mirrored in the embedded Kotlin compiler to prevent the error
+        // "Class 'fr.nicopico.petitboutiste.scripting.PetitBoutisteApi' was compiled by a pre-release version of Kotlin and cannot be loaded by this version of the compiler"
+        // (see `ScriptHost` class)
         freeCompilerArgs.add("-Xwhen-guards")
+        freeCompilerArgs.add("-Xexplicit-backing-fields")
         optIn.add("kotlin.concurrent.atomics.ExperimentalAtomicApi")
     }
 
@@ -51,16 +54,18 @@ kotlin {
         val desktopMain by getting
 
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.jetbrains.compose.runtime)
+            implementation(libs.jetbrains.compose.foundation)
+            implementation(libs.jetbrains.compose.components.resources)
+            implementation(libs.jetbrains.compose.ui)
+            implementation(libs.jetbrains.compose.ui.tooling.preview)
+
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.bundles.jewel)
 
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.multiplatform.settings)
             implementation(libs.filekit.dialogs)
@@ -77,13 +82,14 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs) {
                 exclude(group = "org.jetbrains.compose.material")
             }
-            implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.kotlinx.coroutines.swing)
         }
     }
 }
@@ -116,8 +122,7 @@ compose.desktop {
             packageVersion = version.toString()
             vendor = "Nicolas PICON"
 
-            // TODO Add license
-            // licenseFile = rootProject.file("LICENSE")
+            licenseFile = rootProject.file("LICENSE")
 
             modules("jdk.unsupported")
 

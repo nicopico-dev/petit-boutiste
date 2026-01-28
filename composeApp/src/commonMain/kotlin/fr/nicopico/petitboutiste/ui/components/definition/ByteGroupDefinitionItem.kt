@@ -17,6 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -25,11 +30,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.models.representation.isReady
-import fr.nicopico.petitboutiste.models.representation.renderAsString
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.Slot
@@ -46,7 +51,7 @@ fun ByteGroupDefinitionItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    byteGroup: ByteItem.Group? = null,
+    byteGroup: ByteGroup? = null,
     invalidDefinition: Boolean = false,
     form: Slot? = null,
     displayForm: Boolean = false,
@@ -94,14 +99,20 @@ fun ByteGroupDefinitionItem(
                     overflow = TextOverflow.Ellipsis,
                 )
 
-                val valueText = if (
-                    byteGroup != null
-                    && !definition.representation.isOff
-                    && definition.representation.isReady
-                ) {
-                    definition.representation.renderAsString(byteGroup)
-                } else null
-                if (valueText != null) {
+                var valueText: String? by remember {
+                    mutableStateOf(null)
+                }
+                LaunchedEffect(byteGroup, definition.representation) {
+                    valueText = if (
+                        byteGroup != null
+                        && !definition.representation.isOff
+                        && definition.representation.isReady
+                    ) {
+                        byteGroup.getOrComputeRendering().asString()
+                    } else null
+                }
+
+                valueText?.let { valueText ->
                     Text(
                         text = valueText,
                         style = JewelTheme.typography.consoleTextStyle,

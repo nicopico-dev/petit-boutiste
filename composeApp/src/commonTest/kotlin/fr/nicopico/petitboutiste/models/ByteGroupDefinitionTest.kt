@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.models
 
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import org.junit.Test
 import kotlin.test.assertFails
 

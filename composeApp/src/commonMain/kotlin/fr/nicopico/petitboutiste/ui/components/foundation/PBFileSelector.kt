@@ -6,7 +6,6 @@
 
 package fr.nicopico.petitboutiste.ui.components.foundation
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,14 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
+import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.file.showFileDialog
-import fr.nicopico.petitboutiste.utils.preview.WrapForPreviewDesktop
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.OutlinedButton

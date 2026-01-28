@@ -21,26 +21,27 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.log
-import fr.nicopico.petitboutiste.logError
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.app.AppEvent
-import fr.nicopico.petitboutiste.models.extensions.name
-import fr.nicopico.petitboutiste.models.extensions.rawHexString
-import fr.nicopico.petitboutiste.models.input.BinaryString
-import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.data.BinaryString
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.name
+import fr.nicopico.petitboutiste.models.definition.rawHexString
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
@@ -48,13 +49,16 @@ import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDef
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFile
 import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
-import fr.nicopico.petitboutiste.models.ui.InputType
-import fr.nicopico.petitboutiste.models.ui.TabData
-import fr.nicopico.petitboutiste.models.ui.TabTemplateData
+import fr.nicopico.petitboutiste.state.AppEvent
+import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.state.TabDataRendering
+import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
+import fr.nicopico.petitboutiste.utils.log
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
@@ -70,6 +74,7 @@ import java.awt.datatransfer.StringSelection
 import java.io.File
 import kotlin.math.max
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ByteItemRender(
     byteItem: ByteItem,
@@ -77,12 +82,18 @@ fun ByteItemRender(
     onRepresentationChanged: (Representation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val rendererOutput: RenderResult by remember(byteItem, representation) {
-        derivedStateOf {
-            if (representation.isReady) {
+    var rendererOutput: RenderResult by remember {
+        mutableStateOf(RenderResult.None)
+    }
+    LaunchedEffect(byteItem, representation) {
+        rendererOutput = if (representation.isReady) {
+            // Use cached rendering for ByteGroup if the representation matches its definition
+            if (byteItem is ByteGroup && representation == byteItem.definition.representation) {
+                byteItem.getOrComputeRendering()
+            } else {
                 representation.render(byteItem)
-            } else RenderResult.None
-        }
+            }
+        } else RenderResult.None
     }
 
     Row(
@@ -258,12 +269,14 @@ private fun prepareTabData(
             val inputData = HexString(rendering)
             TabData(
                 name = tabName,
-                inputData = inputData,
-                groupDefinitions = listOf(
-                    ByteGroupDefinition(
-                        indexes = 0..<inputData.byteCount,
-                        representation = representation,
-                    )
+                rendering = TabDataRendering(
+                    inputData = inputData,
+                    groupDefinitions = listOf(
+                        ByteGroupDefinition(
+                            indexes = 0..<inputData.byteCount,
+                            representation = representation,
+                        )
+                    ),
                 ),
             )
         }
@@ -272,14 +285,15 @@ private fun prepareTabData(
             val inputData = BinaryString(rendering)
             TabData(
                 name = tabName,
-                inputType = InputType.BINARY,
-                inputData = inputData,
-                groupDefinitions = listOf(
-                    ByteGroupDefinition(
-                        indexes = 0..<inputData.byteCount,
-                        representation = representation,
-                    )
-                ),
+                rendering = TabDataRendering(
+                    inputData = inputData,
+                    groupDefinitions = listOf(
+                        ByteGroupDefinition(
+                            indexes = 0..<inputData.byteCount,
+                            representation = representation,
+                        )
+                    ),
+                )
             )
         }
 
@@ -290,9 +304,10 @@ private fun prepareTabData(
 
             TabData(
                 name = tabName,
-                inputType = InputType.HEX,
-                inputData = inputData,
-                groupDefinitions = definitions,
+                rendering = TabDataRendering(
+                    inputData = inputData,
+                    groupDefinitions = definitions,
+                ),
                 templateData = templateFile?.let {
                     TabTemplateData(
                         templateFile = it,

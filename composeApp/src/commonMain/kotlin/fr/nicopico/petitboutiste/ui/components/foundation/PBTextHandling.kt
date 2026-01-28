@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
-import fr.nicopico.petitboutiste.utils.jewel.updateStateValue
+import fr.nicopico.petitboutiste.utils.compose.jewel.updateStateValue
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 
