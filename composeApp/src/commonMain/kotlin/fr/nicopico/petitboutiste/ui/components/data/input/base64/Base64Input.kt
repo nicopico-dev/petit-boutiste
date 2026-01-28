@@ -22,6 +22,7 @@ fun Base64Input(
 
     val base64Value = when (value) {
         is Base64String -> value
+        is HexString -> Base64String.fromHexString(value)
         else -> {
             val hexString = HexString(value.hexString)
             Base64String.fromHexString(hexString)

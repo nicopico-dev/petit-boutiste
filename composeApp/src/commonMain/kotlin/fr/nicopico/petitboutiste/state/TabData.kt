@@ -11,6 +11,8 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.util.UUID
 
@@ -46,17 +48,26 @@ data class TabDataRendering(
     val inputData: DataString = HexString(""),
     val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
 ) {
+    @Volatile
     private var byteItems: List<ByteItem>? = null
+    private val byteItemsMutex = Mutex()
 
     val isRendered: Boolean
         get() = byteItems != null
 
     suspend fun renderByteItems(): List<ByteItem> {
-        // TODO Critical section!
-        if (byteItems == null) {
-            byteItems = inputData.toByteItems(groupDefinitions)
+        // Fast path
+        byteItems?.let { return it }
+
+        // Slow path
+        return byteItemsMutex.withLock {
+            // double-check
+            byteItems?.let { return it }
+
+            val result = inputData.toByteItems(groupDefinitions)
+            byteItems = result
+            result
         }
-        return byteItems!!
     }
 }
 
