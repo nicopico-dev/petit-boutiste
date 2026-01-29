@@ -6,15 +6,14 @@
 
 package fr.nicopico.petitboutiste.models.representation.decoder
 
-import fr.nicopico.petitboutiste.log
-import fr.nicopico.petitboutiste.logError
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.scripting.PetitBoutisteApi
 import fr.nicopico.petitboutiste.scripting.ScriptHost
-import kotlinx.coroutines.runBlocking
+import fr.nicopico.petitboutiste.utils.log
+import fr.nicopico.petitboutiste.utils.logError
 import java.io.File
 import kotlin.script.experimental.api.ResultValue
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
@@ -32,8 +31,7 @@ val userScriptArguments = listOf(
     ),
 )
 
-// TODO Make dataRenderer suspendable
-fun DataRenderer.decodeUserScript(byteArray: ByteArray, argumentValues: ArgumentValues): String {
+suspend fun DataRenderer.decodeUserScript(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.UserScript)
     val scriptFile: File = getArgumentValue(ARG_USER_SCRIPT_FILE_KEY, argumentValues)!!
 
@@ -46,9 +44,7 @@ fun DataRenderer.decodeUserScript(byteArray: ByteArray, argumentValues: Argument
     }
 
     log("Running user script $scriptFile on ${byteArray.toHexString()}...")
-    val result = runBlocking {
-        host.evalFile(scriptFile)
-    }
+    val result = host.evalFile(scriptFile)
 
     log("result is $result")
     return when (result) {

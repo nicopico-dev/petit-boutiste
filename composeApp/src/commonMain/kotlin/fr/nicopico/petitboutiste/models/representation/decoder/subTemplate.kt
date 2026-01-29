@@ -6,10 +6,10 @@
 
 package fr.nicopico.petitboutiste.models.representation.decoder
 
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.extensions.toByteItems
-import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.data.toByteItems
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.RenderResult
@@ -39,20 +39,18 @@ private val json = Json {
     prettyPrintIndent = "  "
 }
 
-fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
+suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.SubTemplate)
     val templateFile: File = getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)!!
 
-    val template = runBlocking {
-        templateManager.loadTemplate(templateFile)
-    }
+    val template = templateManager.loadTemplate(templateFile)
 
     val dataString = HexString(byteArray.toHexString())
     val parsedData = dataString.toByteItems(template.definitions)
-        .filterIsInstance<ByteItem.Group>()
+        .filterIsInstance<ByteGroup>()
         .associate { group ->
             val groupName = group.name ?: "UNNAMED (${group.definition.indexes})"
-            val groupValue = group.definition.representation.render(group).output
+            val groupValue = group.getOrComputeRendering().output
 
             groupName to groupValue
         }

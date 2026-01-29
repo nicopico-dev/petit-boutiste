@@ -12,7 +12,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
-import fr.nicopico.petitboutiste.models.ui.ScreenCharacteristics
+import fr.nicopico.petitboutiste.models.persistence.ScreenCharacteristics
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.util.prefs.Preferences

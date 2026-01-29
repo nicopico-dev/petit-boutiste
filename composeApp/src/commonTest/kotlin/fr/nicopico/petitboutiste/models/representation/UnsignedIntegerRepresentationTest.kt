@@ -1,7 +1,8 @@
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,9 +22,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte '00' to 0`() {
+    fun `should convert byte '00' to 0`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "00")
+        val byteItem = SingleByte(0, "00")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -33,9 +34,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte '09' to 9`() {
+    fun `should convert byte '09' to 9`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "09")
+        val byteItem = SingleByte(0, "09")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -45,9 +46,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte '0A' to 10`() {
+    fun `should convert byte '0A' to 10`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "0A")
+        val byteItem = SingleByte(0, "0A")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -57,9 +58,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte '10' to 16`() {
+    fun `should convert byte '10' to 16`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "10")
+        val byteItem = SingleByte(0, "10")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -69,9 +70,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte '1A' to 26`() {
+    fun `should convert byte '1A' to 26`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "1A")
+        val byteItem = SingleByte(0, "1A")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -81,9 +82,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte '7F' to 127`() {
+    fun `should convert byte '7F' to 127`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "7F")
+        val byteItem = SingleByte(0, "7F")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -93,9 +94,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte '80' to -128`() {
+    fun `should convert byte '80' to -128`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "80")
+        val byteItem = SingleByte(0, "80")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -105,9 +106,9 @@ class UnsignedIntegerRepresentationTest {
     }
 
     @Test
-    fun `should convert byte 'FF' to -1`() {
+    fun `should convert byte 'FF' to -1`() = runTest {
         // GIVEN
-        val byteItem = ByteItem.Single(0, "FF")
+        val byteItem = SingleByte(0, "FF")
 
         // WHEN
         val output = representation.renderAsString(byteItem)

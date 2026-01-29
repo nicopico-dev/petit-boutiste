@@ -1,7 +1,9 @@
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.models.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.ByteItem
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.SingleByte
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,10 +18,10 @@ class BinaryRepresentationTest {
     }
 
     @Test
-    fun `Binary representation returns binary with grouped bytes, split into 4-bit groups`() {
+    fun `Binary representation returns binary with grouped bytes, split into 4-bit groups`() = runTest {
         // GIVEN
         // a ByteItem with multiple bytes
-        val byteItem = ByteItem.Group(
+        val byteItem = ByteGroup(
             bytes = listOf("1A", "2B", "3C"),
             definition = ByteGroupDefinition(0..2, "TestGroup")
         )
@@ -34,10 +36,10 @@ class BinaryRepresentationTest {
     }
 
     @Test
-    fun `getRepresentation returns binary representation for a single byte`() {
+    fun `getRepresentation returns binary representation for a single byte`() = runTest {
         // GIVEN
         // a ByteItem with a single byte
-        val byteItem = ByteItem.Single(0, "FF")
+        val byteItem = SingleByte(0, "FF")
 
         // WHEN
         val output = representation.renderAsString(byteItem)
@@ -49,10 +51,10 @@ class BinaryRepresentationTest {
     }
 
     @Test
-    fun `getRepresentation handles zero bytes correctly`() {
+    fun `getRepresentation handles zero bytes correctly`() = runTest {
         // GIVEN
         // a ByteItem with a byte value of zero
-        val byteItem = ByteItem.Single(0, "00")
+        val byteItem = SingleByte(0, "00")
 
         // WHEN
         val output = representation.renderAsString(byteItem)

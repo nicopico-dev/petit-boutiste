@@ -7,7 +7,7 @@
 package fr.nicopico.petitboutiste.repository
 
 import androidx.compose.ui.window.WindowState
-import fr.nicopico.petitboutiste.models.ui.ScreenCharacteristics
+import fr.nicopico.petitboutiste.models.persistence.ScreenCharacteristics
 
 interface WindowStateRepository {
 

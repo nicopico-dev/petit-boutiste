@@ -6,11 +6,11 @@
 
 package fr.nicopico.petitboutiste.models.representation
 
-import fr.nicopico.petitboutiste.logError
-import fr.nicopico.petitboutiste.models.ByteItem
-import fr.nicopico.petitboutiste.models.extensions.toByteArray
+import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.toByteArray
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -41,7 +41,7 @@ val Representation.isOff: Boolean
 val Representation.isReady: Boolean
     get() = !dataRenderer.requireUserValidation || submitted
 
-fun Representation.render(byteItem: ByteItem): RenderResult {
+suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     // TODO Optimization: memoize the latest render to prevent multiple renderings of the same payload
     require(isReady) { "Representation must be ready!" }
     return try {
@@ -54,6 +54,6 @@ fun Representation.render(byteItem: ByteItem): RenderResult {
     }
 }
 
-fun Representation.renderAsString(byteItem: ByteItem): String? {
+suspend fun Representation.renderAsString(byteItem: ByteItem): String? {
     return render(byteItem).asString()
 }

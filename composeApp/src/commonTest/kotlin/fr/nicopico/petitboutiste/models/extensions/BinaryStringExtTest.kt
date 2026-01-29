@@ -1,7 +1,9 @@
 package fr.nicopico.petitboutiste.models.extensions
 
-import fr.nicopico.petitboutiste.models.input.BinaryString
-import fr.nicopico.petitboutiste.models.input.HexString
+import fr.nicopico.petitboutiste.models.data.BinaryString
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.data.formatForDisplay
+import fr.nicopico.petitboutiste.models.data.toBinaryString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

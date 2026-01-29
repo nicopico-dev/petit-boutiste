@@ -6,7 +6,7 @@
 
 package fr.nicopico.macos
 
-import fr.nicopico.petitboutiste.logError
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
