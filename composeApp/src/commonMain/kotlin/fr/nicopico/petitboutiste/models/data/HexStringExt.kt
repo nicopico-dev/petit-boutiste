@@ -10,13 +10,15 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 suspend fun DataString.toByteItems(
-    groupDefinitions: List<ByteGroupDefinition> = emptyList()
-): List<ByteItem> = withContext(Dispatchers.Default) {
+    groupDefinitions: List<ByteGroupDefinition> = emptyList(),
+    dispatcher: CoroutineDispatcher = Dispatchers.Default,
+): List<ByteItem> = withContext(dispatcher) {
     val bytes = hexString.windowed(2, 2)
 
     if (groupDefinitions.isEmpty()) {

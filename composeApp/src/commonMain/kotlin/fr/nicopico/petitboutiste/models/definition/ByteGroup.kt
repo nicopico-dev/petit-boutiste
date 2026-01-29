@@ -30,7 +30,6 @@ data class ByteGroup(
         }
     }
 
-    @Volatile
     private var _cachedRenderResult: RenderResult? = null
     private val renderMutex = Mutex()
 

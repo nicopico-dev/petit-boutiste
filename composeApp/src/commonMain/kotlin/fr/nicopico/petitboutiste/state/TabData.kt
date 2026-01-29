@@ -48,7 +48,6 @@ data class TabDataRendering(
     val inputData: DataString = HexString(""),
     val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
 ) {
-    @Volatile
     private var byteItems: List<ByteItem>? = null
     private val byteItemsMutex = Mutex()
 

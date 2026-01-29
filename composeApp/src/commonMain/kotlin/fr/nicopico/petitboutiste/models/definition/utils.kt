@@ -9,7 +9,7 @@ package fr.nicopico.petitboutiste.models.definition
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.representation.Representation
 
-fun createFullPayload(
+fun createFullPayloadByteGroup(
     dataString: DataString,
     representation: Representation,
 ): ByteGroup {

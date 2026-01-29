@@ -27,7 +27,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
-import fr.nicopico.petitboutiste.models.definition.createFullPayload
+import fr.nicopico.petitboutiste.models.definition.createFullPayloadByteGroup
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
@@ -61,7 +61,7 @@ fun TabContent(
 
     val fullPayload: ByteGroup? = remember(inputData, definitions, noDefinitionRepresentation) {
         if (inputData.isNotEmpty() && definitions.isEmpty()) {
-            createFullPayload(
+            createFullPayloadByteGroup(
                 dataString = inputData,
                 representation = noDefinitionRepresentation,
             )
