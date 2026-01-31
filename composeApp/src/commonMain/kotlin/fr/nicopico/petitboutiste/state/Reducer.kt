@@ -13,18 +13,13 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.repository.TemplateManager
-import fr.nicopico.petitboutiste.utils.log
-import kotlinx.coroutines.runBlocking
 import kotlin.math.max
 
 class Reducer(
     private val templateManager: TemplateManager,
 ) {
 
-    // TODO Handle Concurrent changes to the AppState
-    // TODO Remove usage of runBlocking
-    operator fun invoke(state: AppState, event: AppEvent): AppState {
-        log("Received event: $event...")
+    suspend operator fun invoke(state: AppState, event: AppEvent): AppState {
         return when (event) {
             is AppEvent.SwitchAppThemeEvent -> {
                 state.copy(appTheme = event.appTheme)
@@ -189,9 +184,7 @@ class Reducer(
 
             //region Templates
             is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
-                val template = runBlocking {
-                    templateManager.loadTemplate(event.templateFile)
-                }
+                val template = templateManager.loadTemplate(event.templateFile)
                 state.updateCurrentTab {
                     copy(
                         rendering = rendering.copy(groupDefinitions = template.definitions),
@@ -208,9 +201,7 @@ class Reducer(
                 val template = with(state.selectedTab) {
                     toTemplate(event.templateFile.nameWithoutExtension)
                 }
-                runBlocking {
-                    templateManager.saveTemplate(template, event.templateFile, event.updateExisting)
-                }
+                templateManager.saveTemplate(template, event.templateFile, event.updateExisting)
 
                 state.updateCurrentTab {
                     copy(templateData = TabTemplateData(event.templateFile))
@@ -218,9 +209,7 @@ class Reducer(
             }
 
             is AppEvent.CurrentTabEvent.AddDefinitionsFromTemplateEvent -> {
-                val template = runBlocking {
-                    templateManager.loadTemplate(event.templateFile)
-                }
+                val template = templateManager.loadTemplate(event.templateFile)
                 state.updateCurrentTab {
                     // TODO Handle duplicate or conflicting definitions
                     copy(
@@ -233,8 +222,6 @@ class Reducer(
             //endregion
             //endregion
 
-        }.also {
-            log("  -> $it")
         }
     }
 
