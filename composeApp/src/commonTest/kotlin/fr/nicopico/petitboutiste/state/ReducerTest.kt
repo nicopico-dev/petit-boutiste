@@ -11,6 +11,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
+import kotlinx.coroutines.test.runTest
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,7 +42,7 @@ class ReducerTest {
     private val reducer = Reducer(templateManager)
 
     @Test
-    fun `SwitchAppThemeEvent updates theme`() {
+    fun `SwitchAppThemeEvent updates theme`() = runTest {
         // Given
         val state = AppState()
         val event = AppEvent.SwitchAppThemeEvent(PBTheme.Dark)
@@ -54,7 +55,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `AddNewTabEvent adds a new tab and selects it`() {
+    fun `AddNewTabEvent adds a new tab and selects it`() = runTest {
         // Given
         val state = AppState()
         val newTabData = TabData(name = "New Tab")
@@ -70,7 +71,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `SelectTabEvent changes the selected tab`() {
+    fun `SelectTabEvent changes the selected tab`() = runTest {
         // Given
         val tab1 = TabData()
         val tab2 = TabData()
@@ -85,7 +86,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `RenameTabEvent updates the tab name`() {
+    fun `RenameTabEvent updates the tab name`() = runTest {
         // Given
         val state = AppState()
         val tabId = state.selectedTabId
@@ -99,7 +100,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `RemoveTabEvent removes a tab and handles selection`() {
+    fun `RemoveTabEvent removes a tab and handles selection`() = runTest {
         // Given
         val tab1 = TabData()
         val tab2 = TabData()
@@ -115,7 +116,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `RemoveTabEvent adds a default tab if the last tab is removed`() {
+    fun `RemoveTabEvent adds a default tab if the last tab is removed`() = runTest {
         // Given
         val state = AppState()
         val tabId = state.selectedTabId
@@ -130,7 +131,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `DuplicateTabEvent copies the tab with a new ID`() {
+    fun `DuplicateTabEvent copies the tab with a new ID`() = runTest {
         // Given
         val state = AppState()
         val tabId = state.selectedTabId
@@ -146,7 +147,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `CycleTabEvent cycles between tabs`() {
+    fun `CycleTabEvent cycles between tabs`() = runTest {
         // Given
         val tab1 = TabData()
         val tab2 = TabData()
@@ -168,7 +169,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `ChangeInputTypeEvent updates the input data type`() {
+    fun `ChangeInputTypeEvent updates the input data type`() = runTest {
         // Given
         val state = AppState()
         val event = AppEvent.CurrentTabEvent.ChangeInputTypeEvent(InputType.BINARY)
@@ -181,7 +182,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `ChangeInputDataEvent updates the input data`() {
+    fun `ChangeInputDataEvent updates the input data`() = runTest {
         // Given
         val state = AppState()
         val newData = HexString("AABB")
@@ -195,7 +196,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `AddDefinitionEvent adds and sorts definitions`() {
+    fun `AddDefinitionEvent adds and sorts definitions`() = runTest {
         // Given
         val state = AppState()
         val def1 = ByteGroupDefinition(indexes = 5..6, name = "Def 1")
@@ -213,7 +214,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `UpdateDefinitionEvent updates an existing definition`() {
+    fun `UpdateDefinitionEvent updates an existing definition`() = runTest {
         // Given
         val def = ByteGroupDefinition(indexes = 0..1, name = "Original")
         val initialState = reducer(AppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(def))
@@ -228,7 +229,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `DeleteDefinitionEvent removes a definition`() {
+    fun `DeleteDefinitionEvent removes a definition`() = runTest {
         // Given
         val def = ByteGroupDefinition(indexes = 0..1, name = "To Delete")
         val initialState = reducer(AppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(def))
@@ -242,7 +243,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `ClearAllDefinitionsEvent removes all definitions`() {
+    fun `ClearAllDefinitionsEvent removes all definitions`() = runTest {
         // Given
         val def = ByteGroupDefinition(indexes = 0..1, name = "Def")
         val initialState = reducer(AppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(def))
@@ -256,7 +257,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `UpdateScratchpadEvent updates the scratchpad`() {
+    fun `UpdateScratchpadEvent updates the scratchpad`() = runTest {
         // Given
         val state = AppState()
         val event = AppEvent.CurrentTabEvent.UpdateScratchpadEvent("New Notes")
@@ -269,7 +270,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `LoadTemplateEvent loads definitions and scratchpad`() {
+    fun `LoadTemplateEvent loads definitions and scratchpad`() = runTest {
         // Given
         val state = AppState()
         val templateFile = File("template.json")
@@ -298,7 +299,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `SaveTemplateEvent saves the template`() {
+    fun `SaveTemplateEvent saves the template`() = runTest {
         // Given
         val state = AppState()
         val templateFile = File("save.json")
@@ -314,7 +315,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `AddDefinitionsFromTemplateEvent adds definitions to existing ones`() {
+    fun `AddDefinitionsFromTemplateEvent adds definitions to existing ones`() = runTest {
         // Given
         val existingDef = ByteGroupDefinition(indexes = 0..1, name = "Existing")
         val initialState = reducer(AppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(existingDef))
@@ -336,7 +337,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `DuplicateTabEvent handles multiple duplications correctly`() {
+    fun `DuplicateTabEvent handles multiple duplications correctly`() = runTest {
         // Given
         val state = AppState()
         val tabId = state.selectedTabId
@@ -353,7 +354,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `AddDefinitionEvent sorts definitions by start index`() {
+    fun `AddDefinitionEvent sorts definitions by start index`() = runTest {
         // Given
         val state = AppState()
         val def1 = ByteGroupDefinition(indexes = 10..11, name = "Later")
@@ -374,7 +375,7 @@ class ReducerTest {
     }
 
     @Test
-    fun `UpdateDefinitionEvent maintains sort order`() {
+    fun `UpdateDefinitionEvent maintains sort order`() = runTest {
         // Given
         val def1 = ByteGroupDefinition(indexes = 0..1, name = "Def 1")
         val def2 = ByteGroupDefinition(indexes = 5..6, name = "Def 2")

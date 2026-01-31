@@ -42,7 +42,6 @@ val Representation.isReady: Boolean
     get() = !dataRenderer.requireUserValidation || submitted
 
 suspend fun Representation.render(byteItem: ByteItem): RenderResult {
-    // TODO Optimization: memoize the latest render to prevent multiple renderings of the same payload
     require(isReady) { "Representation must be ready!" }
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
