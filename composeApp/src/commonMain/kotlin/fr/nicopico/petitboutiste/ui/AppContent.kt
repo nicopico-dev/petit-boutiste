@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBSnackbar
@@ -29,6 +28,7 @@ fun AppContent(
     tabData: TabData,
     modifier: Modifier = Modifier,
     snackbarState: SnackbarState? = null,
+    onDismissSnackbar: () -> Unit = {},
 ) {
     val onEvent = LocalOnAppEvent.current
     var byteItems: List<ByteItem> by remember {
@@ -56,7 +56,7 @@ fun AppContent(
         if (snackbarState != null) {
             PBSnackbar(
                 state = snackbarState,
-                onDismiss = { onEvent(AppEvent.DismissSnackbarEvent) },
+                onDismiss = { onDismissSnackbar() },
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }

@@ -46,16 +46,8 @@ class MenuActions(
     fun removeTab(tabId: TabId) {
         val tabIndex = tabsState.tabs.indexOfFirst { it.id == tabId }
         if (tabIndex == -1) return
-        val removedTab = tabsState.tabs[tabIndex]
 
         onEvent(AppEvent.RemoveTabEvent(tabId))
-        onEvent(AppEvent.ShowSnackbarEvent(
-            message = "Tab '${removedTab.name ?: "Untitled"}' removed",
-            actionLabel = "Undo",
-            onAction = {
-                onEvent(AppEvent.UndoRemoveTabEvent(removedTab, tabIndex))
-            }
-        ))
     }
 
     fun loadTemplate() {
@@ -129,18 +121,6 @@ class MenuActions(
     }
 
     fun clearAllDefinitions() {
-        val currentTab = tabsState.selectedTab
         onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
-        onEvent(AppEvent.ShowSnackbarEvent(
-            message = "All definitions cleared",
-            actionLabel = "Undo",
-            onAction = {
-                onEvent(CurrentTabEvent.UndoClearAllDefinitionsEvent(
-                    tabId = currentTab.id,
-                    rendering = currentTab.rendering,
-                    templateData = currentTab.templateData
-                ))
-            }
-        ))
     }
 }

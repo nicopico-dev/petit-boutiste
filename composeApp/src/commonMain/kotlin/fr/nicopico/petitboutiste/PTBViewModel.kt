@@ -12,7 +12,9 @@ import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.Reducer
+import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.state.TabsState
+import fr.nicopico.petitboutiste.state.getEventSnackbar
 import fr.nicopico.petitboutiste.state.selectedTab
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.Job
@@ -38,24 +40,30 @@ class PTBViewModel(
     val state: StateFlow<AppState> = _state.asStateFlow()
 
     private val eventChannel = Channel<AppEvent>(Channel.BUFFERED)
+
+    private val _snackbarState = MutableStateFlow<SnackbarState?>(null)
+    val snackbarState: StateFlow<SnackbarState?> = _snackbarState.asStateFlow()
     private var snackbarDismissJob: Job? = null
 
     init {
         viewModelScope.launch {
             for (event in eventChannel) {
                 try {
-                    val previousSnackbar = _state.value.snackbarState
+                    val previousState = _state.value
+
                     val newState = reducer(_state.value, event)
                     _state.value = newState
 
-                    if (newState.snackbarState != null && newState.snackbarState != previousSnackbar) {
+                    val snackbar = event.getEventSnackbar(previousState, ::onAppEvent)
+                    if (snackbar != null) {
                         snackbarDismissJob?.cancel()
+                        _snackbarState.value = snackbar
+
+                        // Auto-hide snackbar after 5 seconds
                         snackbarDismissJob = launch {
                             delay(5000)
-                            onAppEvent(AppEvent.DismissSnackbarEvent)
+                            _snackbarState.value = null
                         }
-                    } else if (newState.snackbarState == null) {
-                        snackbarDismissJob?.cancel()
                     }
                 } catch (error: Exception) {
                     logError("Error processing event: $event\n-> $error")
@@ -91,15 +99,6 @@ class PTBViewModel(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = _state.value.selectedTab,
-        )
-
-    val snackbarState = _state
-        .map { it.snackbarState }
-        .distinctUntilChanged()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = _state.value.snackbarState,
         )
 
     fun onAppEvent(event: AppEvent) {

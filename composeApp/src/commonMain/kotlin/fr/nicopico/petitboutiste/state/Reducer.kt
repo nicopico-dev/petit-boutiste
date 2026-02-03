@@ -25,20 +25,6 @@ class Reducer(
                 state.copy(appTheme = event.appTheme)
             }
 
-            is AppEvent.ShowSnackbarEvent -> {
-                state.copy(
-                    snackbarState = SnackbarState(
-                        message = event.message,
-                        actionLabel = event.actionLabel,
-                        onAction = event.onAction,
-                    )
-                )
-            }
-
-            is AppEvent.DismissSnackbarEvent -> {
-                state.copy(snackbarState = null)
-            }
-
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
                 val newTab = event.tabData ?: TabData()
@@ -82,7 +68,6 @@ class Reducer(
                 state.copy(
                     tabs = newTabs,
                     selectedTabId = event.tabData.id,
-                    snackbarState = null,
                 )
             }
 
@@ -203,7 +188,6 @@ class Reducer(
                             templateData = event.templateData,
                         )
                     },
-                    snackbarState = null
                 )
             }
 

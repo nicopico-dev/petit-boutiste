@@ -21,13 +21,6 @@ sealed class AppEvent {
     data class CycleTabEvent(val cycleForward: Boolean) : AppEvent()
     data class SwitchAppThemeEvent(val appTheme: PBTheme) : AppEvent()
 
-    data class ShowSnackbarEvent(
-        val message: String,
-        val actionLabel: String? = null,
-        val onAction: (() -> Unit)? = null,
-    ) : AppEvent()
-    data object DismissSnackbarEvent : AppEvent()
-
     data class UndoRemoveTabEvent(val tabData: TabData, val index: Int) : AppEvent()
 
     sealed class CurrentTabEvent : AppEvent() {
