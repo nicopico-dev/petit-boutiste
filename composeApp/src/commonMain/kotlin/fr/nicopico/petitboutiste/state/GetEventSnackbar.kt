@@ -30,6 +30,20 @@ fun AppEvent.getEventSnackbar(
             )
         }
 
+        is CurrentTabEvent.DeleteDefinitionEvent -> {
+            SnackbarState(
+                message = "Definition ${(definition.name?.let { "'$it'" }.orEmpty())} deleted",
+                actionLabel = "Undo",
+                onAction = {
+                    onAppEvent(
+                        CurrentTabEvent.AddDefinitionEvent(
+                            definition = this.definition
+                        )
+                    )
+                }
+            )
+        }
+
         is AppEvent.RemoveTabEvent -> {
             val selectedTab = previousState.selectedTab
             SnackbarState(
