@@ -7,14 +7,11 @@
 package fr.nicopico.petitboutiste.ui.components.foundation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
 import fr.nicopico.petitboutiste.state.TabsState
-import org.jetbrains.jewel.ui.icons.AllIconsKeys
-import org.jetbrains.jewel.ui.painter.rememberResourcePainterProvider
 
 @Composable
 fun FrameWindowScope.PBMenuBar(
@@ -22,10 +19,6 @@ fun FrameWindowScope.PBMenuBar(
 ) {
     val currentTab = tabsState.selectedTab
     val menuActions = rememberMenuActions(tabsState)
-
-    val warningIcon by rememberResourcePainterProvider(
-        AllIconsKeys.General.Warning
-    ).getPainter()
 
     MenuBar {
         Menu("File", mnemonic = 'F') {
@@ -41,7 +34,6 @@ fun FrameWindowScope.PBMenuBar(
             )
             Item(
                 text = "Close Tab",
-                icon = warningIcon,
                 shortcut = KeyShortcut(Key.W, meta = true),
                 onClick = { menuActions.removeTab(currentTab.id) }
             )
@@ -80,7 +72,6 @@ fun FrameWindowScope.PBMenuBar(
 
             Item(
                 text = "Clear all definitions",
-                icon = warningIcon,
                 onClick = { menuActions.clearAllDefinitions() }
             )
         }
