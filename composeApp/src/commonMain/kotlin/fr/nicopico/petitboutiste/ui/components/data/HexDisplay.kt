@@ -67,7 +67,6 @@ fun HexDisplay(
             // Add grid state to track scrolling
             val gridState = rememberLazyGridState()
 
-            // TODO The scrollbar sometimes overlap at the bottom of the container
             VerticallyScrollableContainer(
                 scrollState = gridState as ScrollableState,
                 style = AppTheme.current.styles.scrollbarStyle,

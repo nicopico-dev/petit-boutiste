@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.state.AppEvent.SwitchAppThemeEvent
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabsState
@@ -39,9 +37,6 @@ import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.PBIcons
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
-import fr.nicopico.petitboutiste.utils.file.showFileDialog
-import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.ExperimentalJewelApi
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.component.Divider
@@ -245,56 +240,18 @@ private fun TabToolbar(
 private fun TemplateToolbar(
     tabData: TabData,
 ) {
-    val scope = rememberCoroutineScope()
-    val onEvent = LocalOnAppEvent.current
+    val menuActions = rememberMenuActions()
 
     ToolbarItem(
         label = "Load template",
         iconKey = AllIconsKeys.General.OpenDisk,
-        onClick = {
-            // TODO Factorize with PBMenuBar
-            scope.launch {
-                showFileDialog(
-                    title = "Load template",
-                    operation = FileDialogOperation.ChooseFile("json")
-                ) { selectedFile ->
-                    onEvent(
-                        CurrentTabEvent.LoadTemplateEvent(
-                            selectedFile,
-                            definitionsOnly = false,
-                        )
-                    )
-                }
-            }
-        },
+        onClick = { menuActions.loadTemplate() },
     )
 
     ToolbarItem(
         label = "Save template",
         iconKey = AllIconsKeys.Actions.MenuSaveall,
-        onClick = {
-            // TODO Factorize with PBMenuBar
-            if (tabData.templateData != null) {
-                onEvent(
-                    CurrentTabEvent.SaveTemplateEvent(
-                        tabData.templateData.templateFile,
-                        updateExisting = true
-                    )
-                )
-            } else {
-                scope.launch {
-                    showFileDialog(
-                        title = "Save new template",
-                        operation = FileDialogOperation.CreateNewFile(
-                            suggestedFilename = tabData.name ?: "Template",
-                            extension = "json",
-                        ),
-                    ) { selectedFile ->
-                        onEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
-                    }
-                }
-            }
-        }
+        onClick = { menuActions.saveTemplate(tabData) }
     )
 }
 

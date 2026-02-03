@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
+import fr.nicopico.petitboutiste.utils.file.FileDialog
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
-import fr.nicopico.petitboutiste.utils.file.showFileDialog
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
@@ -38,6 +38,7 @@ fun PBFileSelector(
     onFileSelected: (File?) -> Unit,
     modifier: Modifier = Modifier,
     selection: File? = null,
+    fileDialog: FileDialog = FileDialog.Default,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -66,7 +67,7 @@ fun PBFileSelector(
                 },
                 onClick = {
                     coroutineScope.launch {
-                        showFileDialog(FileDialogOperation.ChooseFile()) { file ->
+                        fileDialog.show(FileDialogOperation.ChooseFile()) { file ->
                             onFileSelected(file)
                         }
                     }
