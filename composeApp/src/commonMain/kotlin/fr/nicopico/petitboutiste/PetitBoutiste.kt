@@ -61,6 +61,8 @@ fun PetitBoutiste(
         .collectAsStateWithLifecycle()
     val currentTab by viewModel.currentTab
         .collectAsStateWithLifecycle()
+    val snackbarState by viewModel.snackbarState
+        .collectAsStateWithLifecycle()
 
     appTheme {
         DecoratedWindow(
@@ -78,7 +80,7 @@ fun PetitBoutiste(
                         viewModel.onAppEvent(event)
                     },
                     content = {
-                        PBMenuBar(currentTab)
+                        PBMenuBar(tabsState)
                         PBTitleBar(
                             tabsState = tabsState,
                             appTheme = appTheme,
@@ -86,7 +88,8 @@ fun PetitBoutiste(
                         AppShortcuts {
                             AppContent(
                                 tabData = currentTab,
-                                modifier = Modifier.Companion
+                                snackbarState = snackbarState,
+                                modifier = Modifier
                                     .background(AppTheme.current.colors.windowBackgroundColor),
                             )
                         }

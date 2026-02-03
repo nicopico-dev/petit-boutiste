@@ -61,6 +61,7 @@ fun DecoratedWindowScope.PBTitleBar(
     modifier: Modifier = Modifier,
 ) {
     val onEvent = LocalOnAppEvent.current
+    val menuActions = rememberMenuActions(tabsState)
 
     TitleBar(
         modifier.newFullscreenControls().height(50.dp)
@@ -111,8 +112,7 @@ fun DecoratedWindowScope.PBTitleBar(
                                             },
                                             modifier = Modifier.size(20.dp),
                                             onClick = {
-                                                // TODO Ask confirmation before closing the tab
-                                                onEvent(AppEvent.RemoveTabEvent(tabData.id))
+                                                menuActions.removeTab(tabData.id)
                                             }
                                         )
                                     }
@@ -147,7 +147,7 @@ fun DecoratedWindowScope.PBTitleBar(
                     .padding(horizontal = 4.dp),
             )
 
-            TemplateToolbar(tabData = tabsState.selectedTab)
+            TemplateToolbar(tabsState = tabsState)
         }
 
         SwitchThemeButton(
@@ -238,9 +238,10 @@ private fun TabToolbar(
 
 @Composable
 private fun TemplateToolbar(
-    tabData: TabData,
+    tabsState: TabsState,
 ) {
-    val menuActions = rememberMenuActions()
+    val menuActions = rememberMenuActions(tabsState)
+    val tabData = tabsState.selectedTab
 
     ToolbarItem(
         label = "Load template",

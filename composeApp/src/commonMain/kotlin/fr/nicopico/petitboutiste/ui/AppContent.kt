@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -14,15 +15,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.state.AppEvent
+import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.ui.components.foundation.PBSnackbar
 
 @Composable
 fun AppContent(
     tabData: TabData,
     modifier: Modifier = Modifier,
+    snackbarState: SnackbarState? = null,
 ) {
+    val onEvent = LocalOnAppEvent.current
     var byteItems: List<ByteItem> by remember {
         mutableStateOf(emptyList())
     }
@@ -34,13 +42,23 @@ fun AppContent(
         byteItems = tabData.renderByteItems()
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        // Main app screen with the selected tab's data
-        TabContent(
-            inputData = tabData.inputData,
-            definitions = tabData.groupDefinitions,
-            byteItems = byteItems,
-            scratchpad = tabData.scratchpad,
-        )
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Main app screen with the selected tab's data
+            TabContent(
+                inputData = tabData.inputData,
+                definitions = tabData.groupDefinitions,
+                byteItems = byteItems,
+                scratchpad = tabData.scratchpad,
+            )
+        }
+
+        if (snackbarState != null) {
+            PBSnackbar(
+                state = snackbarState,
+                onDismiss = { onEvent(AppEvent.DismissSnackbarEvent) },
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
     }
 }

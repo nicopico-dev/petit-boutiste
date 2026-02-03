@@ -14,6 +14,7 @@ import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabId
+import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.utils.file.FileDialog
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import kotlinx.coroutines.CoroutineScope
@@ -21,15 +22,17 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun rememberMenuActions(
+    tabsState: TabsState,
     onEvent: (AppEvent) -> Unit = LocalOnAppEvent.current
 ): MenuActions {
     val scope = rememberCoroutineScope()
-    return remember(onEvent, scope) { MenuActions(onEvent, scope) }
+    return remember(onEvent, scope, tabsState) { MenuActions(onEvent, scope, tabsState) }
 }
 
 class MenuActions(
     private val onEvent: (AppEvent) -> Unit,
     private val scope: CoroutineScope,
+    private val tabsState: TabsState,
     private val fileDialog: FileDialog = FileDialog.Default,
 ) {
     fun addNewTab() {
@@ -41,8 +44,18 @@ class MenuActions(
     }
 
     fun removeTab(tabId: TabId) {
-        // TODO Ask confirmation, or allow undo
+        val tabIndex = tabsState.tabs.indexOfFirst { it.id == tabId }
+        if (tabIndex == -1) return
+        val removedTab = tabsState.tabs[tabIndex]
+
         onEvent(AppEvent.RemoveTabEvent(tabId))
+        onEvent(AppEvent.ShowSnackbarEvent(
+            message = "Tab '${removedTab.name ?: "Untitled"}' removed",
+            actionLabel = "Undo",
+            onAction = {
+                onEvent(AppEvent.UndoRemoveTabEvent(removedTab, tabIndex))
+            }
+        ))
     }
 
     fun loadTemplate() {
@@ -116,7 +129,18 @@ class MenuActions(
     }
 
     fun clearAllDefinitions() {
-        // TODO Ask confirmation
+        val currentTab = tabsState.selectedTab
         onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
+        onEvent(AppEvent.ShowSnackbarEvent(
+            message = "All definitions cleared",
+            actionLabel = "Undo",
+            onAction = {
+                onEvent(CurrentTabEvent.UndoClearAllDefinitionsEvent(
+                    tabId = currentTab.id,
+                    rendering = currentTab.rendering,
+                    templateData = currentTab.templateData
+                ))
+            }
+        ))
     }
 }

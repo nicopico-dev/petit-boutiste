@@ -11,6 +11,7 @@ import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabId
 import fr.nicopico.petitboutiste.state.TabTemplateData
+import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.utils.file.FileDialog
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import kotlinx.coroutines.test.TestScope
@@ -38,7 +39,9 @@ class MenuActionsTest {
             fileToReturn?.let { block(it) }
         }
     }
-    private val menuActions = MenuActions(onEvent, testScope, mockFileDialogProvider)
+    private val defaultTab = TabData()
+    private val tabsState = TabsState(tabs = listOf(defaultTab), selectedTabId = defaultTab.id)
+    private val menuActions = MenuActions(onEvent, testScope, tabsState, mockFileDialogProvider)
 
     @Test
     fun `addNewTab triggers AddNewTabEvent`() {
@@ -64,16 +67,19 @@ class MenuActionsTest {
     }
 
     @Test
-    fun `removeTab triggers RemoveTabEvent`() {
+    fun `removeTab triggers RemoveTabEvent and ShowSnackbarEvent`() {
         // Given
-        val tabId = TabId("test-tab-id")
+        val tabId = defaultTab.id
 
         // When
         menuActions.removeTab(tabId)
 
         // Then
-        assertEquals(1, capturedEvents.size)
+        assertEquals(2, capturedEvents.size)
         assertEquals(AppEvent.RemoveTabEvent(tabId), capturedEvents[0])
+        assertTrue(capturedEvents[1] is AppEvent.ShowSnackbarEvent)
+        val snackbarEvent = capturedEvents[1] as AppEvent.ShowSnackbarEvent
+        assertEquals("Undo", snackbarEvent.actionLabel)
     }
 
     @Test
@@ -127,13 +133,16 @@ class MenuActionsTest {
     }
 
     @Test
-    fun `clearAllDefinitions triggers ClearAllDefinitionsEvent`() {
+    fun `clearAllDefinitions triggers ClearAllDefinitionsEvent and ShowSnackbarEvent`() {
         // When
         menuActions.clearAllDefinitions()
 
         // Then
-        assertEquals(1, capturedEvents.size)
+        assertEquals(2, capturedEvents.size)
         assertEquals(CurrentTabEvent.ClearAllDefinitionsEvent, capturedEvents[0])
+        assertTrue(capturedEvents[1] is AppEvent.ShowSnackbarEvent)
+        val snackbarEvent = capturedEvents[1] as AppEvent.ShowSnackbarEvent
+        assertEquals("Undo", snackbarEvent.actionLabel)
     }
 
     @Test

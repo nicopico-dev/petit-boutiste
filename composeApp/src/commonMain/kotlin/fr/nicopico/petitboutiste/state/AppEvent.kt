@@ -21,6 +21,15 @@ sealed class AppEvent {
     data class CycleTabEvent(val cycleForward: Boolean) : AppEvent()
     data class SwitchAppThemeEvent(val appTheme: PBTheme) : AppEvent()
 
+    data class ShowSnackbarEvent(
+        val message: String,
+        val actionLabel: String? = null,
+        val onAction: (() -> Unit)? = null,
+    ) : AppEvent()
+    data object DismissSnackbarEvent : AppEvent()
+
+    data class UndoRemoveTabEvent(val tabData: TabData, val index: Int) : AppEvent()
+
     sealed class CurrentTabEvent : AppEvent() {
         data class ChangeInputTypeEvent(val type: InputType) : CurrentTabEvent()
         data class ChangeInputDataEvent(val data: DataString) : CurrentTabEvent()
@@ -31,6 +40,11 @@ sealed class AppEvent {
         ): CurrentTabEvent()
         data class DeleteDefinitionEvent(val definition: ByteGroupDefinition): CurrentTabEvent()
         data object ClearAllDefinitionsEvent : CurrentTabEvent()
+        data class UndoClearAllDefinitionsEvent(
+            val tabId: TabId,
+            val rendering: TabDataRendering,
+            val templateData: TabTemplateData?,
+        ) : CurrentTabEvent()
         data class UpdateScratchpadEvent(val scratchpad: String): CurrentTabEvent()
 
         data class LoadTemplateEvent(

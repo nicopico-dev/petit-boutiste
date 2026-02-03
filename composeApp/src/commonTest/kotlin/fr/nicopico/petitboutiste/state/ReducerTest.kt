@@ -392,6 +392,68 @@ class ReducerTest {
         assertEquals("Def 1", definitions[1].name)
     }
 
+    @Test
+    fun `ShowSnackbarEvent updates snackbar state`() = runTest {
+        // Given
+        val state = AppState()
+        val event = AppEvent.ShowSnackbarEvent("Test Message", "Action", {})
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals("Test Message", newState.snackbarState?.message)
+        assertEquals("Action", newState.snackbarState?.actionLabel)
+    }
+
+    @Test
+    fun `DismissSnackbarEvent clears snackbar state`() = runTest {
+        // Given
+        val state = AppState(snackbarState = SnackbarState("Test"))
+        val event = AppEvent.DismissSnackbarEvent
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(null, newState.snackbarState)
+    }
+
+    @Test
+    fun `UndoRemoveTabEvent restores removed tab`() = runTest {
+        // Given
+        val tab1 = TabData(name = "Tab 1")
+        val tab2 = TabData(name = "Tab 2")
+        val state = AppState(tabs = listOf(tab1), selectedTabId = tab1.id)
+        val event = AppEvent.UndoRemoveTabEvent(tab2, 1)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(2, newState.tabs.size)
+        assertEquals(tab2.id, newState.tabs[1].id)
+        assertEquals(tab2.id, newState.selectedTabId)
+        assertEquals(null, newState.snackbarState)
+    }
+
+    @Test
+    fun `UndoClearAllDefinitionsEvent restores definitions`() = runTest {
+        // Given
+        val defs = listOf(ByteGroupDefinition(0..1, "Test"))
+        val tab = TabData()
+        val state = AppState(tabs = listOf(tab), selectedTabId = tab.id)
+        val rendering = TabDataRendering(groupDefinitions = defs)
+        val event = AppEvent.CurrentTabEvent.UndoClearAllDefinitionsEvent(tab.id, rendering, null)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(defs, newState.selectedTab.groupDefinitions)
+        assertEquals(null, newState.snackbarState)
+    }
+
     private fun AppState.updateCurrentTab(block: TabData.() -> TabData): AppState {
         return copy(tabs = tabs.map { if (it.id == selectedTabId) it.block() else it })
     }

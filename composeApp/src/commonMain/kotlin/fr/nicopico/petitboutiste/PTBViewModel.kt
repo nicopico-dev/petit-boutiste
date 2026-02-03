@@ -15,7 +15,9 @@ import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.state.selectedTab
 import fr.nicopico.petitboutiste.utils.logError
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,12 +38,25 @@ class PTBViewModel(
     val state: StateFlow<AppState> = _state.asStateFlow()
 
     private val eventChannel = Channel<AppEvent>(Channel.BUFFERED)
+    private var snackbarDismissJob: Job? = null
 
     init {
         viewModelScope.launch {
             for (event in eventChannel) {
                 try {
-                    _state.value = reducer(_state.value, event)
+                    val previousSnackbar = _state.value.snackbarState
+                    val newState = reducer(_state.value, event)
+                    _state.value = newState
+
+                    if (newState.snackbarState != null && newState.snackbarState != previousSnackbar) {
+                        snackbarDismissJob?.cancel()
+                        snackbarDismissJob = launch {
+                            delay(5000)
+                            onAppEvent(AppEvent.DismissSnackbarEvent)
+                        }
+                    } else if (newState.snackbarState == null) {
+                        snackbarDismissJob?.cancel()
+                    }
                 } catch (error: Exception) {
                     logError("Error processing event: $event\n-> $error")
                 }
@@ -76,6 +91,15 @@ class PTBViewModel(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = _state.value.selectedTab,
+        )
+
+    val snackbarState = _state
+        .map { it.snackbarState }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = _state.value.snackbarState,
         )
 
     fun onAppEvent(event: AppEvent) {

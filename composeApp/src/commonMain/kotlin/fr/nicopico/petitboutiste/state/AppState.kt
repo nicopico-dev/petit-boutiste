@@ -9,6 +9,12 @@ package fr.nicopico.petitboutiste.state
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 
+data class SnackbarState(
+    val message: String,
+    val actionLabel: String? = null,
+    val onAction: (() -> Unit)? = null,
+)
+
 data class AppState(
     val tabs: List<TabData> = listOf(
         TabData(
@@ -19,6 +25,7 @@ data class AppState(
     ),
     val selectedTabId: TabId = tabs.first().id,
     val appTheme: PBTheme = PBTheme.System,
+    val snackbarState: SnackbarState? = null,
 ) {
     init {
         require(selectedTabId in tabs.map { it.id }) {

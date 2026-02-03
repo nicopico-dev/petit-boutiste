@@ -25,6 +25,20 @@ class Reducer(
                 state.copy(appTheme = event.appTheme)
             }
 
+            is AppEvent.ShowSnackbarEvent -> {
+                state.copy(
+                    snackbarState = SnackbarState(
+                        message = event.message,
+                        actionLabel = event.actionLabel,
+                        onAction = event.onAction,
+                    )
+                )
+            }
+
+            is AppEvent.DismissSnackbarEvent -> {
+                state.copy(snackbarState = null)
+            }
+
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
                 val newTab = event.tabData ?: TabData()
@@ -60,6 +74,16 @@ class Reducer(
                     tabs[nextSelectedTabIndex].id
                 } else state.selectedTabId
                 state.copy(tabs = tabs, selectedTabId = selectedTabId)
+            }
+
+            is AppEvent.UndoRemoveTabEvent -> {
+                val newTabs = state.tabs.toMutableList()
+                    .apply { add(event.index.coerceIn(0, size), event.tabData) }
+                state.copy(
+                    tabs = newTabs,
+                    selectedTabId = event.tabData.id,
+                    snackbarState = null,
+                )
             }
 
             is AppEvent.DuplicateTabEvent -> {
@@ -169,6 +193,18 @@ class Reducer(
                         templateData = null
                     )
                 }
+            }
+
+            is AppEvent.CurrentTabEvent.UndoClearAllDefinitionsEvent -> {
+                state.copy(
+                    tabs = state.tabs.update(event.tabId) {
+                        copy(
+                            rendering = event.rendering,
+                            templateData = event.templateData,
+                        )
+                    },
+                    snackbarState = null
+                )
             }
 
             is AppEvent.CurrentTabEvent.UpdateScratchpadEvent -> {

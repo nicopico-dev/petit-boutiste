@@ -12,15 +12,16 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
-import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.state.TabsState
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.painter.rememberResourcePainterProvider
 
 @Composable
 fun FrameWindowScope.PBMenuBar(
-    currentTab: TabData,
+    tabsState: TabsState,
 ) {
-    val menuActions = rememberMenuActions()
+    val currentTab = tabsState.selectedTab
+    val menuActions = rememberMenuActions(tabsState)
 
     val warningIcon by rememberResourcePainterProvider(
         AllIconsKeys.General.Warning
