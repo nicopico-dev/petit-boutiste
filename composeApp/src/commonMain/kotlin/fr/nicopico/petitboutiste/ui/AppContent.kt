@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.state.TabData
@@ -30,7 +29,6 @@ fun AppContent(
     snackbarState: SnackbarState? = null,
     onDismissSnackbar: () -> Unit = {},
 ) {
-    val onEvent = LocalOnAppEvent.current
     var byteItems: List<ByteItem> by remember {
         mutableStateOf(emptyList())
     }
