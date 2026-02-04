@@ -8,18 +8,11 @@ package fr.nicopico.petitboutiste.ui.components.foundation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
-import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
-import fr.nicopico.petitboutiste.utils.file.showFileDialog
-import kotlinx.coroutines.launch
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.painter.rememberResourcePainterProvider
 
@@ -27,104 +20,46 @@ import org.jetbrains.jewel.ui.painter.rememberResourcePainterProvider
 fun FrameWindowScope.PBMenuBar(
     currentTab: TabData,
 ) {
-    val scope = rememberCoroutineScope()
-    val warningIcon by rememberResourcePainterProvider(AllIconsKeys.General.Warning).getPainter()
-    val onEvent = LocalOnAppEvent.current
+    val menuActions = rememberMenuActions()
+
+    val warningIcon by rememberResourcePainterProvider(
+        AllIconsKeys.General.Warning
+    ).getPainter()
 
     MenuBar {
         Menu("File", mnemonic = 'F') {
             Item(
                 text = "New Tab",
                 shortcut = KeyShortcut(Key.T, meta = true),
-                onClick = {
-                    onEvent(AppEvent.AddNewTabEvent())
-                }
+                onClick = { menuActions.addNewTab() }
             )
             Item(
                 text = "Duplicate Tab",
                 shortcut = KeyShortcut(Key.T, meta = true, shift = true),
-                onClick = {
-                    onEvent(AppEvent.DuplicateTabEvent(currentTab.id))
-                }
+                onClick = { menuActions.duplicateTab(currentTab.id) }
             )
             Item(
                 text = "Close Tab",
                 icon = warningIcon,
                 shortcut = KeyShortcut(Key.W, meta = true),
-                onClick = {
-                    // TODO Ask confirmation, or allow undo
-                    onEvent(AppEvent.RemoveTabEvent(currentTab.id))
-                }
+                onClick = { menuActions.removeTab(currentTab.id) }
             )
         }
         Menu("Template", mnemonic = 'T') {
             Item(
                 text = "Load template",
                 shortcut = KeyShortcut(Key.L, meta = true),
-                onClick = {
-                    if (currentTab.groupDefinitions.isNotEmpty()) {
-                        // TODO Confirm overwrite
-                    }
-                    scope.launch {
-                        showFileDialog(
-                            title = "Load template",
-                            operation = FileDialogOperation.ChooseFile("json")
-                        ) { selectedFile ->
-                            onEvent(
-                                CurrentTabEvent.LoadTemplateEvent(
-                                    selectedFile,
-                                    definitionsOnly = false,
-                                )
-                            )
-                        }
-                    }
-                }
+                onClick = { menuActions.loadTemplate() }
             )
             Item(
                 text = "Save template",
                 shortcut = KeyShortcut(Key.S, meta = true),
-                onClick = {
-                    if (currentTab.templateData != null) {
-                        onEvent(
-                            CurrentTabEvent.SaveTemplateEvent(
-                                currentTab.templateData.templateFile,
-                                updateExisting = true
-                            )
-                        )
-                    } else {
-                        scope.launch {
-                            showFileDialog(
-                                title = "Save new template",
-                                operation = FileDialogOperation.CreateNewFile(
-                                    suggestedFilename = currentTab.name ?: "Template",
-                                    extension = "json",
-                                ),
-                            ) { selectedFile ->
-                                onEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
-                            }
-                        }
-                    }
-                }
+                onClick = { menuActions.saveTemplate(currentTab) }
             )
             Item(
                 text = "Save template as ...",
                 shortcut = KeyShortcut(Key.S, meta = true, shift = true),
-                onClick = {
-                    scope.launch {
-                        showFileDialog(
-                            title = "Save template as ...",
-                            operation = FileDialogOperation.CreateNewFile(
-                                suggestedFilename = currentTab.name ?: "Template",
-                                extension = "json",
-                            ),
-                        ) { selectedFile ->
-                            if (selectedFile.exists()) {
-                                // TODO Confirm overwrite, otherwise exit
-                            }
-                            onEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
-                        }
-                    }
-                }
+                onClick = { menuActions.saveTemplateAs(currentTab) }
             )
         }
 
@@ -132,32 +67,12 @@ fun FrameWindowScope.PBMenuBar(
             Item(
                 text = "Restore definitions from current template",
                 enabled = currentTab.templateData?.definitionsHaveChanged == true,
-                onClick = {
-                    if (currentTab.templateData == null) {
-                        // No-op
-                        return@Item
-                    }
-                    onEvent(
-                        CurrentTabEvent.LoadTemplateEvent(
-                            currentTab.templateData.templateFile,
-                            definitionsOnly = true,
-                        )
-                    )
-                }
+                onClick = { menuActions.restoreDefinitions(currentTab) }
             )
 
             Item(
                 text = "Add definitions from another template",
-                onClick = {
-                    scope.launch {
-                        showFileDialog(
-                            title = "Load definitions from...",
-                            operation = FileDialogOperation.ChooseFile("json")
-                        ) { selectedFile ->
-                            onEvent(CurrentTabEvent.AddDefinitionsFromTemplateEvent(selectedFile))
-                        }
-                    }
-                }
+                onClick = { menuActions.addDefinitionsFromAnotherTemplate() }
             )
 
             Separator()
@@ -165,10 +80,7 @@ fun FrameWindowScope.PBMenuBar(
             Item(
                 text = "Clear all definitions",
                 icon = warningIcon,
-                onClick = {
-                    // TODO Ask confirmation
-                    onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
-                }
+                onClick = { menuActions.clearAllDefinitions() }
             )
         }
     }
