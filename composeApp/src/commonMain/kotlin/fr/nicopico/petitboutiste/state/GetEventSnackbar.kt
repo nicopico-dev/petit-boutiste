@@ -32,7 +32,9 @@ fun AppEvent.getEventSnackbar(
 
         is CurrentTabEvent.DeleteDefinitionEvent -> {
             SnackbarState(
-                message = "Definition ${(definition.name?.let { "'$it'" }.orEmpty())} deleted",
+                message = if (definition.name.isNullOrBlank()) {
+                    "Definition deleted"
+                } else "Definition '${definition.name}' deleted",
                 actionLabel = "Undo",
                 onAction = {
                     onAppEvent(

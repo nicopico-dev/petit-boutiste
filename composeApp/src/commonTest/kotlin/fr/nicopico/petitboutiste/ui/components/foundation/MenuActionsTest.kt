@@ -67,7 +67,7 @@ class MenuActionsTest {
     }
 
     @Test
-    fun `removeTab triggers RemoveTabEvent and ShowSnackbarEvent`() {
+    fun `removeTab triggers RemoveTabEvent`() {
         // Given
         val tabId = defaultTab.id
 
@@ -75,11 +75,20 @@ class MenuActionsTest {
         menuActions.removeTab(tabId)
 
         // Then
-        assertEquals(2, capturedEvents.size)
+        assertEquals(1, capturedEvents.size)
         assertEquals(AppEvent.RemoveTabEvent(tabId), capturedEvents[0])
-        assertTrue(capturedEvents[1] is AppEvent.ShowSnackbarEvent)
-        val snackbarEvent = capturedEvents[1] as AppEvent.ShowSnackbarEvent
-        assertEquals("Undo", snackbarEvent.actionLabel)
+    }
+
+    @Test
+    fun `removeTab is a no-op for non-existing tab`() {
+        // Given
+        val tabId = TabId("NON_EXISTING_TAB")
+
+        // When
+        menuActions.removeTab(tabId)
+
+        // Then
+        assertEquals(0, capturedEvents.size)
     }
 
     @Test
@@ -133,16 +142,13 @@ class MenuActionsTest {
     }
 
     @Test
-    fun `clearAllDefinitions triggers ClearAllDefinitionsEvent and ShowSnackbarEvent`() {
+    fun `clearAllDefinitions triggers ClearAllDefinitionsEvent`() {
         // When
         menuActions.clearAllDefinitions()
 
         // Then
-        assertEquals(2, capturedEvents.size)
+        assertEquals(1, capturedEvents.size)
         assertEquals(CurrentTabEvent.ClearAllDefinitionsEvent, capturedEvents[0])
-        assertTrue(capturedEvents[1] is AppEvent.ShowSnackbarEvent)
-        val snackbarEvent = capturedEvents[1] as AppEvent.ShowSnackbarEvent
-        assertEquals("Undo", snackbarEvent.actionLabel)
     }
 
     @Test

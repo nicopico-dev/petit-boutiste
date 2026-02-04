@@ -319,7 +319,7 @@ class ReducerTest {
         // Given
         val existingDef = ByteGroupDefinition(indexes = 0..1, name = "Existing")
         val initialState = reducer(AppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(existingDef))
-        
+
         val templateFile = File("extra.json")
         val template = Template(
             name = "Extra",
@@ -393,33 +393,6 @@ class ReducerTest {
     }
 
     @Test
-    fun `ShowSnackbarEvent updates snackbar state`() = runTest {
-        // Given
-        val state = AppState()
-        val event = AppEvent.ShowSnackbarEvent("Test Message", "Action", {})
-
-        // When
-        val newState = reducer(state, event)
-
-        // Then
-        assertEquals("Test Message", newState.snackbarState?.message)
-        assertEquals("Action", newState.snackbarState?.actionLabel)
-    }
-
-    @Test
-    fun `DismissSnackbarEvent clears snackbar state`() = runTest {
-        // Given
-        val state = AppState(snackbarState = SnackbarState("Test"))
-        val event = AppEvent.DismissSnackbarEvent
-
-        // When
-        val newState = reducer(state, event)
-
-        // Then
-        assertEquals(null, newState.snackbarState)
-    }
-
-    @Test
     fun `UndoRemoveTabEvent restores removed tab`() = runTest {
         // Given
         val tab1 = TabData(name = "Tab 1")
@@ -434,7 +407,6 @@ class ReducerTest {
         assertEquals(2, newState.tabs.size)
         assertEquals(tab2.id, newState.tabs[1].id)
         assertEquals(tab2.id, newState.selectedTabId)
-        assertEquals(null, newState.snackbarState)
     }
 
     @Test
@@ -451,7 +423,6 @@ class ReducerTest {
 
         // Then
         assertEquals(defs, newState.selectedTab.groupDefinitions)
-        assertEquals(null, newState.snackbarState)
     }
 
     private fun AppState.updateCurrentTab(block: TabData.() -> TabData): AppState {
