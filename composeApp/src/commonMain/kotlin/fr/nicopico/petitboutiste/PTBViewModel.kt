@@ -14,6 +14,8 @@ import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.state.selectedTab
+import fr.nicopico.petitboutiste.utils.logError
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class PTBViewModel(
     private val reducer: Reducer,
@@ -32,6 +34,20 @@ class PTBViewModel(
         appStateRepository.restore()
     )
     val state: StateFlow<AppState> = _state.asStateFlow()
+
+    private val eventChannel = Channel<AppEvent>(Channel.BUFFERED)
+
+    init {
+        viewModelScope.launch {
+            for (event in eventChannel) {
+                try {
+                    _state.value = reducer(_state.value, event)
+                } catch (error: Exception) {
+                    logError("Error processing event: $event\n-> $error")
+                }
+            }
+        }
+    }
 
     val appTheme = _state
         .map { it.appTheme }
@@ -63,8 +79,8 @@ class PTBViewModel(
         )
 
     fun onAppEvent(event: AppEvent) {
-        _state.update { appState ->
-            reducer(appState, event)
+        viewModelScope.launch {
+            eventChannel.send(event)
         }
     }
 
