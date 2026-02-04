@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
@@ -63,7 +64,7 @@ fun PBSnackbar(
                     modifier = Modifier
                         .background(snackbarColors.actionBackgroundColor)
                         .clip(RoundedCornerShape(2.dp))
-                        .clickable {
+                        .clickableWithIndication {
                             state.onAction.invoke()
                             onDismiss()
                         }

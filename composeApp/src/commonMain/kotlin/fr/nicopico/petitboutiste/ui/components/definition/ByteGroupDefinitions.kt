@@ -8,7 +8,6 @@ package fr.nicopico.petitboutiste.ui.components.definition
 
 import androidx.compose.foundation.ContextMenuArea
 import androidx.compose.foundation.ContextMenuItem
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +31,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.state.AppEvent
+import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.moveStart
 import org.jetbrains.jewel.foundation.theme.JewelTheme
@@ -107,7 +107,7 @@ fun ByteGroupDefinitions(
                         definition = definition,
                         byteGroup = byteGroup,
                         selected = definition == selectedDefinition,
-                        modifier = Modifier.clickable {
+                        modifier = Modifier.clickableWithIndication {
                             if (definition != selectedDefinition) {
                                 onDefinitionSelected(definition)
                             } else {
