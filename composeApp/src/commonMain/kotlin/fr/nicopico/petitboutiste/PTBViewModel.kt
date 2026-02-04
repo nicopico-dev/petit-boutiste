@@ -12,10 +12,15 @@ import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.Reducer
+import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.state.TabsState
+import fr.nicopico.petitboutiste.state.getEventSnackbar
 import fr.nicopico.petitboutiste.state.selectedTab
 import fr.nicopico.petitboutiste.utils.logError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,14 +42,14 @@ class PTBViewModel(
 
     private val eventChannel = Channel<AppEvent>(Channel.BUFFERED)
 
+    private val _snackbarState = MutableStateFlow<SnackbarState?>(null)
+    val snackbarState: StateFlow<SnackbarState?> = _snackbarState.asStateFlow()
+    private var snackbarDismissJob: Job? = null
+
     init {
         viewModelScope.launch {
             for (event in eventChannel) {
-                try {
-                    _state.value = reducer(_state.value, event)
-                } catch (error: Exception) {
-                    logError("Error processing event: $event\n-> $error")
-                }
+                processEvent(event)
             }
         }
     }
@@ -84,7 +89,36 @@ class PTBViewModel(
         }
     }
 
+    private suspend fun CoroutineScope.processEvent(event: AppEvent) {
+        val previousState = _state.value
+        val newState = try {
+            reducer(_state.value, event)
+        } catch (error: Exception) {
+            logError("Error processing event: $event\n-> $error")
+            return // early exit
+        }
+
+        _state.value = newState
+
+        val snackbar = event.getEventSnackbar(previousState, ::onAppEvent)
+        if (snackbar != null) {
+            snackbarDismissJob?.cancel()
+            _snackbarState.value = snackbar
+
+            // Auto-hide snackbar after 5 seconds
+            snackbarDismissJob = launch {
+                delay(5000)
+                _snackbarState.value = null
+            }
+        }
+    }
+
     fun onAppClose() {
         appStateRepository.save(_state.value)
+    }
+
+    fun dismissSnackbar() {
+        snackbarDismissJob?.cancel()
+        _snackbarState.value = null
     }
 }

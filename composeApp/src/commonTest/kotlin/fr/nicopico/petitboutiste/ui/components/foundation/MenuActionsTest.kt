@@ -11,6 +11,7 @@ import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabId
 import fr.nicopico.petitboutiste.state.TabTemplateData
+import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.utils.file.FileDialog
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import kotlinx.coroutines.test.TestScope
@@ -38,7 +39,9 @@ class MenuActionsTest {
             fileToReturn?.let { block(it) }
         }
     }
-    private val menuActions = MenuActions(onEvent, testScope, mockFileDialogProvider)
+    private val defaultTab = TabData()
+    private val tabsState = TabsState(tabs = listOf(defaultTab), selectedTabId = defaultTab.id)
+    private val menuActions = MenuActions(onEvent, testScope, tabsState, mockFileDialogProvider)
 
     @Test
     fun `addNewTab triggers AddNewTabEvent`() {
@@ -66,7 +69,7 @@ class MenuActionsTest {
     @Test
     fun `removeTab triggers RemoveTabEvent`() {
         // Given
-        val tabId = TabId("test-tab-id")
+        val tabId = defaultTab.id
 
         // When
         menuActions.removeTab(tabId)
@@ -74,6 +77,18 @@ class MenuActionsTest {
         // Then
         assertEquals(1, capturedEvents.size)
         assertEquals(AppEvent.RemoveTabEvent(tabId), capturedEvents[0])
+    }
+
+    @Test
+    fun `removeTab is a no-op for non-existing tab`() {
+        // Given
+        val tabId = TabId("NON_EXISTING_TAB")
+
+        // When
+        menuActions.removeTab(tabId)
+
+        // Then
+        assertEquals(0, capturedEvents.size)
     }
 
     @Test

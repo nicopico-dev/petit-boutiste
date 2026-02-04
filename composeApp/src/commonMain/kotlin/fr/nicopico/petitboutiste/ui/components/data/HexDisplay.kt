@@ -8,7 +8,6 @@ package fr.nicopico.petitboutiste.ui.components.data
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +37,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.definition.size
+import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
@@ -98,7 +98,7 @@ fun HexDisplay(
                             horizontalAlignment = Alignment.Start,
                             modifier = Modifier
                                 .padding(4.dp)
-                                .clickable { onByteItemClicked(item) }
+                                .clickableWithIndication { onByteItemClicked(item) }
                                 .let {
                                     when (item) {
                                         is SingleByte -> it

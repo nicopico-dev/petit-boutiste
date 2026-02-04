@@ -62,6 +62,15 @@ class Reducer(
                 state.copy(tabs = tabs, selectedTabId = selectedTabId)
             }
 
+            is AppEvent.UndoRemoveTabEvent -> {
+                val newTabs = state.tabs.toMutableList()
+                    .apply { add(event.index.coerceIn(0, size), event.tabData) }
+                state.copy(
+                    tabs = newTabs,
+                    selectedTabId = event.tabData.id,
+                )
+            }
+
             is AppEvent.DuplicateTabEvent -> {
                 // Copy the tab with a new ID to separate them
                 val sourceTab = state.tabs.firstOrNull { it.id == event.tabId }
@@ -169,6 +178,17 @@ class Reducer(
                         templateData = null
                     )
                 }
+            }
+
+            is AppEvent.CurrentTabEvent.UndoClearAllDefinitionsEvent -> {
+                state.copy(
+                    tabs = state.tabs.update(event.tabId) {
+                        copy(
+                            rendering = event.rendering,
+                            templateData = event.templateData,
+                        )
+                    },
+                )
             }
 
             is AppEvent.CurrentTabEvent.UpdateScratchpadEvent -> {

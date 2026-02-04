@@ -319,7 +319,7 @@ class ReducerTest {
         // Given
         val existingDef = ByteGroupDefinition(indexes = 0..1, name = "Existing")
         val initialState = reducer(AppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(existingDef))
-        
+
         val templateFile = File("extra.json")
         val template = Template(
             name = "Extra",
@@ -390,6 +390,39 @@ class ReducerTest {
         val definitions = newState.selectedTab.groupDefinitions
         assertEquals("Def 2", definitions[0].name)
         assertEquals("Def 1", definitions[1].name)
+    }
+
+    @Test
+    fun `UndoRemoveTabEvent restores removed tab`() = runTest {
+        // Given
+        val tab1 = TabData(name = "Tab 1")
+        val tab2 = TabData(name = "Tab 2")
+        val state = AppState(tabs = listOf(tab1), selectedTabId = tab1.id)
+        val event = AppEvent.UndoRemoveTabEvent(tab2, 1)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(2, newState.tabs.size)
+        assertEquals(tab2.id, newState.tabs[1].id)
+        assertEquals(tab2.id, newState.selectedTabId)
+    }
+
+    @Test
+    fun `UndoClearAllDefinitionsEvent restores definitions`() = runTest {
+        // Given
+        val defs = listOf(ByteGroupDefinition(0..1, "Test"))
+        val tab = TabData()
+        val state = AppState(tabs = listOf(tab), selectedTabId = tab.id)
+        val rendering = TabDataRendering(groupDefinitions = defs)
+        val event = AppEvent.CurrentTabEvent.UndoClearAllDefinitionsEvent(tab.id, rendering, null)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(defs, newState.selectedTab.groupDefinitions)
     }
 
     private fun AppState.updateCurrentTab(block: TabData.() -> TabData): AppState {
