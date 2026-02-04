@@ -91,6 +91,7 @@ fun PetitBoutiste(
                                 snackbarState = snackbarState,
                                 modifier = Modifier
                                     .background(AppTheme.current.colors.windowBackgroundColor),
+                                onDismissSnackbar = viewModel::dismissSnackbar,
                             )
                         }
                     }

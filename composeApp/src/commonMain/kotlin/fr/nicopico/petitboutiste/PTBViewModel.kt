@@ -110,4 +110,9 @@ class PTBViewModel(
     fun onAppClose() {
         appStateRepository.save(_state.value)
     }
+
+    fun dismissSnackbar() {
+        snackbarDismissJob?.cancel()
+        _snackbarState.value = null
+    }
 }
