@@ -14,6 +14,7 @@ plugins {
 
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.cash.licensee)
+    alias(libs.plugins.kover)
 }
 
 //region Version management
@@ -172,5 +173,21 @@ licensee {
                 because("Apache 2.0 (see https://github.com/JetBrains/intellij-community)")
             }
         )
+    }
+}
+
+kover {
+    reports {
+        total {
+            filters {
+                excludes.annotatedBy.add("androidx.compose.runtime.Composable")
+            }
+            xml {
+                onCheck = true
+            }
+            html {
+                onCheck = true
+            }
+        }
     }
 }
