@@ -14,6 +14,7 @@ import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.state.selectedTab
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,12 +35,16 @@ class PTBViewModel(
     )
     val state: StateFlow<AppState> = _state.asStateFlow()
 
-    private val eventChannel = Channel<AppEvent>(Channel.UNLIMITED)
+    private val eventChannel = Channel<AppEvent>(Channel.BUFFERED)
 
     init {
         viewModelScope.launch {
             for (event in eventChannel) {
-                _state.value = reducer(_state.value, event)
+                try {
+                    _state.value = reducer(_state.value, event)
+                } catch (error: Exception) {
+                    logError("Error processing event: $event\n-> $error")
+                }
             }
         }
     }
