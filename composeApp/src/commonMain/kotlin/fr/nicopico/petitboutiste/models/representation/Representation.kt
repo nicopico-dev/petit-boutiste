@@ -48,7 +48,7 @@ suspend fun Representation.render(byteItem: ByteItem): RenderResult {
             ?.let { render -> RenderResult.Success(render) }
             ?: RenderResult.None
     } catch (e: Exception) {
-        logError("Error rendering with $this: ${e.message}")
+        logError("Error rendering with $this", e)
         RenderResult.Error(e.toString())
     }
 }

@@ -216,7 +216,7 @@ fun ByteItemRender(
                                     clipboard.setClipEntry(clipEntry)
                                 } catch (e: Exception) {
                                     ensureActive()
-                                    logError("Failed to copy rendering to clipboard: $e")
+                                    logError("Failed to copy rendering to clipboard", e)
                                 }
                             }
                         },

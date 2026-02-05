@@ -22,7 +22,7 @@ abstract class BaseRepositorySettings(
     protected fun getStringOrNull(key: String): String? = try {
         settings.getStringOrNull(key)
     } catch (e: Throwable) {
-        logError("Error reading settings key '$key': $e")
+        logError("Error reading settings key '$key'", e)
         null
     }
 
@@ -30,7 +30,7 @@ abstract class BaseRepositorySettings(
         try {
             if (value == null) settings.remove(key) else settings.putString(key, value)
         } catch (e: Throwable) {
-            logError("Error writing settings key '$key': $e")
+            logError("Error writing settings key '$key'", e)
         }
     }
 
@@ -39,12 +39,12 @@ abstract class BaseRepositorySettings(
         return try {
             json.decodeFromString<T>(data)
         } catch (e: SerializationException) {
-            logError("Error decoding settings key '$key', clearing data ($e)")
+            logError("Error decoding settings key '$key', clearing data", e)
             putStringOrRemove(key, null)
             null
         } catch (e: IllegalArgumentException) {
             // For cases where constructors invariants throw (e.g., HexString), clear and return null
-            logError("Invalid persisted data for key '$key', clearing data ($e)")
+            logError("Invalid persisted data for key '$key', clearing data", e)
             putStringOrRemove(key, null)
             null
         }

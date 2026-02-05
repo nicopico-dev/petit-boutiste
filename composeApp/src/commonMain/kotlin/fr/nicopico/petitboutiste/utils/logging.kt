@@ -20,7 +20,10 @@ fun log(msg: String) {
     MacosBridge.log(msg)
 }
 
-fun logError(msg: String) {
-    System.err.println("[${timestamp()}] $msg")
+fun logError(msg: String, error: Throwable? = null) {
+    val stacktrace = error?.stackTraceToString()
+        ?.let { "\n$it" }
+        .orEmpty()
+    System.err.println("[${timestamp()}] $msg$stacktrace")
     MacosBridge.log("ERROR: $msg")
 }
