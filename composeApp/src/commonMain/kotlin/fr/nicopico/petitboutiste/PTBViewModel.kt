@@ -94,7 +94,7 @@ class PTBViewModel(
         val newState = try {
             reducer(_state.value, event)
         } catch (error: Exception) {
-            logError("Error processing event: $event\n-> $error")
+            logError("Error processing event: $event", error)
             return // early exit
         }
 

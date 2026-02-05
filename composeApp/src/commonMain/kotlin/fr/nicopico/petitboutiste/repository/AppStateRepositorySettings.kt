@@ -54,7 +54,7 @@ class AppStateRepositorySettings(
             try {
                 pt.toTabData()
             } catch (e: Exception) {
-                logError("Error restoring tab '${pt.id}': $e")
+                logError("Error restoring tab '${pt.id}'", e)
                 null
             }
         }

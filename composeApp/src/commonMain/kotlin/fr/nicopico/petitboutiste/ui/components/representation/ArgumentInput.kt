@@ -79,7 +79,7 @@ fun ArgumentInput(
                         val choices by getChoices(completeArgumentsFlow)
                             .catch { error ->
                                 // TODO Bubble up the error to the UI
-                                logError("Error parsing choices for $argument: $error")
+                                logError("Error parsing choices for $argument", error)
                                 emit(emptyList())
                             }
                             .collectAsStateWithLifecycle(emptyList())
