@@ -17,14 +17,12 @@ import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.state.getEventSnackbar
 import fr.nicopico.petitboutiste.state.selectedTab
 import fr.nicopico.petitboutiste.utils.logError
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -35,15 +33,13 @@ class PTBViewModel(
     private val appStateRepository: AppStateRepository,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(
-        appStateRepository.restore()
-    )
-    val state: StateFlow<AppState> = _state.asStateFlow()
+    val state: StateFlow<AppState>
+        field = MutableStateFlow(appStateRepository.restore())
+
+    val snackbarState: StateFlow<SnackbarState?>
+        field = MutableStateFlow<SnackbarState?>(null)
 
     private val eventChannel = Channel<AppEvent>(Channel.BUFFERED)
-
-    private val _snackbarState = MutableStateFlow<SnackbarState?>(null)
-    val snackbarState: StateFlow<SnackbarState?> = _snackbarState.asStateFlow()
     private var snackbarDismissJob: Job? = null
 
     init {
@@ -54,33 +50,33 @@ class PTBViewModel(
         }
     }
 
-    val appTheme = _state
+    val appTheme = state
         .map { it.appTheme }
         .distinctUntilChanged()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = _state.value.appTheme,
+            initialValue = state.value.appTheme,
         )
 
-    val tabsState = _state
+    val tabsState = state
         .map { TabsState(it.tabs, it.selectedTabId) }
         .distinctUntilChanged()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = _state.value.let {
+            initialValue = state.value.let {
                 TabsState(it.tabs, it.selectedTabId)
             },
         )
 
-    val currentTab = _state
+    val currentTab = state
         .map { it.selectedTab }
         .distinctUntilChanged()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = _state.value.selectedTab,
+            initialValue = state.value.selectedTab,
         )
 
     fun onAppEvent(event: AppEvent) {
@@ -89,36 +85,40 @@ class PTBViewModel(
         }
     }
 
-    private suspend fun CoroutineScope.processEvent(event: AppEvent) {
-        val previousState = _state.value
+    private suspend fun processEvent(event: AppEvent) {
+        val previousState = state.value
         val newState = try {
-            reducer(_state.value, event)
+            reducer(state.value, event)
         } catch (error: Exception) {
             logError("Error processing event: $event", error)
             return // early exit
         }
 
-        _state.value = newState
+        state.value = newState
 
         val snackbar = event.getEventSnackbar(previousState, ::onAppEvent)
         if (snackbar != null) {
-            snackbarDismissJob?.cancel()
-            _snackbarState.value = snackbar
-
-            // Auto-hide snackbar after 5 seconds
-            snackbarDismissJob = launch {
-                delay(5000)
-                _snackbarState.value = null
-            }
+            displaySnackBar(snackbar)
         }
     }
 
     fun onAppClose() {
-        appStateRepository.save(_state.value)
+        appStateRepository.save(state.value)
+    }
+
+    fun displaySnackBar(snackbar: SnackbarState) {
+        snackbarDismissJob?.cancel()
+        snackbarState.value = snackbar
+
+        // Auto-hide snackbar after 5 seconds
+        snackbarDismissJob = viewModelScope.launch {
+            delay(5000)
+            snackbarState.value = null
+        }
     }
 
     fun dismissSnackbar() {
         snackbarDismissJob?.cancel()
-        _snackbarState.value = null
+        snackbarState.value = null
     }
 }

@@ -21,6 +21,7 @@ import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
 import fr.nicopico.petitboutiste.state.OnAppEvent
+import fr.nicopico.petitboutiste.state.OnSnackbar
 import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.ui.AppContent
 import fr.nicopico.petitboutiste.ui.AppShortcuts
@@ -35,6 +36,9 @@ import org.jetbrains.jewel.window.DecoratedWindow
 private val windowStateRepository = WindowStateRepository()
 
 val LocalOnAppEvent = staticCompositionLocalOf<OnAppEvent> {
+    { /* no-op */ }
+}
+val LocalOnSnackbar = staticCompositionLocalOf<OnSnackbar> {
     { /* no-op */ }
 }
 
@@ -76,26 +80,28 @@ fun PetitBoutiste(
             state = windowState,
             content = {
                 CompositionLocalProvider(
-                    value = LocalOnAppEvent provides { event ->
+                    LocalOnAppEvent provides { event ->
                         viewModel.onAppEvent(event)
                     },
-                    content = {
-                        PBMenuBar(tabsState)
-                        PBTitleBar(
-                            tabsState = tabsState,
-                            appTheme = appTheme,
+                    LocalOnSnackbar provides { snackbar ->
+                        viewModel.displaySnackBar(snackbar)
+                    },
+                ) {
+                    PBMenuBar(tabsState)
+                    PBTitleBar(
+                        tabsState = tabsState,
+                        appTheme = appTheme,
+                    )
+                    AppShortcuts {
+                        AppContent(
+                            tabData = currentTab,
+                            snackbarState = snackbarState,
+                            modifier = Modifier
+                                .background(AppTheme.current.colors.windowBackgroundColor),
+                            onDismissSnackbar = viewModel::dismissSnackbar,
                         )
-                        AppShortcuts {
-                            AppContent(
-                                tabData = currentTab,
-                                snackbarState = snackbarState,
-                                modifier = Modifier
-                                    .background(AppTheme.current.colors.windowBackgroundColor),
-                                onDismissSnackbar = viewModel::dismissSnackbar,
-                            )
-                        }
                     }
-                )
+                }
             }
         )
     }

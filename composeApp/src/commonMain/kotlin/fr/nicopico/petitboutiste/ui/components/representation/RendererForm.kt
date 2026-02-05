@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
+import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
@@ -32,6 +34,7 @@ fun RendererForm(
     showSubmitButton: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val onSnackbar = LocalOnSnackbar.current
     var argumentValues: ArgumentValues = remember(arguments, values) { values }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -52,8 +55,11 @@ fun RendererForm(
                         !showSubmitButton,
                     )
                 },
+                onError = { message ->
+                    onSnackbar(SnackbarState(message))
+                },
                 completeArguments = argumentValues,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 

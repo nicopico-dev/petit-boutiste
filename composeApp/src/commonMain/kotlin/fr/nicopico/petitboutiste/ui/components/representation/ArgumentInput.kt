@@ -35,6 +35,7 @@ fun ArgumentInput(
     onValueChanged: (ArgValue?) -> Unit,
     completeArguments: ArgumentValues,
     modifier: Modifier = Modifier,
+    onError: (String) -> Unit = {},
 ) {
     val value: ArgValue? = remember(argument, userValue) {
         userValue ?: argument.defaultValue
@@ -78,8 +79,8 @@ fun ArgumentInput(
                     with(argument.type) {
                         val choices by getChoices(completeArgumentsFlow)
                             .catch { error ->
-                                // TODO Bubble up the error to the UI
-                                logError("Error parsing choices for $argument", error)
+                                logError("Error parsing choices for ${argument.key}", error)
+                                onError("Error parsing choices for ${argument.label}")
                                 emit(emptyList())
                             }
                             .collectAsStateWithLifecycle(emptyList())
