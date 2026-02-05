@@ -34,7 +34,6 @@ fun PBSnackbar(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // TODO Improve snackbar UI
     val snackbarColors = AppTheme.current.colors.snackbarColors
 
     Box(

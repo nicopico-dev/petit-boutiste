@@ -16,12 +16,10 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.time.Duration.Companion.seconds
 
 private const val ARG_PROTO_FILE_KEY = "protoFile"
 private const val ARG_MESSAGE_TYPE_KEY = "messageType"
@@ -42,27 +40,18 @@ val protobufArguments = listOf(
         type = ArgumentType.ChoiceType(
             type = String::class,
             getChoices = { arguments ->
-                // TODO Listen for changes in the arguments instead of polling
-                callbackFlow {
-                    var previousFile: File? = null
-                    while (isActive) {
-                        val protoFileArgument =
-                            DataRenderer.Protobuf.getArgumentValue<File>(ARG_PROTO_FILE_KEY, arguments)
-
-                        if (previousFile != protoFileArgument) {
-                            previousFile = protoFileArgument
-                            val descriptors = if (protoFileArgument != null) {
-                                getMessageTypeDescriptors(protoFileArgument)
-                                    .map { it.name }
-                                    .sorted()
-                            } else emptyList()
-
-                            send(descriptors)
-                        }
-
-                        delay(1.seconds)
+                arguments
+                    .map {
+                        DataRenderer.Protobuf.getArgumentValue<File>(ARG_PROTO_FILE_KEY, it)
                     }
-                }
+                    .distinctUntilChanged()
+                    .map { protoFileArgument ->
+                        if (protoFileArgument != null) {
+                            getMessageTypeDescriptors(protoFileArgument)
+                                .map { it.name }
+                                .sorted()
+                        } else emptyList()
+                    }
             },
             argValueConverter = { it },
             choiceConverter = { it },

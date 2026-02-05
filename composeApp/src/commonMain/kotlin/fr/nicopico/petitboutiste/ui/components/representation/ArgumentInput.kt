@@ -9,6 +9,7 @@ package fr.nicopico.petitboutiste.ui.components.representation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import fr.nicopico.petitboutiste.utils.logError
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 
 @Composable
@@ -36,6 +38,12 @@ fun ArgumentInput(
 ) {
     val value: ArgValue? = remember(argument, userValue) {
         userValue ?: argument.defaultValue
+    }
+    val completeArgumentsFlow = remember(argument, userValue) {
+        MutableSharedFlow<ArgumentValues>(replay = 1)
+    }
+    LaunchedEffect(completeArgumentsFlow, completeArguments) {
+        completeArgumentsFlow.emit(completeArguments)
     }
 
     Column(modifier = modifier) {
@@ -68,7 +76,7 @@ fun ArgumentInput(
 
                 is ArgumentType.ChoiceType<*> -> {
                     with(argument.type) {
-                        val choices by getChoices(completeArguments)
+                        val choices by getChoices(completeArgumentsFlow)
                             .catch { error ->
                                 // TODO Bubble up the error to the UI
                                 logError("Error parsing choices for $argument: $error")
@@ -79,6 +87,7 @@ fun ArgumentInput(
                         PBDropdown(
                             items = choices,
                             selection = value?.let(::convertFrom),
+                            modifier = Modifier.fillMaxWidth(),
                             onItemSelected = { choice ->
                                 onValueChanged(convertChoice(choice))
                             }

@@ -31,7 +31,7 @@ sealed class ArgumentType<T : Any>(
 
     data class ChoiceType<T: Any>(
         private val type: KClass<T>,
-        val getChoices: (ArgumentValues) -> Flow<List<T>>,
+        val getChoices: (Flow<ArgumentValues>) -> Flow<List<T>>,
         private val argValueConverter: (ArgValue) -> T,
         private val choiceConverter: (T) -> ArgValue,
     ) : ArgumentType<T>(type) {
