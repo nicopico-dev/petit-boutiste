@@ -2,6 +2,8 @@
 androidx-lifecycle = "2.9.6"
 cash-licensee = "1.14.1"
 composeMultiplatform = "1.10.0"
+detekt = "1.23.8"
+detekt-composeRules = "0.4.23"
 filekit = "0.12.0"
 intellijPlatform = "252.25557.178" # https://mvnrepository.com/artifact/com.jetbrains.intellij.platform/core
 jewel = "0.33.0-253.29795" # https://central.sonatype.com/artifact/org.jetbrains.jewel/jewel-int-ui-standalone/versions
@@ -16,6 +18,7 @@ skydoves-stabilityAnalyzer = "0.6.6"
 [libraries]
 androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+detekt-rules-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detekt-composeRules" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
 intellij-platform-icons = { module = "com.jetbrains.intellij.platform:icons", version.ref = "intellijPlatform" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
@@ -41,6 +44,7 @@ jewel = [ "jewel-int-ui-standalone", "jewel-int-ui-decorated-window", "intellij-
 cash-licensee = { id = "app.cash.licensee", version.ref = "cash-licensee" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
