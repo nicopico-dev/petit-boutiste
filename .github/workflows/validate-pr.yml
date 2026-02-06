@@ -1,0 +1,47 @@
+name: Validate Pull Request
+
+on:
+  # TODO Enable pull_request trigger
+  #pull_request:
+  #  branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'jetbrains'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build and Test
+        run: ./gradlew --no-daemon build koverXmlReport detektDesktopMain -PappVersion=1.0.0
+
+      - name: Add coverage report
+        uses: mi-kas/kover-report@v1
+        if: always()
+        with:
+          path: |
+            ${{ github.workspace }}/composeApp/build/reports/kover/report.xml
+          title: Code Coverage
+          update-comment: true
+
+      - name: Publish Unit Test Results
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: 'composeApp/build/test-results/desktopTest/**.xml'
