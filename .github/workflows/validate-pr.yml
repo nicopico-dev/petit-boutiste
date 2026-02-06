@@ -1,8 +1,9 @@
 name: Validate Pull Request
 
 on:
-  pull_request:
-    branches: [ main ]
+  # TODO Enable pull_request trigger
+  #pull_request:
+  #  branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
