@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComposableParamOrder:PBLabel.kt$PBLabel</ID>
+    <ID>ComposableParamOrder:WrapForPreview.kt$WrapForPreview</ID>
+    <ID>CompositionLocalAllowlist:PBTheme.kt$AppTheme</ID>
+    <ID>CompositionLocalAllowlist:PetitBoutiste.kt$LocalOnAppEvent</ID>
+    <ID>CompositionLocalNaming:PBTheme.kt$AppTheme</ID>
+    <ID>ContentSlotReused:WrapForPreviewDesktop.kt$content</ID>
+    <ID>EmptyClassBlock:BinaryStringParameterProvider.kt$BinaryStringParameterProvider${}</ID>
+    <ID>EmptyClassBlock:HexStringParameterProvider.kt$HexStringParameterProvider${}</ID>
+    <ID>InjectDispatcher:FileDialog.kt$FileDialogDefault$IO</ID>
+    <ID>InjectDispatcher:ScriptHost.kt$ScriptHost$IO</ID>
+    <ID>InjectDispatcher:protobuf.kt$IO</ID>
+    <ID>LambdaParameterEventTrailing:ByteGroupDefinitionItem.kt$onToggleDisplayForm</ID>
+    <ID>LambdaParameterInRestartableEffect:PBTextHandling.kt$onValueChange</ID>
+    <ID>LongMethod:ByteGroupDefinitions.kt$@Composable fun ByteGroupDefinitions( definitions: List&lt;ByteGroupDefinition&gt;, onAddDefinition: (ByteGroupDefinition) -&gt; Unit, onUpdateDefinition: (source: ByteGroupDefinition, update: ByteGroupDefinition) -&gt; Unit, onDeleteDefinition: (ByteGroupDefinition) -&gt; Unit, modifier: Modifier = Modifier, selectedDefinition: ByteGroupDefinition? = null, onDefinitionSelected: (ByteGroupDefinition?) -&gt; Unit = {}, byteItems: List&lt;ByteItem&gt; = emptyList(), )</ID>
+    <ID>LongMethod:ByteItemRender.kt$@OptIn(ExperimentalComposeUiApi::class) @Composable fun ByteItemRender( byteItem: ByteItem, representation: Representation, onRepresentationChanged: (Representation) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:Reducer.kt$Reducer$suspend operator fun invoke(state: AppState, event: AppEvent): AppState</ID>
+    <ID>LongMethod:TabContent.kt$@Composable fun TabContent( inputData: DataString, definitions: List&lt;ByteGroupDefinition&gt;, byteItems: List&lt;ByteItem&gt;, scratchpad: String = "", )</ID>
+    <ID>MatchingDeclarationName:PBLabel.kt$PBLabelOrientation</ID>
+    <ID>MemberNameEqualsClassName:Base64String.kt$Base64String$val base64String: String = base64.encode(byteArray)</ID>
+    <ID>MemberNameEqualsClassName:BinaryString.kt$BinaryString$// The original binary string (normalized) val binaryString: String = rawBinaryString.normalizeBinaryString()</ID>
+    <ID>ModifierComposed:clickableWithIndication.kt$clickableWithIndication</ID>
+    <ID>ModifierMissing:AppShortcuts.kt$AppShortcuts</ID>
+    <ID>ModifierMissing:DesktopScaffold.kt$DesktopScaffold</ID>
+    <ID>ModifierMissing:PetitBoutiste.kt$PetitBoutiste</ID>
+    <ID>ModifierMissing:RenameTabDialog.kt$RenameTabDialog</ID>
+    <ID>ModifierMissing:TabContent.kt$TabContent</ID>
+    <ID>ModifierMissing:WrapForPreviewDesktop.kt$WrapForPreviewDesktop</ID>
+    <ID>MultipleEmitters:PBTitleBar.kt$TemplateToolbar</ID>
+    <ID>ReturnCount:ByteGroup.kt$ByteGroup$suspend fun getOrComputeRendering(): RenderResult</ID>
+    <ID>ReturnCount:TabData.kt$TabDataRendering$suspend fun renderByteItems(): List&lt;ByteItem&gt;</ID>
+    <ID>UnnecessaryAbstractClass:BaseRepositorySettings.kt$BaseRepositorySettings$BaseRepositorySettings</ID>
+    <ID>UnsafeCallOnNullableType:protobuf.kt$getArgumentValue(ARG_MESSAGE_TYPE_KEY, argumentValues)!!</ID>
+    <ID>UnsafeCallOnNullableType:protobuf.kt$getArgumentValue(ARG_PROTO_FILE_KEY, argumentValues)!!</ID>
+    <ID>UnsafeCallOnNullableType:subTemplate.kt$getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)!!</ID>
+    <ID>UnsafeCallOnNullableType:userScript.kt$getArgumentValue(ARG_USER_SCRIPT_FILE_KEY, argumentValues)!!</ID>
+    <ID>UnusedImports:subTemplate.kt$import fr.nicopico.petitboutiste.models.representation.render</ID>
+    <ID>UnusedPrivateMember:TemplateManagerImpl.kt$private fun Representation.updateFileArgumentPaths( transform: (String) -&gt; String, ): Representation</ID>
+    <ID>UseOrEmpty:ArgumentInput.kt$value ?: ""</ID>
+    <ID>UseOrEmpty:ByteGroupDefinitionForm.kt$definition.name ?: ""</ID>
+    <ID>UseOrEmpty:HexDisplay.kt$item.name ?: ""</ID>
+    <ID>UseOrEmpty:PBFileSelector.kt$selection?.name ?: ""</ID>
+    <ID>UseOrEmpty:RenameTabDialog.kt$currentName ?: ""</ID>
+    <ID>UseRequire:protobuf.kt$throw IllegalArgumentException("File does not exist: $protoFile")</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -6,6 +6,7 @@
 
 import app.cash.licensee.SpdxId
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -18,6 +19,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
 }
+// TODO Extract plugins configurations into convention plugins
 
 //region Version management
 val isCi = System.getenv("CI")?.equals("true", ignoreCase = true) == true
@@ -182,7 +184,7 @@ detekt {
     buildUponDefaultConfig = true
     allRules = false
     config.setFrom("${project.rootDir}/detekt.yml")
-    baseline = File("${project.projectDir}/detekt-baseline.xml")
+    baseline = File("${project.rootDir}/detekt-baseline-${project.name}.xml")
 }
 dependencies {
     detektPlugins(libs.detekt.rules.compose)
@@ -193,6 +195,9 @@ run {
         "src/desktopMain/kotlin"
     )
     tasks.withType<Detekt>().configureEach {
+        setSource(files(detektSourceDirs))
+    }
+    tasks.withType<DetektCreateBaselineTask>().configureEach {
         setSource(files(detektSourceDirs))
     }
 }
