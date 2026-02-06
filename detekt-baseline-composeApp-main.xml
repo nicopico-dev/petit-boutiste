@@ -6,10 +6,12 @@
     <ID>ComposableParamOrder:WrapForPreview.kt$WrapForPreview</ID>
     <ID>CompositionLocalAllowlist:PBTheme.kt$AppTheme</ID>
     <ID>CompositionLocalAllowlist:PetitBoutiste.kt$LocalOnAppEvent</ID>
+    <ID>CompositionLocalAllowlist:PetitBoutiste.kt$LocalOnSnackbar</ID>
     <ID>CompositionLocalNaming:PBTheme.kt$AppTheme</ID>
     <ID>ContentSlotReused:WrapForPreviewDesktop.kt$content</ID>
     <ID>EmptyClassBlock:BinaryStringParameterProvider.kt$BinaryStringParameterProvider${}</ID>
     <ID>EmptyClassBlock:HexStringParameterProvider.kt$HexStringParameterProvider${}</ID>
+    <ID>InjectDispatcher:ArgumentInput.kt$Default</ID>
     <ID>InjectDispatcher:FileDialog.kt$FileDialogDefault$IO</ID>
     <ID>InjectDispatcher:ScriptHost.kt$ScriptHost$IO</ID>
     <ID>InjectDispatcher:protobuf.kt$IO</ID>

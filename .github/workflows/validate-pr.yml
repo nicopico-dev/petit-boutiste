@@ -1,9 +1,8 @@
 name: Validate Pull Request
 
 on:
-  # TODO Enable pull_request trigger
-  #pull_request:
-  #  branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:

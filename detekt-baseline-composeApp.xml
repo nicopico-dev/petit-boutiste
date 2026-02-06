@@ -6,6 +6,7 @@
     <ID>ComposableParamOrder:WrapForPreview.kt$WrapForPreview</ID>
     <ID>CompositionLocalAllowlist:PBTheme.kt$AppTheme</ID>
     <ID>CompositionLocalAllowlist:PetitBoutiste.kt$LocalOnAppEvent</ID>
+    <ID>CompositionLocalAllowlist:PetitBoutiste.kt$LocalOnSnackbar</ID>
     <ID>CompositionLocalNaming:PBTheme.kt$AppTheme</ID>
     <ID>ContentSlotReused:WrapForPreviewDesktop.kt$content</ID>
     <ID>EmptyClassBlock:BinaryStringParameterProvider.kt$BinaryStringParameterProvider${}</ID>
