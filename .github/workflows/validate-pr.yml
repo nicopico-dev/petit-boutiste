@@ -8,7 +8,7 @@ on:
 jobs:
   validate:
     name: Build and Test
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
@@ -26,4 +26,19 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Test
-        run: ./gradlew build -PappVersion=1.0.0
+        run: ./gradlew --no-daemon build koverXmlReport detektDesktopMain -PappVersion=1.0.0
+
+      - name: Add coverage report
+        uses: mi-kas/kover-report@v1
+        if: always()
+        with:
+          path: |
+            ${{ github.workspace }}/composeApp/build/reports/kover/report.xml
+          title: Code Coverage
+          update-comment: true
+
+      - name: Publish Unit Test Results
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: 'composeApp/build/test-results/desktopTest/**.xml'

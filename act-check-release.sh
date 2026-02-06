@@ -5,4 +5,7 @@
 #  file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
 
-act -P macos-latest=-self-hosted -W .github/workflows/macos-release.yml -e .github/act/act_release_event.json --artifact-server-path /tmp/act
+act -P macos-latest=-self-hosted \
+  --artifact-server-path /tmp/act \
+  -W .github/workflows/macos-release.yml \
+  -e .github/act/act_release_event.json
