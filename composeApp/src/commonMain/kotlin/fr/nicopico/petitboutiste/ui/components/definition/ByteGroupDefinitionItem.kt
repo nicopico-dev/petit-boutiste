@@ -87,7 +87,6 @@ fun ByteGroupDefinitionItem(
                 val rangeSuffix = with(definition.indexes) {
                     val rangeText = when {
                         invalidDefinition -> ") - invalid start index"
-                        incomplete -> ", incomplete)"
                         else -> ")"
                     }
                     "$start..$endInclusive (${count()} bytes$rangeText"
@@ -98,6 +97,15 @@ fun ByteGroupDefinitionItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+
+                if (incomplete) {
+                    Text(
+                        text = "incomplete: only ${byteGroup.bytes.size} bytes present",
+                        style = JewelTheme.typography.medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
 
                 var valueText: String? by remember {
                     mutableStateOf(null)
