@@ -14,4 +14,4 @@ fun IntRange.moveStart(newStart: Int): IntRange {
 }
 
 val IntRange.size: Int
-    get() = endInclusive - start + 1
+    get() = if (isEmpty()) 0 else endInclusive - start + 1

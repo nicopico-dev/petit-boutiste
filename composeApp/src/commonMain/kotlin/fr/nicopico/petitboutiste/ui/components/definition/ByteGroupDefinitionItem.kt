@@ -38,6 +38,7 @@ import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.Slot
+import fr.nicopico.petitboutiste.utils.size
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.IconButton
@@ -83,7 +84,7 @@ fun ByteGroupDefinitionItem(
                 )
 
                 val rangeSuffix = with(definition.indexes) {
-                    "$start..$endInclusive (${count()} bytes)"
+                    "$start..$endInclusive ($size bytes)"
                 }
                 Text(
                     text = rangeSuffix,

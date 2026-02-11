@@ -34,4 +34,17 @@ class IntRangeExtTest {
         // THEN
         assertEquals(1, actualSize)
     }
+
+    @Test
+    fun `should compute the size of an empty IntRange`() {
+        // GIVEN
+        @Suppress("EmptyRange")
+        val range = 3..1
+
+        // WHEN
+        val actualSize = range.size
+
+        // THEN
+        assertEquals(0, actualSize)
+    }
 }
