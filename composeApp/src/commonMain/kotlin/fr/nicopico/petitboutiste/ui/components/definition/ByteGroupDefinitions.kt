@@ -34,6 +34,7 @@ import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.moveStart
+import fr.nicopico.petitboutiste.utils.size
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
@@ -50,7 +51,7 @@ fun ByteGroupDefinitions(
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
     byteItems: List<ByteItem> = emptyList(),
 ) {
-    val invalidDefinitions: Set<ByteGroupDefinition> = remember(definitions) {
+    val overlappingDefinitions: Set<ByteGroupDefinition> = remember(definitions) {
         buildSet {
             var previousDefinitionEnd = -1
             definitions.forEach { definition ->
@@ -85,6 +86,18 @@ fun ByteGroupDefinitions(
                     it is ByteGroup && it.definition == definition
                 } as? ByteGroup
 
+                val expectedSize = definition.indexes.size
+                val actualSize = byteGroup?.bytes?.size
+                val errorMessage = when {
+                    definition in overlappingDefinitions -> {
+                        "This definition overlaps with the previous one"
+                    }
+                    actualSize != null && actualSize != expectedSize -> {
+                        "The payload is incomplete ($actualSize bytes instead of $expectedSize)"
+                    }
+                    else -> null
+                }
+
                 ContextMenuArea(
                     items = {
                         listOf(
@@ -114,10 +127,6 @@ fun ByteGroupDefinitions(
                                 onDefinitionSelected(null)
                             }
                         },
-                        onDelete = {
-                            onDeleteDefinition(definition)
-                        },
-                        invalidDefinition = definition in invalidDefinitions,
                         form = {
                             ByteGroupDefinitionForm(
                                 definition = definition,
@@ -133,6 +142,10 @@ fun ByteGroupDefinitions(
                         onToggleDisplayForm = { display ->
                             openedDefinition = if (display) definition else null
                         },
+                        onDelete = {
+                            onDeleteDefinition(definition)
+                        },
+                        errorMessage = errorMessage,
                     )
                 }
             }

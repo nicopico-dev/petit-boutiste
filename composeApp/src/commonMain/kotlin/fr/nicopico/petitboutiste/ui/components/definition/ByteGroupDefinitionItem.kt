@@ -48,23 +48,21 @@ import org.jetbrains.jewel.ui.typography
 @Composable
 fun ByteGroupDefinitionItem(
     definition: ByteGroupDefinition,
+    onToggleDisplayForm: (Boolean) -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     byteGroup: ByteGroup? = null,
-    invalidDefinition: Boolean = false,
+    errorMessage: String? = null,
     form: Slot? = null,
     displayForm: Boolean = false,
-    onToggleDisplayForm: (Boolean) -> Unit,
 ) {
-    val incomplete = byteGroup?.incomplete ?: false
-
     Column(
         modifier = modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = if (incomplete || invalidDefinition) {
+                color = if (errorMessage != null) {
                     AppTheme.current.colors.errorColor
                 } else AppTheme.current.colors.borderColor,
                 shape = RoundedCornerShape(4.dp)
@@ -85,11 +83,7 @@ fun ByteGroupDefinitionItem(
                 )
 
                 val rangeSuffix = with(definition.indexes) {
-                    val rangeText = when {
-                        invalidDefinition -> ") - invalid start index"
-                        else -> ")"
-                    }
-                    "$start..$endInclusive (${count()} bytes$rangeText"
+                    "$start..$endInclusive (${count()} bytes)"
                 }
                 Text(
                     text = rangeSuffix,
@@ -98,9 +92,9 @@ fun ByteGroupDefinitionItem(
                     overflow = TextOverflow.Ellipsis,
                 )
 
-                if (incomplete) {
+                if (errorMessage != null) {
                     Text(
-                        text = "incomplete: only ${byteGroup.bytes.size} bytes present",
+                        text = errorMessage,
                         style = JewelTheme.typography.medium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

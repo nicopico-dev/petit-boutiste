@@ -12,3 +12,6 @@ package fr.nicopico.petitboutiste.utils
 fun IntRange.moveStart(newStart: Int): IntRange {
     return newStart..(newStart + (endInclusive - start))
 }
+
+val IntRange.size: Int
+    get() = endInclusive - start + 1
