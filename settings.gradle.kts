@@ -1,3 +1,4 @@
+@file:Suppress("UnstableApiUsage")
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -42,6 +43,8 @@ dependencyResolutionManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
+
+includeBuild("build-logic")
 
 include(":composeApp")
 include(":macosBridge")

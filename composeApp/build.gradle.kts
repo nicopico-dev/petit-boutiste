@@ -5,8 +5,6 @@
  */
 
 import app.cash.licensee.SpdxId
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -16,25 +14,11 @@ plugins {
 
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.cash.licensee)
-    alias(libs.plugins.detekt)
-    alias(libs.plugins.kover)
-}
-// TODO Extract plugins configurations into convention plugins
 
-//region Version management
-val isCi = System.getenv("CI")?.equals("true", ignoreCase = true) == true
-val appVersionProp = findProperty("appVersion")?.toString()
-
-version = if (isCi) {
-    require(!appVersionProp.isNullOrBlank()) {
-        "CI=true: appVersion Gradle property is required (use -PappVersion=x.y.z)"
-    }
-    appVersionProp
-} else {
-    appVersionProp
-        ?: "255.255.65535" // Default for development
+    id("detekt-convention")
+    id("kover-convention")
+    id("versioning-convention")
 }
-//endregion
 
 kotlin {
     jvm("desktop")
@@ -177,43 +161,5 @@ licensee {
                 because("Apache 2.0 (see https://github.com/JetBrains/intellij-community)")
             }
         )
-    }
-}
-
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config.setFrom("${project.rootDir}/detekt.yml")
-    baseline = File("${project.rootDir}/detekt-baseline-${project.name}.xml")
-}
-dependencies {
-    detektPlugins(libs.detekt.rules.compose)
-}
-run {
-    val detektSourceDirs = setOf(
-        "src/commonMain/kotlin",
-        "src/desktopMain/kotlin"
-    )
-    tasks.withType<Detekt>().configureEach {
-        setSource(files(detektSourceDirs))
-    }
-    tasks.withType<DetektCreateBaselineTask>().configureEach {
-        setSource(files(detektSourceDirs))
-    }
-}
-
-kover {
-    reports {
-        total {
-            filters {
-                excludes.annotatedBy.add("androidx.compose.runtime.Composable")
-            }
-            xml {
-                onCheck = true
-            }
-            html {
-                onCheck = true
-            }
-        }
     }
 }
