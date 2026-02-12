@@ -38,8 +38,10 @@ protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util
 
 # BUILD LOGIC
 buildlogic-detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "detekt" }
+#noinspection UnusedVersionCatalogEntry
 buildlogic-detekt-ruleset-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detekt-composeRules" }
-buildlogic-kotlinx-kover = { module = "org.jetbrains.kotlinx.kover:org.jetbrains.kotlinx.kover.gradle.plugin", version.ref = "kover" }
+buildlogic-kover-gradlePlugin = { module = "org.jetbrains.kotlinx.kover:org.jetbrains.kotlinx.kover.gradle.plugin", version.ref = "kover" }
+buildlogic-licensee-gradlePlugin = { module = "app.cash.licensee:app.cash.licensee.gradle.plugin", version.ref = "cash-licensee"}
 
 [bundles]
 jewel = [ "jewel-int-ui-standalone", "jewel-int-ui-decorated-window", "intellij-platform-icons" ]

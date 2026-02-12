@@ -9,5 +9,6 @@ plugins {
 
 dependencies {
     implementation(libs.buildlogic.detekt.gradlePlugin)
-    implementation(libs.buildlogic.kotlinx.kover)
+    implementation(libs.buildlogic.kover.gradlePlugin)
+    implementation(libs.buildlogic.licensee.gradlePlugin)
 }
