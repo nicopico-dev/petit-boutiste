@@ -1,4 +1,6 @@
-import gradle.kotlin.dsl.accessors._cdbefa3697c16faa678b079861f279d7.composeCompiler
+import ext.libs
+import org.jetbrains.compose.ComposePlugin
+
 
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -7,9 +9,12 @@ import gradle.kotlin.dsl.accessors._cdbefa3697c16faa678b079861f279d7.composeComp
  */
 
 plugins {
+    kotlin("multiplatform")
+    kotlin("plugin.compose")
     id("org.jetbrains.compose")
-    id("org.jetbrains.kotlin.plugin.compose")
 }
+
+// See DesktopApplication.kt for Compose Desktop app configuration
 
 // use `./gradlew compileKotlinDesktop --rerun-tasks` to generate the reports
 composeCompiler {
@@ -21,4 +26,30 @@ composeCompiler {
     )
 }
 
-// See DesktopApplication.kt for Compose Desktop app configuration
+kotlin {
+    jvm("desktop")
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.findLibrary("jetbrains.compose.runtime").get())
+            implementation(libs.findLibrary("jetbrains.compose.foundation").get())
+            implementation(libs.findLibrary("jetbrains.compose.components.resources").get())
+            implementation(libs.findLibrary("jetbrains.compose.ui").get())
+            implementation(libs.findLibrary("jetbrains.compose.ui.tooling.preview").get())
+
+            implementation(libs.findLibrary("androidx.lifecycle.viewmodelCompose").get())
+            implementation(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
+
+            implementation(libs.findBundle("jewel").get())
+        }
+
+        val desktopMain by getting
+        desktopMain.dependencies {
+            // Help the compiler to choose the right `compose` extension property
+            val compose = extensions.getByType<ComposePlugin.Dependencies>()
+            implementation(compose.desktop.currentOs) {
+                exclude(group = "org.jetbrains.compose.material")
+            }
+        }
+    }
+}

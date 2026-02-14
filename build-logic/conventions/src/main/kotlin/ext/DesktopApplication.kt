@@ -6,7 +6,7 @@
 
 package ext
 
-import gradle.kotlin.dsl.accessors._cdbefa3697c16faa678b079861f279d7.desktop
+import gradle.kotlin.dsl.accessors._d8a80f8932632eca3e76b57baf2f3cc6.desktop
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.compose.ComposeExtension

@@ -23,8 +23,6 @@ configureDesktopApplication(
 )
 
 kotlin {
-    jvm("desktop")
-
     compilerOptions {
         // NOTE: Pre-release options must be mirrored in the embedded Kotlin compiler to prevent the error
         // "Class 'fr.nicopico.petitboutiste.scripting.PetitBoutisteApi' was compiled by a pre-release version of Kotlin and cannot be loaded by this version of the compiler"
@@ -42,19 +40,8 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
-
         commonMain.dependencies {
-            implementation(libs.jetbrains.compose.runtime)
-            implementation(libs.jetbrains.compose.foundation)
-            implementation(libs.jetbrains.compose.components.resources)
-            implementation(libs.jetbrains.compose.ui)
-            implementation(libs.jetbrains.compose.ui.tooling.preview)
-
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            implementation(libs.bundles.jewel)
+            // Compose dependencies are added by the compose-convention plugin
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
@@ -76,10 +63,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
 
+        // "desktop" target is declared by the compose-convention plugin
+        val desktopMain by getting
         desktopMain.dependencies {
-            implementation(compose.desktop.currentOs) {
-                exclude(group = "org.jetbrains.compose.material")
-            }
             implementation(libs.kotlinx.coroutines.swing)
         }
     }
