@@ -4,41 +4,24 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import app.cash.licensee.SpdxId
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import ext.configureDesktopApplication
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
+    id("compose-desktop-convention")
 
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.cash.licensee)
-    alias(libs.plugins.detekt)
-    alias(libs.plugins.kover)
+    id("detekt-convention")
+    id("kover-convention")
+    id("licensee-convention")
+    id("versioning-convention")
 }
-// TODO Extract plugins configurations into convention plugins
 
-//region Version management
-val isCi = System.getenv("CI")?.equals("true", ignoreCase = true) == true
-val appVersionProp = findProperty("appVersion")?.toString()
-
-version = if (isCi) {
-    require(!appVersionProp.isNullOrBlank()) {
-        "CI=true: appVersion Gradle property is required (use -PappVersion=x.y.z)"
-    }
-    appVersionProp
-} else {
-    appVersionProp
-        ?: "255.255.65535" // Default for development
-}
-//endregion
+configureDesktopApplication(
+    appName = "Petit Boutiste",
+    fullPackageName = "fr.nicopico.petitboutiste",
+)
 
 kotlin {
-    jvm("desktop")
-
     compilerOptions {
         // NOTE: Pre-release options must be mirrored in the embedded Kotlin compiler to prevent the error
         // "Class 'fr.nicopico.petitboutiste.scripting.PetitBoutisteApi' was compiled by a pre-release version of Kotlin and cannot be loaded by this version of the compiler"
@@ -56,19 +39,8 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
-
         commonMain.dependencies {
-            implementation(libs.jetbrains.compose.runtime)
-            implementation(libs.jetbrains.compose.foundation)
-            implementation(libs.jetbrains.compose.components.resources)
-            implementation(libs.jetbrains.compose.ui)
-            implementation(libs.jetbrains.compose.ui.tooling.preview)
-
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            implementation(libs.bundles.jewel)
+            // Compose dependencies are added by the compose-convention plugin
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
@@ -90,57 +62,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
 
+        // "desktop" target is declared by the compose-convention plugin
+        val desktopMain by getting
         desktopMain.dependencies {
-            implementation(compose.desktop.currentOs) {
-                exclude(group = "org.jetbrains.compose.material")
-            }
             implementation(libs.kotlinx.coroutines.swing)
-        }
-    }
-}
-
-// use `./gradlew compileKotlinDesktop --rerun-tasks` to generate the reports
-composeCompiler {
-    reportsDestination = layout.buildDirectory.dir("compose-compiler")
-    metricsDestination = layout.buildDirectory.dir("compose-compiler")
-
-    stabilityConfigurationFiles = listOf(
-        layout.projectDirectory.file("compose-stability.config")
-    )
-}
-
-compose.desktop {
-    application {
-        mainClass = "fr.nicopico.petitboutiste.MainKt"
-
-        // JAVA_HOME must point to a JBR-21 or more recent
-        // ex: ~/Library/Java/JavaVirtualMachines/jbr-21.0.6/Contents/Home
-        javaHome = System.getenv("JAVA_HOME")
-        // jvmArgs.add("-Xcheck:jni") // Print JNI logs to console (really verbose !)
-
-        buildTypes.release.proguard {
-            configurationFiles.from(project.file("compose-desktop.pro"))
-        }
-
-        nativeDistributions {
-            packageName = "Petit Boutiste"
-            packageVersion = version.toString()
-            vendor = "Nicolas PICON"
-
-            licenseFile = rootProject.file("LICENSE")
-
-            modules("jdk.unsupported")
-
-            // Per-platform resources
-            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
-
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-
-            macOS {
-                setDockNameSameAsPackageName
-                iconFile.set(project.file("icons/app-icon.icns"))
-                bundleID = "fr.nicopico.petitboutiste"
-            }
         }
     }
 }
@@ -155,65 +80,3 @@ tasks
     .configureEach {
         dependsOn(":macosBridge:buildAndCopyMacosBridge")
     }
-
-licensee {
-    with(SpdxId) {
-        allow(Apache_20)
-        allow(MIT)
-        allow(BSD_3_Clause)
-
-        allowUrl("https://github.com/hypfvieh/dbus-java/blob/master/LICENSE") {
-            because("MIT (self-hosted)")
-        }
-
-        allowUrl("https://github.com/vinceglb/FileKit/blob/main/LICENSE") {
-            because("MIT (self-hosted)")
-        }
-
-        ignoreDependencies(
-            groupId = "com.jetbrains.intellij.platform",
-            artifactId = "icons",
-            options = {
-                because("Apache 2.0 (see https://github.com/JetBrains/intellij-community)")
-            }
-        )
-    }
-}
-
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config.setFrom("${project.rootDir}/detekt.yml")
-    baseline = File("${project.rootDir}/detekt-baseline-${project.name}.xml")
-}
-dependencies {
-    detektPlugins(libs.detekt.rules.compose)
-}
-run {
-    val detektSourceDirs = setOf(
-        "src/commonMain/kotlin",
-        "src/desktopMain/kotlin"
-    )
-    tasks.withType<Detekt>().configureEach {
-        setSource(files(detektSourceDirs))
-    }
-    tasks.withType<DetektCreateBaselineTask>().configureEach {
-        setSource(files(detektSourceDirs))
-    }
-}
-
-kover {
-    reports {
-        total {
-            filters {
-                excludes.annotatedBy.add("androidx.compose.runtime.Composable")
-            }
-            xml {
-                onCheck = true
-            }
-            html {
-                onCheck = true
-            }
-        }
-    }
-}
