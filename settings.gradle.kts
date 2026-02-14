@@ -20,6 +20,8 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+
+    includeBuild("build-logic")
 }
 
 dependencyResolutionManagement {
@@ -43,8 +45,6 @@ dependencyResolutionManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
-
-includeBuild("build-logic")
 
 include(":composeApp")
 include(":macosBridge")
