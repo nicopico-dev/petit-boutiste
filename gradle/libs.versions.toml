@@ -37,6 +37,8 @@ protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version
 protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util", version.ref = "protobuf" }
 
 # BUILD LOGIC
+buildlogic-compose-multiplatform-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "composeMultiplatform" }
+buildlogic-compose-compiler-gradlePlugin = { module = "org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref = "kotlin" }
 buildlogic-detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "detekt" }
 #noinspection UnusedVersionCatalogEntry
 buildlogic-detekt-ruleset-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detekt-composeRules" }

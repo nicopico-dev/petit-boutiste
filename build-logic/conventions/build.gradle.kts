@@ -8,6 +8,8 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.buildlogic.compose.compiler.gradlePlugin)
+    implementation(libs.buildlogic.compose.multiplatform.gradlePlugin)
     implementation(libs.buildlogic.detekt.gradlePlugin)
     implementation(libs.buildlogic.kover.gradlePlugin)
     implementation(libs.buildlogic.licensee.gradlePlugin)

@@ -4,20 +4,23 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import ext.configureDesktopApplication
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
+    id("compose-convention")
 
     alias(libs.plugins.kotlinSerialization)
-
     id("detekt-convention")
     id("kover-convention")
     id("licensee-convention")
     id("versioning-convention")
 }
+
+configureDesktopApplication(
+    appName = "Petit Boutiste",
+    fullPackageName = "fr.nicopico.petitboutiste",
+)
 
 kotlin {
     jvm("desktop")
@@ -78,52 +81,6 @@ kotlin {
                 exclude(group = "org.jetbrains.compose.material")
             }
             implementation(libs.kotlinx.coroutines.swing)
-        }
-    }
-}
-
-// use `./gradlew compileKotlinDesktop --rerun-tasks` to generate the reports
-composeCompiler {
-    reportsDestination = layout.buildDirectory.dir("compose-compiler")
-    metricsDestination = layout.buildDirectory.dir("compose-compiler")
-
-    stabilityConfigurationFiles = listOf(
-        layout.projectDirectory.file("compose-stability.config")
-    )
-}
-
-compose.desktop {
-    application {
-        mainClass = "fr.nicopico.petitboutiste.MainKt"
-
-        // JAVA_HOME must point to a JBR-21 or more recent
-        // ex: ~/Library/Java/JavaVirtualMachines/jbr-21.0.6/Contents/Home
-        javaHome = System.getenv("JAVA_HOME")
-        // jvmArgs.add("-Xcheck:jni") // Print JNI logs to console (really verbose !)
-
-        buildTypes.release.proguard {
-            configurationFiles.from(project.file("compose-desktop.pro"))
-        }
-
-        nativeDistributions {
-            packageName = "Petit Boutiste"
-            packageVersion = version.toString()
-            vendor = "Nicolas PICON"
-
-            licenseFile = rootProject.file("LICENSE")
-
-            modules("jdk.unsupported")
-
-            // Per-platform resources
-            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
-
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-
-            macOS {
-                setDockNameSameAsPackageName
-                iconFile.set(project.file("icons/app-icon.icns"))
-                bundleID = "fr.nicopico.petitboutiste"
-            }
         }
     }
 }
