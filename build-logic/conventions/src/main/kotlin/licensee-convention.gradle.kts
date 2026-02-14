@@ -1,5 +1,5 @@
+import app.cash.licensee.LicenseeExtension
 import app.cash.licensee.SpdxId
-import gradle.kotlin.dsl.accessors._b16340da17b4ee7b5aa51ae8b04976cd.licensee
 
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -11,7 +11,8 @@ plugins {
     id("app.cash.licensee")
 }
 
-licensee {
+// equivalent to `licensee` generated accessor
+configure<LicenseeExtension> {
     with(SpdxId) {
         allow(Apache_20)
         allow(MIT)

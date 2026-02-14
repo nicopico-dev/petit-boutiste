@@ -6,10 +6,11 @@
 
 package ext
 
-import gradle.kotlin.dsl.accessors._d8a80f8932632eca3e76b57baf2f3cc6.desktop
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.compose.ComposeExtension
+import org.jetbrains.compose.desktop.DesktopExtension
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 
@@ -46,7 +47,8 @@ fun Project.configureDesktopApplication(
 ) {
     pluginManager.withPlugin("org.jetbrains.compose") {
         extensions.findByType<ComposeExtension>()?.apply {
-            desktop {
+            // equivalent to `desktop` generated accessor
+            configure<DesktopExtension> {
                 application {
                     this.mainClass = mainClass
 
