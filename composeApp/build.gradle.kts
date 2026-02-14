@@ -7,8 +7,7 @@
 import ext.configureDesktopApplication
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    id("compose-convention")
+    id("compose-desktop-convention")
 
     alias(libs.plugins.kotlinSerialization)
     id("detekt-convention")
