@@ -4,17 +4,17 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.macos
+package fr.nicopico.petitboutiste.system.bridge
 
-import fr.nicopico.macos.jni.JNIEnvVar
-import fr.nicopico.macos.jni.JNI_EDETACHED
-import fr.nicopico.macos.jni.JNI_OK
-import fr.nicopico.macos.jni.JNI_VERSION_1_8
-import fr.nicopico.macos.jni.JavaVMVar
-import fr.nicopico.macos.jni.jclass
-import fr.nicopico.macos.jni.jint
-import fr.nicopico.macos.jni.jmethodID
-import fr.nicopico.macos.jni.jstring
+import fr.nicopico.petitboutiste.system.bridge.jni.JNIEnvVar
+import fr.nicopico.petitboutiste.system.bridge.jni.JNI_EDETACHED
+import fr.nicopico.petitboutiste.system.bridge.jni.JNI_OK
+import fr.nicopico.petitboutiste.system.bridge.jni.JNI_VERSION_1_8
+import fr.nicopico.petitboutiste.system.bridge.jni.JavaVMVar
+import fr.nicopico.petitboutiste.system.bridge.jni.jclass
+import fr.nicopico.petitboutiste.system.bridge.jni.jint
+import fr.nicopico.petitboutiste.system.bridge.jni.jmethodID
+import fr.nicopico.petitboutiste.system.bridge.jni.jstring
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CPointerVar
 import kotlinx.cinterop.alloc
@@ -33,7 +33,7 @@ import platform.Foundation.NSOperationQueue
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 
-private const val JNI_MACOS_BRIDGE = "fr_nicopico_petitboutiste_system_bridges_MacosBridge"
+private const val JNI_MACOS_BRIDGE = "fr_nicopico_petitboutiste_system_bridge_MacosBridge"
 
 // Keep global references to JVM and method
 private var gJvm: CPointer<JavaVMVar>? = null

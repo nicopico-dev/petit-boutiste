@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.system.bridges
+package fr.nicopico.petitboutiste.system.bridge
 
 import fr.nicopico.petitboutiste.system.SystemBridge
 import fr.nicopico.petitboutiste.system.exceptions.LoadingSystemBridgeLibraryException
@@ -22,7 +22,7 @@ import kotlin.concurrent.atomics.fetchAndIncrement
 
 internal object MacosBridge : SystemBridge {
 
-    private const val LIBRARY_NAME = "macos_bridge"
+    private const val LIBRARY_NAME = "native_bridge"
     private var sendLogToPlatform = true
 
     init {

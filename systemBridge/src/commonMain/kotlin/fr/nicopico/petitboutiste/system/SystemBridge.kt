@@ -6,8 +6,8 @@
 
 package fr.nicopico.petitboutiste.system
 
-import fr.nicopico.petitboutiste.system.bridges.DefaultBridge
-import fr.nicopico.petitboutiste.system.bridges.MacosBridge
+import fr.nicopico.petitboutiste.system.bridge.DefaultBridge
+import fr.nicopico.petitboutiste.system.bridge.MacosBridge
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.skiko.SystemTheme
 

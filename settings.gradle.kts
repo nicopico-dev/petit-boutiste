@@ -48,4 +48,4 @@ plugins {
 
 include(":composeApp")
 include(":systemBridge")
-include(":systemBridge:macosBridgeNative")
+include(":systemBridge:nativeBridge")

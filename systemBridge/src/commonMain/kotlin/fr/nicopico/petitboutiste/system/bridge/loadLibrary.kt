@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.system.bridges
+package fr.nicopico.petitboutiste.system.bridge
 
 import fr.nicopico.petitboutiste.system.exceptions.LoadingSystemBridgeLibraryException
 import java.io.File
