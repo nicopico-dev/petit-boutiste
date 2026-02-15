@@ -33,7 +33,7 @@ import platform.Foundation.NSOperationQueue
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 
-private const val JNI_MACOS_BRIDGE = "Java_fr_nicopico_petitboutiste_system_bridges_MacosBridge"
+private const val JNI_MACOS_BRIDGE = "fr_nicopico_petitboutiste_system_bridges_MacosBridge"
 
 // Keep global references to JVM and method
 private var gJvm: CPointer<JavaVMVar>? = null
@@ -54,7 +54,7 @@ fun jniOnLoad(vm: CPointer<JavaVMVar>, reserved: CPointer<*>?): jint {
 // IMPORTANT: these elements should match the *target* -> the function with the `external` modifier
 
 @Suppress("unused")
-@CName("${JNI_MACOS_BRIDGE}_jniLog")
+@CName("Java_${JNI_MACOS_BRIDGE}_jniLog")
 fun jniLog(env: CPointer<JNIEnvVar>, clazz: jclass, jmessage: jstring) {
     val jni = env.pointed.pointed!!
 
@@ -73,7 +73,7 @@ fun jniLog(env: CPointer<JNIEnvVar>, clazz: jclass, jmessage: jstring) {
 
 //region Observe macOS Theme
 @Suppress("unused")
-@CName("${JNI_MACOS_BRIDGE}_jniStartObservingTheme")
+@CName("Java_${JNI_MACOS_BRIDGE}_jniStartObservingTheme")
 fun jniStartObservingTheme(env: CPointer<JNIEnvVar>, clazz: jclass) {
     log("Starting observing theme")
     ensureCachedIds(env)
@@ -103,7 +103,7 @@ fun jniStartObservingTheme(env: CPointer<JNIEnvVar>, clazz: jclass) {
 }
 
 @Suppress("unused")
-@CName("${JNI_MACOS_BRIDGE}_jniStopObservingTheme")
+@CName("Java_${JNI_MACOS_BRIDGE}_jniStopObservingTheme")
 fun jniStopObservingTheme(jniEnv: CPointer<JNIEnvVar>, clazz: jclass) {
     log("Stop observing theme")
     val center = NSDistributedNotificationCenter.defaultCenter()
@@ -142,7 +142,8 @@ private fun ensureCachedIds(env: CPointer<JNIEnvVar>) {
 
         // FindClass returns a LocalRef to the Java class, only valid until the end of this function
         // GlobalRef stay valid across JNI calls so we can use it in other functions
-        val localClass = jni.FindClass!!(env, "fr/nicopico/macos/MacosBridge".cstr.ptr)
+        val jniClassPath = JNI_MACOS_BRIDGE.replace("_", "/")
+        val localClass = jni.FindClass!!(env, jniClassPath.cstr.ptr)
         gMacosBridgeClass = jni.NewGlobalRef!!(env, localClass) as jclass
         jni.DeleteLocalRef!!(env, localClass) // localClass is no longer needed, cleanup
         log("gMacosBridgeClass = $gMacosBridgeClass")
