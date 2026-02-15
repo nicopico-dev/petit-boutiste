@@ -4,6 +4,9 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.macos
+package fr.nicopico.petitboutiste.system.exceptions
 
-class ApplicationResourcesDirNotConfigured : Exception()
+class LoadingSystemBridgeLibraryException(
+    message: String,
+    cause: Throwable? = null,
+) : Exception(message, cause)

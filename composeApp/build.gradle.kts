@@ -55,6 +55,8 @@ kotlin {
             implementation(kotlin("scripting-jvm-host"))
             implementation(kotlin("scripting-common"))
             implementation(kotlin("script-runtime"))
+
+            implementation(projects.systemBridge)
         }
 
         commonTest.dependencies {
@@ -70,6 +72,7 @@ kotlin {
     }
 }
 
+// TODO Move this configuration to systemBridge module (if possible ?)
 // Ensure macOS native bridge is built and copied before building composeApp
 // This makes :composeApp:build depend on :macosBridge:buildAndCopyMacosBridge
 // so the libmacos_bridge.dylib is available under composeApp/resources before packaging.
@@ -78,5 +81,5 @@ tasks
     // because this task is created lazily
     .matching { it.name == "prepareAppResources" }
     .configureEach {
-        dependsOn(":macosBridge:buildAndCopyMacosBridge")
+        dependsOn(":systemBridge:macosBridgeNative:buildAndCopyMacosBridge")
     }

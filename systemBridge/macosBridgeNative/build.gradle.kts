@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
 }
 
+// TODO rename module to handle different native bridge (Windows, Linux, etc.)
 kotlin {
     compilerOptions {
         this.optIn.addAll(

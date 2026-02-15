@@ -33,6 +33,8 @@ import platform.Foundation.NSOperationQueue
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 
+private const val JNI_MACOS_BRIDGE = "Java_fr_nicopico_petitboutiste_system_bridges_MacosBridge"
+
 // Keep global references to JVM and method
 private var gJvm: CPointer<JavaVMVar>? = null
 private var gMacosBridgeClass: jclass? = null
@@ -52,7 +54,7 @@ fun jniOnLoad(vm: CPointer<JavaVMVar>, reserved: CPointer<*>?): jint {
 // IMPORTANT: these elements should match the *target* -> the function with the `external` modifier
 
 @Suppress("unused")
-@CName("Java_fr_nicopico_macos_MacosBridge_jniLog")
+@CName("${JNI_MACOS_BRIDGE}_jniLog")
 fun jniLog(env: CPointer<JNIEnvVar>, clazz: jclass, jmessage: jstring) {
     val jni = env.pointed.pointed!!
 
@@ -71,7 +73,7 @@ fun jniLog(env: CPointer<JNIEnvVar>, clazz: jclass, jmessage: jstring) {
 
 //region Observe macOS Theme
 @Suppress("unused")
-@CName("Java_fr_nicopico_macos_MacosBridge_jniStartObservingTheme")
+@CName("${JNI_MACOS_BRIDGE}_jniStartObservingTheme")
 fun jniStartObservingTheme(env: CPointer<JNIEnvVar>, clazz: jclass) {
     log("Starting observing theme")
     ensureCachedIds(env)
@@ -101,7 +103,7 @@ fun jniStartObservingTheme(env: CPointer<JNIEnvVar>, clazz: jclass) {
 }
 
 @Suppress("unused")
-@CName("Java_fr_nicopico_macos_MacosBridge_jniStopObservingTheme")
+@CName("${JNI_MACOS_BRIDGE}_jniStopObservingTheme")
 fun jniStopObservingTheme(jniEnv: CPointer<JNIEnvVar>, clazz: jclass) {
     log("Stop observing theme")
     val center = NSDistributedNotificationCenter.defaultCenter()
