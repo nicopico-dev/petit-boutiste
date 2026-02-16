@@ -72,14 +72,14 @@ kotlin {
     }
 }
 
-// TODO Move this configuration to systemBridge module (if possible ?)
-// Ensure macOS native bridge is built and copied before building composeApp
-// This makes :composeApp:build depend on :buildAndCopyMacosNativeBridge
-// so the *.dylib is available under composeApp/resources before packaging.
+// Ensure native bridges are built and copied before building composeApp
+// This makes :composeApp:build depend on :buildAndCopyNativeBridges
+// so the required dynamic libraries are available under composeApp/resources
+// before packaging.
 tasks
     // We cannot use `tasks.named("prepareAppResources")`
     // because this task is created lazily
     .matching { it.name == "prepareAppResources" }
     .configureEach {
-        dependsOn(":systemBridge:nativeBridge:buildAndCopyMacosNativeBridge")
+        dependsOn(":systemBridge:nativeBridge:buildAndCopyNativeBridges")
     }

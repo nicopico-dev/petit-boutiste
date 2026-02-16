@@ -39,9 +39,15 @@ kotlin {
     }
 }
 
+//region buildAndCopyNativeBridges
+tasks.register("buildAndCopyNativeBridges") {
+    dependsOn("buildAndCopyMacosNativeBridge")
+}
+
 tasks.register<Copy>("buildAndCopyMacosNativeBridge") {
     dependsOn("linkReleaseSharedMacosArm64")
 
     from(layout.buildDirectory.file("bin/macosArm64/releaseShared/libnative_bridge.dylib"))
     into(rootProject.layout.projectDirectory.dir("composeApp/resources/macos-arm64/libs"))
 }
+//endregion
