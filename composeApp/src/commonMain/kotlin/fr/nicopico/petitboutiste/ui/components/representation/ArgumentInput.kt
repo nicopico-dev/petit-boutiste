@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +49,8 @@ fun ArgumentInput(
     completeArguments: ArgumentValues,
     modifier: Modifier = Modifier,
     onError: (String) -> Unit = {},
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onKeyboardAction: (() -> Unit)? = null,
 ) {
     val value: ArgValue? = remember(argument, userValue) {
         userValue ?: argument.defaultValue
@@ -84,6 +87,8 @@ fun ArgumentInput(
                         value = value ?: "",
                         onValueChange = onValueChanged,
                         modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = keyboardOptions,
+                        onKeyboardAction = onKeyboardAction,
                     )
                 }
 
