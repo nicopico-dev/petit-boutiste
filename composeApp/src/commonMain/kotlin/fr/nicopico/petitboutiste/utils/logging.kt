@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.utils
 
-import fr.nicopico.macos.MacosBridge
+import fr.nicopico.petitboutiste.system.SystemBridge
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -17,7 +17,7 @@ private fun timestamp(): String = LocalDateTime.now().format(TIMESTAMP_FORMATTER
 
 fun log(msg: String) {
     println("[${timestamp()}] $msg")
-    MacosBridge.log(msg)
+    SystemBridge.log(msg)
 }
 
 fun logError(msg: String, error: Throwable? = null) {
@@ -25,5 +25,5 @@ fun logError(msg: String, error: Throwable? = null) {
         ?.let { "\n$it" }
         .orEmpty()
     System.err.println("[${timestamp()}] $msg$stacktrace")
-    MacosBridge.log("ERROR: $msg")
+    SystemBridge.log("ERROR: $msg")
 }

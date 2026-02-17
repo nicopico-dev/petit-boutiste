@@ -17,17 +17,17 @@ kotlin {
         )
     }
 
-    macosArm64("macosBridge") {
+    macosArm64 {
         binaries {
             sharedLib {
-                baseName = "macos_bridge"
+                baseName = "native_bridge"
             }
         }
         compilations.getByName("main") {
             cinterops {
                 @Suppress("unused")
                 val jni by creating {
-                    packageName = "fr.nicopico.macos.jni"
+                    packageName = "fr.nicopico.petitboutiste.system.bridge.jni"
                     val javaHome = File(System.getProperty("java.home"))
                     includeDirs(
                         Callable { javaHome.resolve("include/") },
@@ -39,9 +39,15 @@ kotlin {
     }
 }
 
-tasks.register<Copy>("buildAndCopyMacosBridge") {
-    dependsOn("linkReleaseSharedMacosBridge")
+//region buildAndCopyNativeBridges
+tasks.register("buildAndCopyNativeBridges") {
+    dependsOn("buildAndCopyMacosNativeBridge")
+}
 
-    from(layout.buildDirectory.file("bin/macosBridge/releaseShared/libmacos_bridge.dylib"))
+tasks.register<Copy>("buildAndCopyMacosNativeBridge") {
+    dependsOn("linkReleaseSharedMacosArm64")
+
+    from(layout.buildDirectory.file("bin/macosArm64/releaseShared/libnative_bridge.dylib"))
     into(rootProject.layout.projectDirectory.dir("composeApp/resources/macos-arm64/libs"))
 }
+//endregion

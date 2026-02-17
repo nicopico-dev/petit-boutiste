@@ -11,7 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import fr.nicopico.macos.MacosBridge
+import fr.nicopico.petitboutiste.system.SystemBridge
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
 import org.jetbrains.jewel.intui.standalone.theme.darkThemeDefinition
@@ -36,7 +36,7 @@ val PBTheme.isDark: Boolean
     @Composable
     get() {
         return if (this == PBTheme.System) {
-            val systemTheme by MacosBridge
+            val systemTheme by SystemBridge
                 .observeThemeChanges()
                 .collectAsState(initial = currentSystemTheme)
             systemTheme == SystemTheme.DARK
