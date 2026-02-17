@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -53,11 +52,9 @@ import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabDataRendering
 import fr.nicopico.petitboutiste.state.TabTemplateData
-import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
-import fr.nicopico.petitboutiste.utils.log
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
@@ -66,13 +63,11 @@ import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.Outline
 import org.jetbrains.jewel.ui.component.Divider
 import org.jetbrains.jewel.ui.component.IconActionButton
-import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextArea
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
 import java.awt.datatransfer.StringSelection
 import java.io.File
-import kotlin.math.max
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -100,64 +95,15 @@ fun ByteItemRender(
         modifier.border(1.dp, AppTheme.current.colors.borderColor),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Column(
-            modifier = Modifier
+        ByteGroupRepresentationForm(
+            representation,
+            onRepresentationChanged,
+            Modifier
                 .widthIn(max = 300.dp)
                 .fillMaxHeight()
                 .padding(8.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                "Representation",
-                style = JewelTheme.typography.h4TextStyle,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-
-            PBDropdown(
-                items = DataRenderer.entries,
-                selection = representation.dataRenderer,
-                onItemSelected = { dataRenderer ->
-                    onRepresentationChanged(
-                        representation.copy(
-                            dataRenderer = dataRenderer,
-                            submitCount = 0,
-                        )
-                    )
-                },
-                getItemLabel = DataRenderer::label,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Divider(
-                orientation = Orientation.Horizontal,
-                style = AppTheme.current.styles.dividerStyle,
-                modifier = Modifier
-                    .padding(
-                        top = 16.dp,
-                        bottom = 8.dp,
-                    )
-                    .fillMaxWidth(.8f)
-                    .align(Alignment.CenterHorizontally)
-            )
-
-            RendererForm(
-                arguments = representation.dataRenderer.arguments,
-                values = representation.argumentValues,
-                showSubmitButton = representation.dataRenderer.requireUserValidation,
-                onArgumentsChange = { argumentValues, submit ->
-                    log("Arguments changed: $argumentValues")
-                    onRepresentationChanged(
-                        representation.copy(
-                            argumentValues = argumentValues,
-                            submitCount = if (submit) {
-                                representation.incrementedSubmitCount()
-                            } else representation.submitCount,
-                        )
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+                .verticalScroll(rememberScrollState()),
+        )
 
         Divider(
             orientation = Orientation.Vertical,
@@ -236,16 +182,6 @@ fun ByteItemRender(
                 }
             }
         }
-    }
-}
-
-private fun Representation.incrementedSubmitCount(): Int {
-    return if (dataRenderer.requireUserValidation) {
-        // Increment `submitCount` each time to force a re-render
-        submitCount + 1
-    } else {
-        // Keep `submitCount` at 1
-        max(1, submitCount + 1)
     }
 }
 

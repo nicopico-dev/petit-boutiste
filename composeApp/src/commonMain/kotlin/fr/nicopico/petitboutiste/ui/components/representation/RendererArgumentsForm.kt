@@ -27,7 +27,7 @@ import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
 @Composable
-fun RendererForm(
+fun RendererArgumentsForm(
     arguments: List<DataRenderer.Argument>,
     values: ArgumentValues,
     onArgumentsChange: (ArgumentValues, submit: Boolean) -> Unit,
@@ -90,7 +90,7 @@ private object DataRenderParameterProvider : PreviewParameterProvider<DataRender
 @Composable
 private fun RendererFormPreview() {
     WrapForPreviewDesktop(DataRenderParameterProvider) { dataRenderer ->
-        RendererForm(
+        RendererArgumentsForm(
             dataRenderer.arguments,
             values = emptyArgumentValues(),
             showSubmitButton = dataRenderer.requireUserValidation,

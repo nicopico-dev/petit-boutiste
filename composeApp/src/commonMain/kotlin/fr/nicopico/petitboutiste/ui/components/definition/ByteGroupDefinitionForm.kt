@@ -24,6 +24,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
+import fr.nicopico.petitboutiste.ui.components.representation.ByteGroupRepresentationForm
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
@@ -44,6 +45,9 @@ fun ByteGroupDefinitionForm(
     }
     var name by remember(definition.id) {
         mutableStateOf(definition.name ?: "")
+    }
+    var representation by remember(definition.id, definition.representation) {
+        mutableStateOf(definition.representation)
     }
 
     //region Input validation
@@ -84,6 +88,7 @@ fun ByteGroupDefinitionForm(
         val definitionToSave = definition.copy(
             indexes = startIndexInput.toInt()..endIndexInput.toInt(),
             name = name.ifBlank { null },
+            representation = representation,
         )
         onDefinitionSaved(definitionToSave)
     }
@@ -118,6 +123,11 @@ fun ByteGroupDefinitionForm(
                 modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
             )
         }
+
+        ByteGroupRepresentationForm(
+            representation = representation,
+            onRepresentationChanged = { representation = it },
+        )
 
         DefaultButton(
             content = { Text(text = "Save definition") },
