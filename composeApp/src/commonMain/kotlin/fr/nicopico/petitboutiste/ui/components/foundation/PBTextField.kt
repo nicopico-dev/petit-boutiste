@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.ui.components.foundation
 
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.jetbrains.jewel.ui.Outline
@@ -17,6 +18,8 @@ fun PBTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isError: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onKeyboardAction: (() -> Unit)? = null,
 ) {
     val state = observeTextFieldState(value, onValueChange)
 
@@ -24,5 +27,7 @@ fun PBTextField(
         state = state,
         modifier = modifier,
         outline = if (isError) Outline.Error else Outline.None,
+        keyboardOptions = keyboardOptions,
+        onKeyboardAction = { onKeyboardAction?.invoke() },
     )
 }

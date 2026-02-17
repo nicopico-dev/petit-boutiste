@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -34,11 +38,13 @@ fun RendererArgumentsForm(
     showSubmitButton: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val focusManager = LocalFocusManager.current
     val onSnackbar = LocalOnSnackbar.current
     var argumentValues: ArgumentValues = remember(arguments, values) { values }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        arguments.forEach { argument ->
+        arguments.forEachIndexed { index, argument ->
+            val isLast = index == arguments.lastIndex
             ArgumentInput(
                 argument = argument,
                 userValue = argumentValues[argument.key],
@@ -60,6 +66,16 @@ fun RendererArgumentsForm(
                 },
                 completeArguments = argumentValues,
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = if (isLast && !showSubmitButton) ImeAction.Done else ImeAction.Next
+                ),
+                onKeyboardAction = {
+                    if (isLast && showSubmitButton) {
+                        onArgumentsChange(argumentValues, true)
+                    } else {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                },
             )
         }
 
