@@ -22,5 +22,9 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             implementation(libs.jetbrains.compose.foundation)
         }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
