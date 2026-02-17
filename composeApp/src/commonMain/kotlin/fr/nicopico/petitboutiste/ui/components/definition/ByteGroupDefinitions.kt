@@ -30,6 +30,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
+import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
@@ -157,8 +158,12 @@ fun ByteGroupDefinitions(
                         content = { Text("Add definition") },
                         onClick = {
                             val nextIndex: Int = if (definitions.isEmpty()) 0 else definitions.last().indexes.last + 1
+                            // If available, default to the last representation
+                            val nextRepresentation = definitions.lastOrNull()?.representation
+                                ?: DEFAULT_REPRESENTATION
                             val definition = ByteGroupDefinition(
-                                indexes = nextIndex..nextIndex
+                                indexes = nextIndex..nextIndex,
+                                representation = nextRepresentation,
                             )
                             // Open the new definition automatically
                             openedDefinition = definition
