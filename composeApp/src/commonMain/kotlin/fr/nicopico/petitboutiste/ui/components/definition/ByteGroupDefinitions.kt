@@ -33,8 +33,8 @@ import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.models.definition.buildJson
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
+import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
@@ -50,6 +50,7 @@ import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
 
+@Suppress("LongMethod")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ByteGroupDefinitions(
@@ -102,9 +103,12 @@ fun ByteGroupDefinitions(
                 enabled = definitions.isNotEmpty(),
                 onClick = {
                     scope.launch {
-                        val json = buildJson(definitions, byteItems)
-                        clipboard.setData(json)
-                        onSnackbar(SnackbarState("Data exported to clipboard as JSON"))
+                        val json = byteItems.toJsonData()
+                        if (clipboard.setData(json)) {
+                            onSnackbar(SnackbarState("Data exported to clipboard as JSON"))
+                        } else {
+                            onSnackbar(SnackbarState("Failed to export data to the clipboard"))
+                        }
                     }
                 },
             )

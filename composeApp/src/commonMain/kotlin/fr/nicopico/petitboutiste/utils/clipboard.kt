@@ -10,13 +10,18 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
 import java.awt.datatransfer.StringSelection
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalComposeUiApi::class)
-suspend fun Clipboard.setData(data: String) {
+suspend fun Clipboard.setData(data: String): Boolean {
     val clipEntry = ClipEntry(StringSelection(data))
     try {
         setClipEntry(clipEntry)
+        return true
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         logError("Failed to set clipboard", e)
+        return false
     }
 }
