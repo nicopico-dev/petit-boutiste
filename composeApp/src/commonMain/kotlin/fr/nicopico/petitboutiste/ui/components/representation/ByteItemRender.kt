@@ -30,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,8 +57,7 @@ import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.utils.log
-import fr.nicopico.petitboutiste.utils.logError
-import kotlinx.coroutines.ensureActive
+import fr.nicopico.petitboutiste.utils.setData
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
@@ -70,7 +68,6 @@ import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextArea
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
-import java.awt.datatransfer.StringSelection
 import java.io.File
 import kotlin.math.max
 
@@ -210,14 +207,8 @@ fun ByteItemRender(
                         enabled = rendererOutput is RenderResult.Success,
                         onClick = {
                             val data = (rendererOutput as RenderResult.Success).data.trim()
-                            val clipEntry = ClipEntry(StringSelection(data))
                             scope.launch {
-                                try {
-                                    clipboard.setClipEntry(clipEntry)
-                                } catch (e: Exception) {
-                                    ensureActive()
-                                    logError("Failed to copy rendering to clipboard", e)
-                                }
+                                clipboard.setData(data)
                             }
                         },
                     )
