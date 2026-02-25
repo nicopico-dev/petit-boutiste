@@ -98,9 +98,9 @@ fun ByteGroupDefinitions(
             )
 
             IconActionButton(
-                key = AllIconsKeys.General.Export,
+                key = AllIconsKeys.FileTypes.Json,
                 contentDescription = "Export payloads data as JSON",
-                enabled = definitions.isNotEmpty(),
+                enabled = definitions.isNotEmpty() && byteItems.isNotEmpty(),
                 onClick = {
                     scope.launch {
                         val json = byteItems.toJsonData()
