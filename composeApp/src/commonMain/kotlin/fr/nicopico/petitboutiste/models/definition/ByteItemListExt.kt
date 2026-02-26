@@ -13,6 +13,8 @@ import kotlinx.serialization.json.Json
 
 private val prettyJson = Json { prettyPrint = true }
 
+// False-positive RedundantSuspendModifier with type-enabled analysis
+@Suppress("RedundantSuspendModifier", "RedundantSuppression")
 suspend fun List<ByteItem>.toJsonData(): String {
     val payloadEntries = filterIsInstance<ByteGroup>()
         .mapNotNull { byteGroup ->
