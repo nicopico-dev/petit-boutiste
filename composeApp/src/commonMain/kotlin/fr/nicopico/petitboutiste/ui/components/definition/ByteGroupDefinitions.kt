@@ -21,25 +21,37 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
+import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
+import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.state.AppEvent
+import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.moveStart
+import fr.nicopico.petitboutiste.utils.setData
 import fr.nicopico.petitboutiste.utils.size
+import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.ui.component.IconActionButton
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
+import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
 
+@Suppress("LongMethod")
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ByteGroupDefinitions(
     definitions: List<ByteGroupDefinition>,
@@ -67,15 +79,40 @@ fun ByteGroupDefinitions(
         mutableStateOf<ByteGroupDefinition?>(null)
     }
 
+    val scope = rememberCoroutineScope()
+    val clipboard = LocalClipboard.current
+
     val lazyListState = rememberLazyListState()
     val onEvent = LocalOnAppEvent.current
+    val onSnackbar = LocalOnSnackbar.current
 
     Column(modifier) {
-        Text(
-            "Definitions",
-            style = JewelTheme.typography.h4TextStyle,
-            modifier = Modifier.padding(bottom = 8.dp),
-        )
+        Row(
+            Modifier.padding(bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                "Definitions",
+                style = JewelTheme.typography.h4TextStyle,
+                modifier = Modifier.weight(1f),
+            )
+
+            IconActionButton(
+                key = AllIconsKeys.FileTypes.Json,
+                contentDescription = "Export payloads data as JSON",
+                enabled = definitions.isNotEmpty() && byteItems.isNotEmpty(),
+                onClick = {
+                    scope.launch {
+                        val json = byteItems.toJsonData()
+                        if (clipboard.setData(json)) {
+                            onSnackbar(SnackbarState("Data exported to clipboard as JSON"))
+                        } else {
+                            onSnackbar(SnackbarState("Failed to export data to the clipboard"))
+                        }
+                    }
+                },
+            )
+        }
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
