@@ -24,7 +24,6 @@ import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.component.Divider
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.typography
-import kotlin.math.max
 
 @Composable
 fun ByteGroupRepresentationForm(
@@ -44,10 +43,7 @@ fun ByteGroupRepresentationForm(
             selection = representation.dataRenderer,
             onItemSelected = { dataRenderer ->
                 onRepresentationChanged(
-                    representation.copy(
-                        dataRenderer = dataRenderer,
-                        submitCount = 0,
-                    )
+                    representation.copy(dataRenderer = dataRenderer)
                 )
             },
             getItemLabel = DataRenderer::label,
@@ -69,29 +65,13 @@ fun ByteGroupRepresentationForm(
         RendererArgumentsForm(
             arguments = representation.dataRenderer.arguments,
             values = representation.argumentValues,
-            showSubmitButton = representation.dataRenderer.requireUserValidation,
-            onArgumentsChange = { argumentValues, submit ->
+            onArgumentsChange = { argumentValues ->
                 log("Arguments changed: $argumentValues")
                 onRepresentationChanged(
-                    representation.copy(
-                        argumentValues = argumentValues,
-                        submitCount = if (submit) {
-                            representation.incrementedSubmitCount()
-                        } else representation.submitCount,
-                    )
+                    representation.copy(argumentValues = argumentValues)
                 )
             },
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-private fun Representation.incrementedSubmitCount(): Int {
-    return if (dataRenderer.requireUserValidation) {
-        // Increment `submitCount` each time to force a re-render
-        submitCount + 1
-    } else {
-        // Keep `submitCount` at 1
-        max(1, submitCount + 1)
     }
 }

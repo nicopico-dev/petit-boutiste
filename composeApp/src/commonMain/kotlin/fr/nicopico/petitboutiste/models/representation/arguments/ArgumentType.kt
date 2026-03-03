@@ -20,8 +20,18 @@ sealed class ArgumentType<T : Any>(
     fun matches(expectedType: KClass<*>): Boolean = type.java.isAssignableFrom(expectedType.java)
 
     data object FileType : ArgumentType<File>(File::class) {
-        override fun convertFrom(argValue: ArgValue): File = File(argValue).absoluteFile
-        override fun convertTo(value: File): ArgValue = value.absolutePath
+        private const val SEPARATOR = ";;"
+
+        override fun convertFrom(argValue: ArgValue): File {
+            // Ignore the timestamp
+            val filePath = argValue.split(SEPARATOR)[0]
+            return File(filePath).absoluteFile
+        }
+
+        override fun convertTo(value: File): ArgValue {
+            // Append a timestamp to the file path to allow reloading the same file
+            return value.absolutePath + SEPARATOR + System.currentTimeMillis()
+        }
     }
 
     data object StringType : ArgumentType<String>(String::class) {

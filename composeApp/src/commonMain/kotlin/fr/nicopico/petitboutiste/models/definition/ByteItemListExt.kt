@@ -8,7 +8,6 @@ package fr.nicopico.petitboutiste.models.definition
 
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.isOff
-import fr.nicopico.petitboutiste.models.representation.isReady
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 

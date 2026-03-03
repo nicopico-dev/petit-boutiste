@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -27,15 +26,12 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
-import org.jetbrains.jewel.ui.component.DefaultButton
-import org.jetbrains.jewel.ui.component.Text
 
 @Composable
 fun RendererArgumentsForm(
     arguments: List<DataRenderer.Argument>,
     values: ArgumentValues,
-    onArgumentsChange: (ArgumentValues, submit: Boolean) -> Unit,
-    showSubmitButton: Boolean,
+    onArgumentsChange: (ArgumentValues) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
@@ -55,11 +51,7 @@ fun RendererArgumentsForm(
                         argumentValues - argument.key
                     }
 
-                    onArgumentsChange(
-                        argumentValues,
-                        // Submit automatically if the form does not show a Submit button
-                        !showSubmitButton,
-                    )
+                    onArgumentsChange(argumentValues)
                 },
                 onError = { message ->
                     onSnackbar(SnackbarState(message))
@@ -67,27 +59,15 @@ fun RendererArgumentsForm(
                 completeArguments = argumentValues,
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = if (isLast && !showSubmitButton) ImeAction.Done else ImeAction.Next
+                    imeAction = if (isLast) ImeAction.Done else ImeAction.Next
                 ),
                 onKeyboardAction = {
-                    if (isLast && showSubmitButton) {
-                        onArgumentsChange(argumentValues, true)
+                    if (isLast) {
+                        onArgumentsChange(argumentValues)
                     } else {
                         focusManager.moveFocus(FocusDirection.Next)
                     }
                 },
-            )
-        }
-
-        if (showSubmitButton) {
-            DefaultButton(
-                content = {
-                    Text("Render")
-                },
-                onClick = {
-                    onArgumentsChange(argumentValues, true)
-                },
-                modifier = Modifier.align(Alignment.End)
             )
         }
     }
@@ -109,8 +89,7 @@ private fun RendererFormPreview() {
         RendererArgumentsForm(
             dataRenderer.arguments,
             values = emptyArgumentValues(),
-            showSubmitButton = dataRenderer.requireUserValidation,
-            onArgumentsChange = { _, _ -> },
+            onArgumentsChange = {},
             modifier = Modifier.padding(8.dp),
         )
     }
