@@ -33,6 +33,7 @@ import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -52,14 +53,16 @@ fun ArgumentInput(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onKeyboardAction: (() -> Unit)? = null,
 ) {
-    val value: ArgValue? = remember(argument, userValue) {
-        userValue ?: argument.defaultValue
-    }
-    val completeArgumentsFlow = remember(argument, userValue) {
+    // Build a persistent `completeArgumentsFlow`
+    val completeArgumentsFlow = remember {
         MutableSharedFlow<ArgumentValues>(replay = 1)
     }
     LaunchedEffect(completeArgumentsFlow, completeArguments) {
         completeArgumentsFlow.emit(completeArguments)
+    }
+
+    val value: ArgValue? = remember(argument, userValue) {
+        userValue ?: argument.defaultValue
     }
 
     Column(modifier = modifier) {
@@ -96,8 +99,10 @@ fun ArgumentInput(
                     with(argument.type) {
                         val choices by getChoices(completeArgumentsFlow)
                             .flowOn(Dispatchers.Default)
-                            .timeout(2.seconds)
+                            .timeout(4.seconds)
                             .catch { error ->
+                                if (error is TimeoutCancellationException) throw error
+
                                 logError("Error parsing choices for ${argument.key}", error)
                                 onError("Error parsing choices for ${argument.label}")
                                 emit(emptyList())
