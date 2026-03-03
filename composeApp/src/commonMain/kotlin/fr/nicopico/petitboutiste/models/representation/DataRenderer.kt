@@ -26,28 +26,25 @@ import fr.nicopico.petitboutiste.models.representation.decoder.subTemplateArgume
 import fr.nicopico.petitboutiste.models.representation.decoder.userScriptArguments
 
 private val CUSTOM_LABEL_DEFAULT: String? = null
-private const val REQUIRE_USER_VALIDATION_DEFAULT: Boolean = false
 
 enum class DataRenderer(
     val arguments: List<Argument> = emptyList(),
     val customLabel: String? = CUSTOM_LABEL_DEFAULT,
-    val requireUserValidation: Boolean = REQUIRE_USER_VALIDATION_DEFAULT,
 ) {
     Off,
     Binary,
     Hexadecimal(EndiannessArgument),
     Integer(EndiannessArgument, SignednessArgument),
     Text(EndiannessArgument, CharsetArgument),
-    Protobuf(protobufArguments, requireUserValidation = true),
-    UserScript(userScriptArguments, customLabel = "User script", requireUserValidation = true),
-    SubTemplate(subTemplateArguments, requireUserValidation = true),
+    Protobuf(protobufArguments),
+    UserScript(userScriptArguments, customLabel = "User script"),
+    SubTemplate(subTemplateArguments),
     ;
 
     constructor(
         vararg arguments: Argument,
         customLabel: String? = CUSTOM_LABEL_DEFAULT,
-        requireUserValidation: Boolean = REQUIRE_USER_VALIDATION_DEFAULT,
-    ) : this(arguments.toList(), customLabel, requireUserValidation)
+    ) : this(arguments.toList(), customLabel)
 
     val label: String get() = customLabel ?: name
 

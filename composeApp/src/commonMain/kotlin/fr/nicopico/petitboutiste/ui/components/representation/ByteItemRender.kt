@@ -46,7 +46,6 @@ import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFile
-import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.TabData

@@ -34,7 +34,6 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.isOff
-import fr.nicopico.petitboutiste.models.representation.isReady
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.Slot
