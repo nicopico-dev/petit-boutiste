@@ -18,6 +18,11 @@ configure<LicenseeExtension> {
         allow(MIT)
         allow(BSD_3_Clause)
 
+        allowUrl("https://opensource.org/license/mit") {
+            // See https://spdx.org/licenses/MIT.html
+            because("HTTPS variant of the authorized \"http://opensource.org/licenses/MIT\"")
+        }
+
         allowUrl("https://github.com/hypfvieh/dbus-java/blob/master/LICENSE") {
             because("MIT (self-hosted)")
         }
