@@ -18,11 +18,11 @@ internal val Project.libs: VersionCatalog
         .getByType(VersionCatalogsExtension::class.java)
         .named("libs")
 
-internal fun VersionCatalog.libraries(alias: String): Provider<MinimalExternalModuleDependency?> {
+internal fun VersionCatalog.libraries(alias: String): Provider<MinimalExternalModuleDependency> {
     return findLibrary(alias).get()
 }
 
-internal fun VersionCatalog.bundles(alias: String): Provider<ExternalModuleDependencyBundle?> {
+internal fun VersionCatalog.bundles(alias: String): Provider<ExternalModuleDependencyBundle> {
     return findBundle(alias).get()
 }
 
