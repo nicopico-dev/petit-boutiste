@@ -13,7 +13,6 @@ import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentVa
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 
@@ -22,24 +21,20 @@ val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 data class Representation(
     val dataRenderer: DataRenderer,
     val argumentValues: ArgumentValues = emptyArgumentValues(),
-    @Transient
-    val submitCount: Int = 0,
-)
+) {
 
-val Representation.submitted: Boolean
-    get() = submitCount > 0
+    /**
+     * A representation is ready if all the arguments required by the
+     * data renderer have a default value or are provided by the user
+     */
+    val isReady: Boolean
+        get() = dataRenderer.arguments
+            .filter { it.defaultValue == null }
+            .all { it.key in argumentValues }
+}
 
 val Representation.isOff: Boolean
     get() = dataRenderer == DataRenderer.Off
-
-/**
- * A representation is ready if:
- * the representation does not require any user validation
- * *or*
- * the user explicitly submitted the representation for rendering
- */
-val Representation.isReady: Boolean
-    get() = !dataRenderer.requireUserValidation || submitted
 
 suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     require(isReady) { "Representation must be ready!" }

@@ -26,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.LocalOnSnackbar
@@ -35,18 +37,23 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
+import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
+import fr.nicopico.petitboutiste.ui.theme.AppTheme
+import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.moveStart
 import fr.nicopico.petitboutiste.utils.setData
 import fr.nicopico.petitboutiste.utils.size
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.IconActionButton
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
+import org.jetbrains.jewel.ui.component.ToggleableIconButton
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
 
@@ -78,6 +85,9 @@ fun ByteGroupDefinitions(
     var openedDefinition by remember {
         mutableStateOf<ByteGroupDefinition?>(null)
     }
+    var showRepresentation by remember {
+        mutableStateOf(false)
+    }
 
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboard.current
@@ -89,6 +99,7 @@ fun ByteGroupDefinitions(
     Column(modifier) {
         Row(
             Modifier.padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -97,8 +108,23 @@ fun ByteGroupDefinitions(
                 modifier = Modifier.weight(1f),
             )
 
+            ToggleableIconButton(
+                value = showRepresentation,
+                onValueChange = { showRepresentation = it },
+                content = { state ->
+                    val enabled = state.toggleableState == ToggleableState.On
+                    Icon(
+                        key = AllIconsKeys.General.Show,
+                        contentDescription = "Show representation form",
+                        tint = if (enabled) {
+                            AppTheme.current.colors.windowBackgroundColor
+                        } else Color.Unspecified
+                    )
+                }
+            )
+
             IconActionButton(
-                key = AllIconsKeys.FileTypes.Json,
+                key = AllIconsKeys.General.Export,
                 contentDescription = "Export payloads data as JSON",
                 enabled = definitions.isNotEmpty() && byteItems.isNotEmpty(),
                 onClick = {
@@ -170,9 +196,10 @@ fun ByteGroupDefinitions(
                                 onDefinitionSaved = { savedDefinition ->
                                     onUpdateDefinition(definition, savedDefinition)
                                 },
+                                showRepresentationForm = showRepresentation,
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 16.dp)
-                                    .align(Alignment.End),
+                                    .align(Alignment.End)
                             )
                         },
                         displayForm = openedDefinition == definition,
@@ -194,8 +221,12 @@ fun ByteGroupDefinitions(
                         content = { Text("Add definition") },
                         onClick = {
                             val nextIndex: Int = if (definitions.isEmpty()) 0 else definitions.last().indexes.last + 1
+                            // If available, default to the last representation
+                            val nextRepresentation = definitions.lastOrNull()?.representation
+                                ?: DEFAULT_REPRESENTATION
                             val definition = ByteGroupDefinition(
-                                indexes = nextIndex..nextIndex
+                                indexes = nextIndex..nextIndex,
+                                representation = nextRepresentation,
                             )
                             // Open the new definition automatically
                             openedDefinition = definition

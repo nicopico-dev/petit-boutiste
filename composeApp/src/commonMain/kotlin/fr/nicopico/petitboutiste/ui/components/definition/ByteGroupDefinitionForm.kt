@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -18,24 +19,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
+import fr.nicopico.petitboutiste.ui.components.representation.ByteGroupRepresentationForm
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
 private val fieldMaxWidth = 200.dp
 
+@Suppress("LongMethod")
 @Composable
 fun ByteGroupDefinitionForm(
     definition: ByteGroupDefinition,
     onDefinitionSaved: (ByteGroupDefinition) -> Unit,
     modifier: Modifier = Modifier,
+    showRepresentationForm: Boolean = false,
 ) {
+    val focusManager = LocalFocusManager.current
     var startIndexInput by remember(definition.id) {
         mutableStateOf(definition.indexes.first.toString())
     }
@@ -44,6 +52,9 @@ fun ByteGroupDefinitionForm(
     }
     var name by remember(definition.id) {
         mutableStateOf(definition.name ?: "")
+    }
+    var representation by remember(definition.id, definition.representation) {
+        mutableStateOf(definition.representation)
     }
 
     //region Input validation
@@ -81,11 +92,14 @@ fun ByteGroupDefinitionForm(
     //endregion
 
     val saveDefinition: () -> Unit = {
-        val definitionToSave = definition.copy(
-            indexes = startIndexInput.toInt()..endIndexInput.toInt(),
-            name = name.ifBlank { null },
-        )
-        onDefinitionSaved(definitionToSave)
+        if (isValid) {
+            val definitionToSave = definition.copy(
+                indexes = startIndexInput.toInt()..endIndexInput.toInt(),
+                name = name.ifBlank { null },
+                representation = representation,
+            )
+            onDefinitionSaved(definitionToSave)
+        }
     }
 
     Column(
@@ -98,6 +112,8 @@ fun ByteGroupDefinitionForm(
                 value = name,
                 onValueChange = { name = it },
                 modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                onKeyboardAction = { focusManager.moveFocus(FocusDirection.Next) },
             )
         }
 
@@ -107,15 +123,35 @@ fun ByteGroupDefinitionForm(
                 onValueChange = { startIndexInput = it },
                 isError = startIndexError != null,
                 modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                onKeyboardAction = { focusManager.moveFocus(FocusDirection.Next) },
             )
         }
 
         PBLabel("End", orientation = Horizontal) {
+            val isLastInput = representation.dataRenderer.arguments.isEmpty()
             PBTextField(
                 value = endIndexInput,
                 onValueChange = { endIndexInput = it },
                 isError = endIndexError != null,
                 modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = if (isLastInput) ImeAction.Done else ImeAction.Next
+                ),
+                onKeyboardAction = {
+                    if (isLastInput) {
+                        saveDefinition()
+                    } else {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                },
+            )
+        }
+
+        if (showRepresentationForm) {
+            ByteGroupRepresentationForm(
+                representation = representation,
+                onRepresentationChanged = { representation = it },
             )
         }
 

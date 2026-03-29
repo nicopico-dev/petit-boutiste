@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -26,6 +27,7 @@ import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
+import org.jetbrains.jewel.ui.component.IconActionButton
 import org.jetbrains.jewel.ui.component.OutlinedButton
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextField
@@ -72,6 +74,16 @@ fun PBFileSelector(
                         }
                     }
                 },
+            )
+
+            IconActionButton(
+                key = AllIconsKeys.Actions.Refresh,
+                contentDescription = "Reload the same file",
+                enabled = selection != null,
+                onClick = {
+                    onFileSelected(selection)
+                },
+                modifier = Modifier.align(Alignment.CenterVertically),
             )
         }
 
