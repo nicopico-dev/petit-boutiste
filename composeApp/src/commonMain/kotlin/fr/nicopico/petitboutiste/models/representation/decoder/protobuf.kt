@@ -62,6 +62,7 @@ val protobufArguments = listOf(
 
 private val protobufPrinter = JsonFormat.printer()
     .preservingProtoFieldNames()
+    .alwaysPrintFieldsWithNoPresence()
 
 suspend fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.Protobuf)

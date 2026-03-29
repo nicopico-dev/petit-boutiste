@@ -44,6 +44,7 @@ import fr.nicopico.petitboutiste.models.definition.rawHexString
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFile
 import fr.nicopico.petitboutiste.models.representation.isReady
@@ -173,7 +174,7 @@ fun ByteItemRender(
                     state = remember(rendererOutput) {
                         TextFieldState(
                             initialText = when (val output = rendererOutput) {
-                                is RenderResult.Success -> output.data
+                                is RenderResult.Success -> output.asString().orEmpty()
                                 is RenderResult.Error -> "[ERROR] ${output.message}"
                                 is RenderResult.None -> ""
                             }
@@ -206,7 +207,8 @@ fun ByteItemRender(
                         contentDescription = "Copy to clipboard",
                         enabled = rendererOutput is RenderResult.Success,
                         onClick = {
-                            val data = (rendererOutput as RenderResult.Success).data.trim()
+                            val data = (rendererOutput as RenderResult.Success)
+                                .asString().orEmpty().trim()
                             scope.launch {
                                 clipboard.setData(data)
                             }
@@ -252,7 +254,8 @@ private fun prepareTabData(
     renderResult: RenderResult,
 ): TabData? {
     val tabName = byteItem.name
-    val rendering = (renderResult as? RenderResult.Success)?.data
+    val rendering = (renderResult as? RenderResult.Success)
+        ?.asString()
         ?: return null
 
     return when (representation.dataRenderer) {
