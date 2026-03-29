@@ -27,11 +27,10 @@ data class Representation(
      * A representation is ready if all the arguments required by the
      * data renderer have a default value or are provided by the user
      */
-    val isReady: Boolean by lazy {
-        dataRenderer.arguments
+    val isReady: Boolean
+        get() = dataRenderer.arguments
             .filter { it.defaultValue == null }
             .all { it.key in argumentValues }
-    }
 }
 
 val Representation.isOff: Boolean

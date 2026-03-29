@@ -24,7 +24,7 @@ sealed class ArgumentType<T : Any>(
 
         override fun convertFrom(argValue: ArgValue): File {
             // Ignore the timestamp
-            val filePath = argValue.split(SEPARATOR)[0]
+            val filePath = argValue.substringBefore(SEPARATOR)
             return File(filePath).absoluteFile
         }
 
