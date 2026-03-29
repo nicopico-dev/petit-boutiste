@@ -40,6 +40,7 @@ fun ByteGroupDefinitionForm(
     definition: ByteGroupDefinition,
     onDefinitionSaved: (ByteGroupDefinition) -> Unit,
     modifier: Modifier = Modifier,
+    showRepresentationForm: Boolean = false,
 ) {
     val focusManager = LocalFocusManager.current
     var startIndexInput by remember(definition.id) {
@@ -146,10 +147,12 @@ fun ByteGroupDefinitionForm(
             )
         }
 
-        ByteGroupRepresentationForm(
-            representation = representation,
-            onRepresentationChanged = { representation = it },
-        )
+        if (showRepresentationForm) {
+            ByteGroupRepresentationForm(
+                representation = representation,
+                onRepresentationChanged = { representation = it },
+            )
+        }
 
         DefaultButton(
             content = { Text(text = "Save definition") },
