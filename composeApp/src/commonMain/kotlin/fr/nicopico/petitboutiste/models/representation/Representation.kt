@@ -29,7 +29,7 @@ data class Representation(
      */
     val isReady: Boolean by lazy {
         dataRenderer.arguments
-            .filter { it.defaultValue != null }
+            .filter { it.defaultValue == null }
             .all { it.key in argumentValues }
     }
 }

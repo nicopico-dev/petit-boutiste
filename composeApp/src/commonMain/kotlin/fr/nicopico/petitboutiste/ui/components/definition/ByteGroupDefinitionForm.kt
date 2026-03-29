@@ -35,6 +35,7 @@ import org.jetbrains.jewel.ui.component.Text
 
 private val fieldMaxWidth = 200.dp
 
+@Suppress("LongMethod")
 @Composable
 fun ByteGroupDefinitionForm(
     definition: ByteGroupDefinition,
