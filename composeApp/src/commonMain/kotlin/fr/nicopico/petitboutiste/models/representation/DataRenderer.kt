@@ -7,6 +7,7 @@
 package fr.nicopico.petitboutiste.models.representation
 
 import androidx.compose.runtime.Immutable
+import fr.nicopico.petitboutiste.models.representation.RenderResult.Simple
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgKey
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
@@ -27,6 +28,7 @@ import fr.nicopico.petitboutiste.models.representation.decoder.userScriptArgumen
 
 private val CUSTOM_LABEL_DEFAULT: String? = null
 private const val REQUIRE_USER_VALIDATION_DEFAULT: Boolean = false
+private val OFF_RENDER_RESULT = Simple("")
 
 enum class DataRenderer(
     val arguments: List<Argument> = emptyList(),
@@ -60,16 +62,16 @@ enum class DataRenderer(
         val hint: String? = null,
     )
 
-    suspend operator fun invoke(byteArray: ByteArray, argumentValues: ArgumentValues): String? {
+    suspend operator fun invoke(byteArray: ByteArray, argumentValues: ArgumentValues): RenderResult {
         return when (this) {
-            Off -> ""
-            Binary -> decodeBinary(byteArray)
-            Hexadecimal -> decodeHexadecimal(byteArray, argumentValues)
-            Integer -> decodeInteger(byteArray, argumentValues)
-            Text -> decodeText(byteArray, argumentValues)
-            Protobuf -> decodeProtobuf(byteArray, argumentValues)
-            UserScript -> decodeUserScript(byteArray, argumentValues)
-            SubTemplate -> decodeSubTemplate(byteArray, argumentValues)
+            Off -> OFF_RENDER_RESULT
+            Binary -> decodeBinary(byteArray).asSimple()
+            Hexadecimal -> decodeHexadecimal(byteArray, argumentValues).asSimple()
+            Integer -> decodeInteger(byteArray, argumentValues).asSimple()
+            Text -> decodeText(byteArray, argumentValues).asSimple()
+            Protobuf -> decodeProtobuf(byteArray, argumentValues).asStructured()
+            UserScript -> decodeUserScript(byteArray, argumentValues).asDynamic()
+            SubTemplate -> decodeSubTemplate(byteArray, argumentValues).asStructured()
         }
     }
 
