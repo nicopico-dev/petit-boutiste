@@ -48,6 +48,8 @@
 -dontwarn com.google.protobuf.**
 -dontwarn org.jetbrains.kotlin.scripting.**
 -dontwarn org.jetbrains.kotlin.cli.**
+-dontwarn org.jetbrains.kotlin.buildtools.**
+-dontwarn org.jetbrains.kotlin.incremental.**
 -dontwarn org.jetbrains.kotlin.backend.**
 -dontwarn org.jetbrains.kotlin.codegen.**
 -dontwarn org.jetbrains.kotlin.descriptors.**
