@@ -16,10 +16,11 @@ import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
-import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
 import java.io.File
 
 private const val ARG_TEMPLATE_FILE_KEY = "templateFile"
@@ -33,11 +34,6 @@ val subTemplateArguments = listOf(
 )
 
 private val templateManager = TemplateManager()
-@Suppress("OPT_IN_USAGE")
-private val json = Json {
-    prettyPrint = true
-    prettyPrintIndent = "  "
-}
 
 suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.SubTemplate)
@@ -48,22 +44,35 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
     val dataString = HexString(byteArray.toHexString())
     val parsedData = dataString.toByteItems(template.definitions)
         .filterIsInstance<ByteGroup>()
-        .associate { group ->
-            val groupName = group.name ?: "UNNAMED (${group.definition.indexes})"
-            val groupValue = group.getOrComputeRendering().output
+        .filter { group ->
+            // Ignore unnamed groups
+            group.name != null
+        }
+        .mapNotNull { group ->
+            val groupName = group.name!!
+
+            val groupValue: JsonElement = when(
+                val renderResult = group.getOrComputeRendering()
+            ) {
+                is RenderResult.None -> {
+                    // Ignore group with no renderResult
+                    return@mapNotNull null
+                }
+                is RenderResult.Simple -> JsonPrimitive(renderResult.data)
+                is RenderResult.Structured -> renderResult.data
+                is RenderResult.Error -> {
+                    // Early return for any sub-template error
+                    // FIXME Check the effect on nested sub-template
+                    return "SUB-TEMPLATE ERROR in $groupName: ${renderResult.message}"
+                }
+            }
 
             groupName to groupValue
         }
+        .associate { (key, value) -> key to value }
 
-    return json.encodeToString(parsedData)
+    return Json.encodeToString(parsedData)
 }
-
-private val RenderResult.output: String
-    get() = when (this) {
-        is RenderResult.Error -> "ERROR($message)"
-        is RenderResult.None -> ""
-        is RenderResult.Success -> this.data
-    }
 
 fun Representation.getSubTemplateFile(): File? {
     return dataRenderer.getArgumentValue<File>(ARG_TEMPLATE_FILE_KEY, argumentValues)

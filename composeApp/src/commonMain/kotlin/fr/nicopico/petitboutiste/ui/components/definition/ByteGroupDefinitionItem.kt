@@ -111,7 +111,9 @@ fun ByteGroupDefinitionItem(
                         && !definition.representation.isOff
                         && definition.representation.isReady
                     ) {
-                        byteGroup.getOrComputeRendering().asString()
+                        byteGroup.getOrComputeRendering().asString(
+                            singleLine = true
+                        )
                     } else null
                 }
 

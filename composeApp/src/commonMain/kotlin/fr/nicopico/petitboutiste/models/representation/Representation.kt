@@ -45,8 +45,6 @@ suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     require(isReady) { "Representation must be ready!" }
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
-            ?.let { render -> RenderResult.Success(render) }
-            ?: RenderResult.None
     } catch (e: Exception) {
         logError("Error rendering with $this", e)
         RenderResult.Error(e.toString())
