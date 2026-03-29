@@ -7,6 +7,7 @@
 package fr.nicopico.petitboutiste.utils.file
 
 import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.openDirectoryPicker
 import io.github.vinceglb.filekit.dialogs.openFilePicker
@@ -36,15 +37,21 @@ private object FileDialogDefault: FileDialog {
         when (operation) {
             is FileDialogOperation.ChooseFile -> {
                 val selectedFile = FileKit.openFilePicker(
-                    title = title,
                     type = FileKitType.File(operation.extensions),
+                    dialogSettings = FileKitDialogSettings(
+                        title = title,
+                    ),
                 ) ?: return@withContext
                 block(selectedFile.file)
             }
 
             is FileDialogOperation.ChooseFolder -> {
-                val selectedFolder = FileKit.openDirectoryPicker(title)
-                    ?: return@withContext
+                val selectedFolder = FileKit.openDirectoryPicker(
+                    directory = null,
+                    dialogSettings = FileKitDialogSettings(
+                        title = title,
+                    ),
+                ) ?: return@withContext
                 block(selectedFolder.file)
             }
 
