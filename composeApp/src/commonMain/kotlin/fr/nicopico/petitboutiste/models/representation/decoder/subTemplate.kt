@@ -62,7 +62,7 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
                 is RenderResult.Structured -> renderResult.data
                 is RenderResult.Error -> {
                     // Early return for any sub-template error
-                    return "SUB-TEMPLATE ERROR in $groupName: ${renderResult.message}"
+                    error("SUB-TEMPLATE ERROR in $groupName: ${renderResult.message}")
                 }
             }
 
