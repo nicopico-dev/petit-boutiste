@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.representation
 
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -61,8 +62,12 @@ fun String.asStructured(): RenderResult.Structured {
 }
 
 fun String.asDynamic(): RenderResult {
-    return when(val jsonElement = jsonParser.parseToJsonElement(this)) {
-        is JsonNull, is JsonPrimitive -> RenderResult.Simple(this)
-        is JsonArray, is JsonObject -> RenderResult.Structured(jsonElement)
+    return try {
+        when(val jsonElement = jsonParser.parseToJsonElement(this)) {
+            is JsonNull, is JsonPrimitive -> RenderResult.Simple(this)
+            is JsonArray, is JsonObject -> RenderResult.Structured(jsonElement)
+        }
+    } catch (_: SerializationException) {
+        RenderResult.Simple(this)
     }
 }
