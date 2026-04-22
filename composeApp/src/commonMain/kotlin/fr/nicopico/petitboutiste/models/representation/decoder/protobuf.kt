@@ -108,6 +108,8 @@ private class DescriptorParser(
     private val descriptorSet: DescriptorProtos.FileDescriptorSet
 ) {
     private val parsedDescriptor: MutableMap<String, Descriptors.FileDescriptor> = mutableMapOf()
+    private val descriptorProtoByName: Map<String, DescriptorProtos.FileDescriptorProto> =
+        descriptorSet.fileList.associateBy { it.name }
 
     fun parse(): List<Descriptors.FileDescriptor> {
         return descriptorSet.fileList.map(::toFileDescriptor)
@@ -127,7 +129,7 @@ private class DescriptorParser(
     ): Descriptors.FileDescriptor {
         return parsedDescriptor.getOrPut(name) {
             val descriptorProto = initialDescriptorProto
-                ?: descriptorSet.fileList.firstOrNull { it.name == name }
+                ?: descriptorProtoByName[name]
                 ?: throw IllegalArgumentException("Missing dependency: $name. Make sure to include imports in the descriptor set.")
 
             val dependencies = descriptorProto.dependencyList.map {
@@ -155,7 +157,7 @@ private suspend fun decodeProtobufPayload(payload: ByteArray, protoFile: File, m
         .firstOrNull { it.name == messageType }
 
     requireNotNull(messageTypeDescriptor) {
-        "Message type $messageType not found in .proto file"
+        "Message type $messageType not found in descriptor set (.desc file)"
     }
 
     // Parse a dynamic Protobuf message from the byte array

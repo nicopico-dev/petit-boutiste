@@ -104,7 +104,11 @@ fun ArgumentInput(
                                 if (error is TimeoutCancellationException) throw error
 
                                 logError("Error parsing choices for ${argument.key}", error)
-                                onError("Error parsing choices for ${argument.label} ($error)")
+                                val errorSummary =
+                                    error.message
+                                        ?: error::class.simpleName
+                                        ?: "unknown error"
+                                onError("Error parsing choices for ${argument.label} ($errorSummary)")
                                 emit(emptyList())
                             }
                             .collectAsStateWithLifecycle(null)
