@@ -18,18 +18,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgValue
-import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.ChoiceType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.NumericType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.StringType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
+import fr.nicopico.petitboutiste.utils.log
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -85,7 +89,7 @@ fun ArgumentInput(
                     )
                 }
 
-                is ArgumentType.StringType -> {
+                is StringType -> {
                     PBTextField(
                         value = value ?: "",
                         onValueChange = onValueChanged,
@@ -95,7 +99,30 @@ fun ArgumentInput(
                     )
                 }
 
-                is ArgumentType.ChoiceType<*> -> {
+                is NumericType -> {
+                    val failedToConvert = value?.let {
+                        try {
+                            argument.type.convertFrom(it)
+                            false
+                        } catch (e: Exception) {
+                            log("'$value' could not be converted to NumericType ($e)")
+                            true
+                        }
+                    } ?: false
+
+                    PBTextField(
+                        value = value ?: "",
+                        onValueChange = onValueChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = keyboardOptions.copy(
+                            keyboardType = if (argument.type.isDecimal) KeyboardType.Decimal else KeyboardType.Number
+                        ),
+                        onKeyboardAction = onKeyboardAction,
+                        isError = failedToConvert,
+                    )
+                }
+
+                is ChoiceType -> {
                     with(argument.type) {
                         val choices by getChoices(completeArgumentsFlow)
                             .flowOn(Dispatchers.Default)

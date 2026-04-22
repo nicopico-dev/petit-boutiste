@@ -17,7 +17,9 @@ sealed class ArgumentType<T : Any>(
     abstract fun convertFrom(argValue: ArgValue): T
     abstract fun convertTo(value: T): ArgValue
 
-    fun matches(expectedType: KClass<*>): Boolean = type.java.isAssignableFrom(expectedType.java)
+    fun matches(expectedType: KClass<*>): Boolean {
+        return type.javaObjectType.isAssignableFrom(expectedType.javaObjectType)
+    }
 
     data object FileType : ArgumentType<File>(File::class) {
         private const val SEPARATOR = ";;"
@@ -37,6 +39,21 @@ sealed class ArgumentType<T : Any>(
     data object StringType : ArgumentType<String>(String::class) {
         override fun convertFrom(argValue: ArgValue): String = argValue
         override fun convertTo(value: String): ArgValue = value
+    }
+
+    data class NumericType<T: Number>(
+        private val type: KClass<T>,
+        private val argValueConverter: (ArgValue) -> T,
+        private val numberConverter: (T) -> ArgValue,
+    ) : ArgumentType<T>(type) {
+
+        val isDecimal: Boolean = when(type) {
+            Double::class, Float::class -> true
+            else -> false
+        }
+
+        override fun convertFrom(argValue: ArgValue): T = argValueConverter(argValue)
+        override fun convertTo(value: T): ArgValue = numberConverter(value)
     }
 
     data class ChoiceType<T: Any>(

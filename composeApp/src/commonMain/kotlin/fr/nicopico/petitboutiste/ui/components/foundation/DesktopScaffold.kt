@@ -32,7 +32,7 @@ fun DesktopScaffold(
         first = {
             val verticalSplitLayoutState = remember(tools != null) {
                 SplitLayoutState(
-                    initialSplitFraction = if (tools != null) 0.67f else 1f
+                    initialSplitFraction = if (tools != null) 0.60f else 1f
                 )
             }
 
