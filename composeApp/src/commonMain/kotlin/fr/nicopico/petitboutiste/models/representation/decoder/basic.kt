@@ -11,11 +11,9 @@ import fr.nicopico.petitboutiste.models.representation.Endianness
 import fr.nicopico.petitboutiste.models.representation.Signedness
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.ResolutionArgument
-import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.getCharset
 import fr.nicopico.petitboutiste.models.representation.arguments.getEndianness
 import fr.nicopico.petitboutiste.models.representation.arguments.getSignedness
-import sun.security.krb5.Confounder.intValue
 import java.math.BigInteger
 
 fun DataRenderer.decodeBinary(byteArray: ByteArray): String {
