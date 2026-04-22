@@ -14,8 +14,10 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.CharsetArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.EndiannessArgument
+import fr.nicopico.petitboutiste.models.representation.arguments.ResolutionArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeBinary
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeDouble
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeHexadecimal
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeInteger
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeProtobuf
@@ -37,6 +39,7 @@ enum class DataRenderer(
     Binary,
     Hexadecimal(EndiannessArgument),
     Integer(EndiannessArgument, SignednessArgument),
+    Double(EndiannessArgument, SignednessArgument, ResolutionArgument),
     Text(EndiannessArgument, CharsetArgument),
     Protobuf(protobufArguments),
     UserScript(userScriptArguments, customLabel = "User script"),
@@ -65,6 +68,7 @@ enum class DataRenderer(
             Binary -> decodeBinary(byteArray).asSimple()
             Hexadecimal -> decodeHexadecimal(byteArray, argumentValues).asSimple()
             Integer -> decodeInteger(byteArray, argumentValues).asSimple()
+            Double -> decodeDouble(byteArray, argumentValues).asSimple()
             Text -> decodeText(byteArray, argumentValues).asSimple()
             Protobuf -> decodeProtobuf(byteArray, argumentValues).asStructured()
             UserScript -> decodeUserScript(byteArray, argumentValues).asDynamic()

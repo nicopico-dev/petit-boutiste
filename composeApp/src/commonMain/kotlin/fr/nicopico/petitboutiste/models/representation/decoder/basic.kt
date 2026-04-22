@@ -10,9 +10,12 @@ import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Endianness
 import fr.nicopico.petitboutiste.models.representation.Signedness
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.models.representation.arguments.ResolutionArgument
+import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.getCharset
 import fr.nicopico.petitboutiste.models.representation.arguments.getEndianness
 import fr.nicopico.petitboutiste.models.representation.arguments.getSignedness
+import sun.security.krb5.Confounder.intValue
 import java.math.BigInteger
 
 fun DataRenderer.decodeBinary(byteArray: ByteArray): String {
@@ -47,12 +50,28 @@ fun DataRenderer.decodeHexadecimal(byteArray: ByteArray, argumentValues: Argumen
 
 fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.Integer)
+    return _decodeInteger(byteArray, argumentValues)
+}
+
+@Suppress("FunctionName")
+private fun DataRenderer._decodeInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     applyEndiannessInPlace(byteArray, argumentValues)
     return if (getSignedness(argumentValues) == Signedness.Signed) {
         BigInteger(byteArray).toString(10)
     } else {
         BigInteger(1, byteArray).toString(10)
     }
+}
+
+fun DataRenderer.decodeDouble(byteArray: ByteArray, argumentValues: ArgumentValues): String {
+    require(this == DataRenderer.Double)
+    val decodedInt = _decodeInteger(byteArray, argumentValues)
+    val intValue = decodedInt.toIntOrNull()
+    val resolution = requireNotNull(getArgumentValue<Double>(ResolutionArgument.key, argumentValues))
+
+    return if (intValue != null) {
+        (intValue * resolution).toString()
+    } else decodedInt
 }
 
 fun DataRenderer.decodeText(byteArray: ByteArray, argumentValues: ArgumentValues): String {
