@@ -119,6 +119,8 @@ private class DescriptorParser(
         return getFileDescriptorFromName(fileDescriptorProto.name, fileDescriptorProto)
     }
 
+    // false-positive on UnreachableCode (Detekt 1.23.8 with type resolution)
+    @Suppress("UnreachableCode")
     private fun getFileDescriptorFromName(
         name: String,
         initialDescriptorProto: DescriptorProtos.FileDescriptorProto? = null,
