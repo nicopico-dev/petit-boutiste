@@ -1,9 +1,8 @@
 package fr.nicopico.petitboutiste.models.representation.arguments
 
-import kotlin.reflect.KClass
 import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ArgumentTypeTest {
 
@@ -11,11 +10,15 @@ class ArgumentTypeTest {
     fun `matches should handle primitive vs boxed types`() {
         // Given
         val type = Double::class
-        val argumentType = ArgumentType.NumericType(type, 0.0, { it.toDouble() }, { it.toString() })
+        val argumentType = ArgumentType.NumericType(
+            type = type,
+            argValueConverter = { it.toDouble() },
+            numberConverter = { it.toString() },
+        )
 
         // When
         val expectedType = Class.forName("java.lang.Double").kotlin
-        
+
         // Then
         assertTrue(argumentType.matches(expectedType), "double.class should match Double.class")
         assertTrue(argumentType.matches(Double::class), "double.class should match double.class")
@@ -25,7 +28,11 @@ class ArgumentTypeTest {
     fun `matches should handle inheritance`() {
         // Given
         val type = Number::class
-        val argumentType = ArgumentType.NumericType(type, 0, { it.toInt() }, { it.toString() })
+        val argumentType = ArgumentType.NumericType(
+            type = type,
+            argValueConverter = { it.toInt() },
+            numberConverter = { it.toString() },
+        )
 
         // Then
         assertTrue(argumentType.matches(Int::class), "Number should match Int")
