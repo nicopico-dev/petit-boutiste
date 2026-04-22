@@ -16,7 +16,15 @@ val CharsetArgument = DataRenderer.Argument(
     label = "Charset",
     type = ArgumentType.ChoiceType(
         type = Charset::class,
-        choices = listOf(Charsets.UTF_8, Charsets.US_ASCII),
+        choices = listOf(
+            Charsets.UTF_8,
+            Charsets.US_ASCII,
+            Charsets.ISO_8859_1,
+            Charsets.UTF_16BE,
+            Charsets.UTF_16LE,
+            Charsets.UTF_32BE,
+            Charsets.UTF_32LE,
+        ),
         argValueConverter = { Charset.forName(it) },
         choiceConverter = Charset::name,
     ),
