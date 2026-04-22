@@ -18,6 +18,8 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -73,18 +75,65 @@ suspend fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: Ar
     )
 }
 
+private data class DescriptorCacheKey(val path: String, val lastModified: Long)
+private val descriptorCache = mutableMapOf<DescriptorCacheKey, List<Descriptors.Descriptor>>()
+private val cacheMutex = Mutex()
+
 private suspend fun getMessageTypeDescriptors(protoFile: File): List<Descriptors.Descriptor> {
-    val fileDescriptors = withContext(Dispatchers.IO) {
-        if (!protoFile.exists()) {
-            throw IllegalArgumentException("File does not exist: $protoFile")
-        }
-        val descriptorSet = DescriptorProtos.FileDescriptorSet.parseFrom(protoFile.inputStream())
-        descriptorSet.fileList.map { Descriptors.FileDescriptor.buildFrom(it, emptyArray()) }
+    val cacheKey = DescriptorCacheKey(protoFile.absolutePath, protoFile.lastModified())
+    cacheMutex.withLock {
+        descriptorCache[cacheKey]?.let { return it }
     }
 
-    return fileDescriptors
-        .flatMap { it.messageTypes }
-        .filterNotNull()
+    val descriptors = withContext(Dispatchers.IO) {
+        require(protoFile.exists()) {
+            "File does not exist: $protoFile"
+        }
+
+        val descriptorSet = protoFile.inputStream().use {
+            DescriptorProtos.FileDescriptorSet.parseFrom(it)
+        }
+        DescriptorParser(descriptorSet).parse()
+            .flatMap { it.messageTypes }
+            .filterNotNull()
+    }
+
+    cacheMutex.withLock {
+        descriptorCache[cacheKey] = descriptors
+    }
+    return descriptors
+}
+
+private class DescriptorParser(
+    private val descriptorSet: DescriptorProtos.FileDescriptorSet
+) {
+    private val parsedDescriptor: MutableMap<String, Descriptors.FileDescriptor> = mutableMapOf()
+
+    fun parse(): List<Descriptors.FileDescriptor> {
+        return descriptorSet.fileList.map(::toFileDescriptor)
+    }
+
+    private fun toFileDescriptor(
+        fileDescriptorProto: DescriptorProtos.FileDescriptorProto
+    ): Descriptors.FileDescriptor {
+        return getFileDescriptorFromName(fileDescriptorProto.name, fileDescriptorProto)
+    }
+
+    private fun getFileDescriptorFromName(
+        name: String,
+        initialDescriptorProto: DescriptorProtos.FileDescriptorProto? = null,
+    ): Descriptors.FileDescriptor {
+        return parsedDescriptor.getOrPut(name) {
+            val descriptorProto = initialDescriptorProto
+                ?: descriptorSet.fileList.firstOrNull { it.name == name }
+                ?: throw IllegalArgumentException("Missing dependency: $name. Make sure to include imports in the descriptor set.")
+
+            val dependencies = descriptorProto.dependencyList.map {
+                getFileDescriptorFromName(it)
+            }
+            Descriptors.FileDescriptor.buildFrom(descriptorProto, dependencies.toTypedArray())
+        }
+    }
 }
 
 /**
@@ -102,7 +151,10 @@ private suspend fun getMessageTypeDescriptors(protoFile: File): List<Descriptors
 private suspend fun decodeProtobufPayload(payload: ByteArray, protoFile: File, messageType: String): String {
     val messageTypeDescriptor = getMessageTypeDescriptors(protoFile)
         .firstOrNull { it.name == messageType }
-        ?: throw IllegalArgumentException("Message type $messageType not found in .proto file")
+
+    requireNotNull(messageTypeDescriptor) {
+        "Message type $messageType not found in .proto file"
+    }
 
     // Parse a dynamic Protobuf message from the byte array
     val dynamicMessage = DynamicMessage.parseFrom(messageTypeDescriptor, payload)
