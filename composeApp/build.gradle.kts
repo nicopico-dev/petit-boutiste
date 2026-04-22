@@ -28,6 +28,8 @@ kotlin {
         // (see `ScriptHost` class)
         freeCompilerArgs.add("-Xexplicit-backing-fields")
         optIn.add("kotlin.concurrent.atomics.ExperimentalAtomicApi")
+
+        allWarningsAsErrors.set(true)
     }
 
     jvmToolchain {
