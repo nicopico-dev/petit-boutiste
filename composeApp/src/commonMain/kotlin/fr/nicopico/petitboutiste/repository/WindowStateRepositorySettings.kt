@@ -30,10 +30,10 @@ class WindowStateRepositorySettings(
 
     override fun save(windowState: WindowState, screenCharacteristics: ScreenCharacteristics) {
         val persisted = PersistedWindowState(
-            x = windowState.position.x.value,
-            y = windowState.position.y.value,
-            width = windowState.size.width.value,
-            height = windowState.size.height.value,
+            x = windowState.position.x.value.takeIf { it.isFinite() },
+            y = windowState.position.y.value.takeIf { it.isFinite() },
+            width = windowState.size.width.value.takeIf { it.isFinite() },
+            height = windowState.size.height.value.takeIf { it.isFinite() },
             isMaximized = windowState.placement == WindowPlacement.Maximized,
             isFullScreen = windowState.placement == WindowPlacement.Fullscreen,
         )
