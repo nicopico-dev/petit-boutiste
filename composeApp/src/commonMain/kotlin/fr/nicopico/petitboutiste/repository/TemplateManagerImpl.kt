@@ -29,7 +29,7 @@ class TemplateManagerImpl(
             json.decodeFromStream<Template>(stream)
         }
         return template.updateFileArgumentPaths { relativePath ->
-            File(templateFile.parentFile, relativePath).absolutePath
+            File(templateFile.parentFile, relativePath).toPath().normalize().toFile().absolutePath
         }
     }
 
