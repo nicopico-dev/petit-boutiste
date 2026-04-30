@@ -21,6 +21,7 @@ sealed class ArgumentType<T : Any>(
         return type.javaObjectType.isAssignableFrom(expectedType.javaObjectType)
     }
 
+    // TODO Replace File with KotlinX Path
     data object FileType : ArgumentType<File>(File::class) {
         private const val SEPARATOR = ";;"
 

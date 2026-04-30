@@ -55,6 +55,7 @@ import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.utils.setData
+import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
@@ -239,7 +240,7 @@ private fun prepareTabData(
                 ),
                 templateData = templateFile?.let {
                     TabTemplateData(
-                        templateFile = it,
+                        templateFilePath = it.toKotlinxIoPath(),
                     )
                 }
             )

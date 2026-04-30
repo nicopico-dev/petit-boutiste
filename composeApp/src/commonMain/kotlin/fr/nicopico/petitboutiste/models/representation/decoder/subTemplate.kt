@@ -17,6 +17,7 @@ import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.repository.TemplateManager
+import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -39,7 +40,7 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
     require(this == DataRenderer.SubTemplate)
     val templateFile: File = getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)!!
 
-    val template = templateManager.loadTemplate(templateFile)
+    val template = templateManager.loadTemplate(templateFile.toKotlinxIoPath())
 
     val dataString = HexString(byteArray.toHexString())
     val parsedData = dataString.toByteItems(template.definitions)
@@ -82,7 +83,7 @@ fun Representation.getSubTemplateDefinitions(): List<ByteGroupDefinition> {
         ?: return emptyList()
 
     val template = runBlocking {
-        templateManager.loadTemplate(templateFile)
+        templateManager.loadTemplate(templateFile.toKotlinxIoPath())
     }
     return template.definitions
 }

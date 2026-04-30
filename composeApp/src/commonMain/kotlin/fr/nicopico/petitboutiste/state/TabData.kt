@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.state
 
+import androidx.compose.runtime.Immutable
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
@@ -13,13 +14,14 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.io.File
+import kotlinx.io.files.Path
 import java.util.UUID
 
 /**
  * Represents a unique identifier for a tab
  */
 @JvmInline
+@Immutable
 value class TabId(val value: String) {
     companion object {
         fun create(): TabId = TabId(UUID.randomUUID().toString())
@@ -71,6 +73,6 @@ data class TabDataRendering(
 }
 
 data class TabTemplateData(
-    val templateFile: File,
+    val templateFilePath: Path,
     val definitionsHaveChanged: Boolean = false,
 )

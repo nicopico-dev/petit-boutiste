@@ -14,6 +14,7 @@ import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.utils.file.FileDialog
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
+import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import java.io.File
@@ -95,8 +96,9 @@ class MenuActionsTest {
     fun `saveTemplate triggers SaveTemplateEvent when templateData is present`() {
         // Given
         val file = File("test.json")
+        val filePath = file.toKotlinxIoPath()
         val tabData = TabData(
-            templateData = TabTemplateData(templateFile = file)
+            templateData = TabTemplateData(templateFilePath = filePath)
         )
 
         // When
@@ -105,7 +107,7 @@ class MenuActionsTest {
         // Then
         assertEquals(1, capturedEvents.size)
         assertEquals(
-            CurrentTabEvent.SaveTemplateEvent(file, updateExisting = true),
+            CurrentTabEvent.SaveTemplateEvent(filePath, updateExisting = true),
             capturedEvents[0]
         )
     }
@@ -114,8 +116,9 @@ class MenuActionsTest {
     fun `restoreDefinitions triggers LoadTemplateEvent when templateData is present`() {
         // Given
         val file = File("test.json")
+        val filePath = file.toKotlinxIoPath()
         val tabData = TabData(
-            templateData = TabTemplateData(templateFile = file)
+            templateData = TabTemplateData(templateFilePath = filePath)
         )
 
         // When
@@ -124,7 +127,7 @@ class MenuActionsTest {
         // Then
         assertEquals(1, capturedEvents.size)
         assertEquals(
-            CurrentTabEvent.LoadTemplateEvent(file, definitionsOnly = true),
+            CurrentTabEvent.LoadTemplateEvent(filePath, definitionsOnly = true),
             capturedEvents[0]
         )
     }
@@ -155,6 +158,7 @@ class MenuActionsTest {
     fun `loadTemplate triggers LoadTemplateEvent after file selection`() = runTest {
         // Given
         val file = File("selected.json")
+        val filePath = file.toKotlinxIoPath()
         mockFileDialogProvider.fileToReturn = file
 
         // When
@@ -165,7 +169,7 @@ class MenuActionsTest {
         assertEquals(FileDialogOperation.ChooseFile(setOf("json")), mockFileDialogProvider.capturedOperation)
         assertEquals(1, capturedEvents.size)
         assertEquals(
-            CurrentTabEvent.LoadTemplateEvent(file, definitionsOnly = false),
+            CurrentTabEvent.LoadTemplateEvent(filePath, definitionsOnly = false),
             capturedEvents[0]
         )
     }
@@ -174,6 +178,7 @@ class MenuActionsTest {
     fun `saveTemplateAs triggers SaveTemplateEvent after file selection`() = runTest {
         // Given
         val file = File("new_template.json")
+        val filePath = file.toKotlinxIoPath()
         mockFileDialogProvider.fileToReturn = file
         val tabData = TabData(name = "My Template")
 
@@ -189,7 +194,7 @@ class MenuActionsTest {
 
         assertEquals(1, capturedEvents.size)
         assertEquals(
-            CurrentTabEvent.SaveTemplateEvent(file, updateExisting = false),
+            CurrentTabEvent.SaveTemplateEvent(filePath, updateExisting = false),
             capturedEvents[0]
         )
     }
@@ -198,6 +203,7 @@ class MenuActionsTest {
     fun `addDefinitionsFromAnotherTemplate triggers AddDefinitionsFromTemplateEvent after file selection`() = runTest {
         // Given
         val file = File("other.json")
+        val filePath = file.toKotlinxIoPath()
         mockFileDialogProvider.fileToReturn = file
 
         // When
@@ -208,7 +214,7 @@ class MenuActionsTest {
         assertEquals(FileDialogOperation.ChooseFile(setOf("json")), mockFileDialogProvider.capturedOperation)
         assertEquals(1, capturedEvents.size)
         assertEquals(
-            CurrentTabEvent.AddDefinitionsFromTemplateEvent(file),
+            CurrentTabEvent.AddDefinitionsFromTemplateEvent(filePath),
             capturedEvents[0]
         )
     }

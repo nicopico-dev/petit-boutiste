@@ -9,12 +9,13 @@ package fr.nicopico.petitboutiste.repository
 import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
+import io.github.vinceglb.filekit.utils.toFile
+import kotlinx.io.files.Path
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
 import java.io.File
-import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createTempFile
 import kotlin.io.path.relativeTo
@@ -24,7 +25,8 @@ class TemplateManagerImpl(
     private val json: Json = Json.Default,
 ) : TemplateManager {
 
-    override suspend fun loadTemplate(templateFile: File): Template {
+    override suspend fun loadTemplate(templateFilePath: Path): Template {
+        val templateFile = templateFilePath.toFile()
         val template = templateFile.inputStream().buffered().use { stream ->
             json.decodeFromStream<Template>(stream)
         }
@@ -35,9 +37,10 @@ class TemplateManagerImpl(
 
     override suspend fun saveTemplate(
         template: Template,
-        templateFile: File,
+        templateFilePath: Path,
         overwrite: Boolean,
     ) {
+        val templateFile = templateFilePath.toFile()
         val directory = templateFile.parentFile.toPath()
         directory.createDirectories()
 
@@ -83,7 +86,7 @@ private fun Representation.updateFileArgumentPaths(
     return copy(argumentValues = updatedArgValues)
 }
 
-private fun File.relativePath(baseDir: Path): String {
+private fun File.relativePath(baseDir: java.nio.file.Path): String {
     val filePath = absoluteFile.toPath()
     return try {
         filePath.relativeTo(baseDir).toString()

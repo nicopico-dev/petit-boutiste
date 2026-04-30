@@ -10,6 +10,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
+import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -50,10 +51,11 @@ class TemplateManagerImplTest {
             scratchpad = "Notes"
         )
         val templateFile = File(tempDir, "test.pbt")
+        val templateFilePath = templateFile.toKotlinxIoPath()
 
         // When
-        templateManager.saveTemplate(template, templateFile)
-        val loaded = templateManager.loadTemplate(templateFile)
+        templateManager.saveTemplate(template, templateFilePath)
+        val loaded = templateManager.loadTemplate(templateFilePath)
 
         // Then
         assertEquals(template.name, loaded.name)
@@ -82,9 +84,10 @@ class TemplateManagerImplTest {
             )
         )
         val templateFile = File(subDir, "main.pbt")
+        val templateFilePath = templateFile.toKotlinxIoPath()
 
         // When
-        templateManager.saveTemplate(template, templateFile)
+        templateManager.saveTemplate(template, templateFilePath)
 
         // Then
         // Verify the file content contains the relative path
@@ -92,7 +95,7 @@ class TemplateManagerImplTest {
         assertTrue(content.contains("../external.bin"), "Should contain relative path to external.bin, but was:\n$content")
 
         // When loading back
-        val loaded = templateManager.loadTemplate(templateFile)
+        val loaded = templateManager.loadTemplate(templateFilePath)
 
         // Then
         val loadedFilePath = loaded.definitions.first().representation.argumentValues["templateFile"]
@@ -103,14 +106,15 @@ class TemplateManagerImplTest {
     fun `saveTemplate overwrites existing file when requested`() = runTest {
         // Given
         val templateFile = File(tempDir, "test.pbt")
+        val templateFilePath = templateFile.toKotlinxIoPath()
         templateFile.writeText("original content")
         val template = Template(name = "New Template")
 
         // When
-        templateManager.saveTemplate(template, templateFile, overwrite = true)
+        templateManager.saveTemplate(template, templateFilePath, overwrite = true)
 
         // Then
-        val loaded = templateManager.loadTemplate(templateFile)
+        val loaded = templateManager.loadTemplate(templateFilePath)
         assertEquals("New Template", loaded.name)
     }
 }
