@@ -48,6 +48,9 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.filekit.dialogs)
 
+            implementation(libs.jackson.databind)
+            implementation(libs.jackson.dataformat.cbor)
+
             implementation(libs.protobuf.java)
             implementation(libs.protobuf.java.util)
 
