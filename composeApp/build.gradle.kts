@@ -87,3 +87,10 @@ tasks
     .configureEach {
         dependsOn(":systemBridge:nativeBridge:buildAndCopyNativeBridges")
     }
+
+// Fix Gradle "implicit dependency" error when running `gradle check`
+// (skydoves-stabilityAnalyzer = "0.7.4")
+tasks.matching { it.name == "stabilityCheck" }
+    .configureEach {
+        dependsOn(tasks.named("compileTestKotlinDesktop"))
+    }

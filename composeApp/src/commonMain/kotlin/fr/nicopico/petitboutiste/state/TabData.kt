@@ -7,6 +7,10 @@
 package fr.nicopico.petitboutiste.state
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
@@ -31,6 +35,7 @@ value class TabId(val value: String) {
 /**
  * Represents the data for a single tab, including its input data, input type, and group definitions
  */
+@Stable
 data class TabData(
     val id: TabId = TabId.create(),
     val name: String? = null,
@@ -46,6 +51,7 @@ data class TabData(
     suspend fun renderByteItems(): List<ByteItem> = rendering.renderByteItems()
 }
 
+@Stable
 data class TabDataRendering(
     val inputData: DataString = HexString(""),
     val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
@@ -53,8 +59,8 @@ data class TabDataRendering(
     private var byteItems: List<ByteItem>? = null
     private val byteItemsMutex = Mutex()
 
-    val isRendered: Boolean
-        get() = byteItems != null
+    var isRendered by mutableStateOf(false)
+        private set
 
     suspend fun renderByteItems(): List<ByteItem> {
         // Fast path
@@ -67,11 +73,13 @@ data class TabDataRendering(
 
             val result = inputData.toByteItems(groupDefinitions)
             byteItems = result
+            isRendered = true
             result
         }
     }
 }
 
+@Immutable
 data class TabTemplateData(
     val templateFilePath: Path,
     val definitionsHaveChanged: Boolean = false,
