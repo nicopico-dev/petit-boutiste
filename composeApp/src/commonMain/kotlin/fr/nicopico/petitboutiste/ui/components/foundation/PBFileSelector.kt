@@ -47,7 +47,7 @@ fun PBFileSelector(
     Column(modifier) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             val state = remember(selection) {
-                TextFieldState(selection?.name ?: "")
+                TextFieldState(selection?.name.orEmpty())
             }
             TextField(
                 state = state,

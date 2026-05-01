@@ -138,7 +138,7 @@ fun HexDisplay(
                             )
 
                             Text(
-                                text = item.name ?: "",
+                                text = item.name.orEmpty(),
                                 style = TextStyle(
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 8.sp,

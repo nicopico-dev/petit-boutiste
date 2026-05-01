@@ -37,7 +37,9 @@ private val templateManager = TemplateManager()
 
 suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.SubTemplate)
-    val templateFile: File = getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)!!
+    val templateFile: File = requireNotNull(getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)) {
+        "Missing argument $ARG_TEMPLATE_FILE_KEY"
+    }
 
     val template = templateManager.loadTemplate(templateFile)
 

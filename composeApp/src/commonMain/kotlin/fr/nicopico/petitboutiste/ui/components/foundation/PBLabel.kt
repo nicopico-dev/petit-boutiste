@@ -21,11 +21,6 @@ import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.typography
 
-enum class PBLabelOrientation {
-    Vertical,
-    Horizontal,
-}
-
 @Composable
 fun PBLabel(
     label: String,
@@ -56,4 +51,9 @@ fun PBLabel(
             content()
         }
     }
+}
+
+enum class PBLabelOrientation {
+    Vertical,
+    Horizontal,
 }

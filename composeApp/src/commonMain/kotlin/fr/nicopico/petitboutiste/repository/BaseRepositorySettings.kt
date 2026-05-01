@@ -15,6 +15,7 @@ import kotlinx.serialization.json.Json
  * Base class to help repositories persist a single JSON blob using `Settings`.
  * Provides safe (de)serialization helpers with error handling.
  */
+@Suppress("UnnecessaryAbstractClass")
 abstract class BaseRepositorySettings(
     protected val settings: Settings,
     protected val json: Json,

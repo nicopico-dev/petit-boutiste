@@ -14,29 +14,29 @@ class HexString(
 
     override val inputType: InputType = InputType.HEX
 
-    override val hexString: String = rawHexString.normalizeHexString()
+    override val hexStringValue: String = rawHexString.normalizeHexString()
 
     init {
-        require(hexString.length % 2 == 0) { "HexString \"$hexString\" must have an even length" }
+        require(hexStringValue.length % 2 == 0) { "HexString \"$hexStringValue\" must have an even length" }
     }
 
-    val byteCount: Int = hexString.length / 2
+    val byteCount: Int = hexStringValue.length / 2
 
-    override fun isNotEmpty() = hexString.isNotEmpty()
+    override fun isNotEmpty() = hexStringValue.isNotEmpty()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is HexString) return false
 
-        return hexString == other.hexString
+        return hexStringValue == other.hexStringValue
     }
 
     override fun hashCode(): Int {
-        return hexString.hashCode()
+        return hexStringValue.hashCode()
     }
 
     override fun toString(): String {
-        return "HexString(hexString='$hexString')"
+        return "HexString(hexString='$hexStringValue')"
     }
 
     companion object {

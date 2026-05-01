@@ -112,7 +112,7 @@ class Reducer(
             //region Current Tab
             is AppEvent.CurrentTabEvent.ChangeInputTypeEvent -> {
                 state.updateCurrentTab {
-                    val hexString = HexString(inputData.hexString)
+                    val hexString = HexString(inputData.hexStringValue)
                     val updatedData: DataString = when (event.type) {
                         InputType.HEX -> hexString
                         InputType.BINARY -> BinaryString.fromHexString(hexString)

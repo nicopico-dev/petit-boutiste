@@ -91,7 +91,7 @@ fun ArgumentInput(
 
                 is StringType -> {
                     PBTextField(
-                        value = value ?: "",
+                        value = value.orEmpty(),
                         onValueChange = onValueChanged,
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = keyboardOptions,
@@ -111,7 +111,7 @@ fun ArgumentInput(
                     } ?: false
 
                     PBTextField(
-                        value = value ?: "",
+                        value = value.orEmpty(),
                         onValueChange = onValueChanged,
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = keyboardOptions.copy(

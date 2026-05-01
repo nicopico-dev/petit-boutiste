@@ -26,7 +26,7 @@ fun BinaryInput(
     val binaryValue = when (value) {
         is BinaryString -> value
         is HexString -> BinaryString.fromHexString(value)
-        is Base64String -> BinaryString.fromHexString(HexString(value.hexString))
+        is Base64String -> BinaryString.fromHexString(HexString(value.hexStringValue))
     }
 
     DataInput(

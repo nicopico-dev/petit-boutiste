@@ -69,6 +69,7 @@ private fun Template.updateFileArgumentPaths(
     )
 }
 
+@Suppress("UnusedPrivateMember")
 private fun Representation.updateFileArgumentPaths(
     transform: (String) -> String,
 ): Representation {

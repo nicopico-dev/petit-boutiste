@@ -54,7 +54,7 @@ class BinaryStringExtTest {
         val binaryString = hexString.toBinaryString()
 
         // Then it should have the correct binary representation
-        assertEquals("0100100001100101011011000110110001101111", binaryString.binaryString)
+        assertEquals("0100100001100101011011000110110001101111", binaryString.value)
     }
 
     @Test
@@ -66,6 +66,6 @@ class BinaryStringExtTest {
         val binaryString = hexString.toBinaryString()
 
         // Then it should return an empty binary string
-        assertEquals("", binaryString.binaryString)
+        assertEquals("", binaryString.value)
     }
 }

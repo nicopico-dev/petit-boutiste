@@ -22,7 +22,7 @@ sealed interface DataString {
     /**
      * The normalized hexadecimal representation of the data.
      */
-    val hexString: String
+    val hexStringValue: String
 
     /**
      * Checks if the data string is not empty.

@@ -54,6 +54,7 @@ data class TabDataRendering(
     val isRendered: Boolean
         get() = byteItems != null
 
+    @Suppress("ReturnCount")
     suspend fun renderByteItems(): List<ByteItem> {
         // Fast path
         byteItems?.let { return it }

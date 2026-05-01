@@ -47,7 +47,7 @@ fun RenameTabDialog(
         focusRequester.requestFocus()
     }
 
-    val textFieldState = rememberTextFieldState(currentName ?: "")
+    val textFieldState = rememberTextFieldState(currentName.orEmpty())
 
     val submit = {
         val newTabName = textFieldState.text.toString()

@@ -15,25 +15,25 @@ class Base64String(
 
     override val inputType: InputType = InputType.BASE64
 
-    val base64String: String = base64.encode(byteArray)
+    val value: String = base64.encode(byteArray)
 
-    override val hexString: String
+    override val hexStringValue: String
         get() = byteArray.toHexString(HexFormat.UpperCase)
 
-    override fun isNotEmpty() = base64String.isNotEmpty()
+    override fun isNotEmpty() = value.isNotEmpty()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Base64String) return false
-        return base64String == other.base64String
+        return value == other.value
     }
 
     override fun hashCode(): Int {
-        return base64String.hashCode()
+        return value.hashCode()
     }
 
     override fun toString(): String {
-        return "Base64String(base64String='$base64String')"
+        return "Base64String(base64String='$value')"
     }
 
     companion object {
@@ -49,7 +49,7 @@ class Base64String(
         }
 
         fun fromHexString(hexString: HexString): Base64String {
-            val byteArray = hexString.hexString.hexToByteArray()
+            val byteArray = hexString.hexStringValue.hexToByteArray()
             return Base64String(byteArray)
         }
     }

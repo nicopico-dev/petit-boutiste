@@ -18,7 +18,7 @@ class Base64StringTest {
         val result = Base64String.parse(anyBase64String)
 
         // THEN
-        assertEquals(normalizedBase64, result?.base64String)
+        assertEquals(normalizedBase64, result?.value)
     }
 
     @Test
@@ -42,7 +42,7 @@ class Base64StringTest {
         val base64String = Base64String.fromHexString(hexString)
 
         // Then it should have the correct base64 representation
-        assertEquals("TG9yZW0gaXBzdW0=", base64String.base64String)
+        assertEquals("TG9yZW0gaXBzdW0=", base64String.value)
     }
 
     @Test
@@ -54,7 +54,7 @@ class Base64StringTest {
         val base64String = Base64String.fromHexString(hexString)
 
         // Then it should have the correct base64 representation
-        assertEquals(hexString.hexString, base64String.hexString)
+        assertEquals(hexString.hexStringValue, base64String.hexStringValue)
     }
 
     @Test
@@ -66,7 +66,7 @@ class Base64StringTest {
         val base64String = Base64String(emptyData)
 
         // Then the binary string should be empty
-        assertEquals("", base64String.base64String)
-        assertEquals("", base64String.hexString)
+        assertEquals("", base64String.value)
+        assertEquals("", base64String.hexStringValue)
     }
 }

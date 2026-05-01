@@ -38,6 +38,7 @@ data class ByteGroup(
      * The rendering is computed using the definition's representation and cached for reuse.
      * Thread-safe lazy initialization using a mutex.
      */
+    @Suppress("ReturnCount")
     suspend fun getOrComputeRendering(): RenderResult {
         // Fast path: return cached value if available
         _cachedRenderResult?.let { return it }

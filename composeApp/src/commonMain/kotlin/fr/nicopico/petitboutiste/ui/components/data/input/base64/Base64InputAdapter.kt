@@ -15,5 +15,5 @@ object Base64InputAdapter : DataInputAdapter<Base64String> {
 
     override fun parse(input: String) = Base64String.parse(input)
 
-    override fun getNormalizedString(value: Base64String): String = value.base64String
+    override fun getNormalizedString(value: Base64String): String = value.value
 }
