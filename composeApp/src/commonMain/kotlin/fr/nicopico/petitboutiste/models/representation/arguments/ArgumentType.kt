@@ -6,9 +6,10 @@
 
 package fr.nicopico.petitboutiste.models.representation.arguments
 
+import fr.nicopico.petitboutiste.utils.file.asString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import java.io.File
+import kotlinx.io.files.Path
 import kotlin.reflect.KClass
 
 sealed class ArgumentType<T : Any>(
@@ -21,19 +22,18 @@ sealed class ArgumentType<T : Any>(
         return type.javaObjectType.isAssignableFrom(expectedType.javaObjectType)
     }
 
-    // TODO Replace File with KotlinX Path
-    data object FileType : ArgumentType<File>(File::class) {
+    data object FileType : ArgumentType<Path>(Path::class) {
         private const val SEPARATOR = ";;"
 
-        override fun convertFrom(argValue: ArgValue): File {
+        override fun convertFrom(argValue: ArgValue): Path {
             // Ignore the timestamp
             val filePath = argValue.substringBefore(SEPARATOR)
-            return File(filePath).absoluteFile
+            return Path(filePath)
         }
 
-        override fun convertTo(value: File): ArgValue {
+        override fun convertTo(value: Path): ArgValue {
             // Append a timestamp to the file path to allow reloading the same file
-            return value.absolutePath + SEPARATOR + System.currentTimeMillis()
+            return value.asString() + SEPARATOR + System.currentTimeMillis()
         }
     }
 

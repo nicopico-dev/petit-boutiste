@@ -17,7 +17,6 @@ import fr.nicopico.petitboutiste.state.TabId
 import fr.nicopico.petitboutiste.state.TabsState
 import fr.nicopico.petitboutiste.utils.file.FileDialog
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
-import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -59,7 +58,7 @@ class MenuActions(
                 block = { selectedFile ->
                     onEvent(
                         CurrentTabEvent.LoadTemplateEvent(
-                            selectedFile.toKotlinxIoPath(),
+                            selectedFile,
                             definitionsOnly = false,
                         )
                     )
@@ -92,7 +91,7 @@ class MenuActions(
                 block = { selectedFile ->
                     onEvent(
                         CurrentTabEvent.SaveTemplateEvent(
-                            templateFilePath = selectedFile.toKotlinxIoPath(),
+                            templateFilePath = selectedFile,
                             updateExisting = false,
                         )
                     )
@@ -122,7 +121,7 @@ class MenuActions(
                 block = { selectedFile ->
                     onEvent(
                         CurrentTabEvent.AddDefinitionsFromTemplateEvent(
-                            templateFilePath = selectedFile.toKotlinxIoPath(),
+                            templateFilePath = selectedFile,
                         )
                     )
                 }

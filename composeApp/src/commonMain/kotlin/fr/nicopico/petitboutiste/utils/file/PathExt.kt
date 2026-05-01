@@ -11,3 +11,5 @@ import kotlinx.io.files.Path
 
 val Path.nameWithoutExtension: String
     get() = this.toFile().nameWithoutExtension
+
+fun Path.asString(): String = toString()

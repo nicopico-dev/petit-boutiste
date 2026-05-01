@@ -17,6 +17,7 @@ import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.files.Path
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,13 +29,13 @@ class MenuActionsTest {
     private val onEvent: (AppEvent) -> Unit = { capturedEvents.add(it) }
     private val testScope = TestScope()
     private val mockFileDialogProvider = object : FileDialog {
-        var fileToReturn: File? = null
+        var fileToReturn: Path? = null
         var capturedOperation: FileDialogOperation? = null
 
         override suspend fun show(
             operation: FileDialogOperation,
             title: String?,
-            block: (File) -> Unit
+            block: (Path) -> Unit
         ) {
             capturedOperation = operation
             fileToReturn?.let { block(it) }
@@ -95,8 +96,7 @@ class MenuActionsTest {
     @Test
     fun `saveTemplate triggers SaveTemplateEvent when templateData is present`() {
         // Given
-        val file = File("test.json")
-        val filePath = file.toKotlinxIoPath()
+        val filePath = Path("test.json")
         val tabData = TabData(
             templateData = TabTemplateData(templateFilePath = filePath)
         )
@@ -157,9 +157,8 @@ class MenuActionsTest {
     @Test
     fun `loadTemplate triggers LoadTemplateEvent after file selection`() = runTest {
         // Given
-        val file = File("selected.json")
-        val filePath = file.toKotlinxIoPath()
-        mockFileDialogProvider.fileToReturn = file
+        val filePath = Path("selected.json")
+        mockFileDialogProvider.fileToReturn = filePath
 
         // When
         menuActions.loadTemplate()
@@ -177,9 +176,8 @@ class MenuActionsTest {
     @Test
     fun `saveTemplateAs triggers SaveTemplateEvent after file selection`() = runTest {
         // Given
-        val file = File("new_template.json")
-        val filePath = file.toKotlinxIoPath()
-        mockFileDialogProvider.fileToReturn = file
+        val filePath = Path("new_template.json")
+        mockFileDialogProvider.fileToReturn = filePath
         val tabData = TabData(name = "My Template")
 
         // When
@@ -202,9 +200,8 @@ class MenuActionsTest {
     @Test
     fun `addDefinitionsFromAnotherTemplate triggers AddDefinitionsFromTemplateEvent after file selection`() = runTest {
         // Given
-        val file = File("other.json")
-        val filePath = file.toKotlinxIoPath()
-        mockFileDialogProvider.fileToReturn = file
+        val filePath = Path("other.json")
+        mockFileDialogProvider.fileToReturn = filePath
 
         // When
         menuActions.addDefinitionsFromAnotherTemplate()
