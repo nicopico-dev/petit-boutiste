@@ -19,6 +19,7 @@ sealed class ArgumentType<T : Any>(
     abstract fun convertTo(value: T): ArgValue
 
     fun matches(expectedType: KClass<*>): Boolean {
+        // FIXME javaObjectType is JVM-only
         return type.javaObjectType.isAssignableFrom(expectedType.javaObjectType)
     }
 
@@ -33,6 +34,7 @@ sealed class ArgumentType<T : Any>(
 
         override fun convertTo(value: Path): ArgValue {
             // Append a timestamp to the file path to allow reloading the same file
+            // FIXME System is JVM-only
             return value.asString() + SEPARATOR + System.currentTimeMillis()
         }
     }

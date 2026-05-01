@@ -6,7 +6,6 @@
 
 package fr.nicopico.petitboutiste.models.representation.decoder
 
-import com.google.protobuf.Descriptors
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
@@ -42,8 +41,7 @@ val protobufArguments = listOf(
                     .distinctUntilChanged()
                     .map { protoFileArgument ->
                         if (protoFileArgument != null) {
-                            getMessageTypeDescriptors(protoFileArgument)
-                                .map { it.name }
+                            getMessageTypeDescriptorNames(protoFileArgument)
                                 .sorted()
                         } else emptyList()
                     }
@@ -57,4 +55,4 @@ val protobufArguments = listOf(
 
 expect suspend fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: ArgumentValues): String
 
-expect suspend fun getMessageTypeDescriptors(protoFilePath: Path): List<Descriptors.Descriptor>
+expect suspend fun getMessageTypeDescriptorNames(protoFilePath: Path): List<String>

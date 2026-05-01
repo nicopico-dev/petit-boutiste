@@ -43,7 +43,11 @@ private data class DescriptorCacheKey(val path: String, val lastModified: Long)
 private val descriptorCache = mutableMapOf<DescriptorCacheKey, List<Descriptors.Descriptor>>()
 private val cacheMutex = Mutex()
 
-actual suspend fun getMessageTypeDescriptors(protoFilePath: Path): List<Descriptors.Descriptor> {
+actual suspend fun getMessageTypeDescriptorNames(protoFilePath: Path): List<String> {
+    return getMessageTypeDescriptors(protoFilePath).map { it.name }
+}
+
+private suspend fun getMessageTypeDescriptors(protoFilePath: Path): List<Descriptors.Descriptor> {
     val cacheKey = DescriptorCacheKey(protoFilePath.absolutePath, protoFilePath.lastModified())
     cacheMutex.withLock {
         descriptorCache[cacheKey]?.let { return it }
@@ -66,6 +70,7 @@ actual suspend fun getMessageTypeDescriptors(protoFilePath: Path): List<Descript
     cacheMutex.withLock {
         descriptorCache[cacheKey] = descriptors
     }
+
     return descriptors
 }
 

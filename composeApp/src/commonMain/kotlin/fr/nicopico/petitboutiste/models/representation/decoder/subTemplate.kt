@@ -17,7 +17,6 @@ import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.repository.TemplateManager
-import kotlinx.coroutines.runBlocking
 import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -78,12 +77,11 @@ fun Representation.getSubTemplateFilePath(): Path? {
     return dataRenderer.getArgumentValue<Path>(ARG_TEMPLATE_FILE_KEY, argumentValues)
 }
 
-fun Representation.getSubTemplateDefinitions(): List<ByteGroupDefinition> {
+suspend fun Representation.getSubTemplateDefinitions(): List<ByteGroupDefinition> {
     val templateFile: Path = getSubTemplateFilePath()
         ?: return emptyList()
 
-    val template = runBlocking {
-        templateManager.loadTemplate(templateFile)
-    }
+    val template = templateManager.loadTemplate(templateFile)
+
     return template.definitions
 }
