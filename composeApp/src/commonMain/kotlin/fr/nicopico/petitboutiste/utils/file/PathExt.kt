@@ -6,7 +6,6 @@
 
 package fr.nicopico.petitboutiste.utils.file
 
-import io.github.vinceglb.filekit.utils.toFile
 import kotlinx.io.Source
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -19,10 +18,9 @@ fun Path.asString(): String = toString()
 val Path.nameWithoutExtension: String
     get() = name.substringBeforeLast(".")
 
-val Path.absolutePath: String
-    get() = this.toFile().absolutePath // `fileSystem.resolve(this).toString()` only works if the file exists
+expect val Path.absolutePath: String
 
-fun Path.lastModified(): Long = this.toFile().lastModified()
+expect fun Path.lastModified(): Long
 
 fun Path.exists(): Boolean = fileSystem.exists(this)
 

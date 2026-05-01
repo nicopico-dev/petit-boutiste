@@ -28,7 +28,10 @@ kotlin {
         // "Class 'fr.nicopico.petitboutiste.scripting.PetitBoutisteApi' was compiled by a pre-release version of Kotlin and cannot be loaded by this version of the compiler"
         // (see `ScriptHost` class)
         freeCompilerArgs.add("-Xexplicit-backing-fields")
-        optIn.add("kotlin.concurrent.atomics.ExperimentalAtomicApi")
+        optIn.addAll(
+            "kotlin.concurrent.atomics.ExperimentalAtomicApi",
+            "kotlin.uuid.ExperimentalUuidApi",
+        )
 
         allWarningsAsErrors.set(true)
     }
@@ -48,6 +51,16 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.multiplatform.settings)
             implementation(libs.filekit.dialogs)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.multiplatform.settings.test)
+        }
+
+        desktopMain.dependencies {
+            implementation(libs.kotlinx.coroutines.swing)
 
             implementation(libs.jackson.databind)
             implementation(libs.jackson.dataformat.cbor)
@@ -64,17 +77,10 @@ kotlin {
             implementation(projects.systemBridge)
         }
 
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-            implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.multiplatform.settings.test)
-        }
-
-        // "desktop" target is declared by the compose-convention plugin
-        val desktopMain by getting
-        desktopMain.dependencies {
-            implementation(libs.kotlinx.coroutines.swing)
-        }
+        // TODO Enable WASM target
+//        wasmJsMain.dependencies {
+//            // WASM-specific dependencies
+//        }
     }
 }
 

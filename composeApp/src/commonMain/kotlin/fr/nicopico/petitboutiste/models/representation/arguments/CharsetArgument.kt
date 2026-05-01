@@ -15,6 +15,8 @@ val CharsetArgument = DataRenderer.Argument(
     key = "charset",
     label = "Charset",
     type = ArgumentType.ChoiceType(
+        // FIXME Charset is JVM-only
+        //  see https://github.com/fleeksoft/fleeksoft-io/blob/main/CharsetsReadme.md
         type = Charset::class,
         choices = listOf(
             Charsets.UTF_8,

@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class PTBViewModel(
     private val reducer: Reducer,
@@ -112,7 +113,7 @@ class PTBViewModel(
 
         // Auto-hide snackbar after 5 seconds
         snackbarDismissJob = viewModelScope.launch {
-            delay(5000)
+            delay(5000.milliseconds)
             snackbarState.value = null
         }
     }

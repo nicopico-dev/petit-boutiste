@@ -54,6 +54,7 @@ fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentVal
 @Suppress("FunctionName")
 private fun DataRenderer._decodeInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     applyEndiannessInPlace(byteArray, argumentValues)
+    // FIXME BigInteger is JVM-only
     return if (getSignedness(argumentValues) == Signedness.Signed) {
         BigInteger(byteArray).toString(10)
     } else {

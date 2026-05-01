@@ -41,6 +41,7 @@ fun ByteItem.toByteArray(): ByteArray {
     val len = hexString.length
     val data = ByteArray(len / 2)
     for (i in 0 until len step 2) {
+        // FIXME Character is JVM-only
         data[i / 2] = ((Character.digit(hexString[i], 16) shl 4) + Character.digit(hexString[i + 1], 16)).toByte()
     }
     return data

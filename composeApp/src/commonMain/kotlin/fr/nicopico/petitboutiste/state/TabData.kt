@@ -19,7 +19,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteItem
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.io.files.Path
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Represents a unique identifier for a tab
@@ -28,7 +28,7 @@ import java.util.UUID
 @Immutable
 value class TabId(val value: String) {
     companion object {
-        fun create(): TabId = TabId(UUID.randomUUID().toString())
+        fun create(): TabId = TabId(Uuid.random().toString())
     }
 }
 

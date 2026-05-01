@@ -25,6 +25,7 @@ class TemplateManagerImpl(
     private val json: Json = Json.Default,
 ) : TemplateManager {
 
+    // FIXME Remove usage of java.io.File
     override suspend fun loadTemplate(templateFilePath: Path): Template {
         val templateFile = templateFilePath.toFile()
         val template = templateFile.inputStream().buffered().use { stream ->
@@ -35,6 +36,7 @@ class TemplateManagerImpl(
         }
     }
 
+    // FIXME Remove usage of java.io.File
     override suspend fun saveTemplate(
         template: Template,
         templateFilePath: Path,
@@ -88,6 +90,7 @@ private fun Representation.updateFileArgumentPaths(
     return copy(argumentValues = updatedArgValues)
 }
 
+// FIXME Remove usage of java.nio.file.Path
 private fun File.relativePath(baseDir: java.nio.file.Path): String {
     val filePath = absoluteFile.toPath()
     return try {
