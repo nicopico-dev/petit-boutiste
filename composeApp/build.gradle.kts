@@ -13,9 +13,8 @@ plugins {
     id("licensee-convention")
     id("versioning-convention")
 
-
     alias(libs.plugins.kotlinSerialization)
-	alias(libs.plugins.skydoves.stabilityAnalyzer)
+    alias(libs.plugins.skydoves.stabilityAnalyzer)
 }
 
 configureDesktopApplication(
