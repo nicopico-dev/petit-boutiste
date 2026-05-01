@@ -6,15 +6,17 @@
 
 package fr.nicopico.petitboutiste.scripting
 
+import io.github.vinceglb.filekit.utils.toFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import java.io.File
+import kotlinx.io.files.Path
 import kotlin.reflect.typeOf
 import kotlin.script.experimental.api.EvaluationResult
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.ScriptEvaluationConfiguration
+import kotlin.script.experimental.api.SourceCode
 import kotlin.script.experimental.api.compilerOptions
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.providedProperties
@@ -34,7 +36,7 @@ class ScriptHost(
     private val host = BasicJvmScriptingHost()
 
     suspend fun evalFile(
-        file: File,
+        filePath: Path,
         args: List<String> = emptyList(),
     ): ResultWithDiagnostics<EvaluationResult> = withContext(Dispatchers.IO) {
         withTimeout(timeout) {
@@ -74,7 +76,9 @@ class ScriptHost(
                 )
             }
 
-            host.eval(file.toScriptSource(), compilationCfg, evalCfg)
+            host.eval(filePath.toScriptSource(), compilationCfg, evalCfg)
         }
     }
 }
+
+private fun Path.toScriptSource(): SourceCode = this.toFile().toScriptSource()

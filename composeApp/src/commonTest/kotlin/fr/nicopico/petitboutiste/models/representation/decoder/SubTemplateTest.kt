@@ -11,6 +11,8 @@ import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.repository.TemplateManager
+import fr.nicopico.petitboutiste.utils.file.absolutePath
+import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.runTest
 import java.io.File
 import kotlin.test.Test
@@ -32,7 +34,8 @@ class SubTemplateTest {
             )
         )
         val templateFile = File.createTempFile("test_template", ".ptb").apply {
-            templateManager.saveTemplate(template, this, overwrite = true)
+            val templateFilePath = this.toKotlinxIoPath()
+            templateManager.saveTemplate(template, templateFilePath, overwrite = true)
             deleteOnExit()
         }
 
@@ -70,7 +73,8 @@ class SubTemplateTest {
             )
         )
         val templateFile = File.createTempFile("test_template_error", ".ptb").apply {
-            templateManager.saveTemplate(template, this, overwrite = true)
+            val templateFilePath = this.toKotlinxIoPath()
+            templateManager.saveTemplate(template, templateFilePath, overwrite = true)
             deleteOnExit()
         }
 
@@ -93,7 +97,7 @@ class SubTemplateTest {
         )
 
         // WHEN
-        val result = representation.getSubTemplateFile()
+        val result = representation.getSubTemplateFilePath()
 
         // THEN
         assertEquals(file.absolutePath, result?.absolutePath)
@@ -107,7 +111,8 @@ class SubTemplateTest {
         )
         val template = Template(name = "Test", definitions = definitions)
         val templateFile = File.createTempFile("test_template_defs", ".ptb").apply {
-            templateManager.saveTemplate(template, this, overwrite = true)
+            val templateFilePath = this.toKotlinxIoPath()
+            templateManager.saveTemplate(template, templateFilePath, overwrite = true)
             deleteOnExit()
         }
         val representation = Representation(

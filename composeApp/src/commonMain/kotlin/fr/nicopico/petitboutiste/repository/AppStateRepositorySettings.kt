@@ -21,9 +21,9 @@ import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.utils.log
 import fr.nicopico.petitboutiste.utils.logError
+import kotlinx.io.files.Path
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import java.io.File
 import java.util.prefs.Preferences
 
 class AppStateRepositorySettings(
@@ -105,7 +105,7 @@ private fun TabData.toPersisted(): PersistedTab = PersistedTab(
     inputType = inputData.inputType,
     groupDefinitions = groupDefinitions,
     scratchpad = scratchpad,
-    templateFilePath = templateData?.templateFile?.path,
+    templateFilePath = templateData?.templateFilePath?.toString(),
     templateDefinitionsChanged = templateData?.definitionsHaveChanged ?: false,
 )
 
@@ -126,7 +126,7 @@ private fun PersistedTab.toTabData(): TabData {
         scratchpad = scratchpad,
         templateData = templateFilePath?.let { path ->
             TabTemplateData(
-                templateFile = File(path),
+                templateFilePath = Path(path),
                 definitionsHaveChanged = templateDefinitionsChanged
             )
         },

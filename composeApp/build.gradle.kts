@@ -8,12 +8,13 @@ import ext.configureDesktopApplication
 
 plugins {
     id("compose-desktop-convention")
-
-    alias(libs.plugins.kotlinSerialization)
     id("detekt-convention")
     id("kover-convention")
     id("licensee-convention")
     id("versioning-convention")
+
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.skydoves.stabilityAnalyzer)
 }
 
 configureDesktopApplication(
@@ -87,4 +88,11 @@ tasks
     .matching { it.name == "prepareAppResources" }
     .configureEach {
         dependsOn(":systemBridge:nativeBridge:buildAndCopyNativeBridges")
+    }
+
+// Fix Gradle "implicit dependency" error when running `gradle check`
+// (skydoves-stabilityAnalyzer = "0.7.4")
+tasks.matching { it.name == "stabilityCheck" }
+    .configureEach {
+        dependsOn(tasks.named("compileTestKotlinDesktop"))
     }

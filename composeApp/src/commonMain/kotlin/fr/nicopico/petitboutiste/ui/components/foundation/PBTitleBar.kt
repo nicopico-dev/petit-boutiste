@@ -181,7 +181,7 @@ private fun TabItem(
                 if (templateData != null) {
                     Row {
                         Text(
-                            text = templateData.templateFile.name,
+                            text = templateData.templateFilePath.name,
                             maxLines = 1,
                             fontStyle = FontStyle.Italic,
                             color = AppTheme.current.colors.subTextColor,

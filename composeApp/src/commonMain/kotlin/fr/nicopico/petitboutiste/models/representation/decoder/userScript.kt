@@ -14,7 +14,7 @@ import fr.nicopico.petitboutiste.scripting.PetitBoutisteApi
 import fr.nicopico.petitboutiste.scripting.ScriptHost
 import fr.nicopico.petitboutiste.utils.log
 import fr.nicopico.petitboutiste.utils.logError
-import java.io.File
+import kotlinx.io.files.Path
 import kotlin.script.experimental.api.ResultValue
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
@@ -33,7 +33,7 @@ val userScriptArguments = listOf(
 
 suspend fun DataRenderer.decodeUserScript(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.UserScript)
-    val scriptFile: File = getArgumentValue(ARG_USER_SCRIPT_FILE_KEY, argumentValues)!!
+    val scriptFilePath: Path = getArgumentValue(ARG_USER_SCRIPT_FILE_KEY, argumentValues)!!
 
     val host = ScriptHost {
         object : PetitBoutisteApi {
@@ -43,8 +43,8 @@ suspend fun DataRenderer.decodeUserScript(byteArray: ByteArray, argumentValues: 
         }
     }
 
-    log("Running user script $scriptFile on ${byteArray.toHexString()}...")
-    val result = host.evalFile(scriptFile)
+    log("Running user script $scriptFilePath on ${byteArray.toHexString()}...")
+    val result = host.evalFile(scriptFilePath)
 
     log("result is $result")
     return when (result) {
