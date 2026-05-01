@@ -17,6 +17,7 @@ import fr.nicopico.petitboutiste.models.representation.arguments.EndiannessArgum
 import fr.nicopico.petitboutiste.models.representation.arguments.ResolutionArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeBinary
+import fr.nicopico.petitboutiste.models.representation.decoder.decodeCbor
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeDouble
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeHexadecimal
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeInteger
@@ -42,6 +43,7 @@ enum class DataRenderer(
     Double(EndiannessArgument, SignednessArgument, ResolutionArgument),
     Text(EndiannessArgument, CharsetArgument),
     Protobuf(protobufArguments),
+    Cbor,
     UserScript(userScriptArguments, customLabel = "User script"),
     SubTemplate(subTemplateArguments),
     ;
@@ -71,6 +73,7 @@ enum class DataRenderer(
             Double -> decodeDouble(byteArray, argumentValues).asSimple()
             Text -> decodeText(byteArray, argumentValues).asSimple()
             Protobuf -> decodeProtobuf(byteArray, argumentValues).asStructured()
+            Cbor -> decodeCbor(byteArray).asStructured()
             UserScript -> decodeUserScript(byteArray, argumentValues).asDynamic()
             SubTemplate -> decodeSubTemplate(byteArray, argumentValues).asStructured()
         }
