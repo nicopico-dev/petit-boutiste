@@ -110,7 +110,7 @@ class UserScriptTest {
         val argumentValues = emptyMap<String, String>()
 
         // WHEN & THEN
-        assertFailsWith<NullPointerException> {
+        assertFailsWith<IllegalArgumentException> {
             DataRenderer.UserScript.decodeUserScript(payload, argumentValues)
         }
     }

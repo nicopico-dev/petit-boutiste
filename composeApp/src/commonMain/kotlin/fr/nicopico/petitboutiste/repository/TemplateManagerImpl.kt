@@ -72,6 +72,7 @@ private fun Template.updateFileArgumentPaths(
     )
 }
 
+// Detekt false-positive
 @Suppress("UnusedPrivateMember")
 private fun Representation.updateFileArgumentPaths(
     transform: (String) -> String,
