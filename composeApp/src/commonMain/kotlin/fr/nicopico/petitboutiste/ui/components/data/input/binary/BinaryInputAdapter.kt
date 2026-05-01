@@ -15,5 +15,5 @@ object BinaryInputAdapter : DataInputAdapter<BinaryString> {
 
     override fun parse(input: String) = BinaryString.parse(input)
 
-    override fun getNormalizedString(value: BinaryString): String = value.binaryString
+    override fun getNormalizedString(value: BinaryString): String = value.value
 }

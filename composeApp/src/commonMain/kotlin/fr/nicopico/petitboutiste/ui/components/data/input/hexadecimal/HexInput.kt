@@ -27,8 +27,8 @@ fun HexInput(
     val hexValue = remember(value) {
         when (value) {
             is HexString -> value
-            is BinaryString -> HexString(value.hexString)
-            is Base64String -> HexString(value.hexString)
+            is BinaryString -> HexString(value.hexStringValue)
+            is Base64String -> HexString(value.hexStringValue)
         }
     }
 

@@ -19,7 +19,7 @@ fun HexString.toBinaryString(): BinaryString {
  * Example: "0101010101010101" becomes "0101 0101 0101 0101"
  */
 fun BinaryString.formatForDisplay(): String {
-    return binaryString.chunked(8) { byte ->
+    return value.chunked(8) { byte ->
         "${byte.take(4)} ${byte.substring(4)}"
     }.joinToString(" ")
 }

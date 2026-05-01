@@ -17,7 +17,7 @@ class BinaryStringTest {
         val binaryString = BinaryString(rawBinaryString)
 
         // Then the binary string is normalized
-        assertEquals("0101101001010101", binaryString.binaryString)
+        assertEquals("0101101001010101", binaryString.value)
     }
 
     @Test
@@ -26,7 +26,7 @@ class BinaryStringTest {
         val binaryString = BinaryString("0101101001010101")
 
         // Then it should be converted to the correct hex string
-        assertEquals("5A55", binaryString.hexString)
+        assertEquals("5A55", binaryString.hexStringValue)
     }
 
     @Test
@@ -49,7 +49,7 @@ class BinaryStringTest {
         val binaryString = BinaryString.fromHexString(hexString)
 
         // Then it should have the correct binary representation
-        assertEquals("0101101001010101", binaryString.binaryString)
+        assertEquals("0101101001010101", binaryString.value)
     }
 
     @Test
@@ -61,8 +61,8 @@ class BinaryStringTest {
         val binaryString = BinaryString(rawBinaryString)
 
         // Then the binary string should be empty
-        assertEquals("", binaryString.binaryString)
-        assertEquals("", binaryString.hexString)
+        assertEquals("", binaryString.value)
+        assertEquals("", binaryString.hexStringValue)
     }
 
     @Test
@@ -74,6 +74,6 @@ class BinaryStringTest {
         val binaryString = BinaryString(rawBinaryString)
 
         // Then it should be converted to the correct hex string
-        assertEquals("48656C6C6F", binaryString.hexString)
+        assertEquals("48656C6C6F", binaryString.hexStringValue)
     }
 }

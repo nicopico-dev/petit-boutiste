@@ -15,36 +15,36 @@ class BinaryString(
     override val inputType: InputType = InputType.BINARY
 
     // The original binary string (normalized)
-    val binaryString: String = rawBinaryString.normalizeBinaryString()
+    val value: String = rawBinaryString.normalizeBinaryString()
 
     // Convert binary to hex for DataString interface
-    override val hexString: String = binaryToHex(binaryString)
+    override val hexStringValue: String = binaryToHex(value)
 
-    val byteCount: Int = binaryString.length / 8
+    val byteCount: Int = value.length / 8
 
     init {
         // Ensure the binary string length is a multiple of 8 or empty
-        require(binaryString.isEmpty() || binaryString.length % 8 == 0) {
+        require(value.isEmpty() || value.length % 8 == 0) {
             "BinaryString must have a length that is a multiple of 8"
         }
     }
 
-    override fun isNotEmpty() = binaryString.isNotEmpty()
+    override fun isNotEmpty() = value.isNotEmpty()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is BinaryString) return false
 
         // 'other' is smart-cast to BinaryString
-        return binaryString == other.binaryString
+        return value == other.value
     }
 
     override fun hashCode(): Int {
-        return binaryString.hashCode()
+        return value.hashCode()
     }
 
     override fun toString(): String {
-        return "BinaryString(binaryString='$binaryString')"
+        return "BinaryString(binaryString='$value')"
     }
 
     companion object {
@@ -58,7 +58,7 @@ class BinaryString(
 
         // Convert from HexString to BinaryString
         fun fromHexString(hexString: HexString): BinaryString {
-            val binaryString = hexString.hexString.map {
+            val binaryString = hexString.hexStringValue.map {
                 it.digitToInt(16).toString(2).padStart(4, '0')
             }.joinToString("")
             return BinaryString(binaryString)

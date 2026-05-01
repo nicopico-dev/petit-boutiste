@@ -19,7 +19,7 @@ suspend fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList(),
     dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ): List<ByteItem> = withContext(dispatcher) {
-    val bytes = hexString.windowed(2, 2)
+    val bytes = hexStringValue.windowed(2, 2)
 
     if (groupDefinitions.isEmpty()) {
         return@withContext bytes.mapIndexed { index, value ->

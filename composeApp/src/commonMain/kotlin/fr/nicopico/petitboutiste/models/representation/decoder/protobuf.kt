@@ -75,8 +75,12 @@ suspend fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: Ar
     require(this == DataRenderer.Protobuf)
     return decodeProtobufPayload(
         payload = byteArray,
-        protoFilePath = getArgumentValue(ARG_PROTO_FILE_KEY, argumentValues)!!,
-        messageType = getArgumentValue(ARG_MESSAGE_TYPE_KEY, argumentValues)!!,
+        protoFilePath = requireNotNull(getArgumentValue(ARG_PROTO_FILE_KEY, argumentValues)) {
+            "Missing argument $ARG_PROTO_FILE_KEY"
+        },
+        messageType = requireNotNull(getArgumentValue(ARG_MESSAGE_TYPE_KEY, argumentValues)) {
+            "Missing argument $ARG_MESSAGE_TYPE_KEY"
+        },
     )
 }
 

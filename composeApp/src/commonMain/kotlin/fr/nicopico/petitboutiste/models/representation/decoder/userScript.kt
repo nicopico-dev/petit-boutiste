@@ -33,7 +33,9 @@ val userScriptArguments = listOf(
 
 suspend fun DataRenderer.decodeUserScript(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.UserScript)
-    val scriptFilePath: Path = getArgumentValue(ARG_USER_SCRIPT_FILE_KEY, argumentValues)!!
+    val scriptFilePath: Path = requireNotNull(getArgumentValue(ARG_USER_SCRIPT_FILE_KEY, argumentValues)) {
+        "Missing argument $ARG_USER_SCRIPT_FILE_KEY"
+    }
 
     val host = ScriptHost {
         object : PetitBoutisteApi {

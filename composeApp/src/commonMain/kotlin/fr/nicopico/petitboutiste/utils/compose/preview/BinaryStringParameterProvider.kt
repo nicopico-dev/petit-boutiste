@@ -15,4 +15,4 @@ class BinaryStringParameterProvider(
         BinaryString(""),
         BinaryString("0101010101010101"),
     )
-) : PreviewParameterProvider<DataString> {}
+) : PreviewParameterProvider<DataString>

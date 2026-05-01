@@ -51,7 +51,7 @@ fun ByteGroupDefinitionForm(
         mutableStateOf(definition.indexes.last.toString())
     }
     var name by remember(definition.id) {
-        mutableStateOf(definition.name ?: "")
+        mutableStateOf(definition.name.orEmpty())
     }
     var representation by remember(definition.id, definition.representation) {
         mutableStateOf(definition.representation)

@@ -57,15 +57,15 @@ class AppStateRepositorySettingsTest {
         assertEquals(appState.selectedTabId, restored.selectedTabId)
         assertEquals(appState.appTheme, restored.appTheme)
         assertEquals(appState.tabs.size, restored.tabs.size)
-        
+
         val restoredTab1 = restored.tabs.first { it.id == tab1.id }
         assertEquals(tab1.name, restoredTab1.name)
-        assertEquals(tab1.inputData.hexString, restoredTab1.inputData.hexString)
+        assertEquals(tab1.inputData.hexStringValue, restoredTab1.inputData.hexStringValue)
         assertEquals(tab1.scratchpad, restoredTab1.scratchpad)
 
         val restoredTab2 = restored.tabs.first { it.id == tab2.id }
         assertEquals(tab2.name, restoredTab2.name)
-        assertEquals(tab2.inputData.hexString, restoredTab2.inputData.hexString)
+        assertEquals(tab2.inputData.hexStringValue, restoredTab2.inputData.hexStringValue)
         // Check input type indirectly
         assertTrue(restoredTab2.inputData is BinaryString)
     }

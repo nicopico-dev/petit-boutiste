@@ -101,7 +101,7 @@ private data class PersistedTab(
 private fun TabData.toPersisted(): PersistedTab = PersistedTab(
     id = id.value,
     name = name,
-    inputHex = inputData.hexString,
+    inputHex = inputData.hexStringValue,
     inputType = inputData.inputType,
     groupDefinitions = groupDefinitions,
     scratchpad = scratchpad,

@@ -15,5 +15,5 @@ object HexInputAdapter : DataInputAdapter<HexString> {
 
     override fun parse(input: String) = HexString.parse(input)
 
-    override fun getNormalizedString(value: HexString): String = value.hexString
+    override fun getNormalizedString(value: HexString): String = value.hexStringValue
 }

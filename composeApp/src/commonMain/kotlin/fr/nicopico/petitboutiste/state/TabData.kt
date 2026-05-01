@@ -62,6 +62,7 @@ data class TabDataRendering(
     var isRendered by mutableStateOf(false)
         private set
 
+    @Suppress("ReturnCount")
     suspend fun renderByteItems(): List<ByteItem> {
         // Fast path
         byteItems?.let { return it }
