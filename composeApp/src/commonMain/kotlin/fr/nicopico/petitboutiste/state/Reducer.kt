@@ -13,6 +13,7 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.repository.TemplateManager
+import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
 import kotlin.math.max
 
 class Reducer(
@@ -204,7 +205,7 @@ class Reducer(
 
             //region Templates
             is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
-                val template = templateManager.loadTemplate(event.templateFile)
+                val template = templateManager.loadTemplate(event.templateFilePath)
                 state.updateCurrentTab {
                     copy(
                         rendering = rendering.copy(groupDefinitions = template.definitions),
@@ -212,24 +213,24 @@ class Reducer(
                             // Keep current scratchpad
                             this.scratchpad
                         } else template.scratchpad,
-                        templateData = TabTemplateData(event.templateFile),
+                        templateData = TabTemplateData(event.templateFilePath),
                     )
                 }
             }
 
             is AppEvent.CurrentTabEvent.SaveTemplateEvent -> {
                 val template = with(state.selectedTab) {
-                    toTemplate(event.templateFile.nameWithoutExtension)
+                    toTemplate(event.templateFilePath.nameWithoutExtension)
                 }
-                templateManager.saveTemplate(template, event.templateFile, event.updateExisting)
+                templateManager.saveTemplate(template, event.templateFilePath, event.updateExisting)
 
                 state.updateCurrentTab {
-                    copy(templateData = TabTemplateData(event.templateFile))
+                    copy(templateData = TabTemplateData(event.templateFilePath))
                 }
             }
 
             is AppEvent.CurrentTabEvent.AddDefinitionsFromTemplateEvent -> {
-                val template = templateManager.loadTemplate(event.templateFile)
+                val template = templateManager.loadTemplate(event.templateFilePath)
                 state.updateCurrentTab {
                     // TODO Handle duplicate or conflicting definitions
                     copy(

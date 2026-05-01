@@ -78,6 +78,7 @@ private object DataRenderParameterProvider : PreviewParameterProvider<DataRender
         DataRenderer.Hexadecimal,
         DataRenderer.Text,
         DataRenderer.Protobuf,
+        DataRenderer.Cbor,
         DataRenderer.SubTemplate,
     )
 }

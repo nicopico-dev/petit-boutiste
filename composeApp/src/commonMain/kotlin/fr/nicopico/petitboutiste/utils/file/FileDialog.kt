@@ -12,15 +12,16 @@ import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.openDirectoryPicker
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.dialogs.openFileSaver
+import io.github.vinceglb.filekit.toKotlinxIoPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
+import kotlinx.io.files.Path
 
 interface FileDialog {
     suspend fun show(
         operation: FileDialogOperation,
         title: String? = null,
-        block: (File) -> Unit,
+        block: (Path) -> Unit,
     )
 
     companion object {
@@ -32,7 +33,7 @@ private object FileDialogDefault: FileDialog {
     override suspend fun show(
         operation: FileDialogOperation,
         title: String?,
-        block: (File) -> Unit,
+        block: (Path) -> Unit,
     ) = withContext(Dispatchers.IO) {
         when (operation) {
             is FileDialogOperation.ChooseFile -> {
@@ -42,7 +43,7 @@ private object FileDialogDefault: FileDialog {
                         title = title,
                     ),
                 ) ?: return@withContext
-                block(selectedFile.file)
+                block(selectedFile.toKotlinxIoPath())
             }
 
             is FileDialogOperation.ChooseFolder -> {
@@ -52,7 +53,7 @@ private object FileDialogDefault: FileDialog {
                         title = title,
                     ),
                 ) ?: return@withContext
-                block(selectedFolder.file)
+                block(selectedFolder.toKotlinxIoPath())
             }
 
             is FileDialogOperation.CreateNewFile -> {
@@ -60,7 +61,7 @@ private object FileDialogDefault: FileDialog {
                     suggestedName = operation.suggestedFilename,
                     extension = operation.extension,
                 ) ?: return@withContext
-                block(newFile.file)
+                block(newFile.toKotlinxIoPath())
             }
         }
     }

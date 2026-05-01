@@ -9,7 +9,7 @@ package fr.nicopico.petitboutiste.state
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
-import java.io.File
+import kotlinx.io.files.Path
 
 sealed class AppEvent {
     data class AddNewTabEvent(val tabData: TabData? = null) : AppEvent()
@@ -41,10 +41,15 @@ sealed class AppEvent {
         data class UpdateScratchpadEvent(val scratchpad: String): CurrentTabEvent()
 
         data class LoadTemplateEvent(
-            val templateFile: File,
+            val templateFilePath: Path,
             val definitionsOnly: Boolean,
         ) : CurrentTabEvent()
-        data class SaveTemplateEvent(val templateFile: File, val updateExisting: Boolean) : CurrentTabEvent()
-        data class AddDefinitionsFromTemplateEvent(val templateFile: File) : CurrentTabEvent()
+        data class SaveTemplateEvent(
+            val templateFilePath: Path,
+            val updateExisting: Boolean,
+        ) : CurrentTabEvent()
+        data class AddDefinitionsFromTemplateEvent(
+            val templateFilePath: Path,
+        ) : CurrentTabEvent()
     }
 }

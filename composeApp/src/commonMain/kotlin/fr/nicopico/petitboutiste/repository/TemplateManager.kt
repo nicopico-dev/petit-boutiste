@@ -7,15 +7,15 @@
 package fr.nicopico.petitboutiste.repository
 
 import fr.nicopico.petitboutiste.models.persistence.Template
-import java.io.File
+import kotlinx.io.files.Path
 
 interface TemplateManager {
 
-    suspend fun loadTemplate(templateFile: File): Template
+    suspend fun loadTemplate(templateFilePath: Path): Template
 
     suspend fun saveTemplate(
         template: Template,
-        templateFile: File,
+        templateFilePath: Path,
         overwrite: Boolean = false,
     )
 

@@ -71,8 +71,8 @@ class MenuActions(
         if (tabData.templateData != null) {
             onEvent(
                 CurrentTabEvent.SaveTemplateEvent(
-                    tabData.templateData.templateFile,
-                    updateExisting = true
+                    tabData.templateData.templateFilePath,
+                    updateExisting = true,
                 )
             )
         } else {
@@ -89,7 +89,12 @@ class MenuActions(
                     extension = "json",
                 ),
                 block = { selectedFile ->
-                    onEvent(CurrentTabEvent.SaveTemplateEvent(selectedFile, updateExisting = false))
+                    onEvent(
+                        CurrentTabEvent.SaveTemplateEvent(
+                            templateFilePath = selectedFile,
+                            updateExisting = false,
+                        )
+                    )
                 }
             )
         }
@@ -102,7 +107,7 @@ class MenuActions(
         }
         onEvent(
             CurrentTabEvent.LoadTemplateEvent(
-                tabData.templateData.templateFile,
+                tabData.templateData.templateFilePath,
                 definitionsOnly = true,
             )
         )
@@ -114,7 +119,11 @@ class MenuActions(
                 title = "Load definitions from...",
                 operation = FileDialogOperation.ChooseFile("json"),
                 block = { selectedFile ->
-                    onEvent(CurrentTabEvent.AddDefinitionsFromTemplateEvent(selectedFile))
+                    onEvent(
+                        CurrentTabEvent.AddDefinitionsFromTemplateEvent(
+                            templateFilePath = selectedFile,
+                        )
+                    )
                 }
             )
         }

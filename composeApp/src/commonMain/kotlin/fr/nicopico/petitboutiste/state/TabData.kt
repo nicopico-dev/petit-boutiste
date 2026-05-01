@@ -6,6 +6,11 @@
 
 package fr.nicopico.petitboutiste.state
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
@@ -13,13 +18,14 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.io.File
+import kotlinx.io.files.Path
 import java.util.UUID
 
 /**
  * Represents a unique identifier for a tab
  */
 @JvmInline
+@Immutable
 value class TabId(val value: String) {
     companion object {
         fun create(): TabId = TabId(UUID.randomUUID().toString())
@@ -29,6 +35,7 @@ value class TabId(val value: String) {
 /**
  * Represents the data for a single tab, including its input data, input type, and group definitions
  */
+@Stable
 data class TabData(
     val id: TabId = TabId.create(),
     val name: String? = null,
@@ -44,6 +51,7 @@ data class TabData(
     suspend fun renderByteItems(): List<ByteItem> = rendering.renderByteItems()
 }
 
+@Stable
 data class TabDataRendering(
     val inputData: DataString = HexString(""),
     val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
@@ -51,8 +59,8 @@ data class TabDataRendering(
     private var byteItems: List<ByteItem>? = null
     private val byteItemsMutex = Mutex()
 
-    val isRendered: Boolean
-        get() = byteItems != null
+    var isRendered by mutableStateOf(false)
+        private set
 
     @Suppress("ReturnCount")
     suspend fun renderByteItems(): List<ByteItem> {
@@ -66,12 +74,14 @@ data class TabDataRendering(
 
             val result = inputData.toByteItems(groupDefinitions)
             byteItems = result
+            isRendered = true
             result
         }
     }
 }
 
+@Immutable
 data class TabTemplateData(
-    val templateFile: File,
+    val templateFilePath: Path,
     val definitionsHaveChanged: Boolean = false,
 )

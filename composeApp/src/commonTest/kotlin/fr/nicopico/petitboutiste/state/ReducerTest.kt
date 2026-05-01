@@ -11,7 +11,9 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
+import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.files.Path
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,20 +23,20 @@ import kotlin.test.assertTrue
 class ReducerTest {
 
     private val templateManager = object : TemplateManager {
-        var lastTemplateLoaded: File? = null
+        var lastTemplateLoaded: Path? = null
         var templateToReturn: Template? = null
         var lastTemplateSaved: Template? = null
-        var lastSaveFile: File? = null
+        var lastSaveFile: Path? = null
         var lastOverwrite: Boolean = false
 
-        override suspend fun loadTemplate(templateFile: File): Template {
-            lastTemplateLoaded = templateFile
+        override suspend fun loadTemplate(templateFilePath: Path): Template {
+            lastTemplateLoaded = templateFilePath
             return templateToReturn ?: Template(name = "Default")
         }
 
-        override suspend fun saveTemplate(template: Template, templateFile: File, overwrite: Boolean) {
+        override suspend fun saveTemplate(template: Template, templateFilePath: Path, overwrite: Boolean) {
             lastTemplateSaved = template
-            lastSaveFile = templateFile
+            lastSaveFile = templateFilePath
             lastOverwrite = overwrite
         }
     }
@@ -274,6 +276,7 @@ class ReducerTest {
         // Given
         val state = AppState()
         val templateFile = File("template.json")
+        val templateFilePath = templateFile.toKotlinxIoPath()
         val template = Template(
             name = "Test Template",
             definitions = listOf(ByteGroupDefinition(0..1, "Template Def")),
@@ -282,17 +285,29 @@ class ReducerTest {
         templateManager.templateToReturn = template
 
         // When - Definitions only = false
-        val newState = reducer(state, AppEvent.CurrentTabEvent.LoadTemplateEvent(templateFile, definitionsOnly = false))
+        val newState = reducer(
+            state = state,
+            event = AppEvent.CurrentTabEvent.LoadTemplateEvent(
+                templateFilePath = templateFilePath,
+                definitionsOnly = false,
+            )
+        )
 
         // Then
         assertEquals(1, newState.selectedTab.groupDefinitions.size)
         assertEquals("Template Def", newState.selectedTab.groupDefinitions.first().name)
         assertEquals("Template Scratchpad", newState.selectedTab.scratchpad)
-        assertEquals(templateFile, newState.selectedTab.templateData?.templateFile)
+        assertEquals(templateFilePath, newState.selectedTab.templateData?.templateFilePath)
 
         // When - Definitions only = true
         val stateWithScratchpad = state.updateCurrentTab { copy(scratchpad = "Original Scratchpad") }
-        val newStateDefinitionsOnly = reducer(stateWithScratchpad, AppEvent.CurrentTabEvent.LoadTemplateEvent(templateFile, definitionsOnly = true))
+        val newStateDefinitionsOnly = reducer(
+            stateWithScratchpad,
+            AppEvent.CurrentTabEvent.LoadTemplateEvent(
+                templateFilePath = templateFilePath,
+                definitionsOnly = true,
+            )
+        )
 
         // Then
         assertEquals("Original Scratchpad", newStateDefinitionsOnly.selectedTab.scratchpad)
@@ -303,15 +318,16 @@ class ReducerTest {
         // Given
         val state = AppState()
         val templateFile = File("save.json")
-        val event = AppEvent.CurrentTabEvent.SaveTemplateEvent(templateFile, updateExisting = true)
+        val templateFilePath = templateFile.toKotlinxIoPath()
+        val event = AppEvent.CurrentTabEvent.SaveTemplateEvent(templateFilePath, updateExisting = true)
 
         // When
         val newState = reducer(state, event)
 
         // Then
-        assertEquals(templateFile, templateManager.lastSaveFile)
+        assertEquals(templateFilePath, templateManager.lastSaveFile)
         assertTrue(templateManager.lastOverwrite)
-        assertEquals(templateFile, newState.selectedTab.templateData?.templateFile)
+        assertEquals(templateFilePath, newState.selectedTab.templateData?.templateFilePath)
     }
 
     @Test
@@ -321,6 +337,7 @@ class ReducerTest {
         val initialState = reducer(AppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(existingDef))
 
         val templateFile = File("extra.json")
+        val templateFilePath = templateFile.toKotlinxIoPath()
         val template = Template(
             name = "Extra",
             definitions = listOf(ByteGroupDefinition(indexes = 2..3, name = "Extra Def"))
@@ -328,7 +345,10 @@ class ReducerTest {
         templateManager.templateToReturn = template
 
         // When
-        val newState = reducer(initialState, AppEvent.CurrentTabEvent.AddDefinitionsFromTemplateEvent(templateFile))
+        val newState = reducer(
+            initialState,
+            AppEvent.CurrentTabEvent.AddDefinitionsFromTemplateEvent(templateFilePath)
+        )
 
         // Then
         assertEquals(2, newState.selectedTab.groupDefinitions.size)

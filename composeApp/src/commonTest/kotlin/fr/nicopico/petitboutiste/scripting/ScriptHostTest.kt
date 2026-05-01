@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.scripting
 
+import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.runTest
 import java.io.File
 import kotlin.script.experimental.api.ResultValue
@@ -41,10 +42,11 @@ class ScriptHostTest {
             ptb.debug("Hello from script!")
             ptb.debug("Args: " + args.joinToString())
         """.trimIndent())
+        val scriptFilePath = scriptFile.toKotlinxIoPath()
 
         try {
             // When
-            val result = scriptHost.evalFile(scriptFile, listOf("arg1", "arg2"))
+            val result = scriptHost.evalFile(scriptFilePath, listOf("arg1", "arg2"))
 
             // Then
             assertTrue(result is ResultWithDiagnostics.Success, "Script evaluation failed: ${result.reports}")
@@ -62,10 +64,11 @@ class ScriptHostTest {
             val payload = ptb.getPayload()
             ptb.debug("Payload size: " + payload.size)
         """.trimIndent())
+        val scriptFilePath = scriptFile.toKotlinxIoPath()
 
         try {
             // When
-            val result = scriptHost.evalFile(scriptFile)
+            val result = scriptHost.evalFile(scriptFilePath)
 
             // Then
             assertTrue(result is ResultWithDiagnostics.Success, "Script evaluation failed: ${result.reports}")
@@ -81,10 +84,11 @@ class ScriptHostTest {
         val scriptFile = createTempScript("""
             throw java.lang.RuntimeException("Script execution error")
         """.trimIndent())
+        val scriptFilePath = scriptFile.toKotlinxIoPath()
 
         try {
             // When
-            val result = scriptHost.evalFile(scriptFile)
+            val result = scriptHost.evalFile(scriptFilePath)
 
             // Then
             // Note: execution errors within the script may still return ResultWithDiagnostics.Success,
@@ -103,10 +107,11 @@ class ScriptHostTest {
         val scriptFile = createTempScript("""
             invalid code
         """.trimIndent())
+        val scriptFilePath = scriptFile.toKotlinxIoPath()
 
         try {
             // When
-            val result = scriptHost.evalFile(scriptFile)
+            val result = scriptHost.evalFile(scriptFilePath)
 
             // Then
             assertTrue(result is ResultWithDiagnostics.Failure, "Script evaluation should have failed compilation")

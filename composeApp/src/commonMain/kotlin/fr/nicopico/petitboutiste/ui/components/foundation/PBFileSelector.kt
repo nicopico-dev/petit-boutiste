@@ -25,6 +25,7 @@ import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import fr.nicopico.petitboutiste.utils.file.FileDialog
 import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
 import kotlinx.coroutines.launch
+import kotlinx.io.files.Path
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.IconActionButton
@@ -33,13 +34,12 @@ import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextField
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
-import java.io.File
 
 @Composable
 fun PBFileSelector(
-    onFileSelected: (File?) -> Unit,
+    onFileSelected: (Path?) -> Unit,
     modifier: Modifier = Modifier,
-    selection: File? = null,
+    selection: Path? = null,
     fileDialog: FileDialog = FileDialog.Default,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -89,7 +89,7 @@ fun PBFileSelector(
 
         if (selection != null) {
             Text(
-                selection.parent,
+                selection.parent.toString(),
                 style = JewelTheme.typography.small,
                 color = AppTheme.current.colors.subTextColor,
                 modifier = Modifier.padding(start = 4.dp, top = 2.dp)
@@ -98,17 +98,17 @@ fun PBFileSelector(
     }
 }
 
-private object FileSelectionParameterProvider : PreviewParameterProvider<File?> {
-    override val values: Sequence<File?> = sequenceOf(
+private object PathSelectionParameterProvider : PreviewParameterProvider<Path?> {
+    override val values: Sequence<Path?> = sequenceOf(
         null,
-        File("/path/to/example.txt"),
+        Path("/path/to/example.txt"),
     )
 }
 
 @Preview
 @Composable
 private fun PBFileSelectorPreview() {
-    WrapForPreviewDesktop(FileSelectionParameterProvider) {
+    WrapForPreviewDesktop(PathSelectionParameterProvider) {
         PBFileSelector(
             modifier = Modifier.padding(8.dp),
             onFileSelected = {},

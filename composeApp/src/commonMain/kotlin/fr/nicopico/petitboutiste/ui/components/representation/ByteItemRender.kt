@@ -45,7 +45,7 @@ import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
-import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFile
+import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFilePath
 import fr.nicopico.petitboutiste.models.representation.render
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.TabData
@@ -56,6 +56,7 @@ import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.utils.setData
 import kotlinx.coroutines.launch
+import kotlinx.io.files.Path
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.Outline
@@ -64,7 +65,6 @@ import org.jetbrains.jewel.ui.component.IconActionButton
 import org.jetbrains.jewel.ui.component.TextArea
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
-import java.io.File
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -228,7 +228,7 @@ private fun prepareTabData(
 
         DataRenderer.SubTemplate -> {
             val inputData = HexString(byteItem.rawHexString)
-            val templateFile: File? = representation.getSubTemplateFile()
+            val templateFile: Path? = representation.getSubTemplateFilePath()
             val definitions: List<ByteGroupDefinition> = representation.getSubTemplateDefinitions()
 
             TabData(
@@ -239,7 +239,7 @@ private fun prepareTabData(
                 ),
                 templateData = templateFile?.let {
                     TabTemplateData(
-                        templateFile = it,
+                        templateFilePath = it,
                     )
                 }
             )
