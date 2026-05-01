@@ -15,13 +15,18 @@ import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.utils.file.absolutePath
+import fr.nicopico.petitboutiste.utils.file.asSource
+import fr.nicopico.petitboutiste.utils.file.exists
+import fr.nicopico.petitboutiste.utils.file.lastModified
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import java.io.File
+import kotlinx.io.files.Path
+import kotlinx.io.readByteArray
 
 private const val ARG_PROTO_FILE_KEY = "protoFile"
 private const val ARG_MESSAGE_TYPE_KEY = "messageType"
@@ -44,7 +49,7 @@ val protobufArguments = listOf(
             getChoices = { arguments ->
                 arguments
                     .map {
-                        DataRenderer.Protobuf.getArgumentValue<File>(ARG_PROTO_FILE_KEY, it)
+                        DataRenderer.Protobuf.getArgumentValue<Path>(ARG_PROTO_FILE_KEY, it)
                     }
                     .distinctUntilChanged()
                     .map { protoFileArgument ->
@@ -70,7 +75,7 @@ suspend fun DataRenderer.decodeProtobuf(byteArray: ByteArray, argumentValues: Ar
     require(this == DataRenderer.Protobuf)
     return decodeProtobufPayload(
         payload = byteArray,
-        protoFile = getArgumentValue(ARG_PROTO_FILE_KEY, argumentValues)!!,
+        protoFilePath = getArgumentValue(ARG_PROTO_FILE_KEY, argumentValues)!!,
         messageType = getArgumentValue(ARG_MESSAGE_TYPE_KEY, argumentValues)!!,
     )
 }
@@ -79,19 +84,20 @@ private data class DescriptorCacheKey(val path: String, val lastModified: Long)
 private val descriptorCache = mutableMapOf<DescriptorCacheKey, List<Descriptors.Descriptor>>()
 private val cacheMutex = Mutex()
 
-private suspend fun getMessageTypeDescriptors(protoFile: File): List<Descriptors.Descriptor> {
-    val cacheKey = DescriptorCacheKey(protoFile.absolutePath, protoFile.lastModified())
+private suspend fun getMessageTypeDescriptors(protoFilePath: Path): List<Descriptors.Descriptor> {
+    val cacheKey = DescriptorCacheKey(protoFilePath.absolutePath, protoFilePath.lastModified())
     cacheMutex.withLock {
         descriptorCache[cacheKey]?.let { return it }
     }
 
     val descriptors = withContext(Dispatchers.IO) {
-        require(protoFile.exists()) {
-            "File does not exist: $protoFile"
+        require(protoFilePath.exists()) {
+            "File does not exist: $protoFilePath"
         }
 
-        val descriptorSet = protoFile.inputStream().use {
-            DescriptorProtos.FileDescriptorSet.parseFrom(it)
+        val descriptorSet = protoFilePath.asSource().use {
+            val data = it.readByteArray()
+            DescriptorProtos.FileDescriptorSet.parseFrom(data)
         }
         DescriptorParser(descriptorSet).parse()
             .flatMap { it.messageTypes }
@@ -149,11 +155,11 @@ private class DescriptorParser(
  * $ protoc --descriptor_set_out=DeviceInfoPush.desc --include_imports DeviceInfoPush.proto
  * ```
  *
- * @param protoFile Protobuf definition `.desc` file
+ * @param protoFilePath Protobuf definition `.desc` file
  * @param messageType name of the messageType to use for decoding
  */
-private suspend fun decodeProtobufPayload(payload: ByteArray, protoFile: File, messageType: String): String {
-    val messageTypeDescriptor = getMessageTypeDescriptors(protoFile)
+private suspend fun decodeProtobufPayload(payload: ByteArray, protoFilePath: Path, messageType: String): String {
+    val messageTypeDescriptor = getMessageTypeDescriptors(protoFilePath)
         .firstOrNull { it.name == messageType }
 
     requireNotNull(messageTypeDescriptor) {

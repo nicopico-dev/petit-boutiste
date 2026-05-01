@@ -11,6 +11,7 @@ import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.repository.TemplateManager
+import fr.nicopico.petitboutiste.utils.file.absolutePath
 import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.runTest
 import java.io.File
@@ -96,7 +97,7 @@ class SubTemplateTest {
         )
 
         // WHEN
-        val result = representation.getSubTemplateFile()
+        val result = representation.getSubTemplateFilePath()
 
         // THEN
         assertEquals(file.absolutePath, result?.absolutePath)

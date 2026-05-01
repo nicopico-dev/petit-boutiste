@@ -17,12 +17,11 @@ import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.repository.TemplateManager
-import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.runBlocking
+import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
-import java.io.File
 
 private const val ARG_TEMPLATE_FILE_KEY = "templateFile"
 
@@ -38,9 +37,8 @@ private val templateManager = TemplateManager()
 
 suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     require(this == DataRenderer.SubTemplate)
-    val templateFile: File = getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)!!
-
-    val template = templateManager.loadTemplate(templateFile.toKotlinxIoPath())
+    val templateFilePath: Path = getArgumentValue(ARG_TEMPLATE_FILE_KEY, argumentValues)!!
+    val template = templateManager.loadTemplate(templateFilePath)
 
     val dataString = HexString(byteArray.toHexString())
     val parsedData = dataString.toByteItems(template.definitions)
@@ -74,16 +72,16 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
     return Json.encodeToString(parsedData)
 }
 
-fun Representation.getSubTemplateFile(): File? {
-    return dataRenderer.getArgumentValue<File>(ARG_TEMPLATE_FILE_KEY, argumentValues)
+fun Representation.getSubTemplateFilePath(): Path? {
+    return dataRenderer.getArgumentValue<Path>(ARG_TEMPLATE_FILE_KEY, argumentValues)
 }
 
 fun Representation.getSubTemplateDefinitions(): List<ByteGroupDefinition> {
-    val templateFile: File = getSubTemplateFile()
+    val templateFile: Path = getSubTemplateFilePath()
         ?: return emptyList()
 
     val template = runBlocking {
-        templateManager.loadTemplate(templateFile.toKotlinxIoPath())
+        templateManager.loadTemplate(templateFile)
     }
     return template.definitions
 }
