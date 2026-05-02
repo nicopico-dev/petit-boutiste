@@ -61,9 +61,10 @@ fun createTempFile(
  *
  * @return The normalized path.
  */
-fun Path.normalizePath(): Path {
-    val parts = toString()
-        .replace('\\', '/')
+fun Path.normalize(): Path {
+    val pathString = toString().replace('\\', '/')
+    val isAbsolute = pathString.startsWith('/')
+    val parts = pathString
         .split('/')
         .fold(mutableListOf<String>()) { normalizedParts, part ->
             when (part) {
@@ -71,7 +72,7 @@ fun Path.normalizePath(): Path {
                 ".." -> {
                     if (normalizedParts.isNotEmpty() && normalizedParts.last() != "..") {
                         normalizedParts.removeLast()
-                    } else {
+                    } else if (!isAbsolute) {
                         normalizedParts += part
                     }
                 }
@@ -80,7 +81,8 @@ fun Path.normalizePath(): Path {
             normalizedParts
         }
 
-    return kotlinx.io.files.Path(parts.joinToString("/"))
+    val result = parts.joinToString("/")
+    return Path(if (isAbsolute) "/$result" else result)
 }
 
 /**
@@ -96,22 +98,29 @@ fun Path.normalizePath(): Path {
 fun Path.relativeTo(
     baseDir: Path,
 ): String {
-    val normalizedPathParts = normalizePath().toString().splitPath()
-    val normalizedBaseParts = baseDir.normalizePath().toString().splitPath()
+    val normalizedPath = normalize()
+    val normalizedBase = baseDir.normalize()
+
+    val pathIsAbsolute = normalizedPath.toString().startsWith('/')
+    val baseIsAbsolute = normalizedBase.toString().startsWith('/')
+
+    if (pathIsAbsolute != baseIsAbsolute) {
+        return normalizedPath.toString()
+    }
+
+    val normalizedPathParts = normalizedPath.toString().splitPath()
+    val normalizedBaseParts = normalizedBase.toString().splitPath()
 
     val commonPrefixLength = normalizedPathParts
         .zip(normalizedBaseParts)
         .takeWhile { (pathPart, basePart) -> pathPart == basePart }
         .size
 
-    if (commonPrefixLength == 0) {
-        return normalizePath().toString()
-    }
-
     val parentParts = List(normalizedBaseParts.size - commonPrefixLength) { ".." }
     val childParts = normalizedPathParts.drop(commonPrefixLength)
 
-    return (parentParts + childParts).joinToString("/")
+    val resultParts = parentParts + childParts
+    return if (resultParts.isEmpty()) "." else resultParts.joinToString("/")
 }
 
 private fun String.splitPath(): List<String> =

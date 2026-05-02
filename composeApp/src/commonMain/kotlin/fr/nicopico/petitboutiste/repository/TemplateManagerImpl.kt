@@ -13,6 +13,7 @@ import fr.nicopico.petitboutiste.utils.file.absolutePath
 import fr.nicopico.petitboutiste.utils.file.asSink
 import fr.nicopico.petitboutiste.utils.file.asSource
 import fr.nicopico.petitboutiste.utils.file.createTempFile
+import fr.nicopico.petitboutiste.utils.file.normalize
 import fr.nicopico.petitboutiste.utils.file.parentOrCurrent
 import fr.nicopico.petitboutiste.utils.file.relativeTo
 import kotlinx.io.files.FileSystem
@@ -37,7 +38,9 @@ class TemplateManagerImpl(
 
         // Transform each FileArg relative path to an absolute path
         return template.transformFileArgumentPaths { relativePath ->
-            Path(templateFilePath, relativePath).absolutePath
+            Path(templateFilePath.parentOrCurrent, relativePath)
+                .normalize()
+                .absolutePath
         }
     }
 
@@ -56,7 +59,7 @@ class TemplateManagerImpl(
         // Transform each FileArg absolute path to a path relative to the template file
         val templateToSave = template
             .transformFileArgumentPaths { absolutePath ->
-                Path(absolutePath).relativeTo(templateFilePath)
+                Path(absolutePath).relativeTo(directory)
             }
 
         val workingFilePath = createTempFile(directory = directory)
