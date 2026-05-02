@@ -3,9 +3,9 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>InjectDispatcher:ArgumentInput.kt$Default</ID>
-    <ID>InjectDispatcher:FileDialog.kt$FileDialogDefault$IO</ID>
+    <ID>InjectDispatcher:FileDialog.desktop.kt$DefaultFileDialog$IO</ID>
     <ID>InjectDispatcher:ScriptHost.kt$ScriptHost$IO</ID>
-    <ID>InjectDispatcher:protobuf.kt$IO</ID>
+    <ID>InjectDispatcher:protobuf.desktop.kt$IO</ID>
     <ID>LongMethod:Reducer.kt$Reducer$suspend operator fun invoke(state: AppState, event: AppEvent): AppState</ID>
     <ID>LongMethod:TabContent.kt$@Composable fun TabContent( inputData: DataString, definitions: List&lt;ByteGroupDefinition&gt;, byteItems: List&lt;ByteItem&gt;, scratchpad: String = "", )</ID>
   </CurrentIssues>
