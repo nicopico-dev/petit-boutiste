@@ -167,8 +167,10 @@ fun ByteItemRender(
                         contentDescription = "Open in new tab",
                         enabled = representation.allowOpenInNewTab() && rendererOutput is RenderResult.Success,
                         onClick = {
-                            val tabData = prepareTabData(byteItem, representation, rendererOutput)
-                            onEvent(AppEvent.AddNewTabEvent(tabData))
+                            scope.launch {
+                                val tabData = prepareTabData(byteItem, representation, rendererOutput)
+                                onEvent(AppEvent.AddNewTabEvent(tabData))
+                            }
                         },
                     )
                 }
@@ -183,7 +185,7 @@ private fun Representation.allowOpenInNewTab(): Boolean {
         || dataRenderer == DataRenderer.SubTemplate
 }
 
-private fun prepareTabData(
+private suspend fun prepareTabData(
     byteItem: ByteItem,
     representation: Representation,
     renderResult: RenderResult,

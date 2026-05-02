@@ -128,7 +128,7 @@ class SubTemplateTest {
     }
 
     @Test
-    fun `getSubTemplateDefinitions should return empty list if file is missing`() {
+    fun `getSubTemplateDefinitions should return empty list if file is missing`() = runTest {
         // GIVEN
         val representation = Representation(
             dataRenderer = DataRenderer.SubTemplate,
