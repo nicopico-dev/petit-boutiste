@@ -7,33 +7,31 @@
 package fr.nicopico.petitboutiste.models.representation.arguments
 
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
-import java.nio.charset.Charset
+import fr.nicopico.petitboutiste.models.representation.TextCharset
 
-private val DEFAULT: Charset = Charsets.UTF_8
+private val DEFAULT: TextCharset = TextCharset.UTF_8
 
 val CharsetArgument = DataRenderer.Argument(
     key = "charset",
     label = "Charset",
     type = ArgumentType.ChoiceType(
-        // FIXME Charset is JVM-only
-        //  see https://github.com/fleeksoft/fleeksoft-io/blob/main/CharsetsReadme.md
-        type = Charset::class,
+        type = TextCharset::class,
         choices = listOf(
-            Charsets.UTF_8,
-            Charsets.US_ASCII,
-            Charsets.ISO_8859_1,
-            Charsets.UTF_16BE,
-            Charsets.UTF_16LE,
-            Charsets.UTF_32BE,
-            Charsets.UTF_32LE,
+            TextCharset.UTF_8,
+            TextCharset.US_ASCII,
+            TextCharset.ISO_8859_1,
+            TextCharset.UTF_16BE,
+            TextCharset.UTF_16LE,
+            TextCharset.UTF_32BE,
+            TextCharset.UTF_32LE,
         ),
-        argValueConverter = { Charset.forName(it) },
-        choiceConverter = Charset::name,
+        argValueConverter = { TextCharset.forName(it) },
+        choiceConverter = TextCharset::canonicalName,
     ),
-    defaultValue = DEFAULT.name(),
+    defaultValue = DEFAULT.canonicalName,
 )
 
-fun DataRenderer.getCharset(argumentValues: ArgumentValues): Charset {
-    return getArgumentValue<Charset>(CharsetArgument.key, argumentValues)
+fun DataRenderer.getCharset(argumentValues: ArgumentValues): TextCharset {
+    return getArgumentValue<TextCharset>(CharsetArgument.key, argumentValues)
         ?: DEFAULT
 }

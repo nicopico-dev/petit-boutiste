@@ -7,21 +7,17 @@
 package fr.nicopico.petitboutiste.models.representation.arguments
 
 import fr.nicopico.petitboutiste.utils.file.asString
+import fr.nicopico.petitboutiste.utils.nowInMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.io.files.Path
 import kotlin.reflect.KClass
 
 sealed class ArgumentType<T : Any>(
-    private val type: KClass<T>
+    open val type: KClass<T>
 ) {
     abstract fun convertFrom(argValue: ArgValue): T
     abstract fun convertTo(value: T): ArgValue
-
-    fun matches(expectedType: KClass<*>): Boolean {
-        // FIXME javaObjectType is JVM-only
-        return type.javaObjectType.isAssignableFrom(expectedType.javaObjectType)
-    }
 
     data object FileType : ArgumentType<Path>(Path::class) {
         private const val SEPARATOR = ";;"
@@ -34,8 +30,7 @@ sealed class ArgumentType<T : Any>(
 
         override fun convertTo(value: Path): ArgValue {
             // Append a timestamp to the file path to allow reloading the same file
-            // FIXME System is JVM-only
-            return value.asString() + SEPARATOR + System.currentTimeMillis()
+            return value.asString() + SEPARATOR + nowInMillis()
         }
     }
 
@@ -45,7 +40,7 @@ sealed class ArgumentType<T : Any>(
     }
 
     data class NumericType<T: Number>(
-        private val type: KClass<T>,
+        override val type: KClass<T>,
         private val argValueConverter: (ArgValue) -> T,
         private val numberConverter: (T) -> ArgValue,
     ) : ArgumentType<T>(type) {
@@ -60,7 +55,7 @@ sealed class ArgumentType<T : Any>(
     }
 
     data class ChoiceType<T: Any>(
-        private val type: KClass<T>,
+        override val type: KClass<T>,
         val getChoices: (Flow<ArgumentValues>) -> Flow<List<T>>,
         private val argValueConverter: (ArgValue) -> T,
         private val choiceConverter: (T) -> ArgValue,
@@ -80,3 +75,5 @@ sealed class ArgumentType<T : Any>(
         fun convertChoice(choice: Any): ArgValue = convertTo(choice as T)
     }
 }
+
+expect fun ArgumentType<*>.matches(expectedType: KClass<*>): Boolean

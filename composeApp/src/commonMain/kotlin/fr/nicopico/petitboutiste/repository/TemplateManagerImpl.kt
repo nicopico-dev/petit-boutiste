@@ -9,94 +9,99 @@ package fr.nicopico.petitboutiste.repository
 import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType
-import io.github.vinceglb.filekit.utils.toFile
+import fr.nicopico.petitboutiste.utils.file.absolutePath
+import fr.nicopico.petitboutiste.utils.file.asSink
+import fr.nicopico.petitboutiste.utils.file.asSource
+import fr.nicopico.petitboutiste.utils.file.createTempFile
+import fr.nicopico.petitboutiste.utils.file.parentOrCurrent
+import fr.nicopico.petitboutiste.utils.file.relativeTo
+import kotlinx.io.files.FileSystem
 import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readString
+import kotlinx.io.writeString
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
-import kotlinx.serialization.json.encodeToStream
-import java.io.File
-import kotlin.io.path.createDirectories
-import kotlin.io.path.createTempFile
-import kotlin.io.path.relativeTo
 
 @OptIn(ExperimentalSerializationApi::class)
 class TemplateManagerImpl(
     private val json: Json = Json.Default,
+    private val fileSystem: FileSystem = SystemFileSystem,
 ) : TemplateManager {
 
-    // FIXME Remove usage of java.io.File
     override suspend fun loadTemplate(templateFilePath: Path): Template {
-        val templateFile = templateFilePath.toFile()
-        val template = templateFile.inputStream().buffered().use { stream ->
-            json.decodeFromStream<Template>(stream)
-        }
-        return template.updateFileArgumentPaths { relativePath ->
-            File(templateFile.parentFile, relativePath).toPath().normalize().toFile().absolutePath
+        val template = templateFilePath.asSource(fileSystem)
+            .use { source ->
+                json.decodeFromString<Template>(source.readString())
+            }
+
+        // Transform each FileArg relative path to an absolute path
+        return template.transformFileArgumentPaths { relativePath ->
+            Path(templateFilePath, relativePath).absolutePath
         }
     }
 
-    // FIXME Remove usage of java.io.File
     override suspend fun saveTemplate(
         template: Template,
         templateFilePath: Path,
         overwrite: Boolean,
     ) {
-        val templateFile = templateFilePath.toFile()
-        val directory = templateFile.parentFile.toPath()
-        directory.createDirectories()
-
-        val tempFile = createTempFile(directory).toFile()
-        val templateWithRelativePaths = template.updateFileArgumentPaths { absolutePath ->
-            File(absolutePath).relativePath(directory)
+        if (fileSystem.exists(templateFilePath) && !overwrite) {
+            error("Template file '$templateFilePath' already exists")
         }
 
-        try {
-            tempFile.outputStream().buffered().use { stream ->
-                json.encodeToStream<Template>(templateWithRelativePaths, stream)
+        val directory = templateFilePath.parentOrCurrent
+        fileSystem.createDirectories(directory)
+
+        // Transform each FileArg absolute path to a path relative to the template file
+        val templateToSave = template
+            .transformFileArgumentPaths { absolutePath ->
+                Path(absolutePath).relativeTo(templateFilePath)
             }
-            tempFile.copyTo(templateFile, overwrite = overwrite)
+
+        val workingFilePath = createTempFile(directory = directory)
+        try {
+            workingFilePath.asSink(fileSystem).use { sink ->
+                val jsonString = json.encodeToString<Template>(templateToSave)
+                sink.writeString(jsonString)
+            }
+            workingFilePath.asSource(fileSystem).use { source ->
+                templateFilePath.asSink(fileSystem).use { sink ->
+                    source.transferTo(sink)
+                }
+            }
         } finally {
-            tempFile.delete()
+            fileSystem.delete(workingFilePath)
         }
     }
 }
 
-private fun Template.updateFileArgumentPaths(
+private fun Template.transformFileArgumentPaths(
     transform: (String) -> String,
 ): Template {
     return copy(
-        definitions = definitions.map { definition ->
-            definition.copy(
-                representation = definition.representation.updateFileArgumentPaths(transform)
-            )
-        }
+        definitions = definitions
+            .map { definition ->
+                definition.copy(
+                    representation = updateFileArgumentPaths(definition.representation, transform)
+                )
+            }
     )
 }
 
 // Detekt false-positive
 @Suppress("UnusedPrivateMember")
-private fun Representation.updateFileArgumentPaths(
+private fun updateFileArgumentPaths(
+    representation: Representation,
     transform: (String) -> String,
 ): Representation {
-    val fileKeys = dataRenderer.arguments
+    val fileKeys = representation.dataRenderer.arguments
         .filter { it.type is ArgumentType.FileType }
         .map { it.key }
-    val updatedArgValues = argumentValues
+    val updatedArgValues = representation.argumentValues
         .mapValues { (key, value) ->
             if (key in fileKeys) transform(value) else value
         }
 
-    return copy(argumentValues = updatedArgValues)
-}
-
-// FIXME Remove usage of java.nio.file.Path
-private fun File.relativePath(baseDir: java.nio.file.Path): String {
-    val filePath = absoluteFile.toPath()
-    return try {
-        filePath.relativeTo(baseDir).toString()
-    } catch (_: IllegalArgumentException) {
-        // Fallback to absolute path when paths do not share a common root
-        filePath.toString()
-    }
+    return representation.copy(argumentValues = updatedArgValues)
 }
