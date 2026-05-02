@@ -46,7 +46,7 @@ fun createTempFile(
 ): Path {
     val tempFile = Path(directory, "tmp-${Uuid.random()}")
     if (!fileSystem.exists(tempFile)) {
-        SystemFileSystem.sink(tempFile).close()
+        fileSystem.sink(tempFile).close()
         return tempFile
     } else error("Could not create temporary file in $directory")
 }
