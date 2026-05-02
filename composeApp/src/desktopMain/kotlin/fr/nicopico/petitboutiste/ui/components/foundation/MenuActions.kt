@@ -15,8 +15,8 @@ import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabId
 import fr.nicopico.petitboutiste.state.TabsState
-import fr.nicopico.petitboutiste.utils.file.FileDialog
-import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
+import fr.nicopico.petitboutiste.utils.dialog.FileDialog
+import fr.nicopico.petitboutiste.utils.dialog.FileDialogOperation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

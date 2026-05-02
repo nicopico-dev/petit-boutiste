@@ -6,6 +6,6 @@
 
 package fr.nicopico.petitboutiste.utils
 
-expect fun log(msg: String)
+import kotlin.time.Clock
 
-expect fun logError(msg: String, error: Throwable? = null)
+fun nowInMillis(): Long = Clock.System.now().toEpochMilliseconds()

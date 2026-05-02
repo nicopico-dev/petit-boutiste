@@ -14,7 +14,7 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ResolutionArgum
 import fr.nicopico.petitboutiste.models.representation.arguments.getCharset
 import fr.nicopico.petitboutiste.models.representation.arguments.getEndianness
 import fr.nicopico.petitboutiste.models.representation.arguments.getSignedness
-import java.math.BigInteger
+import fr.nicopico.petitboutiste.utils.toString
 
 fun DataRenderer.decodeBinary(byteArray: ByteArray): String {
     require(this == DataRenderer.Binary)
@@ -54,10 +54,12 @@ fun DataRenderer.decodeInteger(byteArray: ByteArray, argumentValues: ArgumentVal
 @Suppress("FunctionName")
 private fun DataRenderer._decodeInteger(byteArray: ByteArray, argumentValues: ArgumentValues): String {
     applyEndiannessInPlace(byteArray, argumentValues)
-    return if (getSignedness(argumentValues) == Signedness.Signed) {
-        BigInteger(byteArray).toString(10)
+
+    val isSigned = getSignedness(argumentValues) == Signedness.Signed
+    return if (isSigned && byteArray.isNegativeTwoComplement()) {
+        "-${byteArray.twosComplementMagnitude().toUnsignedDecimalString()}"
     } else {
-        BigInteger(1, byteArray).toString(10)
+        byteArray.toUnsignedDecimalString()
     }
 }
 
@@ -76,7 +78,7 @@ fun DataRenderer.decodeText(byteArray: ByteArray, argumentValues: ArgumentValues
     require(this == DataRenderer.Text)
     applyEndiannessInPlace(byteArray, argumentValues)
     val charset = getCharset(argumentValues)
-    return String(byteArray, charset)
+    return byteArray.toString(charset)
 }
 
 private fun DataRenderer.applyEndiannessInPlace(
@@ -87,3 +89,50 @@ private fun DataRenderer.applyEndiannessInPlace(
         byteArray.reverse()
     }
 }
+
+//region Integer decoding
+private fun ByteArray.isNegativeTwoComplement(): Boolean {
+    return isNotEmpty() && first().toInt() < 0
+}
+
+private fun ByteArray.twosComplementMagnitude(): ByteArray {
+    val magnitude = ByteArray(size)
+    var carry = 1
+
+    for (index in indices.reversed()) {
+        val inverted = this[index].toInt().inv() and 0xFF
+        val value = inverted + carry
+        magnitude[index] = value.toByte()
+        carry = value ushr 8
+    }
+
+    return magnitude
+}
+
+private fun ByteArray.toUnsignedDecimalString(): String {
+    if (isEmpty()) return "0"
+
+    val decimalDigits = mutableListOf(0)
+
+    for (byte in this) {
+        var carry = byte.toInt() and 0xFF
+
+        for (index in decimalDigits.indices) {
+            val value = decimalDigits[index] * 256 + carry
+            decimalDigits[index] = value % 10
+            carry = value / 10
+        }
+
+        while (carry > 0) {
+            decimalDigits += carry % 10
+            carry /= 10
+        }
+    }
+
+    return decimalDigits
+        .asReversed()
+        .joinToString("")
+        .trimStart('0')
+        .ifEmpty { "0" }
+}
+//endregion

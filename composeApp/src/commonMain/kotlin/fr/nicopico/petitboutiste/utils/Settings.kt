@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.utils
 
-expect fun log(msg: String)
+import com.russhwolf.settings.Settings
+import kotlin.reflect.KClass
 
-expect fun logError(msg: String, error: Throwable? = null)
+expect fun getSettingsFor(clazz: KClass<*>): Settings

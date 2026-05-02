@@ -17,13 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.skydoves.compose.stability.runtime.TraceRecomposition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBSnackbar
 
-@TraceRecomposition
 @Composable
 fun AppContent(
     tabData: TabData,

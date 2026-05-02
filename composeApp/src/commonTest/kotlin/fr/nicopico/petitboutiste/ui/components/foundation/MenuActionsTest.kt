@@ -12,8 +12,8 @@ import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabId
 import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.state.TabsState
-import fr.nicopico.petitboutiste.utils.file.FileDialog
-import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
+import fr.nicopico.petitboutiste.utils.dialog.FileDialog
+import fr.nicopico.petitboutiste.utils.dialog.FileDialogOperation
 import io.github.vinceglb.filekit.utils.toKotlinxIoPath
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest

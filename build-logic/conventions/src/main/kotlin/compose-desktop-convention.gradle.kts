@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
 import ext.libs
 import org.jetbrains.compose.ComposePlugin
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
 /*
@@ -29,6 +32,11 @@ composeCompiler {
 kotlin {
     jvm("desktop")
 
+    // TODO Enable WASM target
+//    wasmJs {
+//        browser()
+//    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.findLibrary("jetbrains.compose.runtime").get())
@@ -39,8 +47,6 @@ kotlin {
 
             implementation(libs.findLibrary("androidx.lifecycle.viewmodelCompose").get())
             implementation(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
-
-            implementation(libs.findBundle("jewel").get())
         }
 
         val desktopMain by getting
@@ -50,6 +56,12 @@ kotlin {
             implementation(compose.desktop.currentOs) {
                 exclude(group = "org.jetbrains.compose.material")
             }
+
+            implementation(libs.findBundle("jewel").get())
         }
+
+        // TODO Enable WASM target
+        //val wasmJsMain by getting
+
     }
 }

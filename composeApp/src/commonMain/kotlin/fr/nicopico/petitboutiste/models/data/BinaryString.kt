@@ -71,7 +71,7 @@ class BinaryString(
                 if (i + 8 <= binary.length) {
                     val byte = binary.substring(i, i + 8)
                     val hex = byte.chunked(4).joinToString("") { nibble ->
-                        Integer.parseInt(nibble, 2).toString(16)
+                        nibble.toInt(2).toString(16)
                     }
                     result.append(hex)
                 }

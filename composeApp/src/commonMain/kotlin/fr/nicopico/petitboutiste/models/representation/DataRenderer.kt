@@ -16,6 +16,7 @@ import fr.nicopico.petitboutiste.models.representation.arguments.CharsetArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.EndiannessArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.ResolutionArgument
 import fr.nicopico.petitboutiste.models.representation.arguments.SignednessArgument
+import fr.nicopico.petitboutiste.models.representation.arguments.matches
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeBinary
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeCbor
 import fr.nicopico.petitboutiste.models.representation.decoder.decodeDouble
@@ -89,6 +90,8 @@ enum class DataRenderer(
         val type: ArgumentType<T> = definition.type as ArgumentType<T>
         if (type.matches(T::class)) {
             return type.convertFrom(value)
-        } else error("Mismatch between argument $definition and expected type ${T::class}")
+        } else {
+            error("Mismatch between argument $definition and expected type ${T::class}")
+        }
     }
 }

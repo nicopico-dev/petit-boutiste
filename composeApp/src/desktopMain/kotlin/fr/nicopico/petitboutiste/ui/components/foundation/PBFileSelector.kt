@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
-import fr.nicopico.petitboutiste.utils.file.FileDialog
-import fr.nicopico.petitboutiste.utils.file.FileDialogOperation
+import fr.nicopico.petitboutiste.utils.dialog.FileDialog
+import fr.nicopico.petitboutiste.utils.dialog.FileDialogOperation
 import kotlinx.coroutines.launch
 import kotlinx.io.files.Path
 import org.jetbrains.jewel.foundation.theme.JewelTheme

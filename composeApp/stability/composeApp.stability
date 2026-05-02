@@ -174,7 +174,7 @@ public fun fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown(items: 
     - getItemLabel: STABLE (function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector(onFileSelected: kotlin.Function1<kotlinx.io.files.Path?, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selection: kotlinx.io.files.Path?, fileDialog: fr.nicopico.petitboutiste.utils.file.FileDialog): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector(onFileSelected: kotlin.Function1<kotlinx.io.files.Path?, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selection: kotlinx.io.files.Path?, fileDialog: fr.nicopico.petitboutiste.utils.dialog.FileDialog): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -627,4 +627,3 @@ public fun fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
   params:
     - parameterProvider: RUNTIME (requires runtime check)
     - content: STABLE (composable function type)
-

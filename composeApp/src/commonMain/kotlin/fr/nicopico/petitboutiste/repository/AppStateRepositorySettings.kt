@@ -6,7 +6,6 @@
 
 package fr.nicopico.petitboutiste.repository
 
-import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
 import fr.nicopico.petitboutiste.models.data.Base64String
 import fr.nicopico.petitboutiste.models.data.BinaryString
@@ -19,17 +18,15 @@ import fr.nicopico.petitboutiste.state.TabDataRendering
 import fr.nicopico.petitboutiste.state.TabId
 import fr.nicopico.petitboutiste.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
+import fr.nicopico.petitboutiste.utils.getSettingsFor
 import fr.nicopico.petitboutiste.utils.log
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.io.files.Path
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import java.util.prefs.Preferences
 
 class AppStateRepositorySettings(
-    settings: Settings = PreferencesSettings(
-        Preferences.userNodeForPackage(AppStateRepository::class.java)
-    ),
+    settings: Settings = getSettingsFor(AppStateRepository::class),
     json: Json = Json {
         allowStructuredMapKeys = true
     }

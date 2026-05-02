@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.utils.file
+package fr.nicopico.petitboutiste.utils.dialog
 
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
@@ -17,19 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.io.files.Path
 
-interface FileDialog {
-    suspend fun show(
-        operation: FileDialogOperation,
-        title: String? = null,
-        block: (Path) -> Unit,
-    )
+actual fun createDefaultFileDialog(): FileDialog = DefaultFileDialog
 
-    companion object {
-        val Default: FileDialog = FileDialogDefault
-    }
-}
-
-private object FileDialogDefault: FileDialog {
+private object DefaultFileDialog: FileDialog {
     override suspend fun show(
         operation: FileDialogOperation,
         title: String?,
@@ -65,19 +55,4 @@ private object FileDialogDefault: FileDialog {
             }
         }
     }
-}
-
-sealed class FileDialogOperation {
-    data object ChooseFolder : FileDialogOperation()
-
-    data class ChooseFile(
-        val extensions: Set<String>? = null
-    ) : FileDialogOperation() {
-        constructor(vararg extensions: String) : this(extensions.toSet())
-    }
-
-    data class CreateNewFile(
-        val suggestedFilename: String,
-        val extension: String,
-    ) : FileDialogOperation()
 }

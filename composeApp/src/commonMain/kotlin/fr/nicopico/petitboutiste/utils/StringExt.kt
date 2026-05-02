@@ -6,6 +6,8 @@
 
 package fr.nicopico.petitboutiste.utils
 
+import fr.nicopico.petitboutiste.models.representation.TextCharset
+
 private val INDEX_SUFFIX_PATTERN = Regex("(.*)([_\\-\\s])?(\\d+)$")
 
 fun String.incrementIndexSuffix(): String {
@@ -18,3 +20,7 @@ fun String.incrementIndexSuffix(): String {
 
     return "$base$separator$counter"
 }
+
+// TODO Use a multi-platform library ?
+// see https://github.com/fleeksoft/fleeksoft-io/blob/main/CharsetsReadme.md
+expect fun ByteArray.toString(charset: TextCharset): String
