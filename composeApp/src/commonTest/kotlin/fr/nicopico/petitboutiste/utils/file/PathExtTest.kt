@@ -73,6 +73,27 @@ class PathExtTest {
     }
 
     @Test
+    fun `relativeTo should handle different Windows drives`() {
+        val path = Path("C:/a/b/c")
+        val base = Path("D:/a/b/c")
+
+        // Should return the absolute path because they are on different drives
+        assertEquals("C:/a/b/c", path.relativeTo(base))
+    }
+
+    @Test
+    fun `normalizePath should preserve drive letter`() {
+        assertEquals("C:/a/b/c", Path("C:\\a\\b\\c").normalize().asString())
+        assertEquals("C:/a/b", Path("C:/a/b/c/..").normalize().asString())
+    }
+
+    @Test
+    fun `relativeTo should return absolute path when roots are different`() {
+        assertEquals("/a/b/c", Path("/a/b/c").relativeTo(Path("C:/a/b/c")))
+        assertEquals("C:/a/b/c", Path("C:/a/b/c").relativeTo(Path("/a/b/c")))
+    }
+
+    @Test
     fun `exists should return true for existing file`() {
         // GIVEN
         val tempFile = createTempFile()

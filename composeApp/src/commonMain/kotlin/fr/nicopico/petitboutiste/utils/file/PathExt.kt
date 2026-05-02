@@ -63,8 +63,11 @@ fun createTempFile(
  */
 fun Path.normalize(): Path {
     val pathString = toString().replace('\\', '/')
-    val isAbsolute = pathString.startsWith('/')
-    val parts = pathString
+    val root = pathString.getPathRoot()
+    val isAbsolute = root.isNotEmpty()
+
+    val partsString = if (isAbsolute) pathString.substring(root.length) else pathString
+    val parts = partsString
         .split('/')
         .fold(mutableListOf<String>()) { normalizedParts, part ->
             when (part) {
@@ -82,7 +85,7 @@ fun Path.normalize(): Path {
         }
 
     val result = parts.joinToString("/")
-    return Path(if (isAbsolute) "/$result" else result)
+    return Path(if (isAbsolute) "$root$result" else result)
 }
 
 /**
@@ -101,15 +104,18 @@ fun Path.relativeTo(
     val normalizedPath = normalize()
     val normalizedBase = baseDir.normalize()
 
-    val pathIsAbsolute = normalizedPath.toString().startsWith('/')
-    val baseIsAbsolute = normalizedBase.toString().startsWith('/')
+    val pathString = normalizedPath.toString().replace('\\', '/')
+    val baseString = normalizedBase.toString().replace('\\', '/')
 
-    if (pathIsAbsolute != baseIsAbsolute) {
-        return normalizedPath.toString()
+    val pathRoot = pathString.getPathRoot()
+    val baseRoot = baseString.getPathRoot()
+
+    if (pathRoot != baseRoot) {
+        return pathString
     }
 
-    val normalizedPathParts = normalizedPath.toString().splitPath()
-    val normalizedBaseParts = normalizedBase.toString().splitPath()
+    val normalizedPathParts = pathString.splitPath()
+    val normalizedBaseParts = baseString.splitPath()
 
     val commonPrefixLength = normalizedPathParts
         .zip(normalizedBaseParts)
@@ -121,6 +127,20 @@ fun Path.relativeTo(
 
     val resultParts = parentParts + childParts
     return if (resultParts.isEmpty()) "." else resultParts.joinToString("/")
+}
+
+private fun String.getPathRoot(): String {
+    return when {
+        startsWith('/') || startsWith('\\') -> "/"
+        length >= 2 && this[1] == ':' -> {
+            if (length >= 3 && (this[2] == '/' || this[2] == '\\')) {
+                substring(0, 3).replace('\\', '/')
+            } else {
+                substring(0, 2) + "/"
+            }
+        }
+        else -> ""
+    }
 }
 
 private fun String.splitPath(): List<String> =
