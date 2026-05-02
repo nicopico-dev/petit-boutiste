@@ -6,8 +6,6 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
-import fr.nicopico.petitboutiste.models.representation.RenderResult
-
 val ByteItem.name: String?
     get() = when (this) {
         is ByteGroup -> name
@@ -25,16 +23,6 @@ val ByteItem.rawHexString: String
         is ByteGroup -> bytes.joinToString(separator = "")
         is SingleByte -> value
     }
-
-/**
- * Gets the cached rendering for this ByteItem.
- * For ByteGroup: returns the lazily-computed cached rendering.
- * For SingleByte: returns null as they use shared representations.
- */
-suspend fun ByteItem.getRendering(): RenderResult? = when (this) {
-    is ByteGroup -> getOrComputeRendering()
-    is SingleByte -> null
-}
 
 fun ByteItem.toByteArray(): ByteArray {
     val hexString = rawHexString
