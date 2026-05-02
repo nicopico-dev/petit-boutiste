@@ -6,15 +6,6 @@
 
 package fr.nicopico.petitboutiste.utils.dialog
 
-import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
-import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.dialogs.openDirectoryPicker
-import io.github.vinceglb.filekit.dialogs.openFilePicker
-import io.github.vinceglb.filekit.dialogs.openFileSaver
-import io.github.vinceglb.filekit.toKotlinxIoPath
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.io.files.Path
 
 interface FileDialog {
@@ -25,47 +16,11 @@ interface FileDialog {
     )
 
     companion object {
-        val Default: FileDialog = FileDialogDefault
+        val Default: FileDialog = createDefaultFileDialog()
     }
 }
 
-private object FileDialogDefault: FileDialog {
-    override suspend fun show(
-        operation: FileDialogOperation,
-        title: String?,
-        block: (Path) -> Unit,
-    ) = withContext(Dispatchers.IO) {
-        when (operation) {
-            is FileDialogOperation.ChooseFile -> {
-                val selectedFile = FileKit.openFilePicker(
-                    type = FileKitType.File(operation.extensions),
-                    dialogSettings = FileKitDialogSettings(
-                        title = title,
-                    ),
-                ) ?: return@withContext
-                block(selectedFile.toKotlinxIoPath())
-            }
-
-            is FileDialogOperation.ChooseFolder -> {
-                val selectedFolder = FileKit.openDirectoryPicker(
-                    directory = null,
-                    dialogSettings = FileKitDialogSettings(
-                        title = title,
-                    ),
-                ) ?: return@withContext
-                block(selectedFolder.toKotlinxIoPath())
-            }
-
-            is FileDialogOperation.CreateNewFile -> {
-                val newFile = FileKit.openFileSaver(
-                    suggestedName = operation.suggestedFilename,
-                    extension = operation.extension,
-                ) ?: return@withContext
-                block(newFile.toKotlinxIoPath())
-            }
-        }
-    }
-}
+expect fun createDefaultFileDialog(): FileDialog
 
 sealed class FileDialogOperation {
     data object ChooseFolder : FileDialogOperation()
