@@ -7,7 +7,6 @@
 package fr.nicopico.petitboutiste.system
 
 import fr.nicopico.petitboutiste.system.bridge.DefaultBridge
-import fr.nicopico.petitboutiste.system.bridge.MacosBridge
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.skiko.SystemTheme
 
@@ -48,7 +47,8 @@ internal fun getSystemBridge(
 ): SystemBridge {
     val osName = getSystemProperty("os.name").orEmpty()
     return when {
-        osName.contains("mac", ignoreCase = true) -> MacosBridge
+        // FIXME Detect if we are running a UI test
+        //osName.contains("mac", ignoreCase = true) -> MacosBridge
         else -> DefaultBridge
     }
 }

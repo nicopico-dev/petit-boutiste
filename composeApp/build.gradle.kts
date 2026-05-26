@@ -27,7 +27,11 @@ kotlin {
         // NOTE: Pre-release options must be mirrored in the embedded Kotlin compiler to prevent the error
         // "Class 'fr.nicopico.petitboutiste.scripting.PetitBoutisteApi' was compiled by a pre-release version of Kotlin and cannot be loaded by this version of the compiler"
         // (see `ScriptHost` class)
-        freeCompilerArgs.add("-Xexplicit-backing-fields")
+        freeCompilerArgs.addAll(
+            "-Xexplicit-backing-fields",
+            "-Xcontext-parameters", // TODO Add this option to ScriptHost (see comment above)
+        )
+
         optIn.addAll(
             "kotlin.concurrent.atomics.ExperimentalAtomicApi",
             "kotlin.uuid.ExperimentalUuidApi",

@@ -60,6 +60,14 @@ kotlin {
             implementation(libs.findBundle("jewel").get())
         }
 
+        val desktopTest by getting
+        desktopTest.dependencies {
+            // Help the compiler to choose the right `compose` extension property
+            val compose = extensions.getByType<ComposePlugin.Dependencies>()
+            implementation(compose.desktop.currentOs)
+            implementation("org.jetbrains.compose.ui:ui-test-junit4:1.10.3")
+        }
+
         // TODO Enable WASM target
         //val wasmJsMain by getting
 
