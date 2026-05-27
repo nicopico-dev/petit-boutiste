@@ -59,12 +59,13 @@ class ExampleTest {
 
     @Test
     fun ptbTest() {
-        PtbRobot(rule, screenshotFolder = File("/Users/nicopico/Downloads"))
+        PtbRobot(rule, screenshotFolder = File("/Users/nicopico/Downloads/ptb-ui-tests"))
             .on(DataEntry) {
-                assertEquals("HEX", getSelectedDataType())
+                assertEquals(DATA_TYPE_HEX, getSelectedDataType())
+                takeScreenshot()
 
-                selectDataType("BIN")
-                assertEquals("BIN", getSelectedDataType())
+                selectDataType(DATA_TYPE_BIN)
+                assertEquals(DATA_TYPE_BIN, getSelectedDataType())
             }
             .takeScreenshot()
     }

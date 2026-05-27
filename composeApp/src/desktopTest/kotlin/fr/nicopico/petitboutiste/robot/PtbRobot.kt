@@ -44,12 +44,19 @@ class PtbRobot(
 
     fun <P : PartRobot> on(
         part: P,
-        block: context(ComposeContentTestRule) P.() -> Unit,
+        block: context(ComposeContentTestRule, ScreenshotHost) P.() -> Unit,
     ): PtbRobot {
-        context(rule) {
+        // Make `takeScreenshot()` function available in `block`
+        context(rule, screenshotHost) {
             part.block()
         }
         return this
+    }
+
+    private val screenshotHost = object : ScreenshotHost {
+        override fun takeScreenshot(name: String?) {
+            this@PtbRobot.takeScreenshot(name)
+        }
     }
 
     fun takeScreenshot(name: String? = null): PtbRobot {

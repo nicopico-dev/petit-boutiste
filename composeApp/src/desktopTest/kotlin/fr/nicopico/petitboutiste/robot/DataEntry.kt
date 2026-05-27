@@ -20,6 +20,10 @@ import fr.nicopico.petitboutiste.ui.UiTags
 
 object DataEntry : PartRobot {
 
+    const val DATA_TYPE_HEX = "HEX"
+    const val DATA_TYPE_BIN = "BIN"
+    const val DATA_TYPE_BASE64 = "B64"
+
     context(rule: ComposeContentTestRule)
     fun getSelectedDataType(): String {
         val controlNode = rule.onNodeWithTag(UiTags.INPUT_TYPE_TOGGLE)
