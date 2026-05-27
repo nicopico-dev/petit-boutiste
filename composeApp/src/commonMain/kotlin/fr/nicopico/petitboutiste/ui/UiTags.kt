@@ -8,4 +8,5 @@ package fr.nicopico.petitboutiste.ui
 
 object UiTags {
     const val INPUT_TYPE_TOGGLE = "INPUT_TYPE_TOGGLE"
+    const val DATA_INPUT = "DATA_INPUT"
 }

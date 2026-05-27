@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.toAwtImage
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.printToLog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.nicopico.petitboutiste.PTBViewModel
 import fr.nicopico.petitboutiste.PetitBoutisteApp
@@ -23,6 +24,7 @@ import javax.imageio.ImageIO
 
 class PtbRobot(
     private val rule: ComposeContentTestRule,
+    private val enableScreenshot: Boolean = true,
     private val screenshotFolder: File = File(System.getProperty("java.io.tmpdir")),
 ) {
 
@@ -60,6 +62,8 @@ class PtbRobot(
     }
 
     fun takeScreenshot(name: String? = null): PtbRobot {
+        if (!enableScreenshot) return this
+
         val imageBitmap = rule.onRoot().captureToImage()
 
         val fileName = if (name != null) {
@@ -73,6 +77,11 @@ class PtbRobot(
 
         println("Saved screenshot to ${file.absolutePath}")
 
+        return this
+    }
+
+    fun printTolog(): PtbRobot {
+        rule.onRoot().printToLog("PTBRobot")
         return this
     }
 }

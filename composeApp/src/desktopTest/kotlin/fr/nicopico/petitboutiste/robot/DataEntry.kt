@@ -8,6 +8,7 @@ package fr.nicopico.petitboutiste.robot
 
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isSelected
@@ -24,12 +25,16 @@ object DataEntry : PartRobot {
     const val DATA_TYPE_BIN = "BIN"
     const val DATA_TYPE_BASE64 = "B64"
 
+    //region InputTypeToggle
     context(rule: ComposeContentTestRule)
-    fun getSelectedDataType(): String {
-        val controlNode = rule.onNodeWithTag(UiTags.INPUT_TYPE_TOGGLE)
+    private val inputTypeToggle: SemanticsNodeInteraction
+        get() = rule
+            .onNodeWithTag(UiTags.INPUT_TYPE_TOGGLE)
+            .onChild()
 
-        val selectedNode = controlNode
-            .onChild() // SelectableGroup (Jewel)
+    context(rule: ComposeContentTestRule)
+    fun getSelectedInputType(): String {
+        val selectedNode = inputTypeToggle
             .onChildren()
             .filterToOne(isSelected())
 
@@ -41,15 +46,19 @@ object DataEntry : PartRobot {
     }
 
     context(rule: ComposeContentTestRule)
-    fun selectDataType(dataType: String) {
-        val controlNode = rule.onNodeWithTag(UiTags.INPUT_TYPE_TOGGLE)
-
-        controlNode
-            .onChild() // SelectableGroup (Jewel)
+    fun setSelectedInputType(dataType: String) {
+        val targetNode = inputTypeToggle
             .onChildren()
             .filterToOne(hasText(dataType))
-            .performClick()
 
-        rule.mainClock.advanceTimeByFrame()
+        targetNode.performClick()
     }
+    //endregion
+
+    //region DataInput
+    context(rule: ComposeContentTestRule)
+    val dataInput: SemanticsNodeInteraction
+        get() = rule
+            .onNodeWithTag(UiTags.DATA_INPUT)
+    //endregion
 }

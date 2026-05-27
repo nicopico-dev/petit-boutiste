@@ -6,6 +6,10 @@
 
 package fr.nicopico.petitboutiste.robot
 
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.printToLog
+
 sealed interface PartRobot {
 
     /**
@@ -15,5 +19,15 @@ sealed interface PartRobot {
     context(screenshotHost: ScreenshotHost)
     fun takeScreenshot(name: String? = null) {
         screenshotHost.takeScreenshot(name = name)
+    }
+
+    context(rule: ComposeContentTestRule)
+    fun printToLog() {
+        rule.onRoot().printToLog(this::class.java.simpleName)
+    }
+
+    context(rule: ComposeContentTestRule)
+    fun waitForRecomposition() {
+        rule.mainClock.advanceTimeByFrame()
     }
 }
