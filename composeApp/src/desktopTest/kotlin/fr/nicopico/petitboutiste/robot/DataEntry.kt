@@ -27,7 +27,7 @@ object DataEntry : PartRobot {
 
     //region InputTypeToggle
     context(rule: ComposeContentTestRule)
-    private val inputTypeToggle: SemanticsNodeInteraction
+    val inputTypeToggle: SemanticsNodeInteraction
         get() = rule
             .onNodeWithTag(UiTags.INPUT_TYPE_TOGGLE)
             .onChild()

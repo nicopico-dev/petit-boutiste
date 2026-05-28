@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.toAwtImage
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.printToLog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.nicopico.petitboutiste.PTBViewModel
 import fr.nicopico.petitboutiste.PetitBoutisteApp
@@ -29,9 +28,6 @@ class PtbRobot(
 ) {
 
     init {
-        require(screenshotFolder.isDirectory) {
-            "$screenshotFolder is not a directory"
-        }
         rule.setContent {
             val viewModel = PTBViewModel(
                 reducer = Reducer(FakeTemplateManager()),
@@ -46,23 +42,19 @@ class PtbRobot(
 
     fun <P : PartRobot> on(
         part: P,
-        block: context(ComposeContentTestRule, ScreenshotHost) P.() -> Unit,
+        block: context(ComposeContentTestRule) P.() -> Unit,
     ): PtbRobot {
-        // Make `takeScreenshot()` function available in `block`
-        context(rule, screenshotHost) {
+        context(rule) {
             part.block()
         }
         return this
     }
 
-    private val screenshotHost = object : ScreenshotHost {
-        override fun takeScreenshot(name: String?) {
-            this@PtbRobot.takeScreenshot(name)
-        }
-    }
-
     fun takeScreenshot(name: String? = null): PtbRobot {
         if (!enableScreenshot) return this
+        check(screenshotFolder.isDirectory()) {
+            "$screenshotFolder does not exist or is not a directory"
+        }
 
         val imageBitmap = rule.onRoot().captureToImage()
 
@@ -77,11 +69,6 @@ class PtbRobot(
 
         println("Saved screenshot to ${file.absolutePath}")
 
-        return this
-    }
-
-    fun printTolog(): PtbRobot {
-        rule.onRoot().printToLog("PTBRobot")
         return this
     }
 }

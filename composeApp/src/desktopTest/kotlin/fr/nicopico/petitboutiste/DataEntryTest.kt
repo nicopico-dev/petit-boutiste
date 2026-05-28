@@ -15,7 +15,6 @@ import fr.nicopico.petitboutiste.robot.PtbRobot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 import kotlin.test.assertEquals
 
 class DataEntryTest {
@@ -30,7 +29,6 @@ class DataEntryTest {
         ptbRobot = PtbRobot(
             rule,
             enableScreenshot = false,
-            screenshotFolder = File("/Users/nicopico/Downloads/ptb-ui-tests"),
         )
     }
     @Test
@@ -43,7 +41,6 @@ class DataEntryTest {
             .takeScreenshot("01 - HEX data entry")
             .on(DataEntry) {
                 setSelectedInputType(DATA_TYPE_BIN)
-                waitForRecomposition()
                 assertEquals(DATA_TYPE_BIN, getSelectedInputType())
 
                 // Data entry is converted to BIN format
@@ -52,7 +49,6 @@ class DataEntryTest {
             .takeScreenshot("02 - BIN conversion")
             .on(DataEntry) {
                 setSelectedInputType(DATA_TYPE_BASE64)
-                waitForRecomposition()
                 assertEquals(DATA_TYPE_BASE64, getSelectedInputType())
 
                 // Data entry is converted to BASE64 format
