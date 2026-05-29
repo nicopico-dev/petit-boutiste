@@ -12,10 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.state.InputType
-import fr.nicopico.petitboutiste.ui.UiTags
 import org.jetbrains.jewel.ui.component.SegmentedControl
 import org.jetbrains.jewel.ui.component.SegmentedControlButtonData
 import org.jetbrains.jewel.ui.component.Text
@@ -45,7 +43,6 @@ fun InputTypeToggle(
 
         SegmentedControl(
             buttons = buttons,
-            modifier = Modifier.testTag(UiTags.INPUT_TYPE_TOGGLE),
         )
     }
 }

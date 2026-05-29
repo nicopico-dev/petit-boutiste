@@ -12,9 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import fr.nicopico.petitboutiste.models.data.DataString
-import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.typography
@@ -48,7 +46,7 @@ fun <T : DataString> DataInput(
             }
         },
         isError = isError,
-        modifier = modifier.testTag(UiTags.DATA_INPUT),
+        modifier = modifier,
         textStyle = AppTheme.current.typography.data,
     )
 }

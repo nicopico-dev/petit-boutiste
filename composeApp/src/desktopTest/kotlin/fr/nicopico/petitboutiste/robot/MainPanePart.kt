@@ -13,13 +13,13 @@ import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isSelected
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import androidx.compose.ui.test.onChild
+import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import fr.nicopico.petitboutiste.ui.UiTags
 
-object DataEntry : PartRobot {
+object MainPanePart : PartRobot {
 
     const val DATA_TYPE_HEX = "HEX"
     const val DATA_TYPE_BIN = "BIN"
@@ -30,7 +30,7 @@ object DataEntry : PartRobot {
     val inputTypeToggle: SemanticsNodeInteraction
         get() = rule
             .onNodeWithTag(UiTags.INPUT_TYPE_TOGGLE)
-            .onChild()
+            .onChildAt(1)
 
     context(rule: ComposeContentTestRule)
     fun getSelectedInputType(): String {

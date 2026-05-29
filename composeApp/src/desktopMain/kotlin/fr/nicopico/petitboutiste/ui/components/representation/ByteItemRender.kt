@@ -91,9 +91,7 @@ fun ByteItemRender(
     }
 
     Row(
-        modifier
-            .border(1.dp, AppTheme.current.colors.borderColor)
-            .testTag(UiTags.BYTE_ITEM_RENDER),
+        modifier.border(1.dp, AppTheme.current.colors.borderColor),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ByteGroupRepresentationForm(
@@ -103,7 +101,8 @@ fun ByteItemRender(
                 .widthIn(max = 300.dp)
                 .fillMaxHeight()
                 .padding(8.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .testTag(UiTags.BYTE_GROUP_REPRESENTATION_FORM),
         )
 
         Divider(
@@ -140,7 +139,9 @@ fun ByteItemRender(
                     ),
                     undecorated = false,
                     decorationBoxModifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER),
                 )
 
                 Column(
@@ -162,6 +163,8 @@ fun ByteItemRender(
                                 clipboard.setData(data)
                             }
                         },
+                        modifier = Modifier
+                            .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER_COPY_TO_CLIPBOARD),
                     )
 
                     val onEvent = LocalOnAppEvent.current
@@ -176,6 +179,8 @@ fun ByteItemRender(
                                 onEvent(AppEvent.AddNewTabEvent(tabData))
                             }
                         },
+                        modifier = Modifier
+                            .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER_OPEN_NEW_TAB),
                     )
                 }
             }

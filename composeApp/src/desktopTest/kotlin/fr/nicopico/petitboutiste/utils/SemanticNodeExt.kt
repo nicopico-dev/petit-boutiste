@@ -9,4 +9,6 @@ package fr.nicopico.petitboutiste.utils
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.printToLog
 
-fun SemanticsNodeInteraction.debug(): SemanticsNodeInteraction = this.apply { printToLog("") }
+fun SemanticsNodeInteraction.debug(tag: String = "PTB"): SemanticsNodeInteraction = apply {
+    printToLog(tag)
+}

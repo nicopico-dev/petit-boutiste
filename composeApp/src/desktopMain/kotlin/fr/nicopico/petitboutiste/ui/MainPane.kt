@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.definition.ByteItem
@@ -54,7 +55,9 @@ fun MainPane(
             InputTypeToggle(
                 inputData.inputType,
                 onInputTypeChanged,
-                Modifier.align(Alignment.CenterEnd)
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .testTag(UiTags.INPUT_TYPE_TOGGLE)
             )
         }
 
@@ -64,6 +67,7 @@ fun MainPane(
         val inputModifier = Modifier
             .heightIn(max = 120.dp)
             .fillMaxWidth()
+            .testTag(UiTags.DATA_INPUT)
         when (inputData.inputType) {
             InputType.HEX -> HexInput(
                 value = inputData,

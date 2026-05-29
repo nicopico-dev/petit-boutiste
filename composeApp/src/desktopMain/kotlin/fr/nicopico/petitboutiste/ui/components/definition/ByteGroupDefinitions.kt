@@ -122,7 +122,9 @@ fun ByteGroupDefinitions(
                             AppTheme.current.colors.windowBackgroundColor
                         } else Color.Unspecified
                     )
-                }
+                },
+                modifier = Modifier
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_TOGGLE_REPRESENTATION_FORM)
             )
 
             IconActionButton(
@@ -139,11 +141,12 @@ fun ByteGroupDefinitions(
                         }
                     }
                 },
+                modifier = Modifier
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_EXPORT_VALUES)
             )
         }
 
         LazyColumn(
-            modifier = Modifier.testTag(UiTags.BYTE_GROUP_LIST),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             state = lazyListState,
         ) {
@@ -186,13 +189,15 @@ fun ByteGroupDefinitions(
                         definition = definition,
                         byteGroup = byteGroup,
                         selected = definition == selectedDefinition,
-                        modifier = Modifier.clickableWithIndication {
-                            if (definition != selectedDefinition) {
-                                onDefinitionSelected(definition)
-                            } else {
-                                onDefinitionSelected(null)
+                        modifier = Modifier
+                            .clickableWithIndication {
+                                if (definition != selectedDefinition) {
+                                    onDefinitionSelected(definition)
+                                } else {
+                                    onDefinitionSelected(null)
+                                }
                             }
-                        },
+                            .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM),
                         form = {
                             ByteGroupDefinitionForm(
                                 definition = definition,
@@ -203,6 +208,7 @@ fun ByteGroupDefinitions(
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 16.dp)
                                     .align(Alignment.End)
+                                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM)
                             )
                         },
                         displayForm = openedDefinition == definition,
@@ -235,6 +241,8 @@ fun ByteGroupDefinitions(
                             openedDefinition = definition
                             onAddDefinition(definition)
                         },
+                        modifier = Modifier
+                            .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ADD_DEFINITION)
                     )
                 }
             }

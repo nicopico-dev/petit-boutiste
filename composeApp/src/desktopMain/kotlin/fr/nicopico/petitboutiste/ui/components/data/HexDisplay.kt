@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,7 +37,6 @@ import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.definition.size
-import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
@@ -78,9 +76,7 @@ fun HexDisplay(
                     state = gridState,
                     horizontalArrangement = Arrangement.Start,
                     verticalArrangement = Arrangement.Top,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .testTag(UiTags.BYTE_ITEM_LIST),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(
                         items = byteItems,
