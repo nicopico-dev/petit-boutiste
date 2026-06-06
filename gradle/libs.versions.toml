@@ -1,20 +1,20 @@
 [versions]
 androidx-lifecycle = "2.10.0"
 cash-licensee = "1.14.1"
-composeMultiplatform = "1.10.3"
+composeMultiplatform = "1.11.1"
 detekt = "1.23.8"
-detekt-composeRules = "0.5.8"
-filekit = "0.13.0"
-intellijPlatform = "252.25557.178" # https://mvnrepository.com/artifact/com.jetbrains.intellij.platform/core
-jewel = "0.35.0-261.23567.138" # https://central.sonatype.com/artifact/org.jetbrains.jewel/jewel-int-ui-standalone/versions
-jackson = "2.18.2"
-kotlin = "2.3.21"
+detekt-composeRules = "0.5.9"
+filekit = "0.14.1"
+intellijPlatform = "261.24374.191" # https://mvnrepository.com/artifact/com.jetbrains.intellij.platform/core
+jewel = "0.36.0-261.24374.151" # https://central.sonatype.com/artifact/org.jetbrains.jewel/jewel-int-ui-standalone/versions
+jackson = "2.22.0"
+kotlin = "2.4.0"
 kover = "0.9.8"
-kotlinx-coroutines = "1.10.2"
+kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.11.0"
 multiplatform-settings = "1.3.0"
-protobuf = "4.34.1"
-skydoves-stabilityAnalyzer = "0.7.4"
+protobuf = "4.35.0"
+skydoves-stabilityAnalyzer = "0.9.0"
 
 [libraries]
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
