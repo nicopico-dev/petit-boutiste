@@ -54,7 +54,7 @@ class ScriptHost(
                     )
                     // Add the pre-release compiler options enabled in the app `build.gradle.kts`
                     // to ensure compatibility with the app's compilation settings
-                    compilerOptions.append("-Xexplicit-backing-fields")
+                    //compilerOptions
                 }
                 providedProperties(
                     "args" to typeOf<List<String>>(),
