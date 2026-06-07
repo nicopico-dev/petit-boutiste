@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalWasmDsl::class)
-
 import ext.libs
 import org.jetbrains.compose.ComposePlugin
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
 /*

@@ -7,9 +7,7 @@
 package fr.nicopico.petitboutiste.models.persistence
 
 import fr.nicopico.petitboutiste.state.TabData
-import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalUuidApi::class)
 fun TabData.toTemplate(
     fallbackName: String
 ) = Template(

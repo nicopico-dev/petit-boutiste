@@ -11,12 +11,10 @@ import fr.nicopico.petitboutiste.models.definition.toByteArray
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.utils.logError
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 
-@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Representation(
     val dataRenderer: DataRenderer,

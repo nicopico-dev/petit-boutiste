@@ -30,7 +30,6 @@ kotlin {
         //freeCompilerArgs
         optIn.addAll(
             "kotlin.concurrent.atomics.ExperimentalAtomicApi",
-            "kotlin.uuid.ExperimentalUuidApi",
         )
 
         //allWarningsAsErrors.set(true)

@@ -37,7 +37,6 @@ import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.PBIcons
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import org.jetbrains.jewel.foundation.ExperimentalJewelApi
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.component.Divider
 import org.jetbrains.jewel.ui.component.Dropdown
@@ -53,7 +52,6 @@ import org.jetbrains.jewel.window.newFullscreenControls
 
 private const val CLOSE_TAB_DESCRIPTION = "Close tab"
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalJewelApi::class)
 @Composable
 fun DecoratedWindowScope.PBTitleBar(
     tabsState: TabsState,
@@ -205,7 +203,6 @@ private fun TabItem(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TabToolbar(
     tabData: TabData,

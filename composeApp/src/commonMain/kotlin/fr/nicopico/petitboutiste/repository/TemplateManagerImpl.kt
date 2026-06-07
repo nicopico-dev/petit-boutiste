@@ -21,10 +21,8 @@ import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
 import kotlinx.io.writeString
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
-@OptIn(ExperimentalSerializationApi::class)
 class TemplateManagerImpl(
     private val json: Json = Json.Default,
     private val fileSystem: FileSystem = SystemFileSystem,
