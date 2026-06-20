@@ -49,7 +49,7 @@ private object DefaultFileDialog: FileDialog {
             is FileDialogOperation.CreateNewFile -> {
                 val newFile = FileKit.openFileSaver(
                     suggestedName = operation.suggestedFilename,
-                    extension = operation.extension,
+                    defaultExtension = operation.extension,
                 ) ?: return@withContext
                 block(newFile.toKotlinxIoPath())
             }
