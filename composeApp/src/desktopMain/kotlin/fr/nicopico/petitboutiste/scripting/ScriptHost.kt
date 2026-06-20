@@ -34,6 +34,7 @@ class ScriptHost(
 ) {
     private val host = BasicJvmScriptingHost()
 
+    @Suppress("RedundantSuspendModifier", "RedundantSuppression")
     suspend fun evalFile(
         filePath: Path,
         args: List<String> = emptyList(),
