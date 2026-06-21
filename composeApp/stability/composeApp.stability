@@ -13,6 +13,13 @@ public fun fr.nicopico.petitboutiste.PetitBoutiste(onAppClose: kotlin.Function0<
     - viewModel: UNSTABLE (has mutable properties or unstable members)
 
 @Composable
+public fun fr.nicopico.petitboutiste.PetitBoutisteApp(viewModel: fr.nicopico.petitboutiste.PTBViewModel): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - viewModel: UNSTABLE (has mutable properties or unstable members)
+
+@Composable
 public fun fr.nicopico.petitboutiste.models.persistence.getScreenCharacteristics(): fr.nicopico.petitboutiste.models.persistence.ScreenCharacteristics
   skippable: true
   restartable: true
@@ -125,7 +132,7 @@ public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitio
     - showRepresentationForm: STABLE (primitive type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitionItem(definition: fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, onToggleDisplayForm: kotlin.Function1<kotlin.Boolean, kotlin.Unit>, onDelete: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selected: kotlin.Boolean, byteGroup: fr.nicopico.petitboutiste.models.definition.ByteGroup?, errorMessage: kotlin.String?, form: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, displayForm: kotlin.Boolean): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitionItem(definition: fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, onToggleDisplayForm: kotlin.Function1<kotlin.Boolean, kotlin.Unit>, onDelete: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, isSelected: kotlin.Boolean, byteGroup: fr.nicopico.petitboutiste.models.definition.ByteGroup?, errorMessage: kotlin.String?, form: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, displayForm: kotlin.Boolean): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -133,7 +140,7 @@ public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitio
     - onToggleDisplayForm: STABLE (function type)
     - onDelete: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
-    - selected: STABLE (primitive type)
+    - isSelected: STABLE (primitive type)
     - byteGroup: UNSTABLE (has mutable properties or unstable members)
     - errorMessage: STABLE (class with no mutable properties)
     - form: STABLE (composable function type)
