@@ -30,7 +30,7 @@ object MainPanePart : PartRobot {
     val inputTypeToggle: SemanticsNodeInteraction
         get() = rule
             .onNodeWithTag(UiTags.INPUT_TYPE_TOGGLE)
-            .onChildAt(1)
+            .onChildAt(2)
 
     context(rule: ComposeContentTestRule)
     fun getSelectedInputType(): String {

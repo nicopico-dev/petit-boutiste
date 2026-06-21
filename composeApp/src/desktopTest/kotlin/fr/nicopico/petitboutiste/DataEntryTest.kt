@@ -8,14 +8,13 @@ package fr.nicopico.petitboutiste
 
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.performTextReplacement
 import fr.nicopico.petitboutiste.robot.MainPanePart
 import fr.nicopico.petitboutiste.robot.PtbRobot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 import kotlin.test.assertEquals
 
 class DataEntryTest {
@@ -27,11 +26,7 @@ class DataEntryTest {
 
     @Before
     fun setUp() {
-        ptbRobot = PtbRobot(
-            rule,
-            enableScreenshot = true,
-            screenshotFolder = File("/tmp")
-        )
+        ptbRobot = PtbRobot(rule)
     }
 
     @Test
