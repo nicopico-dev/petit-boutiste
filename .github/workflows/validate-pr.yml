@@ -30,7 +30,7 @@ jobs:
       - name: Build and Test
         run: ./gradlew --no-daemon licensee build koverXmlReport detektDesktopMain -PappVersion=1.0.0
         env:
-          SCREENSHOT_DIR: composeApp/build/screenshots
+          SCREENSHOT_DIR: build/screenshots
 
       - name: Add coverage report
         uses: mi-kas/kover-report@v1
