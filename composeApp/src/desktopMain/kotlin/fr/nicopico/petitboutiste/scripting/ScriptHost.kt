@@ -35,6 +35,7 @@ class ScriptHost(
 ) {
     private val host = BasicJvmScriptingHost()
 
+    @Suppress("RedundantSuspendModifier", "RedundantSuppression")
     suspend fun evalFile(
         filePath: Path,
         args: List<String> = emptyList(),
@@ -55,7 +56,6 @@ class ScriptHost(
                     // Add the pre-release compiler options enabled in the app `build.gradle.kts`
                     // to ensure compatibility with the app's compilation settings
                     compilerOptions.append(
-                        "-Xexplicit-backing-fields",
                         "-Xcontext-parameters",
                     )
                 }

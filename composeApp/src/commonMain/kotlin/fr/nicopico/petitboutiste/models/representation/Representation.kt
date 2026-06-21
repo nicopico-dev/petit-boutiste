@@ -13,12 +13,10 @@ import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentVa
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 
-@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Representation(
     val dataRenderer: DataRenderer,

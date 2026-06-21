@@ -74,7 +74,7 @@ public fun fr.nicopico.petitboutiste.ui.components.data.input.DataInput(value: T
   restartable: true
   params:
     - value: RUNTIME (requires runtime check)
-    - adapter: RUNTIME (requires runtime check)
+    - adapter: UNKNOWN (interface or non-final class; concrete implementation unknown)
     - onValueChange: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
 
@@ -181,7 +181,7 @@ public fun fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector(onF
     - onFileSelected: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
     - selection: UNSTABLE (has mutable properties or unstable members)
-    - fileDialog: RUNTIME (requires runtime check)
+    - fileDialog: UNKNOWN (interface or non-final class; concrete implementation unknown)
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.components.foundation.PBLabel(label: kotlin.String, modifier: androidx.compose.ui.Modifier, orientation: fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation, hint: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
@@ -281,7 +281,7 @@ private fun fr.nicopico.petitboutiste.ui.components.foundation.ToolbarItem(label
   restartable: true
   params:
     - label: STABLE (String is immutable)
-    - iconKey: RUNTIME (requires runtime check)
+    - iconKey: UNKNOWN (interface or non-final class; concrete implementation unknown)
     - onClick: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
 
@@ -625,5 +625,6 @@ public fun fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
   skippable: false
   restartable: true
   params:
-    - parameterProvider: RUNTIME (requires runtime check)
+    - parameterProvider: UNKNOWN (interface or non-final class; concrete implementation unknown)
     - content: STABLE (composable function type)
+

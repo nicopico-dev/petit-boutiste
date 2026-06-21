@@ -47,6 +47,7 @@ actual suspend fun getMessageTypeDescriptorNames(protoFilePath: Path): List<Stri
     return getMessageTypeDescriptors(protoFilePath).map { it.name }
 }
 
+@Suppress("RedundantSuspendModifier", "RedundantSuppression")
 private suspend fun getMessageTypeDescriptors(protoFilePath: Path): List<Descriptors.Descriptor> {
     val cacheKey = DescriptorCacheKey(protoFilePath.absolutePath, protoFilePath.lastModified())
     cacheMutex.withLock {

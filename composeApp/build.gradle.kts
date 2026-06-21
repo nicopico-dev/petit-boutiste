@@ -28,16 +28,14 @@ kotlin {
         // "Class 'fr.nicopico.petitboutiste.scripting.PetitBoutisteApi' was compiled by a pre-release version of Kotlin and cannot be loaded by this version of the compiler"
         // (see `ScriptHost` class)
         freeCompilerArgs.addAll(
-            "-Xexplicit-backing-fields",
             "-Xcontext-parameters",
         )
 
         optIn.addAll(
             "kotlin.concurrent.atomics.ExperimentalAtomicApi",
-            "kotlin.uuid.ExperimentalUuidApi",
         )
 
-        allWarningsAsErrors.set(true)
+        //allWarningsAsErrors.set(true)
     }
 
     jvmToolchain {

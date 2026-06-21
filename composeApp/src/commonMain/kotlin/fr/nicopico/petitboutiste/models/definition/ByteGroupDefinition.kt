@@ -10,7 +10,6 @@ import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.utils.json.IntRangeSerializer
 import kotlinx.serialization.Serializable
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -28,7 +27,6 @@ data class ByteGroupDefinition(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
 fun createDefinitionId(): String = Uuid.random().toString()
 
 object ByteGroupDefinitionSorter : Comparator<ByteGroupDefinition> {
