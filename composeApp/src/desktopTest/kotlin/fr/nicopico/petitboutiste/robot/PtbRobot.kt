@@ -73,6 +73,7 @@ class PtbRobot(
         return this
     }
 
+    @Suppress("unused")
     fun debug(tag: String = "PTB"): PtbRobot {
         rule.onRoot().debug(tag)
         return this

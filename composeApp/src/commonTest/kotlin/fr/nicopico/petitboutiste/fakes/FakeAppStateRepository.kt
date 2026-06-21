@@ -9,7 +9,6 @@ package fr.nicopico.petitboutiste.fakes
 import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.state.AppState
 
-// TODO share with commonTest
 class FakeAppStateRepository : AppStateRepository {
     var savedState: AppState = AppState()
     override fun save(appState: AppState) {
