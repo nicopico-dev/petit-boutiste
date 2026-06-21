@@ -37,6 +37,7 @@ import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.PBIcons
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
+import org.jetbrains.jewel.foundation.ExperimentalJewelApi
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.component.Divider
 import org.jetbrains.jewel.ui.component.Dropdown
@@ -75,7 +76,8 @@ fun DecoratedWindowScope.PBTitleBar(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
             )
 
-            // TODO Dropdown is deprecated but ListComboBox is a bit ugly...
+            @OptIn(ExperimentalJewelApi::class)
+            @Suppress("UnstableApiUsage")
             Dropdown(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
