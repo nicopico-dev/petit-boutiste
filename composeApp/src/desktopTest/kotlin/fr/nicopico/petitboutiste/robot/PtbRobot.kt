@@ -24,11 +24,16 @@ import javax.imageio.ImageIO
 
 class PtbRobot(
     private val rule: ComposeContentTestRule,
-    private val enableScreenshot: Boolean = true,
-    private val screenshotFolder: File = File(System.getProperty("java.io.tmpdir")),
+    private val enableScreenshot: Boolean = (System.getenv("CI") == "true"),
+    private val screenshotFolder: File = File(
+        System.getenv("SCREENSHOT_DIR")
+            ?: System.getProperty("java.io.tmpdir")
+    ),
 ) {
 
     init {
+        screenshotFolder.mkdirs()
+
         rule.setContent {
             val viewModel = PTBViewModel(
                 reducer = Reducer(FakeTemplateManager()),
