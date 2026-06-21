@@ -65,7 +65,7 @@ kotlin {
             // Help the compiler to choose the right `compose` extension property
             val compose = extensions.getByType<ComposePlugin.Dependencies>()
             implementation(compose.desktop.currentOs)
-            implementation("org.jetbrains.compose.ui:ui-test-junit4:1.10.3")
+            implementation(libs.findLibrary("jetbrains.compose.ui.test.junit4").get())
         }
 
         // TODO Enable WASM target

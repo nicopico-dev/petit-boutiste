@@ -29,7 +29,7 @@ kotlin {
         // (see `ScriptHost` class)
         freeCompilerArgs.addAll(
             "-Xexplicit-backing-fields",
-            "-Xcontext-parameters", // TODO Add this option to ScriptHost (see comment above)
+            "-Xcontext-parameters",
         )
 
         optIn.addAll(
