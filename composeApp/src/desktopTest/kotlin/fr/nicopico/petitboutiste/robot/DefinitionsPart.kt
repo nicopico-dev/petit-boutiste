@@ -75,8 +75,20 @@ object DefinitionsPart : PartRobot {
             hasAnyAncestor(
                 hasNodeWithTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM)
                     and hasAnyChild(hasNodeWithTag(UiTags.byteGroupDefinitionsItemName(name)))
-            ) and hasNodeWithTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_ERROR)
+            ) and hasNodeWithTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_ERROR),
+            useUnmergedTree = true,
         ).assertTextEquals(expectedError)
+    }
+
+    context(rule: ComposeContentTestRule)
+    fun verifyNoError(name: String) {
+        rule.onNode(
+            hasAnyAncestor(
+                hasNodeWithTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM)
+                    and hasAnyChild(hasNodeWithTag(UiTags.byteGroupDefinitionsItemName(name)))
+            ) and hasNodeWithTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_ERROR),
+            useUnmergedTree = true,
+        ).assertDoesNotExist()
     }
 
     private fun hasNodeWithTag(tag: String) = hasTestTag(tag)

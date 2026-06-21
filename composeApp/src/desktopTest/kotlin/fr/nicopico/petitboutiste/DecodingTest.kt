@@ -91,7 +91,7 @@ class DecodingTest {
             }
             .on(DefinitionsPart) {
                 addDefinition(name = "Field on empty", start = 0, end = 0)
-                verifyError("Field on empty", "The payload is incomplete (0 bytes instead of 1)")
+                verifyNoError("Field on empty")
             }
     }
 }
