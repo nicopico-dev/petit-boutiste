@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 
+@Suppress("RedundantSuspendModifier", "RedundantSuppression")
 suspend fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList(),
     dispatcher: CoroutineDispatcher = Dispatchers.Default,

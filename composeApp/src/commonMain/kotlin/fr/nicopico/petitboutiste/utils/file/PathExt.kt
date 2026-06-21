@@ -74,7 +74,7 @@ fun Path.normalize(): Path {
                 "", "." -> Unit
                 ".." -> {
                     if (normalizedParts.isNotEmpty() && normalizedParts.last() != "..") {
-                        normalizedParts.removeLast()
+                        normalizedParts.removeLastOrNull()
                     } else if (!isAbsolute) {
                         normalizedParts += part
                     }

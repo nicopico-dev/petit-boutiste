@@ -17,7 +17,6 @@ import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.ScriptEvaluationConfiguration
 import kotlin.script.experimental.api.SourceCode
-import kotlin.script.experimental.api.compilerOptions
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.providedProperties
 import kotlin.script.experimental.host.toScriptSource
@@ -35,6 +34,7 @@ class ScriptHost(
 ) {
     private val host = BasicJvmScriptingHost()
 
+    @Suppress("RedundantSuspendModifier", "RedundantSuppression")
     suspend fun evalFile(
         filePath: Path,
         args: List<String> = emptyList(),
@@ -54,7 +54,7 @@ class ScriptHost(
                     )
                     // Add the pre-release compiler options enabled in the app `build.gradle.kts`
                     // to ensure compatibility with the app's compilation settings
-                    compilerOptions.append("-Xexplicit-backing-fields")
+                    //compilerOptions
                 }
                 providedProperties(
                     "args" to typeOf<List<String>>(),

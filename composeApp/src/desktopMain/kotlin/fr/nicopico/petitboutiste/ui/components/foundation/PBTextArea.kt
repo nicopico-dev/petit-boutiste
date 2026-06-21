@@ -11,12 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import org.jetbrains.jewel.foundation.ExperimentalJewelApi
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Outline
 import org.jetbrains.jewel.ui.component.TextArea
 
-@OptIn(ExperimentalJewelApi::class)
 @Composable
 fun PBTextArea(
     value: String,
