@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
@@ -50,6 +51,7 @@ import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.TabData
 import fr.nicopico.petitboutiste.state.TabDataRendering
 import fr.nicopico.petitboutiste.state.TabTemplateData
+import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
@@ -87,7 +89,9 @@ fun ByteItemRender(
     }
 
     Row(
-        modifier.border(1.dp, AppTheme.current.colors.borderColor),
+        modifier
+            .testTag(UiTags.BYTE_ITEM_RENDER)
+            .border(1.dp, AppTheme.current.colors.borderColor),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ByteGroupRepresentationForm(
@@ -97,7 +101,8 @@ fun ByteItemRender(
                 .widthIn(max = 300.dp)
                 .fillMaxHeight()
                 .padding(8.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .testTag(UiTags.BYTE_GROUP_REPRESENTATION_FORM),
         )
 
         Divider(
@@ -134,7 +139,9 @@ fun ByteItemRender(
                     ),
                     undecorated = false,
                     decorationBoxModifier = Modifier.background(AppTheme.current.colors.windowBackgroundColor),
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER),
                 )
 
                 Column(
@@ -156,6 +163,8 @@ fun ByteItemRender(
                                 clipboard.setData(data)
                             }
                         },
+                        modifier = Modifier
+                            .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER_COPY_TO_CLIPBOARD),
                     )
 
                     val onEvent = LocalOnAppEvent.current
@@ -170,6 +179,8 @@ fun ByteItemRender(
                                 onEvent(AppEvent.AddNewTabEvent(tabData))
                             }
                         },
+                        modifier = Modifier
+                            .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER_OPEN_NEW_TAB),
                     )
                 }
             }

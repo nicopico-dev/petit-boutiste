@@ -63,10 +63,6 @@ fun PetitBoutiste(
         .collectAsStateWithLifecycle()
     val tabsState by viewModel.tabsState
         .collectAsStateWithLifecycle()
-    val currentTab by viewModel.currentTab
-        .collectAsStateWithLifecycle()
-    val snackbarState by viewModel.snackbarState
-        .collectAsStateWithLifecycle()
 
     appTheme {
         DecoratedWindow(
@@ -79,30 +75,42 @@ fun PetitBoutiste(
             },
             state = windowState,
             content = {
-                CompositionLocalProvider(
-                    LocalOnAppEvent provides { event ->
-                        viewModel.onAppEvent(event)
-                    },
-                    LocalOnSnackbar provides { snackbar ->
-                        viewModel.displaySnackBar(snackbar)
-                    },
-                ) {
-                    PBMenuBar(tabsState)
-                    PBTitleBar(
-                        tabsState = tabsState,
-                        appTheme = appTheme,
-                    )
-                    AppShortcuts {
-                        AppContent(
-                            tabData = currentTab,
-                            snackbarState = snackbarState,
-                            modifier = Modifier
-                                .background(AppTheme.current.colors.windowBackgroundColor),
-                            onDismissSnackbar = viewModel::dismissSnackbar,
-                        )
-                    }
+                PBMenuBar(tabsState)
+                PBTitleBar(
+                    tabsState = tabsState,
+                    appTheme = AppTheme.current,
+                )
+                AppShortcuts {
+                    PetitBoutisteApp(viewModel)
                 }
             }
+        )
+    }
+}
+
+@Composable
+fun PetitBoutisteApp(
+    viewModel: PTBViewModel
+) {
+    val currentTab by viewModel.currentTab
+        .collectAsStateWithLifecycle()
+    val snackbarState by viewModel.snackbarState
+        .collectAsStateWithLifecycle()
+
+    CompositionLocalProvider(
+        LocalOnAppEvent provides { event ->
+            viewModel.onAppEvent(event)
+        },
+        LocalOnSnackbar provides { snackbar ->
+            viewModel.displaySnackBar(snackbar)
+        },
+    ) {
+        AppContent(
+            tabData = currentTab,
+            snackbarState = snackbarState,
+            modifier = Modifier
+                .background(AppTheme.current.colors.windowBackgroundColor),
+            onDismissSnackbar = viewModel::dismissSnackbar,
         )
     }
 }

@@ -29,6 +29,8 @@ jobs:
 
       - name: Build and Test
         run: ./gradlew --no-daemon licensee build koverXmlReport detektDesktopMain -PappVersion=1.0.0
+        env:
+          SCREENSHOT_DIR: build/screenshots
 
       - name: Add coverage report
         uses: mi-kas/kover-report@v1
@@ -44,3 +46,11 @@ jobs:
         if: always()
         with:
           report_paths: 'composeApp/build/test-results/desktopTest/**.xml'
+
+      - name: Upload UI test screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-screenshots
+          path: composeApp/build/screenshots
+          if-no-files-found: ignore

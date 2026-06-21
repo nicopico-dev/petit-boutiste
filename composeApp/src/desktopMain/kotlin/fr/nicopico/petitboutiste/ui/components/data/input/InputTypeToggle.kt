@@ -42,7 +42,7 @@ fun InputTypeToggle(
         }
 
         SegmentedControl(
-            buttons = buttons
+            buttons = buttons,
         )
     }
 }

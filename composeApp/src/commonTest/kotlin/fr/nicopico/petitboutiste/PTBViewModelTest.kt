@@ -6,9 +6,8 @@
 
 package fr.nicopico.petitboutiste
 
-import fr.nicopico.petitboutiste.models.persistence.Template
-import fr.nicopico.petitboutiste.repository.AppStateRepository
-import fr.nicopico.petitboutiste.repository.TemplateManager
+import fr.nicopico.petitboutiste.fakes.FakeAppStateRepository
+import fr.nicopico.petitboutiste.fakes.FakeTemplateManager
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.Reducer
@@ -23,7 +22,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlinx.io.files.Path
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -169,18 +167,5 @@ class PTBViewModelTest {
         assertEquals(initialTabsCount + 1, viewModel.tabsState.value.tabs.size)
         assertEquals(viewModel.state.value.selectedTabId, viewModel.tabsState.value.selectedTabId)
         assertEquals(viewModel.state.value.selectedTabId, viewModel.currentTab.value.id)
-    }
-
-    private class FakeAppStateRepository : AppStateRepository {
-        var savedState: AppState = AppState()
-        override fun save(appState: AppState) {
-            savedState = appState
-        }
-        override fun restore(): AppState = savedState
-    }
-
-    private class FakeTemplateManager : TemplateManager {
-        override suspend fun loadTemplate(templateFilePath: Path): Template = Template(name = "Default")
-        override suspend fun saveTemplate(template: Template, templateFilePath: Path, overwrite: Boolean) {}
     }
 }

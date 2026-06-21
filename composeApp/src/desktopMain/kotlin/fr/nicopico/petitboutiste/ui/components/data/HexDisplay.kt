@@ -76,7 +76,7 @@ fun HexDisplay(
                     state = gridState,
                     horizontalArrangement = Arrangement.Start,
                     verticalArrangement = Arrangement.Top,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(
                         items = byteItems,

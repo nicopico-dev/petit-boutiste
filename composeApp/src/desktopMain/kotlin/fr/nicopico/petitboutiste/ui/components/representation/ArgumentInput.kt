@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,6 +29,7 @@ import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.Fi
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.NumericType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.StringType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
+import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.components.foundation.PBFileSelector
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
@@ -69,6 +71,10 @@ fun ArgumentInput(
         userValue ?: argument.defaultValue
     }
 
+    val inputModifier = Modifier
+        .fillMaxWidth()
+        .testTag(UiTags.argumentInput(argument.key))
+
     Column(modifier = modifier) {
         PBLabel(
             label = argument.label,
@@ -85,7 +91,7 @@ fun ArgumentInput(
                             )
                         },
                         selection = value?.let(FileType::convertFrom),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = inputModifier
                     )
                 }
 
@@ -93,7 +99,7 @@ fun ArgumentInput(
                     PBTextField(
                         value = value.orEmpty(),
                         onValueChange = onValueChanged,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = inputModifier,
                         keyboardOptions = keyboardOptions,
                         onKeyboardAction = onKeyboardAction,
                     )
@@ -113,7 +119,7 @@ fun ArgumentInput(
                     PBTextField(
                         value = value.orEmpty(),
                         onValueChange = onValueChanged,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = inputModifier,
                         keyboardOptions = keyboardOptions.copy(
                             keyboardType = if (argument.type.isDecimal) KeyboardType.Decimal else KeyboardType.Number
                         ),
@@ -144,7 +150,7 @@ fun ArgumentInput(
                             PBDropdown(
                                 items = choices.orEmpty(),
                                 selection = value?.let(::convertFrom),
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = inputModifier,
                                 onItemSelected = { choice ->
                                     onValueChanged(convertChoice(choice))
                                 }

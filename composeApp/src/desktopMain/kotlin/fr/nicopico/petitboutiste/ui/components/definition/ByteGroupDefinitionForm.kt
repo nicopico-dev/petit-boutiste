@@ -21,10 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
 import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
@@ -111,7 +113,10 @@ fun ByteGroupDefinitionForm(
             PBTextField(
                 value = name,
                 onValueChange = { name = it },
-                modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+                modifier = Modifier
+                    .widthIn(max = fieldMaxWidth)
+                    .fillMaxWidth()
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM_INPUT_NAME),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 onKeyboardAction = { focusManager.moveFocus(FocusDirection.Next) },
             )
@@ -122,7 +127,10 @@ fun ByteGroupDefinitionForm(
                 value = startIndexInput,
                 onValueChange = { startIndexInput = it },
                 isError = startIndexError != null,
-                modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+                modifier = Modifier
+                    .widthIn(max = fieldMaxWidth)
+                    .fillMaxWidth()
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM_INPUT_START),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 onKeyboardAction = { focusManager.moveFocus(FocusDirection.Next) },
             )
@@ -134,7 +142,10 @@ fun ByteGroupDefinitionForm(
                 value = endIndexInput,
                 onValueChange = { endIndexInput = it },
                 isError = endIndexError != null,
-                modifier = Modifier.widthIn(max = fieldMaxWidth).fillMaxWidth(),
+                modifier = Modifier
+                    .widthIn(max = fieldMaxWidth)
+                    .fillMaxWidth()
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM_INPUT_END),
                 keyboardOptions = KeyboardOptions(
                     imeAction = if (isLastInput) ImeAction.Done else ImeAction.Next
                 ),
@@ -152,6 +163,8 @@ fun ByteGroupDefinitionForm(
             ByteGroupRepresentationForm(
                 representation = representation,
                 onRepresentationChanged = { representation = it },
+                modifier = Modifier
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_REPRESENTATION_FORM),
             )
         }
 
@@ -159,7 +172,9 @@ fun ByteGroupDefinitionForm(
             content = { Text(text = "Save definition") },
             onClick = saveDefinition,
             enabled = isValid,
-            modifier = Modifier.align(Alignment.End),
+            modifier = Modifier
+                .align(Alignment.End)
+                .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM_SAVE),
         )
     }
 }

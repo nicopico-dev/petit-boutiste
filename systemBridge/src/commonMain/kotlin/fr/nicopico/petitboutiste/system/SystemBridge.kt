@@ -47,7 +47,10 @@ internal fun getSystemBridge(
     },
 ): SystemBridge {
     val osName = getSystemProperty("os.name").orEmpty()
+    val isUiTest = getSystemProperty("petitboutiste.uiTest") == "true"
+
     return when {
+        isUiTest -> DefaultBridge
         osName.contains("mac", ignoreCase = true) -> MacosBridge
         else -> DefaultBridge
     }

@@ -11,6 +11,8 @@ import fr.nicopico.petitboutiste.models.definition.toByteArray
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
 import fr.nicopico.petitboutiste.utils.logError
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.Serializable
 
 val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
@@ -39,6 +41,7 @@ suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     return try {
         dataRenderer.invoke(byteItem.toByteArray(), argumentValues)
     } catch (e: Exception) {
+        currentCoroutineContext().ensureActive()
         logError("Error rendering with $this", e)
         RenderResult.Error(e.toString())
     }

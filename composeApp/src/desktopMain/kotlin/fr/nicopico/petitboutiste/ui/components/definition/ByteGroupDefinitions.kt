@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
@@ -39,6 +40,7 @@ import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
@@ -118,7 +120,9 @@ fun ByteGroupDefinitions(
                             AppTheme.current.colors.windowBackgroundColor
                         } else Color.Unspecified
                     )
-                }
+                },
+                modifier = Modifier
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_TOGGLE_REPRESENTATION_FORM)
             )
 
             IconActionButton(
@@ -135,6 +139,8 @@ fun ByteGroupDefinitions(
                         }
                     }
                 },
+                modifier = Modifier
+                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_EXPORT_VALUES)
             )
         }
 
@@ -180,14 +186,16 @@ fun ByteGroupDefinitions(
                     ByteGroupDefinitionItem(
                         definition = definition,
                         byteGroup = byteGroup,
-                        selected = definition == selectedDefinition,
-                        modifier = Modifier.clickableWithIndication {
-                            if (definition != selectedDefinition) {
-                                onDefinitionSelected(definition)
-                            } else {
-                                onDefinitionSelected(null)
+                        isSelected = definition == selectedDefinition,
+                        modifier = Modifier
+                            .clickableWithIndication {
+                                if (definition != selectedDefinition) {
+                                    onDefinitionSelected(definition)
+                                } else {
+                                    onDefinitionSelected(null)
+                                }
                             }
-                        },
+                            .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM),
                         form = {
                             ByteGroupDefinitionForm(
                                 definition = definition,
@@ -198,6 +206,7 @@ fun ByteGroupDefinitions(
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 16.dp)
                                     .align(Alignment.End)
+                                    .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM)
                             )
                         },
                         displayForm = openedDefinition == definition,
@@ -230,6 +239,8 @@ fun ByteGroupDefinitions(
                             openedDefinition = definition
                             onAddDefinition(definition)
                         },
+                        modifier = Modifier
+                            .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ADD_DEFINITION)
                     )
                 }
             }

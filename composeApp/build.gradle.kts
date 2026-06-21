@@ -27,7 +27,10 @@ kotlin {
         // NOTE: Pre-release options must be mirrored in the embedded Kotlin compiler to prevent the error
         // "Class 'fr.nicopico.petitboutiste.scripting.PetitBoutisteApi' was compiled by a pre-release version of Kotlin and cannot be loaded by this version of the compiler"
         // (see `ScriptHost` class)
-        //freeCompilerArgs
+        freeCompilerArgs.addAll(
+            "-Xcontext-parameters",
+        )
+
         optIn.addAll(
             "kotlin.concurrent.atomics.ExperimentalAtomicApi",
         )
@@ -101,3 +104,8 @@ tasks.matching { it.name == "stabilityCheck" }
     .configureEach {
         dependsOn(tasks.named("compileTestKotlinDesktop"))
     }
+
+// Define a system property to add runtime behaviors to UI tests
+tasks.withType<Test>().configureEach {
+    systemProperty("petitboutiste.uiTest", "true")
+}

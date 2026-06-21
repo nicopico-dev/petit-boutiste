@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.PBDropdown
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.styles
@@ -47,7 +49,9 @@ fun ByteGroupRepresentationForm(
                 )
             },
             getItemLabel = DataRenderer::label,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(UiTags.BYTE_GROUP_REPRESENTATION_FORM_DATA_RENDERER),
         )
 
         Divider(
@@ -71,7 +75,9 @@ fun ByteGroupRepresentationForm(
                     representation.copy(argumentValues = argumentValues)
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(UiTags.BYTE_GROUP_REPRESENTATION_FORM_ARGUMENTS_FORM),
         )
     }
 }
