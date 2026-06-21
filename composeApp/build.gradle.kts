@@ -106,3 +106,8 @@ tasks.matching { it.name == "stabilityCheck" }
     .configureEach {
         dependsOn(tasks.named("compileTestKotlinDesktop"))
     }
+
+// Define a system property to add runtime behaviors to UI tests
+tasks.withType<Test>().configureEach {
+    systemProperty("petitboutiste.uiTest", "true")
+}
