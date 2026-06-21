@@ -18,7 +18,7 @@ import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 
-class MainPainPartTest {
+class DataEntryTest {
 
     @get:Rule
     val rule: ComposeContentTestRule = createComposeRule()
@@ -33,6 +33,7 @@ class MainPainPartTest {
             screenshotFolder = File("/tmp")
         )
     }
+
     @Test
     fun `Data entry should be converted to the selected type`() {
         ptbRobot

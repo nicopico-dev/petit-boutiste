@@ -188,7 +188,7 @@ fun ByteGroupDefinitions(
                     ByteGroupDefinitionItem(
                         definition = definition,
                         byteGroup = byteGroup,
-                        selected = definition == selectedDefinition,
+                        isSelected = definition == selectedDefinition,
                         modifier = Modifier
                             .clickableWithIndication {
                                 if (definition != selectedDefinition) {

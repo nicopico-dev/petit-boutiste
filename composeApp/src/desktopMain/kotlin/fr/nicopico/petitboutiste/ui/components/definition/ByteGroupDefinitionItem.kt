@@ -27,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -35,8 +37,8 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.isOff
+import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.UiTags.BYTE_GROUP_DEFINITIONS_ITEM_ERROR
-import fr.nicopico.petitboutiste.ui.UiTags.BYTE_GROUP_DEFINITIONS_ITEM_LABEL
 import fr.nicopico.petitboutiste.ui.UiTags.BYTE_GROUP_DEFINITIONS_ITEM_RANGE
 import fr.nicopico.petitboutiste.ui.UiTags.BYTE_GROUP_DEFINITIONS_ITEM_REMOVE
 import fr.nicopico.petitboutiste.ui.UiTags.BYTE_GROUP_DEFINITIONS_ITEM_RENDER
@@ -58,7 +60,7 @@ fun ByteGroupDefinitionItem(
     onToggleDisplayForm: (Boolean) -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
-    selected: Boolean = false,
+    isSelected: Boolean = false,
     byteGroup: ByteGroup? = null,
     errorMessage: String? = null,
     form: Slot? = null,
@@ -67,6 +69,7 @@ fun ByteGroupDefinitionItem(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .semantics { selected = isSelected }
             .border(
                 width = 1.dp,
                 color = if (errorMessage != null) {
@@ -74,7 +77,7 @@ fun ByteGroupDefinitionItem(
                 } else AppTheme.current.colors.borderColor,
                 shape = RoundedCornerShape(4.dp)
             )
-            .background(if (selected) AppTheme.current.colors.accentContainer else Color.Transparent)
+            .background(if (isSelected) AppTheme.current.colors.accentContainer else Color.Transparent)
             .padding(16.dp)
     ) {
         Row {
@@ -87,7 +90,8 @@ fun ByteGroupDefinitionItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.testTag(BYTE_GROUP_DEFINITIONS_ITEM_LABEL)
+                    modifier = Modifier
+                        .testTag(UiTags.byteGroupDefinitionsItemName(definition.name))
                 )
 
                 val rangeSuffix = with(definition.indexes) {

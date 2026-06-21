@@ -18,6 +18,7 @@ import fr.nicopico.petitboutiste.fakes.FakeAppStateRepository
 import fr.nicopico.petitboutiste.fakes.FakeTemplateManager
 import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.ui.theme.invoke
+import fr.nicopico.petitboutiste.utils.debug
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -69,6 +70,11 @@ class PtbRobot(
 
         println("Saved screenshot to ${file.absolutePath}")
 
+        return this
+    }
+
+    fun debug(tag: String = "PTB"): PtbRobot {
+        rule.onRoot().debug(tag)
         return this
     }
 }

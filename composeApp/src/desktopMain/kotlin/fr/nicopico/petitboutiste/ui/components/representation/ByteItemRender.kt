@@ -91,7 +91,9 @@ fun ByteItemRender(
     }
 
     Row(
-        modifier.border(1.dp, AppTheme.current.colors.borderColor),
+        modifier
+            .testTag(UiTags.BYTE_ITEM_RENDER)
+            .border(1.dp, AppTheme.current.colors.borderColor),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ByteGroupRepresentationForm(
