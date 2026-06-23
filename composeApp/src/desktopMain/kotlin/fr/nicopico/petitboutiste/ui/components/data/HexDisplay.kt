@@ -101,13 +101,10 @@ fun HexDisplay(
 
                 val selectedItems = byteItems.slice(range)
 
-                // TODO Ugly hack
-                if (selectedItems.all { it is SingleByte }) {
-                    onByteItemClicked(selectedItems.toByteGroup()!!)
-                } else if (selectedByteItem != null) {
-                    // Unselect
-                    onByteItemClicked(selectedByteItem)
-                }
+                selectedItems.toByteGroup()
+                    ?.let { tempByteGroup ->
+                        onByteItemClicked(tempByteGroup)
+                    }
             }
 
             VerticallyScrollableContainer(
