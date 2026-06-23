@@ -94,8 +94,8 @@ fun HexDisplay(
                             }
                         },
                     ) { item ->
-                        Column(
-                            horizontalAlignment = Alignment.Start,
+                        ByteItemView(
+                            item = item,
                             modifier = Modifier
                                 .padding(4.dp)
                                 .clickableWithIndication { onByteItemClicked(item) }
@@ -119,41 +119,52 @@ fun HexDisplay(
                                     } else it
                                 }
                                 .padding(4.dp)
-                        ) {
-                            Text(
-                                text = item.toString(),
-                                style = AppTheme.current.typography.data,
-                            )
-
-                            val index = if (item.firstIndex != item.lastIndex) {
-                                "${item.firstIndex}..${item.lastIndex}"
-                            } else item.firstIndex.toString()
-                            Text(
-                                text = index,
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 9.sp,
-                                    color = Color.Gray
-                                )
-                            )
-
-                            Text(
-                                text = item.name.orEmpty(),
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 8.sp,
-                                    color = AppTheme.current.colors.accentColor,
-                                ),
-                                softWrap = false,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
+                        )
                     }
                 }
             }
         }
     } else Box(modifier)
+}
+
+@Composable
+private fun ByteItemView(
+    item: ByteItem,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = modifier
+    ) {
+        Text(
+            text = item.toString(),
+            style = AppTheme.current.typography.data,
+        )
+
+        val index = if (item.firstIndex != item.lastIndex) {
+            "${item.firstIndex}..${item.lastIndex}"
+        } else item.firstIndex.toString()
+        Text(
+            text = index,
+            style = TextStyle(
+                fontFamily = FontFamily.Monospace,
+                fontSize = 9.sp,
+                color = Color.Gray
+            )
+        )
+
+        Text(
+            text = item.name.orEmpty(),
+            style = TextStyle(
+                fontFamily = FontFamily.Monospace,
+                fontSize = 8.sp,
+                color = AppTheme.current.colors.accentColor,
+            ),
+            softWrap = false,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
 }
 
 @Preview
