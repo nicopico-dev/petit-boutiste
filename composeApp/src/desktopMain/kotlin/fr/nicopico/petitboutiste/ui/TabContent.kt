@@ -54,10 +54,10 @@ fun TabContent(
     }
 
     // As ByteItem.SingleByte do not have a definition, we use the same representation for all of them.
-    // The same representation will be used for full-payload representation, when there is no definition.
+    // The same representation will be used for full-payload representation when there is no definition.
     // (note that it is possible to create a ByteGroup with a single byte)
     var noDefinitionRepresentation by remember {
-        mutableStateOf(Representation(DataRenderer.Off))
+        mutableStateOf(Representation(DataRenderer.Hexadecimal))
     }
 
     val fullPayload: ByteGroup? = remember(inputData, definitions, noDefinitionRepresentation) {
