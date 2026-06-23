@@ -1,7 +1,7 @@
 [versions]
 androidx-lifecycle = "2.10.0"
 cash-licensee = "1.14.1"
-composeMultiplatform = "1.11.1"
+composeMultiplatform = "1.10.3"
 detekt = "1.23.8"
 detekt-composeRules = "0.5.9"
 filekit = "0.14.2"
