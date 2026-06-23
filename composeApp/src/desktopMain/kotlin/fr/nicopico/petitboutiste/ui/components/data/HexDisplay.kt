@@ -6,6 +6,8 @@
 
 package fr.nicopico.petitboutiste.ui.components.data
 
+import androidx.compose.foundation.ContextMenuArea
+import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.ScrollableState
@@ -51,6 +53,7 @@ import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.ui.theme.typography
+import fr.nicopico.petitboutiste.utils.compose.Slot
 import fr.nicopico.petitboutiste.utils.compose.preview.ByteItemsParameterProvider
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.Text
@@ -64,8 +67,13 @@ fun HexDisplay(
     modifier: Modifier = Modifier,
     selectedByteItem: ByteItem? = null,
     onByteItemClicked: (ByteItem) -> Unit = {},
+    onAddDefinition: (IntRange) -> Unit= {},
 ) {
     if (byteItems.isNotEmpty()) {
+        val isTemporarySelection = remember(byteItems, selectedByteItem) {
+            selectedByteItem != null && selectedByteItem !in byteItems
+        }
+
         BoxWithConstraints(modifier) {
             val availableWidthPx = constraints.maxWidth
             val columnWidthPx = with(LocalDensity.current) {
@@ -158,34 +166,42 @@ fun HexDisplay(
                             }
                         },
                     ) { item ->
-                        ByteItemView(
-                            item = item,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .clickableWithIndication {
-                                    onByteItemClicked(item)
-                                }
-                                .let {
-                                    when (item) {
-                                        is SingleByte -> it
-                                        is ByteGroup if item.incomplete -> it.border(
-                                            1.dp,
-                                            AppTheme.current.colors.errorColor
-                                        )
+                        val inSelection = selectedByteItem != null && item in selectedByteItem
 
-                                        is ByteGroup -> it.border(
-                                            1.dp,
-                                            AppTheme.current.colors.accentColor
-                                        )
+                        TemporaryByteGroupContextMenu(
+                            selectedByteItem,
+                            enabled = inSelection && isTemporarySelection,
+                            onAddDefinition = onAddDefinition,
+                        ) {
+                            ByteItemView(
+                                item = item,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .clickableWithIndication {
+                                        onByteItemClicked(item)
                                     }
-                                }
-                                .let {
-                                    if (selectedByteItem != null && item in selectedByteItem) {
-                                        it.background(AppTheme.current.colors.accentContainer)
-                                    } else it
-                                }
-                                .padding(4.dp)
-                        )
+                                    .let {
+                                        when (item) {
+                                            is SingleByte -> it
+                                            is ByteGroup if item.incomplete -> it.border(
+                                                1.dp,
+                                                AppTheme.current.colors.errorColor
+                                            )
+
+                                            is ByteGroup -> it.border(
+                                                1.dp,
+                                                AppTheme.current.colors.accentColor
+                                            )
+                                        }
+                                    }
+                                    .let {
+                                        if (selectedByteItem != null && item in selectedByteItem) {
+                                            it.background(AppTheme.current.colors.accentContainer)
+                                        } else it
+                                    }
+                                    .padding(4.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -231,6 +247,29 @@ private fun ByteItemView(
             overflow = TextOverflow.Ellipsis,
         )
     }
+}
+
+@Composable
+private fun TemporaryByteGroupContextMenu(
+    selectedByteItem: ByteItem?,
+    enabled: Boolean,
+    onAddDefinition: (IntRange) -> Unit,
+    content: Slot,
+) {
+    if (selectedByteItem != null && enabled) {
+        ContextMenuArea(
+            items = {
+                listOf(
+                    ContextMenuItem("Create a new definition") {
+                        onAddDefinition(
+                            selectedByteItem.firstIndex..selectedByteItem.lastIndex
+                        )
+                    }
+                )
+            },
+            content = content,
+        )
+    } else content()
 }
 
 @Preview

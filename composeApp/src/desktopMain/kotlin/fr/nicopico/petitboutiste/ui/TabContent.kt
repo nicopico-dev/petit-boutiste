@@ -104,6 +104,13 @@ fun TabContent(
                 onInputTypeChanged = { inputType ->
                     onCurrentTabEvent(CurrentTabEvent.ChangeInputTypeEvent(inputType))
                 },
+                onAddDefinition = { indexes ->
+                    val definition = ByteGroupDefinition(
+                        indexes = indexes,
+                        representation = noDefinitionRepresentation,
+                    )
+                    onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
+                },
                 modifier = Modifier.padding(16.dp),
             )
         },
