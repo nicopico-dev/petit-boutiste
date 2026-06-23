@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste
 
-import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
