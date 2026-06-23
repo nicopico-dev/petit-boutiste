@@ -152,13 +152,15 @@ fun TabContent(
             }
         },
         tools = (selectedByteItem ?: fullPayload).optionalSlot { renderedByteItem ->
+            val useDefinitionRepresentation = renderedByteItem is ByteGroup
+                && renderedByteItem in byteItems
             ByteItemRender(
                 byteItem = renderedByteItem,
-                representation = if (renderedByteItem is ByteGroup) {
+                representation = if (useDefinitionRepresentation) {
                     renderedByteItem.definition.representation
                 } else noDefinitionRepresentation,
                 onRepresentationChanged = { representation ->
-                    if (renderedByteItem is ByteGroup && renderedByteItem != fullPayload) {
+                    if (useDefinitionRepresentation) {
                         val currentDefinition = renderedByteItem.definition
                         if (representation != currentDefinition.representation) {
                             val updatedDefinition = currentDefinition.copy(representation = representation)

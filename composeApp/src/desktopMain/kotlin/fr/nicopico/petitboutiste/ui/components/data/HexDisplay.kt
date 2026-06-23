@@ -9,6 +9,7 @@ package fr.nicopico.petitboutiste.ui.components.data
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -22,9 +23,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -35,8 +42,10 @@ import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
+import fr.nicopico.petitboutiste.models.definition.contains
 import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.definition.size
+import fr.nicopico.petitboutiste.models.definition.toByteGroup
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
@@ -67,6 +76,40 @@ fun HexDisplay(
             // Add grid state to track scrolling
             val gridState = rememberLazyGridState()
 
+            var dragAnchorIndex by remember { mutableStateOf<Int?>(null) }
+
+            fun itemIndexAt(offset: Offset): Int? {
+                return gridState.layoutInfo.visibleItemsInfo
+                    .firstOrNull { itemInfo ->
+                        offset.x >= itemInfo.offset.x &&
+                            offset.x < itemInfo.offset.x + itemInfo.size.width &&
+                            offset.y >= itemInfo.offset.y &&
+                            offset.y < itemInfo.offset.y + itemInfo.size.height
+                    }
+                    ?.index
+            }
+
+            fun updateDragSelection(targetIndex: Int?) {
+                val anchorIndex = dragAnchorIndex
+                if (anchorIndex == null || targetIndex == null) return
+
+                val range = if (anchorIndex <= targetIndex) {
+                    anchorIndex..targetIndex
+                } else {
+                    targetIndex..anchorIndex
+                }
+
+                val selectedItems = byteItems.slice(range)
+
+                // TODO Ugly hack
+                if (selectedItems.all { it is SingleByte }) {
+                    onByteItemClicked(selectedItems.toByteGroup()!!)
+                } else if (selectedByteItem != null) {
+                    // Unselect
+                    onByteItemClicked(selectedByteItem)
+                }
+            }
+
             VerticallyScrollableContainer(
                 scrollState = gridState as ScrollableState,
                 style = AppTheme.current.styles.scrollbarStyle,
@@ -76,7 +119,31 @@ fun HexDisplay(
                     state = gridState,
                     horizontalArrangement = Arrangement.Start,
                     verticalArrangement = Arrangement.Top,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(byteItems) {
+                            detectDragGestures(
+                                onDragStart = { offset ->
+                                    val index = itemIndexAt(offset)
+                                    if (index != null && byteItems[index] is SingleByte) {
+                                        dragAnchorIndex = index
+                                        updateDragSelection(index)
+                                    } else {
+                                        dragAnchorIndex = null
+                                    }
+                                },
+                                onDrag = { change, _ ->
+                                    change.consume()
+                                    updateDragSelection(itemIndexAt(change.position))
+                                },
+                                onDragEnd = {
+                                    dragAnchorIndex = null
+                                },
+                                onDragCancel = {
+                                    dragAnchorIndex = null
+                                },
+                            )
+                        }
                 ) {
                     items(
                         items = byteItems,
@@ -98,7 +165,9 @@ fun HexDisplay(
                             item = item,
                             modifier = Modifier
                                 .padding(4.dp)
-                                .clickableWithIndication { onByteItemClicked(item) }
+                                .clickableWithIndication {
+                                    onByteItemClicked(item)
+                                }
                                 .let {
                                     when (item) {
                                         is SingleByte -> it
@@ -114,7 +183,7 @@ fun HexDisplay(
                                     }
                                 }
                                 .let {
-                                    if (item == selectedByteItem) {
+                                    if (selectedByteItem != null && item in selectedByteItem) {
                                         it.background(AppTheme.current.colors.accentContainer)
                                     } else it
                                 }
