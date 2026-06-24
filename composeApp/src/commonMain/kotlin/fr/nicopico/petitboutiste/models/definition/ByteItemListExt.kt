@@ -47,6 +47,12 @@ fun List<ByteItem>.toByteGroup(
     if (any { it !is SingleByte }) return null
     if (isEmpty()) return null
 
+    val isConsecutive = zipWithNext()
+        .all { (previous, current) ->
+            current.firstIndex == previous.firstIndex + 1
+        }
+    if (!isConsecutive) return null
+
     return ByteGroup(
         bytes = map { (it as SingleByte).value},
         definition = ByteGroupDefinition(
