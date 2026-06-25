@@ -43,7 +43,7 @@ public fun fr.nicopico.petitboutiste.ui.AppShortcuts(content: @[Composable] andr
     - content: STABLE (composable function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.MainPane(inputData: fr.nicopico.petitboutiste.models.data.DataString, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, onInputDataChanged: kotlin.Function1<fr.nicopico.petitboutiste.models.data.DataString, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, onByteItemSelected: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteItem?, kotlin.Unit>, onInputTypeChanged: kotlin.Function1<fr.nicopico.petitboutiste.state.InputType, kotlin.Unit>): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.MainPane(inputData: fr.nicopico.petitboutiste.models.data.DataString, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, onInputDataChanged: kotlin.Function1<fr.nicopico.petitboutiste.models.data.DataString, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, onByteItemSelected: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteItem?, kotlin.Unit>, onInputTypeChanged: kotlin.Function1<fr.nicopico.petitboutiste.state.InputType, kotlin.Unit>, onAddDefinition: kotlin.Function1<kotlin.ranges.IntRange, kotlin.Unit>): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -54,6 +54,7 @@ public fun fr.nicopico.petitboutiste.ui.MainPane(inputData: fr.nicopico.petitbou
     - selectedByteItem: STABLE (class with no mutable properties)
     - onByteItemSelected: STABLE (function type)
     - onInputTypeChanged: STABLE (function type)
+    - onAddDefinition: STABLE (function type)
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.TabContent(inputData: fr.nicopico.petitboutiste.models.data.DataString, definitions: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition>, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, scratchpad: kotlin.String): kotlin.Unit
@@ -66,7 +67,15 @@ public fun fr.nicopico.petitboutiste.ui.TabContent(inputData: fr.nicopico.petitb
     - scratchpad: STABLE (String is immutable)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.data.HexDisplay(byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, modifier: androidx.compose.ui.Modifier, selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, onByteItemClicked: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteItem, kotlin.Unit>): kotlin.Unit
+private fun fr.nicopico.petitboutiste.ui.components.data.ByteItemView(item: fr.nicopico.petitboutiste.models.definition.ByteItem, modifier: androidx.compose.ui.Modifier): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - item: STABLE (class with no mutable properties)
+    - modifier: STABLE (marked @Stable or @Immutable)
+
+@Composable
+public fun fr.nicopico.petitboutiste.ui.components.data.HexDisplay(byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, modifier: androidx.compose.ui.Modifier, selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, onByteItemClicked: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteItem, kotlin.Unit>, onAddDefinition: kotlin.Function1<kotlin.ranges.IntRange, kotlin.Unit>): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -74,6 +83,17 @@ public fun fr.nicopico.petitboutiste.ui.components.data.HexDisplay(byteItems: ko
     - modifier: STABLE (marked @Stable or @Immutable)
     - selectedByteItem: STABLE (class with no mutable properties)
     - onByteItemClicked: STABLE (function type)
+    - onAddDefinition: STABLE (function type)
+
+@Composable
+private fun fr.nicopico.petitboutiste.ui.components.data.TemporaryByteGroupContextMenu(selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, enabled: kotlin.Boolean, onAddDefinition: kotlin.Function1<kotlin.ranges.IntRange, kotlin.Unit>, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - selectedByteItem: STABLE (class with no mutable properties)
+    - enabled: STABLE (primitive type)
+    - onAddDefinition: STABLE (function type)
+    - content: STABLE (composable function type)
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.components.data.input.DataInput(value: T of fr.nicopico.petitboutiste.ui.components.data.input.DataInput, adapter: fr.nicopico.petitboutiste.ui.components.data.input.DataInputAdapter<T of fr.nicopico.petitboutiste.ui.components.data.input.DataInput>, onValueChange: kotlin.Function1<fr.nicopico.petitboutiste.models.data.DataString, kotlin.Unit>, modifier: androidx.compose.ui.Modifier): kotlin.Unit
