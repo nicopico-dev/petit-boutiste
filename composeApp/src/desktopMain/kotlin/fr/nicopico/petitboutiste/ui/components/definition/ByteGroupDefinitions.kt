@@ -148,7 +148,10 @@ fun ByteGroupDefinitions(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             state = lazyListState,
         ) {
-            items(definitions) { definition ->
+            items(
+                items = definitions,
+                key = { it.id },
+            ) { definition ->
                 val byteGroup = byteItems.firstOrNull {
                     it is ByteGroup && it.definition == definition
                 } as? ByteGroup

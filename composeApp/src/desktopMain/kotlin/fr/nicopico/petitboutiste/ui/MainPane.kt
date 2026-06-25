@@ -40,6 +40,7 @@ fun MainPane(
     selectedByteItem: ByteItem? = null,
     onByteItemSelected: (ByteItem?) -> Unit = {},
     onInputTypeChanged: (InputType) -> Unit = {},
+    onAddDefinition: (IntRange) -> Unit= {},
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -97,6 +98,7 @@ fun MainPane(
             onByteItemClicked = {
                 onByteItemSelected(if (selectedByteItem != it) it else null)
             },
+            onAddDefinition = onAddDefinition,
         )
     }
 }

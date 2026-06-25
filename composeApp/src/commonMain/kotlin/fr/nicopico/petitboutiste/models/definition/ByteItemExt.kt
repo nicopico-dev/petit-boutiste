@@ -37,3 +37,10 @@ fun ByteItem.toByteArray(): ByteArray {
 
     return data
 }
+
+/**
+ * Returns `true` if [other] is entirely contained in this [ByteItem],
+ * meaning *all* the bytes of `other` are also in the `ByteItem`
+ */
+operator fun ByteItem.contains(other: ByteItem): Boolean = other.firstIndex >= firstIndex
+    && other.lastIndex <= lastIndex

@@ -6,7 +6,9 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
+import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.RenderResult
+import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.isOff
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
@@ -37,4 +39,25 @@ suspend fun List<ByteItem>.toJsonData(): String {
             }
         }
     return prettyJson.encodeToString(payloadEntries.toMap())
+}
+
+fun List<ByteItem>.toByteGroup(
+    representation: Representation = DEFAULT_REPRESENTATION,
+): ByteGroup? {
+    if (any { it !is SingleByte }) return null
+    if (isEmpty()) return null
+
+    val isConsecutive = zipWithNext()
+        .all { (previous, current) ->
+            current.firstIndex == previous.firstIndex + 1
+        }
+    if (!isConsecutive) return null
+
+    return ByteGroup(
+        bytes = map { (it as SingleByte).value},
+        definition = ByteGroupDefinition(
+            indexes = first().firstIndex..last().lastIndex,
+            representation = representation,
+        )
+    )
 }

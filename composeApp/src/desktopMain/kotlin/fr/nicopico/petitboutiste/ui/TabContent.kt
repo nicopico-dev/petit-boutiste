@@ -54,10 +54,10 @@ fun TabContent(
     }
 
     // As ByteItem.SingleByte do not have a definition, we use the same representation for all of them.
-    // The same representation will be used for full-payload representation, when there is no definition.
+    // The same representation will be used for full-payload representation when there is no definition.
     // (note that it is possible to create a ByteGroup with a single byte)
     var noDefinitionRepresentation by remember {
-        mutableStateOf(Representation(DataRenderer.Off))
+        mutableStateOf(Representation(DataRenderer.Hexadecimal))
     }
 
     val fullPayload: ByteGroup? = remember(inputData, definitions, noDefinitionRepresentation) {
@@ -103,6 +103,13 @@ fun TabContent(
                 onByteItemSelected = { selectedByteItem = it },
                 onInputTypeChanged = { inputType ->
                     onCurrentTabEvent(CurrentTabEvent.ChangeInputTypeEvent(inputType))
+                },
+                onAddDefinition = { indexes ->
+                    val definition = ByteGroupDefinition(
+                        indexes = indexes,
+                        representation = noDefinitionRepresentation,
+                    )
+                    onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
                 },
                 modifier = Modifier.padding(16.dp),
             )
@@ -152,13 +159,15 @@ fun TabContent(
             }
         },
         tools = (selectedByteItem ?: fullPayload).optionalSlot { renderedByteItem ->
+            val useDefinitionRepresentation = renderedByteItem is ByteGroup
+                && renderedByteItem in byteItems
             ByteItemRender(
                 byteItem = renderedByteItem,
-                representation = if (renderedByteItem is ByteGroup) {
+                representation = if (useDefinitionRepresentation) {
                     renderedByteItem.definition.representation
                 } else noDefinitionRepresentation,
                 onRepresentationChanged = { representation ->
-                    if (renderedByteItem is ByteGroup && renderedByteItem != fullPayload) {
+                    if (useDefinitionRepresentation) {
                         val currentDefinition = renderedByteItem.definition
                         if (representation != currentDefinition.representation) {
                             val updatedDefinition = currentDefinition.copy(representation = representation)

@@ -2,6 +2,7 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>CyclomaticComplexMethod:HexDisplay.kt$@Composable fun HexDisplay( byteItems: List&lt;ByteItem&gt;, modifier: Modifier = Modifier, selectedByteItem: ByteItem? = null, onByteItemClicked: (ByteItem) -&gt; Unit = {}, onAddDefinition: (IntRange) -&gt; Unit= {}, )</ID>
     <ID>InjectDispatcher:ArgumentInput.kt$Default</ID>
     <ID>InjectDispatcher:FileDialog.desktop.kt$DefaultFileDialog$IO</ID>
     <ID>InjectDispatcher:ScriptHost.kt$ScriptHost$IO</ID>
@@ -9,7 +10,9 @@
     <ID>LongMethod:ArgumentInput.kt$@OptIn(FlowPreview::class) @Composable fun ArgumentInput( argument: DataRenderer.Argument, userValue: ArgValue?, onValueChanged: (ArgValue?) -&gt; Unit, completeArguments: ArgumentValues, modifier: Modifier = Modifier, onError: (String) -&gt; Unit = {}, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, onKeyboardAction: (() -&gt; Unit)? = null, )</ID>
     <ID>LongMethod:ByteGroupDefinitionItem.kt$@Composable fun ByteGroupDefinitionItem( definition: ByteGroupDefinition, onToggleDisplayForm: (Boolean) -&gt; Unit, onDelete: () -&gt; Unit, modifier: Modifier = Modifier, isSelected: Boolean = false, byteGroup: ByteGroup? = null, errorMessage: String? = null, form: Slot? = null, displayForm: Boolean = false, )</ID>
     <ID>LongMethod:ByteItemRender.kt$@Composable fun ByteItemRender( byteItem: ByteItem, representation: Representation, onRepresentationChanged: (Representation) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:HexDisplay.kt$@Composable fun HexDisplay( byteItems: List&lt;ByteItem&gt;, modifier: Modifier = Modifier, selectedByteItem: ByteItem? = null, onByteItemClicked: (ByteItem) -&gt; Unit = {}, onAddDefinition: (IntRange) -&gt; Unit= {}, )</ID>
     <ID>LongMethod:Reducer.kt$Reducer$suspend operator fun invoke(state: AppState, event: AppEvent): AppState</ID>
     <ID>LongMethod:TabContent.kt$@Composable fun TabContent( inputData: DataString, definitions: List&lt;ByteGroupDefinition&gt;, byteItems: List&lt;ByteItem&gt;, scratchpad: String = "", )</ID>
+    <ID>ReturnCount:ByteItemListExt.kt$fun List&lt;ByteItem&gt;.toByteGroup( representation: Representation = DEFAULT_REPRESENTATION, ): ByteGroup?</ID>
   </CurrentIssues>
 </SmellBaseline>
