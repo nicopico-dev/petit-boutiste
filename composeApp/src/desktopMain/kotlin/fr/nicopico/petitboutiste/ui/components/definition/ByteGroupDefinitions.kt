@@ -35,17 +35,13 @@ import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
-import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
-import fr.nicopico.petitboutiste.utils.moveStart
 import fr.nicopico.petitboutiste.utils.setData
 import fr.nicopico.petitboutiste.utils.size
 import kotlinx.coroutines.launch
@@ -172,16 +168,17 @@ fun ByteGroupDefinitions(
                     items = {
                         listOf(
                             ContextMenuItem("Duplicate this definition") {
-                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
-                                    definition = definition.copy(
-                                        id = createDefinitionId(),
-                                        name = definition.name?.incrementIndexSuffix(),
-                                        indexes = with(definition.indexes) {
-                                            moveStart(endInclusive + 1)
-                                        },
-                                    )
-                                )
-                                onEvent(event)
+                                // TODO Restore "Duplicate this definition" feature
+//                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
+//                                    definition = definition.copy(
+//                                        id = createDefinitionId(),
+//                                        name = definition.name?.incrementIndexSuffix(),
+//                                        indexes = with(definition.indexes) {
+//                                            moveStart(endInclusive + 1)
+//                                        },
+//                                    )
+//                                )
+//                                onEvent(event)
                             }
                         )
                     }

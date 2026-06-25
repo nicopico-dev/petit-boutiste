@@ -6,20 +6,39 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
+import fr.nicopico.petitboutiste.calculator.computeOrThrow
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.Representation
-import fr.nicopico.petitboutiste.utils.json.IntRangeSerializer
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
 @Serializable
 data class ByteGroupDefinition(
-    @Serializable(with = IntRangeSerializer::class)
-    val indexes: IntRange,
+    val startFormula: String,
+    val endFormula: String,
     val name: String? = null,
     val representation: Representation = DEFAULT_REPRESENTATION,
     val id: String = createDefinitionId(),
 ) {
+
+    constructor(
+        indexes: IntRange,
+        name: String? = null,
+        representation: Representation = DEFAULT_REPRESENTATION,
+        id: String = createDefinitionId(),
+    ) : this(
+        startFormula = indexes.first.toString(),
+        endFormula = indexes.last.toString(),
+        name = name,
+        representation = representation,
+        id = id,
+    )
+
+    // TODO Deserialize static definitions
+    // @Serializable(with = IntRangeSerializer::class)
+    val indexes: IntRange get() =
+        computeOrThrow(startFormula)..computeOrThrow(endFormula)
+
     init {
         require(indexes.first >= 0 && indexes.last >= indexes.first) {
             "ByteGroupDefinition indexes are invalid: $indexes"

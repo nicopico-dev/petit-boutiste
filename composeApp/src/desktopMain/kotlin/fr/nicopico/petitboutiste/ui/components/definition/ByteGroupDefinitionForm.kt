@@ -47,11 +47,11 @@ fun ByteGroupDefinitionForm(
     showRepresentationForm: Boolean = false,
 ) {
     val focusManager = LocalFocusManager.current
-    var startIndexInput by remember(definition.id) {
-        mutableStateOf(definition.indexes.first.toString())
+    var startFormulaInput by remember(definition.id) {
+        mutableStateOf(definition.startFormula)
     }
-    var endIndexInput by remember(definition.id) {
-        mutableStateOf(definition.indexes.last.toString())
+    var endFormulaInput by remember(definition.id) {
+        mutableStateOf(definition.endFormula)
     }
     var name by remember(definition.id) {
         mutableStateOf(definition.name.orEmpty())
@@ -61,10 +61,10 @@ fun ByteGroupDefinitionForm(
     }
 
     //region Input validation
-    val startIndexError by remember(definition) {
+    val startFormulaError by remember(definition) {
         derivedStateOf {
-            if (startIndexInput.isNotEmpty()) {
-                val startIndex = compute(startIndexInput)
+            if (startFormulaInput.isNotEmpty()) {
+                val startIndex = compute(startFormulaInput)
                 when {
                     startIndex == null -> "Must be a number"
                     startIndex < 0 -> "Must be a positive number"
@@ -73,11 +73,11 @@ fun ByteGroupDefinitionForm(
             } else null
         }
     }
-    val endIndexError by remember(definition) {
+    val endFormulaError by remember(definition) {
         derivedStateOf {
-            if (endIndexInput.isNotEmpty()) {
-                val startIndex = compute(startIndexInput)
-                val endIndex = compute(endIndexInput)
+            if (endFormulaInput.isNotEmpty()) {
+                val startIndex = compute(startFormulaInput)
+                val endIndex = compute(endFormulaInput)
                 when {
                     endIndex == null -> "Must be a number"
                     endIndex < (startIndex ?: 0) -> "Must be greater than or equal to Start"
@@ -88,8 +88,8 @@ fun ByteGroupDefinitionForm(
     }
     val isValid by remember(definition) {
         derivedStateOf {
-            startIndexInput.isNotEmpty() && endIndexInput.isNotEmpty()
-                && startIndexError == null && endIndexError == null
+            startFormulaInput.isNotEmpty() && endFormulaInput.isNotEmpty()
+                && startFormulaError == null && endFormulaError == null
         }
     }
     //endregion
@@ -97,7 +97,8 @@ fun ByteGroupDefinitionForm(
     val saveDefinition: () -> Unit = {
         if (isValid) {
             val definitionToSave = definition.copy(
-            	indexes = compute(startIndexInput)!!..compute(endIndexInput)!!,
+                startFormula = startFormulaInput,
+                endFormula = endFormulaInput,
                 name = name.ifBlank { null },
                 representation = representation,
             )
@@ -125,9 +126,9 @@ fun ByteGroupDefinitionForm(
 
         PBLabel("Start", orientation = Horizontal) {
             PBTextField(
-                value = startIndexInput,
-                onValueChange = { startIndexInput = it },
-                isError = startIndexError != null,
+                value = startFormulaInput,
+                onValueChange = { startFormulaInput = it },
+                isError = startFormulaError != null,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()
@@ -140,9 +141,9 @@ fun ByteGroupDefinitionForm(
         PBLabel("End", orientation = Horizontal) {
             val isLastInput = representation.dataRenderer.arguments.isEmpty()
             PBTextField(
-                value = endIndexInput,
-                onValueChange = { endIndexInput = it },
-                isError = endIndexError != null,
+                value = endFormulaInput,
+                onValueChange = { endFormulaInput = it },
+                isError = endFormulaError != null,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()

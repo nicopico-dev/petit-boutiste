@@ -20,6 +20,11 @@ fun compute(
     }
 }
 
+fun computeOrThrow(
+    formula: String,
+    variables: Map<String, Int> = emptyMap(),
+): Int = requireNotNull(compute(formula, variables)) { "Invalid formula: $formula" }
+
 fun resolveFormula(formula: String, variables: Map<String, Int>): String {
     var updated = formula
     variables.forEach { (key, value) ->
