@@ -109,7 +109,7 @@ class DefinitionVariableRegistry(
         val bytes: List<String> = hexStringValue
             .substring(startIndex * 2, (endIndex + 1) * 2)
             .windowed(2, 2)
-        return ByteGroup(bytes, definition)
+        return ByteGroup(bytes, startIndex, definition)
     }
 
     /**

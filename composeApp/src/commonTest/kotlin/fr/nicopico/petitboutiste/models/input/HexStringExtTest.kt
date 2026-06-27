@@ -70,6 +70,7 @@ class HexStringExtTest {
             SingleByte(0, "1A"),
             ByteGroup(
                 bytes = listOf("2B", "3C"),
+                firstIndex = 1,
                 definition = groupDefinition,
             ),
             SingleByte(3, "4D"),
@@ -91,11 +92,13 @@ class HexStringExtTest {
         val expected = listOf(
             ByteGroup(
                 listOf("1A", "2B"),
+                firstIndex = 0,
                 group1Definition,
             ),
             SingleByte(2, "3C"),
             ByteGroup(
                 listOf("4D", "5E"),
+                firstIndex = 3,
                 group2Definition,
             ),
             SingleByte(5, "6F")
@@ -118,6 +121,7 @@ class HexStringExtTest {
         val expected = listOf(
             ByteGroup(
                 listOf("1A", "2B", "3C"),
+                firstIndex = 0,
                 group1Definition,
             ),
             SingleByte(3, "4D")
@@ -143,10 +147,12 @@ class HexStringExtTest {
             SingleByte(0, "1A"),
             ByteGroup(
                 listOf("2B", "3C"),
+                firstIndex = 1,
                 groupDefinition1
             ),
             ByteGroup(
                 listOf("4D"),
+                firstIndex = 3,
                 groupDefinition2,
                 incomplete = true,
             ),

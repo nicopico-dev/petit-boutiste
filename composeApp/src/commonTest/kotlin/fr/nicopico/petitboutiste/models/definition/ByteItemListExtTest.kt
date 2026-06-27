@@ -19,6 +19,7 @@ class ByteItemListExtTest {
         val singleByte = SingleByte(0, "AA")
         val byteGroup = ByteGroup(
             bytes = listOf("BB"),
+            firstIndex = 1,
             definition = ByteGroupDefinition(indexes = 1..1, representation = DEFAULT_REPRESENTATION)
         )
         val list = listOf(singleByte, byteGroup)

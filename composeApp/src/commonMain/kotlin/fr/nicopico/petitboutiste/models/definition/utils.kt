@@ -15,6 +15,7 @@ fun createFullPayloadByteGroup(
 ): ByteGroup {
     return ByteGroup(
         bytes = dataString.hexStringValue.windowed(2, 2),
+        firstIndex = 0,
         definition = ByteGroupDefinition(
             indexes = 0..<(dataString.hexStringValue.length / 2),
             representation = representation,

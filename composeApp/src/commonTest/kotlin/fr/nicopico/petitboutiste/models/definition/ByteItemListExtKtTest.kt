@@ -21,6 +21,7 @@ class ByteItemListExtKtTest {
             SingleByte(0, "AA"),
             ByteGroup(
                 bytes = listOf("F0", "08"),
+                firstIndex = 1,
                 definition = ByteGroupDefinition(
                     indexes = 1..2,
                     name = "Group 1",
@@ -31,6 +32,7 @@ class ByteItemListExtKtTest {
             ),
             ByteGroup(
                 bytes = listOf("AA"),
+                firstIndex = 3,
                 definition = ByteGroupDefinition(
                     indexes = 3..3,
                     name = null,
@@ -41,6 +43,7 @@ class ByteItemListExtKtTest {
             ),
             ByteGroup(
                 bytes = listOf("41", "42", "43"),
+                firstIndex = 4,
                 definition = ByteGroupDefinition(
                     indexes = 4..6,
                     name = "Group 3",

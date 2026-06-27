@@ -53,10 +53,12 @@ fun List<ByteItem>.toByteGroup(
         }
     if (!isConsecutive) return null
 
+    val firstIndex = first().firstIndex
     return ByteGroup(
         bytes = map { (it as SingleByte).value},
+        firstIndex = firstIndex,
         definition = ByteGroupDefinition(
-            indexes = first().firstIndex..last().lastIndex,
+            indexes = firstIndex..last().lastIndex,
             representation = representation,
         )
     )

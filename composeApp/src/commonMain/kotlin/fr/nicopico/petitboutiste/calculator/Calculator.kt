@@ -6,10 +6,13 @@
 
 package fr.nicopico.petitboutiste.calculator
 
+import fr.nicopico.petitboutiste.calculator.models.VariableValues
+import fr.nicopico.petitboutiste.calculator.models.emptyVariableValues
+
 object Calculator {
     fun compute(
         formula: String,
-        variables: Map<String, Int> = emptyMap(),
+        variables: VariableValues = emptyVariableValues(),
     ): Int? = try {
         compute(formula, variables)
     } catch (_: Exception) {
@@ -18,7 +21,7 @@ object Calculator {
 
     fun computeOrThrow(
         formula: String,
-        variables: Map<String, Int> = emptyMap(),
+        variables: VariableValues = emptyVariableValues(),
     ): Int {
         val resolvedFormula = resolveFormula(formula, variables)
         val tokens = requireNotNull(tokenize(resolvedFormula)) {

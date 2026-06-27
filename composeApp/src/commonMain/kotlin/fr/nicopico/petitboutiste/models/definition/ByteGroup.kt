@@ -13,6 +13,7 @@ import kotlinx.coroutines.sync.withLock
 
 data class ByteGroup(
     val bytes: List<String>,
+    override val firstIndex: Int,
     val definition: ByteGroupDefinition,
     /**
      * Set to `true` if [bytes] do not match the definition size.
@@ -61,6 +62,7 @@ data class ByteGroup(
         name: String? = null,
     ) : this(
         bytes = data.windowed(2, 2),
+        firstIndex = index,
         definition = ByteGroupDefinition(
             indexes = index..<(index + (data.length / 2)),
             name = name,
@@ -69,16 +71,11 @@ data class ByteGroup(
 
     val name: String? = definition.name
 
-    // FIXME NPI Refactor this for dynamic indexes (formula)
-    override val firstIndex: Int
-        get() = definition.indexes.first
-
-    // FIXME NPI Refactor this for dynamic indexes (formula)
     /**
      * If the group is incomplete, `lastIndex` will be the actual index of the groups last byte
      */
     override val lastIndex: Int
-        get() = definition.indexes.first + (bytes.count() - 1)
+        get() = firstIndex + (bytes.count() - 1)
 
     override fun toString(): String {
         return bytes.joinToString(separator = "")

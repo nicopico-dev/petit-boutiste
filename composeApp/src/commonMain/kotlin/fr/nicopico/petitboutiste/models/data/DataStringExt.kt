@@ -10,6 +10,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
+import fr.nicopico.petitboutiste.models.definition.indexes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -58,6 +59,7 @@ suspend fun DataString.toByteItems(
         result.add(
             ByteGroup(
                 bytes = groupBytes,
+                firstIndex = definition.indexes.first,
                 definition = definition,
                 incomplete = endIndex < definition.indexes.last
             )

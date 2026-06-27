@@ -6,7 +6,6 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
-import fr.nicopico.petitboutiste.calculator.Calculator.computeOrThrow
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.Representation
 import kotlinx.serialization.Serializable
@@ -21,7 +20,8 @@ data class ByteGroupDefinition(
     val representation: Representation = DEFAULT_REPRESENTATION,
     val id: String = createDefinitionId(),
 ) {
-
+    // TODO NPI Keep this constructor ?
+    @Deprecated("!!")
     constructor(
         indexes: IntRange,
         name: String? = null,
@@ -34,17 +34,6 @@ data class ByteGroupDefinition(
         representation = representation,
         id = id,
     )
-
-    // FIXME NPI Extract this property to provide resolved variables
-    // @Serializable(with = IntRangeSerializer::class)
-    val indexes: IntRange get() =
-        computeOrThrow(startFormula)..computeOrThrow(endFormula)
 }
 
 fun createDefinitionId(): String = Uuid.random().toString()
-
-object ByteGroupDefinitionSorter : Comparator<ByteGroupDefinition> {
-    override fun compare(o1: ByteGroupDefinition, o2: ByteGroupDefinition): Int {
-        return o1.indexes.first.compareTo(o2.indexes.first)
-    }
-}
