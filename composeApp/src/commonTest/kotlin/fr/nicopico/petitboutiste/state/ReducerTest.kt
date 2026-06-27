@@ -403,7 +403,10 @@ class ReducerTest {
         state = reducer(state, AppEvent.CurrentTabEvent.AddDefinitionEvent(def2))
 
         // When - update first definition to start after the second one
-        val updatedDef1 = def1.copy(indexes = 10..11)
+        val updatedDef1 = def1.copy(
+            startFormula = "10",
+            endFormula = "11",
+        )
         val newState = reducer(state, AppEvent.CurrentTabEvent.UpdateDefinitionEvent(def1, updatedDef1))
 
         // Then
