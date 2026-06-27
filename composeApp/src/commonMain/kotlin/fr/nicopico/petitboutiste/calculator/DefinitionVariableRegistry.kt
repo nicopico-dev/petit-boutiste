@@ -48,7 +48,19 @@ class DefinitionVariableRegistry {
     private fun Variable.solveDependencies(
         namedDefinitions: Map<Payload, ByteGroupDefinition>,
         resolvedDependencies: MutableMap<Variable, VariableDependencies>,
+        pendingVariables: List<Variable> = emptyList(), // to detect cycles
     ): VariableDependencies {
+        require(this !in pendingVariables) {
+            val cycle = (pendingVariables + this).joinToString(
+                separator = " -> ",
+                transform = { variable ->
+                    with(variable) {
+                        "'$payload.$property'"
+                    }
+                },
+            )
+            "Circular dependency detected: $cycle"
+        }
 
         val dependencies = if (property == Property.NONE) {
             // Property.NONE is use for special variables
@@ -82,7 +94,11 @@ class DefinitionVariableRegistry {
             dependencies = dependencies
                 .map { dependency ->
                     resolvedDependencies.getOrPut(dependency) {
-                        dependency.solveDependencies(namedDefinitions, resolvedDependencies)
+                        dependency.solveDependencies(
+                            namedDefinitions = namedDefinitions,
+                            resolvedDependencies = resolvedDependencies,
+                            pendingVariables = pendingVariables + this,
+                        )
                     }
                 },
         )

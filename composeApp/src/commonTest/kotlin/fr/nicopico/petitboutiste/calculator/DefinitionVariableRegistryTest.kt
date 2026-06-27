@@ -7,6 +7,8 @@ import fr.nicopico.petitboutiste.calculator.models.VariableDependencies
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import org.junit.Before
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class DefinitionVariableRegistryTest {
@@ -77,5 +79,31 @@ class DefinitionVariableRegistryTest {
 
             dependencies.size == 1 && Variable.LAST in dependencies
         }
+    }
+
+    @Test
+    fun `should detect dependency cycles and throw an exception`() {
+        // GIVEN
+        val definitions = listOf(
+            ByteGroupDefinition(
+                name = "A",
+                startFormula = "0",
+                endFormula = "[[B.start]] - 1",
+            ),
+            ByteGroupDefinition(
+                name = "B",
+                startFormula = "[[A.end]] + 1",
+                endFormula = "[[B.start]] + 1",
+            ),
+        )
+
+        // WHEN - THEN
+        val exception = assertFailsWith<IllegalArgumentException> {
+            registry.buildDependencyGraph(definitions)
+        }
+        assertEquals(
+            "Circular dependency detected: 'B.start' -> 'A.end' -> 'B.start'",
+            exception.message,
+        )
     }
 }
