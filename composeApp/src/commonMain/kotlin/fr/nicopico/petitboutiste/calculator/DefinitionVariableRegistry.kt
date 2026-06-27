@@ -36,33 +36,34 @@ class DefinitionVariableRegistry(
         data: DataString,
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
     ): Map<String, Int> = withContext(dispatcher) {
-        val knownVariables = mutableMapOf<Variable, Int>()
         val variablesToCompute = ArrayDeque<Variable>()
+        val knownVariables = mutableSetOf<Variable>()
+        val variableValues = mutableMapOf<String, Int>()
 
         dependencyGraph.forEach { graphRoot ->
             variablesToCompute.pushWithDependencies(graphRoot)
             while (variablesToCompute.isNotEmpty()) {
                 val variable = variablesToCompute.removeFirst()
                 if (variable !in knownVariables) {
-                    knownVariables[variable] = variable.compute(data, knownVariables)
+                    variableValues[variable.placeholder] = variable.compute(data, variableValues)
+                    knownVariables.add(variable)
                 }
             }
         }
 
-        knownVariables.mapKeys { (key, _) -> key.placeholder }
+        variableValues
     }
 
     private fun ArrayDeque<Variable>.pushWithDependencies(root: VariableDependencies) {
-        addFirst(root.variable)
+        if (root.variable !in this) addFirst(root.variable)
         root.dependencies.forEach { dependency ->
             pushWithDependencies(dependency)
         }
     }
 
-    @VisibleForTesting
-    suspend fun Variable.compute(
+    private suspend fun Variable.compute(
         data: DataString,
-        knownVariables: Map<Variable, Int>,
+        variables: Map<String, Int>,
     ): Int {
         return if (property == Property.NONE) {
             when (this) {
@@ -71,7 +72,6 @@ class DefinitionVariableRegistry(
             }
         } else {
             val definition = requireNotNull(namedDefinitions[payload])
-            val variables = knownVariables.mapKeys { it.key.placeholder }
 
             when (property) {
                 Property.START -> {
@@ -107,8 +107,8 @@ class DefinitionVariableRegistry(
 
     private fun DataString.extractByteItem(definition: ByteGroupDefinition, startIndex: Int, endIndex: Int): ByteItem {
         val bytes: List<String> = hexStringValue
+            .substring(startIndex * 2, (endIndex + 1) * 2)
             .windowed(2, 2)
-            .subList(startIndex, endIndex + 1)
         return ByteGroup(bytes, definition)
     }
 
@@ -119,18 +119,11 @@ class DefinitionVariableRegistry(
     private fun buildDependencyGraph(
         definitions: List<ByteGroupDefinition>,
     ): List<VariableDependencies> {
-        val definitionVariables: Map<ByteGroupDefinition, Set<Variable>> = definitions
-            .associateWith { definition ->
-                extractVariables(definition.startFormula, definition.endFormula)
+        val variablesToResolve = buildSet {
+            definitions.forEach {
+                addAll(extractVariables(it.startFormula, it.endFormula))
             }
-
-        val variablesToResolve = definitionVariables.values
-            .fold(
-                initial = emptySet<Variable>(),
-                operation = { initial, variables ->
-                    initial + variables
-                }
-            )
+        }
 
         val resolvedDependencies = mutableMapOf<Variable, VariableDependencies>()
 
@@ -231,22 +224,14 @@ class DefinitionVariableRegistry(
                 .asSequence()
                 .flatMap { VARIABLE_REGEX.findAll(it) }
                 .map { match ->
-                    if (match.groupValues.size == 2) {
-                        val variableName = match.groupValues[1]
-                        require(variableName != "LAST") {
-                            "Unknown variable $variableName"
+                    Variable(
+                        payload = Payload(match.groupValues[1]),
+                        property = match.groupValues[2].let { propertyCode ->
+                            Property.entries
+                                .firstOrNull { it.code == propertyCode }
+                                ?: throw IllegalArgumentException("Unknown property code '$propertyCode'")
                         }
-                        Variable.LAST
-                    } else {
-                        Variable(
-                            payload = Payload(match.groupValues[1]),
-                            property = match.groupValues[2].let { propertyCode ->
-                                Property.entries
-                                    .firstOrNull { it.code == propertyCode }
-                                    ?: throw IllegalArgumentException("Unknown property code '$propertyCode'")
-                            }
-                        )
-                    }
+                    )
                 }
                 .toSet()
         }

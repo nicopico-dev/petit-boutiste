@@ -9,7 +9,6 @@ package fr.nicopico.petitboutiste.calculator
 object Calculator {
     fun compute(
         formula: String,
-        // TODO NPI Use Variable instead of String for keys ?
         variables: Map<String, Int> = emptyMap(),
     ): Int? = try {
         compute(formula, variables)
