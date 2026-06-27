@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.calculator
 
+import fr.nicopico.petitboutiste.calculator.Calculator.compute
 import junit.framework.TestCase.assertEquals
 import kotlin.test.Test
 import kotlin.test.assertNull

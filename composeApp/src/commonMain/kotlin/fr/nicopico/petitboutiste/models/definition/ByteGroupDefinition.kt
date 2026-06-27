@@ -6,12 +6,13 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
-import fr.nicopico.petitboutiste.calculator.computeOrThrow
+import fr.nicopico.petitboutiste.calculator.Calculator.computeOrThrow
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.Representation
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
+// TODO NPI Deserialize definitions with static indexes
 @Serializable
 data class ByteGroupDefinition(
     val startFormula: String,
@@ -34,8 +35,7 @@ data class ByteGroupDefinition(
         id = id,
     )
 
-    // TODO Deserialize static definitions
-    // TODO Extract this property to provide resolved variables
+    // FIXME NPI Extract this property to provide resolved variables
     // @Serializable(with = IntRangeSerializer::class)
     val indexes: IntRange get() =
         computeOrThrow(startFormula)..computeOrThrow(endFormula)

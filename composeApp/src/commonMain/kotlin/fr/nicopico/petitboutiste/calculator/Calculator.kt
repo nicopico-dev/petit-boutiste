@@ -6,34 +6,41 @@
 
 package fr.nicopico.petitboutiste.calculator
 
-fun compute(
-    formula: String,
-    variables: Map<String, Int> = emptyMap(),
-): Int? {
-    val resolvedFormula = resolveFormula(formula, variables)
-    val tokens = tokenize(resolvedFormula) ?: return null
-    return try {
-        val parser = Parser(tokens)
-        parser.parseExpression()
+object Calculator {
+    fun compute(
+        formula: String,
+        // TODO NPI Use Variable instead of String for keys ?
+        variables: Map<String, Int> = emptyMap(),
+    ): Int? = try {
+        compute(formula, variables)
     } catch (_: Exception) {
         null
     }
+
+    fun computeOrThrow(
+        formula: String,
+        variables: Map<String, Int> = emptyMap(),
+    ): Int {
+        val resolvedFormula = resolveFormula(formula, variables)
+        val tokens = requireNotNull(tokenize(resolvedFormula)) {
+            "Failed to parse expression: $resolvedFormula"
+        }
+        val parser = Parser(tokens)
+        return requireNotNull(parser.parseExpression()) {
+            "Unable to parse expression: $resolvedFormula"
+        }
+    }
 }
 
-fun computeOrThrow(
-    formula: String,
-    variables: Map<String, Int> = emptyMap(),
-): Int = requireNotNull(compute(formula, variables)) { "Invalid formula: $formula" }
-
-fun resolveFormula(formula: String, variables: Map<String, Int>): String {
+private fun resolveFormula(formula: String, variables: Map<String, Int>): String {
     var updated = formula
     variables.forEach { (key, value) ->
-        updated = updated.replace(oldValue = "[[$key]]", newValue = value.toString(), ignoreCase = false)
+        updated = updated.replace(oldValue = key, newValue = value.toString(), ignoreCase = false)
     }
     return updated
 }
 
-private fun tokenize(formula: String): List<String>? {
+private fun tokenize(formula: String): List<String> {
     val regex = Regex("""\d+|\+|-|\*|/|\(|\)""")
     val matches = regex.findAll(formula)
     val tokens = matches.map { it.value }.toList()
@@ -42,7 +49,12 @@ private fun tokenize(formula: String): List<String>? {
     val matchedLength = tokens.sumOf { it.length }
     val whitespaceCount = formula.count { it.isWhitespace() }
     if (matchedLength + whitespaceCount != formula.length) {
-        return null
+        error(
+            "tokenization failed for formula $formula: \n" +
+                "  - matchedLength=$matchedLength, \n" +
+                "  - whitespaceCount=$whitespaceCount, \n" +
+                "  - formulaLength=${formula.length}"
+        )
     }
 
     return tokens

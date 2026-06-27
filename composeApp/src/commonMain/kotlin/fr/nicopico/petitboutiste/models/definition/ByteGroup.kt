@@ -69,11 +69,16 @@ data class ByteGroup(
 
     val name: String? = definition.name
 
-    override val firstIndex: Int = definition.indexes.first
+    // FIXME NPI Refactor this for dynamic indexes (formula)
+    override val firstIndex: Int
+        get() = definition.indexes.first
+
+    // FIXME NPI Refactor this for dynamic indexes (formula)
     /**
      * If the group is incomplete, `lastIndex` will be the actual index of the groups last byte
      */
-    override val lastIndex: Int = definition.indexes.first + (bytes.count() - 1)
+    override val lastIndex: Int
+        get() = definition.indexes.first + (bytes.count() - 1)
 
     override fun toString(): String {
         return bytes.joinToString(separator = "")
