@@ -187,6 +187,7 @@ private fun ByteGroupDefinitionFormPreview() {
     WrapForPreviewDesktop {
         ByteGroupDefinitionForm(
             definition = ByteGroupDefinition(2..5, "Test ByteGroup"),
+
             onDefinitionSaved = {},
         )
     }

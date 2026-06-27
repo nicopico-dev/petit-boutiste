@@ -35,15 +35,10 @@ data class ByteGroupDefinition(
     )
 
     // TODO Deserialize static definitions
+    // TODO Extract this property to provide resolved variables
     // @Serializable(with = IntRangeSerializer::class)
     val indexes: IntRange get() =
         computeOrThrow(startFormula)..computeOrThrow(endFormula)
-
-    init {
-        require(indexes.first >= 0 && indexes.last >= indexes.first) {
-            "ByteGroupDefinition indexes are invalid: $indexes"
-        }
-    }
 }
 
 fun createDefinitionId(): String = Uuid.random().toString()
