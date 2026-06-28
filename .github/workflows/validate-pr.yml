@@ -30,24 +30,24 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Assemble the app
-        run: ./gradlew assemble -PappVersion=1.0.0
+        run: ./gradlew --no-daemon assemble -PappVersion=1.0.0
 
       # Quality gate
       - parallel:
           - name: Run tests with coverage
-            run: ./gradlew desktopTest koverXmlReport -PappVersion=1.0.0
+            run: ./gradlew --no-daemon desktopTest koverXmlReport -PappVersion=1.0.0
             background: true
             env:
               SCREENSHOT_DIR: build/screenshots
 
           - name: Check code quality stability
-            run: ./gradlew detektDesktopMain -PappVersion=1.0.0
+            run: ./gradlew --no-daemon detektDesktopMain -PappVersion=1.0.0
 
           - name: Check licenses
-            run: ./gradlew licensee -PappVersion=1.0.0
+            run: ./gradlew --no-daemon licensee -PappVersion=1.0.0
 
           - name: Check compose stability
-            run: ./gradlew stabilityCheck -PappVersion=1.0.0
+            run: ./gradlew --no-daemon stabilityCheck -PappVersion=1.0.0
 
       # Result publication
       - parallel:
