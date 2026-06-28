@@ -27,10 +27,31 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build and Test
-        run: ./gradlew --no-daemon licensee build koverXmlReport detektDesktopMain -PappVersion=1.0.0
+      - name: Assemble the app
+        run: ./gradlew assemble -PappVersion=1.0.0
+
+      - name: Run tests
+        run: ./gradlew allTests -PappVersion=1.0.0
+        background: true
         env:
           SCREENSHOT_DIR: build/screenshots
+
+      - name: Publish coverage report
+        run: ./gradlew koverXmlReport -PappVersion=1.0.0
+        background: true
+
+      - parallel:
+        - name: Check code quality stability
+          run: ./gradlew detektDesktopMain -PappVersion=1.0.0
+
+        - name: Check licenses
+          run: ./gradlew licensee -PappVersion=1.0.0
+
+        - name: Check compose stability
+          run: ./gradlew stabilityCheck -PappVersion=1.0.0
+
+      - name: Wait for all the checks to stop
+        wait-all:
 
       - name: Add coverage report
         uses: mi-kas/kover-report@v1
