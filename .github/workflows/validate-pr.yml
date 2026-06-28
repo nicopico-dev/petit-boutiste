@@ -35,7 +35,7 @@ jobs:
       # Quality gate
       - parallel:
           - name: Run tests with coverage
-            run: ./gradlew allTests koverXmlReport -PappVersion=1.0.0
+            run: ./gradlew desktopTest koverXmlReport -PappVersion=1.0.0
             background: true
             env:
               SCREENSHOT_DIR: build/screenshots
@@ -51,7 +51,7 @@ jobs:
 
       # Result publication
       - parallel:
-          - name: Publish coverage report
+          - name: Publish coverage report on PR
             uses: mi-kas/kover-report@v1
             if: always()
             with:
@@ -60,13 +60,13 @@ jobs:
               title: Code Coverage
               update-comment: true
 
-          - name: Publish Unit Test Results
+          - name: Publish Unit Test Results on PR
             uses: mikepenz/action-junit-report@v4
             if: always()
             with:
               report_paths: 'composeApp/build/test-results/desktopTest/**.xml'
 
-          - name: Publish UI test screenshots
+          - name: Attach UI test screenshots
             if: always()
             uses: actions/upload-artifact@v4
             with:
