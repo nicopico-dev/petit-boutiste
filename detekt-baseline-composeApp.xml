@@ -10,5 +10,8 @@
     <ID>LongMethod:Reducer.kt$Reducer$suspend operator fun invoke(state: AppState, event: AppEvent): AppState</ID>
     <ID>LongMethod:TabContent.kt$@Composable fun TabContent( inputData: DataString, definitions: List&lt;ByteGroupDefinition&gt;, byteItems: List&lt;ByteItem&gt;, scratchpad: String = "", )</ID>
     <ID>ReturnCount:ByteItemListExt.kt$fun List&lt;ByteItem&gt;.toByteGroup( representation: Representation = DEFAULT_REPRESENTATION, ): ByteGroup?</ID>
+    <ID>ReturnCount:Calculator.kt$Parser$fun parseExpression(): Int?</ID>
+    <ID>ReturnCount:Calculator.kt$Parser$private fun parseFactor(): Int?</ID>
+    <ID>ReturnCount:Calculator.kt$Parser$private fun parseTerm(): Int?</ID>
   </CurrentIssues>
 </SmellBaseline>

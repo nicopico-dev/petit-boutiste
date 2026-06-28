@@ -51,7 +51,8 @@ class ByteItemListExtTest {
         // Assertions
         assert(byteGroup != null)
         assertEquals(listOf("AA", "BB", "CC"), byteGroup!!.bytes)
-        assertEquals(0..2, byteGroup.definition.indexes)
+        assertEquals(0, byteGroup.startIndex)
+        assertEquals(2, byteGroup.endIndex)
         assertEquals(DEFAULT_REPRESENTATION, byteGroup.definition.representation)
     }
 }

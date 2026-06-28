@@ -46,7 +46,7 @@ class CalculatorTest {
             3,
             compute(
                 "1 + [[LENGTH]]",
-                mapOf("LENGTH" to 2)
+                mapOf("[[LENGTH]]" to 2)
             )
         )
         assertEquals(
@@ -54,9 +54,8 @@ class CalculatorTest {
             compute(
                 "[[A]] + [[B]]",
                 mapOf(
-                    "A" to 2,
-                    "B" to 3,
-
+                    "[[A]]" to 2,
+                    "[[B]]" to 3,
                 )
             )
         )

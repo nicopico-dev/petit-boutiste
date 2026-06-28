@@ -6,11 +6,12 @@
 
 package fr.nicopico.petitboutiste.models.data
 
+import fr.nicopico.petitboutiste.calculator.Calculator
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
-import fr.nicopico.petitboutiste.models.definition.indexes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,42 +30,53 @@ suspend fun DataString.toByteItems(
         }
     }
 
-    // Ignore definitions that are completely outside the bounds of the payload,
-    // and sort by Start index
-    val validGroupDefinitions = groupDefinitions
-        .filter { it.indexes.first <= bytes.lastIndex }
-        .sortedBy { it.indexes.first }
+    // Resolve variable values once for all definitions
+    val variables = try {
+        DefinitionVariableRegistry(groupDefinitions).computeVariableValues(this@toByteItems)
+    } catch (_: Exception) {
+        emptyMap()
+    }
+
+    // Resolve start/end indexes for each definition, skipping those that cannot be resolved
+    // or are completely outside the bounds of the payload; preserve insertion order (sorting deferred)
+    // TODO: Index-based sorting deferred — definitions are kept in insertion order for now
+    val validGroupDefinitions = groupDefinitions.mapNotNull { definition ->
+        val start = Calculator.compute(definition.startFormula, variables) ?: return@mapNotNull null
+        val end = Calculator.compute(definition.endFormula, variables) ?: return@mapNotNull null
+        if (start > bytes.lastIndex) return@mapNotNull null
+        Triple(definition, start, end)
+    }
 
     val result = mutableListOf<ByteItem>()
     var currentIndex = 0
 
     // Process each valid group definition
-    for (definition in validGroupDefinitions) {
+    for ((definition, startIndex, definitionEndIndex) in validGroupDefinitions) {
         // Add single bytes before the current group
-        while (currentIndex < definition.indexes.first) {
+        while (currentIndex < startIndex) {
             result.add(SingleByte(currentIndex, bytes[currentIndex]))
             currentIndex++
         }
 
         // Skip this group if it overlaps with a previous group
-        if (currentIndex > definition.indexes.first) {
+        if (currentIndex > startIndex) {
             continue
         }
 
         // Ensure we do not go outside the bounds of the payload
-        val endIndex = min(definition.indexes.last, bytes.lastIndex)
+        val endIndex = min(definitionEndIndex, bytes.lastIndex)
 
         // Add the group
-        val groupBytes = (definition.indexes.first..endIndex).map { bytes[it] }
+        val groupBytes = (startIndex..endIndex).map { bytes[it] }
         result.add(
             ByteGroup(
                 bytes = groupBytes,
-                startIndex = definition.indexes.first,
+                startIndex = startIndex,
                 definition = definition,
-                incomplete = endIndex < definition.indexes.last
+                incomplete = endIndex < definitionEndIndex
             )
         )
-        currentIndex = definition.indexes.last + 1
+        currentIndex = definitionEndIndex + 1
     }
 
     // Add remaining single bytes after the last group

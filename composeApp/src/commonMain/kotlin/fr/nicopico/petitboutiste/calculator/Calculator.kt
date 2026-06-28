@@ -14,7 +14,7 @@ object Calculator {
         formula: String,
         variables: VariableValues = emptyVariableValues(),
     ): Int? = try {
-        compute(formula, variables)
+        computeOrThrow(formula, variables)
     } catch (_: Exception) {
         null
     }
@@ -77,7 +77,7 @@ private class Parser(private val tokens: List<String>) {
             result = when (op) {
                 "+" -> result + right
                 "-" -> result - right
-                else -> throw IllegalStateException()
+                else -> error("Unexpected operator: $op")
             }
         }
         return result
@@ -92,7 +92,7 @@ private class Parser(private val tokens: List<String>) {
             result = when (op) {
                 "*" -> result * right
                 "/" -> if (right != 0) result / right else return null
-                else -> throw IllegalStateException()
+                else -> error("Unexpected operator: $op")
             }
         }
         return result

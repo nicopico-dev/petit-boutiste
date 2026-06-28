@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.definition.indexes
 import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.ui.UiTags
@@ -95,8 +94,13 @@ fun ByteGroupDefinitionItem(
                         .testTag(UiTags.byteGroupDefinitionsItemName(definition.name))
                 )
 
-                val rangeSuffix = with(definition.indexes) {
-                    "$start..$endInclusive ($size bytes)"
+                val rangeSuffix = if (byteGroup != null) {
+                    val start = byteGroup.startIndex
+                    val end = byteGroup.endIndex
+                    val size = byteGroup.bytes.size
+                    "$start..$end ($size bytes)"
+                } else {
+                    "${definition.startFormula}..${definition.endFormula}"
                 }
                 Text(
                     text = rangeSuffix,

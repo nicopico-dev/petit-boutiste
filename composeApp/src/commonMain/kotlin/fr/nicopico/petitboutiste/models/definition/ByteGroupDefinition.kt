@@ -25,12 +25,18 @@ data class ByteGroupDefinition(
             indexes: IntRange,
             name: String? = null,
             representation: Representation = DEFAULT_REPRESENTATION,
-        ) = ByteGroupDefinition(
-            startFormula = indexes.first.toString(),
-            endFormula = indexes.last.toString(),
-            name = name,
-            representation = representation,
-        )
+        ): ByteGroupDefinition {
+            require(indexes.first >= 0) { "Start index must be non-negative, was ${indexes.first}" }
+            require(indexes.first <= indexes.last) {
+                "Start index must be <= end index, was ${indexes.first}..${indexes.last}"
+            }
+            return ByteGroupDefinition(
+                startFormula = indexes.first.toString(),
+                endFormula = indexes.last.toString(),
+                name = name,
+                representation = representation,
+            )
+        }
 
     }
 }
