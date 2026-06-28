@@ -7,12 +7,14 @@ on:
 
 jobs:
   validate:
-    name: Build and Test
+    name: Build and Check quality
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       checks: write
       pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -30,48 +32,44 @@ jobs:
       - name: Assemble the app
         run: ./gradlew assemble -PappVersion=1.0.0
 
-      - name: Run tests
-        run: ./gradlew allTests -PappVersion=1.0.0
-        background: true
-        env:
-          SCREENSHOT_DIR: build/screenshots
-
-      - name: Publish coverage report
-        run: ./gradlew koverXmlReport -PappVersion=1.0.0
-        background: true
-
+      # Quality gate
       - parallel:
-        - name: Check code quality stability
-          run: ./gradlew detektDesktopMain -PappVersion=1.0.0
+          - name: Run tests with coverage
+            run: ./gradlew allTests koverXmlReport -PappVersion=1.0.0
+            background: true
+            env:
+              SCREENSHOT_DIR: build/screenshots
 
-        - name: Check licenses
-          run: ./gradlew licensee -PappVersion=1.0.0
+          - name: Check code quality stability
+            run: ./gradlew detektDesktopMain -PappVersion=1.0.0
 
-        - name: Check compose stability
-          run: ./gradlew stabilityCheck -PappVersion=1.0.0
+          - name: Check licenses
+            run: ./gradlew licensee -PappVersion=1.0.0
 
-      - name: Wait for all the checks to stop
-        wait-all:
+          - name: Check compose stability
+            run: ./gradlew stabilityCheck -PappVersion=1.0.0
 
-      - name: Add coverage report
-        uses: mi-kas/kover-report@v1
-        if: always()
-        with:
-          path: |
-            ${{ github.workspace }}/composeApp/build/reports/kover/report.xml
-          title: Code Coverage
-          update-comment: true
+      # Result publication
+      - parallel:
+          - name: Publish coverage report
+            uses: mi-kas/kover-report@v1
+            if: always()
+            with:
+              path: |
+                ${{ github.workspace }}/composeApp/build/reports/kover/report.xml
+              title: Code Coverage
+              update-comment: true
 
-      - name: Publish Unit Test Results
-        uses: mikepenz/action-junit-report@v4
-        if: always()
-        with:
-          report_paths: 'composeApp/build/test-results/desktopTest/**.xml'
+          - name: Publish Unit Test Results
+            uses: mikepenz/action-junit-report@v4
+            if: always()
+            with:
+              report_paths: 'composeApp/build/test-results/desktopTest/**.xml'
 
-      - name: Upload UI test screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-screenshots
-          path: composeApp/build/screenshots
-          if-no-files-found: ignore
+          - name: Upload UI test screenshots
+            if: always()
+            uses: actions/upload-artifact@v4
+            with:
+              name: ui-test-screenshots
+              path: composeApp/build/screenshots
+              if-no-files-found: ignore
