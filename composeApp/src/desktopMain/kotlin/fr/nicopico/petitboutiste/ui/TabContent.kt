@@ -105,7 +105,7 @@ fun TabContent(
                     onCurrentTabEvent(CurrentTabEvent.ChangeInputTypeEvent(inputType))
                 },
                 onAddDefinition = { indexes ->
-                    val definition = ByteGroupDefinition(
+                    val definition = ByteGroupDefinition.createFromRange(
                         indexes = indexes,
                         representation = noDefinitionRepresentation,
                     )

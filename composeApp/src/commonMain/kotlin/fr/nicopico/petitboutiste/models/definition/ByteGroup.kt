@@ -6,15 +6,23 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
+import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.RenderResult
+import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.render
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+// TODO NPI rename firstIndex to startIndex
+// TODO NPI rename lastIndex to endIndex
 data class ByteGroup(
     val bytes: List<String>,
-    override val firstIndex: Int,
     val definition: ByteGroupDefinition,
+    override val firstIndex: Int,
+    /**
+     * If the group is incomplete, `lastIndex` will be the actual index of the groups last byte
+     */
+    override val lastIndex: Int = firstIndex + (bytes.count() - 1),
     /**
      * Set to `true` if [bytes] do not match the definition size.
      * This means the payload is likely incomplete or the definition is incorrect
@@ -30,6 +38,8 @@ data class ByteGroup(
             "Each bytes must have a length of 2"
         }
     }
+
+    val name: String? = definition.name
 
     private var _cachedRenderResult: RenderResult? = null
     private val renderMutex = Mutex()
@@ -55,29 +65,46 @@ data class ByteGroup(
         }
     }
 
-    @Deprecated("Use for preview only")
-    constructor(
-        index: Int,
-        data: String,
-        name: String? = null,
-    ) : this(
-        bytes = data.windowed(2, 2),
-        firstIndex = index,
-        definition = ByteGroupDefinition(
-            indexes = index..<(index + (data.length / 2)),
-            name = name,
-        ),
-    )
-
-    val name: String? = definition.name
-
-    /**
-     * If the group is incomplete, `lastIndex` will be the actual index of the groups last byte
-     */
-    override val lastIndex: Int
-        get() = firstIndex + (bytes.count() - 1)
-
     override fun toString(): String {
         return bytes.joinToString(separator = "")
+    }
+
+    companion object {
+        fun fromRange(
+            bytes: List<String>,
+            indexes: IntRange,
+            name: String? = null,
+            representation: Representation = DEFAULT_REPRESENTATION,
+        ) = ByteGroup(
+            bytes = bytes,
+            definition = ByteGroupDefinition.createFromRange(
+                indexes = indexes,
+                name = name,
+                representation = representation,
+            ),
+            firstIndex = indexes.first(),
+            lastIndex = indexes.last(),
+        )
+
+        /**
+         * Utility method to create ByteGroup from a start index and a data payload.
+         * This mimics the constructor of [SingleByte]
+         */
+        fun forPreview(
+            index: Int,
+            data: String,
+            name: String? = null,
+            representation: Representation = DEFAULT_REPRESENTATION,
+        ): ByteGroup {
+            return ByteGroup(
+                bytes = data.windowed(2, 2),
+                firstIndex = index,
+                definition = ByteGroupDefinition.createFromRange(
+                    indexes = index..<(index + (data.length / 2)),
+                    name = name,
+                    representation = representation,
+                )
+            )
+        }
     }
 }

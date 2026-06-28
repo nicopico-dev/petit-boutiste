@@ -1,5 +1,6 @@
 package fr.nicopico.petitboutiste.models.definition
 
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,10 +18,14 @@ class ByteItemListExtTest {
     fun `toByteGroup returns null if contains non-SingleByte item`() {
         // Need to create a ByteGroup to put into the list
         val singleByte = SingleByte(0, "AA")
+        createDefinitionId()
         val byteGroup = ByteGroup(
             bytes = listOf("BB"),
             firstIndex = 1,
-            definition = ByteGroupDefinition(indexes = 1..1, representation = DEFAULT_REPRESENTATION)
+            definition = ByteGroupDefinition.createFromRange(
+                indexes = 1..1,
+                representation = DEFAULT_REPRESENTATION,
+            )
         )
         val list = listOf(singleByte, byteGroup)
         assertNull(list.toByteGroup())

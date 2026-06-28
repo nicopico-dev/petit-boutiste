@@ -186,8 +186,10 @@ fun ByteGroupDefinitionForm(
 private fun ByteGroupDefinitionFormPreview() {
     WrapForPreviewDesktop {
         ByteGroupDefinitionForm(
-            definition = ByteGroupDefinition(2..5, "Test ByteGroup"),
-
+            definition = ByteGroupDefinition.createFromRange(
+                indexes = 2..5,
+                name = "Test ByteGroup"
+            ),
             onDefinitionSaved = {},
         )
     }

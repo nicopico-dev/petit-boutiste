@@ -57,7 +57,7 @@ fun List<ByteItem>.toByteGroup(
     return ByteGroup(
         bytes = map { (it as SingleByte).value},
         firstIndex = firstIndex,
-        definition = ByteGroupDefinition(
+        definition = ByteGroupDefinition.createFromRange(
             indexes = firstIndex..last().lastIndex,
             representation = representation,
         )

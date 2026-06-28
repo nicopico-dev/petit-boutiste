@@ -24,7 +24,7 @@ class BinaryRepresentationTest {
         val byteItem = ByteGroup(
             bytes = listOf("1A", "2B", "3C"),
             firstIndex = 0,
-            definition = ByteGroupDefinition(0..2, "TestGroup")
+            definition = ByteGroupDefinition.createFromRange(0..2, "TestGroup")
         )
 
         // WHEN

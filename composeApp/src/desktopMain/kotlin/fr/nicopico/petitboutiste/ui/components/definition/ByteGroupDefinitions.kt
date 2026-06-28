@@ -228,11 +228,13 @@ fun ByteGroupDefinitions(
                     OutlinedButton(
                         content = { Text("Add definition") },
                         onClick = {
-                            val nextIndex: Int = if (definitions.isEmpty()) 0 else definitions.last().indexes.last + 1
+                            val nextIndex: Int = if (definitions.isNotEmpty()) {
+                                definitions.last().indexes.last + 1
+                            } else 0
                             // If available, default to the last representation
                             val nextRepresentation = definitions.lastOrNull()?.representation
                                 ?: DEFAULT_REPRESENTATION
-                            val definition = ByteGroupDefinition(
+                            val definition = ByteGroupDefinition.createFromRange(
                                 indexes = nextIndex..nextIndex,
                                 representation = nextRepresentation,
                             )

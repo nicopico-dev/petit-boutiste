@@ -20,20 +20,19 @@ data class ByteGroupDefinition(
     val representation: Representation = DEFAULT_REPRESENTATION,
     val id: String = createDefinitionId(),
 ) {
-    // TODO NPI Keep this constructor ?
-    @Deprecated("!!")
-    constructor(
-        indexes: IntRange,
-        name: String? = null,
-        representation: Representation = DEFAULT_REPRESENTATION,
-        id: String = createDefinitionId(),
-    ) : this(
-        startFormula = indexes.first.toString(),
-        endFormula = indexes.last.toString(),
-        name = name,
-        representation = representation,
-        id = id,
-    )
+    companion object {
+        fun createFromRange(
+            indexes: IntRange,
+            name: String? = null,
+            representation: Representation = DEFAULT_REPRESENTATION,
+        ) = ByteGroupDefinition(
+            startFormula = indexes.first.toString(),
+            endFormula = indexes.last.toString(),
+            name = name,
+            representation = representation,
+        )
+
+    }
 }
 
 fun createDefinitionId(): String = Uuid.random().toString()
