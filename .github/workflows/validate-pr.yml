@@ -32,14 +32,12 @@ jobs:
       - name: Assemble the app
         run: ./gradlew assemble -PappVersion=1.0.0
 
-      - name: Run tests with coverage
-        run: ./gradlew desktopTest koverXmlReport -PappVersion=1.0.0
-        background: true
-        env:
-          SCREENSHOT_DIR: build/screenshots
-
       # Quality gate
       - parallel:
+          - name: Run tests with coverage
+            run: ./gradlew desktopTest koverXmlReport -PappVersion=1.0.0
+            env:
+              SCREENSHOT_DIR: build/screenshots
 
           - name: Check code quality
             run: ./gradlew --no-daemon detektDesktopMain -PappVersion=1.0.0
