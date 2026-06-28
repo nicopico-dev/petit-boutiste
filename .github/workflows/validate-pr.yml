@@ -70,4 +70,3 @@ jobs:
             uses: opengisch/comment-pr-with-images@upload_only
             with:
               images: composeApp/build/screenshots/**.png
-              custom_attachment_msg: "UI Tests screenshots"
