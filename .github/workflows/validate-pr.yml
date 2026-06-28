@@ -32,6 +32,7 @@ jobs:
       - name: Assemble the app
         run: ./gradlew assemble -PappVersion=1.0.0
 
+      # Tests cannot be run in parallel by GitHub Actions (strange NoClassDefFound errors)
       - name: Run tests with coverage
         run: ./gradlew desktopTest koverXmlReport -PappVersion=1.0.0
         env:
