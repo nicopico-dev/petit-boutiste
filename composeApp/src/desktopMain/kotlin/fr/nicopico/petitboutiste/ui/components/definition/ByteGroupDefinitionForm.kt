@@ -89,7 +89,8 @@ fun ByteGroupDefinitionForm(
     val isValid by remember(definition) {
         derivedStateOf {
             startFormulaInput.isNotEmpty() && endFormulaInput.isNotEmpty()
-                && startFormulaError == null && endFormulaError == null
+                // TODO NPI Check if formulas are valid
+                //&& startFormulaError == null && endFormulaError == null
         }
     }
     //endregion

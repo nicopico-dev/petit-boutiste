@@ -12,6 +12,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
+import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,16 +31,20 @@ suspend fun DataString.toByteItems(
         }
     }
 
+    // TODO NPI Share DefinitionVariableRegistry as long as the definitions do not change
     // Resolve variable values once for all definitions
     val variables = try {
         DefinitionVariableRegistry(groupDefinitions).computeVariableValues(this@toByteItems)
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        // TODO NPI Expose error to the UI
+        logError("Unable to compute variable values", e)
         emptyMap()
     }
 
     // Resolve start/end indexes for each definition, skipping those that cannot be resolved
     // or are completely outside the bounds of the payload; preserve insertion order (sorting deferred)
     // TODO: Index-based sorting deferred — definitions are kept in insertion order for now
+    // TODO NPI: Expand shortened variables [[start]] and [[end]] before passing them to the calculator
     val validGroupDefinitions = groupDefinitions.mapNotNull { definition ->
         val start = Calculator.compute(definition.startFormula, variables) ?: return@mapNotNull null
         val end = Calculator.compute(definition.endFormula, variables) ?: return@mapNotNull null
@@ -68,14 +73,19 @@ suspend fun DataString.toByteItems(
 
         // Add the group
         val groupBytes = (startIndex..endIndex).map { bytes[it] }
-        result.add(
-            ByteGroup(
-                bytes = groupBytes,
-                startIndex = startIndex,
-                definition = definition,
-                incomplete = endIndex < definitionEndIndex
+        try {
+            result.add(
+                ByteGroup(
+                    bytes = groupBytes,
+                    startIndex = startIndex,
+                    definition = definition,
+                    incomplete = endIndex < definitionEndIndex
+                )
             )
-        )
+        } catch (e: IllegalArgumentException) {
+            // TODO NPI Expose error to the UI
+            logError("Invalid byte group definition $definition", e)
+        }
         currentIndex = definitionEndIndex + 1
     }
 
