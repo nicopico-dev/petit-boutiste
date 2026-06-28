@@ -1,19 +1,30 @@
 name: MacOS Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version'
-        required: true
-        default: '1.0.0'
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+env:
+  RAW_VERSION: ${{ github.ref_name }}
 
 jobs:
+  prepare-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.step1.outputs.version }}
+    steps:
+      - id: step1
+        run: |
+          echo "Version: ${RAW_VERSION#v}"
+          echo "version=${RAW_VERSION#v}" >> $GITHUB_OUTPUT
+
   build:
     name: Build release distributable
     uses: ./.github/workflows/macos-build.yml
+    needs: prepare-version
     with:
-      version: ${{ github.event.inputs.version }}
+      version: ${{ needs.prepare-version.outputs.version }}
 
   release:
     name: Create release on GitHub
@@ -29,15 +40,13 @@ jobs:
           path: dist
       - name: Add logs for debugging
         run: |
-          echo "Version: '${{ github.event.inputs.version }}'"
           echo "Downloaded files in dist:"
           ls -la dist || true
       - name: Create GitHub Release
         if: ${{ !env.ACT }}
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.version }}
-          name: Release v${{ github.event.inputs.version }}
+          name: Release ${{ github.ref_name }}
           generate_release_notes: true
           draft: false
           prerelease: false

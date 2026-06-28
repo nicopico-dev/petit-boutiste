@@ -7,12 +7,14 @@ on:
 
 jobs:
   validate:
-    name: Build and Test
+    name: Build and Check quality
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       checks: write
       pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -27,30 +29,48 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build and Test
-        run: ./gradlew --no-daemon licensee build koverXmlReport detektDesktopMain -PappVersion=1.0.0
+      - name: Assemble the app
+        run: ./gradlew assemble -PappVersion=1.0.0
+
+      # Tests cannot be run in parallel by GitHub Actions (strange NoClassDefFound errors)
+      - name: Run tests with coverage
+        run: ./gradlew desktopTest koverXmlReport -PappVersion=1.0.0
         env:
           SCREENSHOT_DIR: build/screenshots
 
-      - name: Add coverage report
-        uses: mi-kas/kover-report@v1
-        if: always()
-        with:
-          path: |
-            ${{ github.workspace }}/composeApp/build/reports/kover/report.xml
-          title: Code Coverage
-          update-comment: true
+      # Quality gate
+      - parallel:
+          - name: Check code quality
+            run: ./gradlew --no-daemon detektDesktopMain -PappVersion=1.0.0
 
-      - name: Publish Unit Test Results
-        uses: mikepenz/action-junit-report@v4
-        if: always()
-        with:
-          report_paths: 'composeApp/build/test-results/desktopTest/**.xml'
+          - name: Check licenses
+            run: ./gradlew --no-daemon licensee -PappVersion=1.0.0
 
-      - name: Upload UI test screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-screenshots
-          path: composeApp/build/screenshots
-          if-no-files-found: ignore
+          - name: Check compose stability
+            run: ./gradlew --no-daemon stabilityCheck -PappVersion=1.0.0
+
+      # Result publication
+      - parallel:
+          - name: Attach coverage report to PR
+            uses: mi-kas/kover-report@v1
+            if: always()
+            with:
+              path: |
+                ${{ github.workspace }}/composeApp/build/reports/kover/report.xml
+              title: Code Coverage
+              update-comment: true
+
+          - name: Attach Unit-Test report to PR
+            uses: mikepenz/action-junit-report@v4
+            if: always()
+            with:
+              report_paths: 'composeApp/build/test-results/desktopTest/**.xml'
+
+          # TODO Find a way to attach the screenshots directly on the PR
+          - name: Attach UI test screenshots
+            if: always()
+            uses: actions/upload-artifact@v4
+            with:
+              name: ui-test-screenshots
+              path: composeApp/build/screenshots
+              if-no-files-found: ignore
