@@ -112,7 +112,7 @@ class DefinitionVariableRegistry(
         return ByteGroup(
             bytes = bytes,
             definition = definition,
-            firstIndex = startIndex,
+            startIndex = startIndex,
         )
     }
 

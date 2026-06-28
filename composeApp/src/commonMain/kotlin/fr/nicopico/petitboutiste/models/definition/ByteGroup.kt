@@ -13,16 +13,14 @@ import fr.nicopico.petitboutiste.models.representation.render
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-// TODO NPI rename firstIndex to startIndex
-// TODO NPI rename lastIndex to endIndex
 data class ByteGroup(
     val bytes: List<String>,
     val definition: ByteGroupDefinition,
-    override val firstIndex: Int,
+    override val startIndex: Int,
     /**
      * If the group is incomplete, `lastIndex` will be the actual index of the groups last byte
      */
-    override val lastIndex: Int = firstIndex + (bytes.count() - 1),
+    override val endIndex: Int = startIndex + (bytes.count() - 1),
     /**
      * Set to `true` if [bytes] do not match the definition size.
      * This means the payload is likely incomplete or the definition is incorrect
@@ -82,8 +80,8 @@ data class ByteGroup(
                 name = name,
                 representation = representation,
             ),
-            firstIndex = indexes.first(),
-            lastIndex = indexes.last(),
+            startIndex = indexes.first(),
+            endIndex = indexes.last(),
         )
 
         /**
@@ -98,7 +96,7 @@ data class ByteGroup(
         ): ByteGroup {
             return ByteGroup(
                 bytes = data.windowed(2, 2),
-                firstIndex = index,
+                startIndex = index,
                 definition = ByteGroupDefinition.createFromRange(
                     indexes = index..<(index + (data.length / 2)),
                     name = name,

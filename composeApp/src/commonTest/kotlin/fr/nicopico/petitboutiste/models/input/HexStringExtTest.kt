@@ -70,7 +70,7 @@ class HexStringExtTest {
             SingleByte(0, "1A"),
             ByteGroup(
                 bytes = listOf("2B", "3C"),
-                firstIndex = 1,
+                startIndex = 1,
                 definition = groupDefinition,
             ),
             SingleByte(3, "4D"),
@@ -93,13 +93,13 @@ class HexStringExtTest {
             ByteGroup(
                 listOf("1A", "2B"),
                 group1Definition,
-                firstIndex = 0,
+                startIndex = 0,
             ),
             SingleByte(2, "3C"),
             ByteGroup(
                 listOf("4D", "5E"),
                 group2Definition,
-                firstIndex = 3,
+                startIndex = 3,
             ),
             SingleByte(5, "6F")
         )
@@ -122,7 +122,7 @@ class HexStringExtTest {
             ByteGroup(
                 listOf("1A", "2B", "3C"),
                 group1Definition,
-                firstIndex = 0,
+                startIndex = 0,
             ),
             SingleByte(3, "4D")
         )
@@ -148,12 +148,12 @@ class HexStringExtTest {
             ByteGroup(
                 listOf("2B", "3C"),
                 groupDefinition1,
-                firstIndex = 1
+                startIndex = 1
             ),
             ByteGroup(
                 listOf("4D"),
                 groupDefinition2,
-                firstIndex = 3,
+                startIndex = 3,
                 incomplete = true,
             ),
         )

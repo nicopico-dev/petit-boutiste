@@ -59,7 +59,7 @@ suspend fun DataString.toByteItems(
         result.add(
             ByteGroup(
                 bytes = groupBytes,
-                firstIndex = definition.indexes.first,
+                startIndex = definition.indexes.first,
                 definition = definition,
                 incomplete = endIndex < definition.indexes.last
             )

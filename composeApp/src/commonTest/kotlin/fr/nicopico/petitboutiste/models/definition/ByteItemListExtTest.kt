@@ -1,6 +1,5 @@
 package fr.nicopico.petitboutiste.models.definition
 
-import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,7 +20,7 @@ class ByteItemListExtTest {
         createDefinitionId()
         val byteGroup = ByteGroup(
             bytes = listOf("BB"),
-            firstIndex = 1,
+            startIndex = 1,
             definition = ByteGroupDefinition.createFromRange(
                 indexes = 1..1,
                 representation = DEFAULT_REPRESENTATION,
