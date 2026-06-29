@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 
+// TODO REFACTO Move this computation to the Reducer
 @Suppress("RedundantSuspendModifier", "RedundantSuppression")
 suspend fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList(),
