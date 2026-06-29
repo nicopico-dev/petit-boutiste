@@ -35,11 +35,13 @@ import org.jetbrains.jewel.window.DecoratedWindow
 
 private val windowStateRepository = WindowStateRepository()
 
+// FIXME Reduce usage of LocalOnAppEvent
 val LocalOnAppEvent = staticCompositionLocalOf<OnAppEvent> {
-    { /* no-op */ }
+    { error("LocalOnAppEvent not configured") }
 }
+// FIXME Reduce usage of LocalOnSnackbar
 val LocalOnSnackbar = staticCompositionLocalOf<OnSnackbar> {
-    { /* no-op */ }
+    { error("LocalOnSnackbar not configured") }
 }
 
 @Composable
