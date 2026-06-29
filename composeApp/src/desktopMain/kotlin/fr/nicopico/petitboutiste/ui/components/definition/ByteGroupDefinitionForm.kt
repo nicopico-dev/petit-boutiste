@@ -25,11 +25,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.calculator.Calculator.compute
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.UiTags
+import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
-import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.components.representation.ByteGroupRepresentationForm
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
@@ -46,11 +47,11 @@ fun ByteGroupDefinitionForm(
     showRepresentationForm: Boolean = false,
 ) {
     val focusManager = LocalFocusManager.current
-    var startIndexInput by remember(definition.id) {
-        mutableStateOf(definition.indexes.first.toString())
+    var startFormulaInput by remember(definition.id) {
+        mutableStateOf(definition.startFormula)
     }
-    var endIndexInput by remember(definition.id) {
-        mutableStateOf(definition.indexes.last.toString())
+    var endFormulaInput by remember(definition.id) {
+        mutableStateOf(definition.endFormula)
     }
     var name by remember(definition.id) {
         mutableStateOf(definition.name.orEmpty())
@@ -60,10 +61,10 @@ fun ByteGroupDefinitionForm(
     }
 
     //region Input validation
-    val startIndexError by remember(definition) {
+    val startFormulaError by remember(definition) {
         derivedStateOf {
-            if (startIndexInput.isNotEmpty()) {
-                val startIndex = startIndexInput.toIntOrNull()
+            if (startFormulaInput.isNotEmpty()) {
+                val startIndex = compute(startFormulaInput)
                 when {
                     startIndex == null -> "Must be a number"
                     startIndex < 0 -> "Must be a positive number"
@@ -72,11 +73,11 @@ fun ByteGroupDefinitionForm(
             } else null
         }
     }
-    val endIndexError by remember(definition) {
+    val endFormulaError by remember(definition) {
         derivedStateOf {
-            if (endIndexInput.isNotEmpty()) {
-                val startIndex = startIndexInput.toIntOrNull()
-                val endIndex = endIndexInput.toIntOrNull()
+            if (endFormulaInput.isNotEmpty()) {
+                val startIndex = compute(startFormulaInput)
+                val endIndex = compute(endFormulaInput)
                 when {
                     endIndex == null -> "Must be a number"
                     endIndex < (startIndex ?: 0) -> "Must be greater than or equal to Start"
@@ -87,8 +88,9 @@ fun ByteGroupDefinitionForm(
     }
     val isValid by remember(definition) {
         derivedStateOf {
-            startIndexInput.isNotEmpty() && endIndexInput.isNotEmpty()
-                && startIndexError == null && endIndexError == null
+            startFormulaInput.isNotEmpty() && endFormulaInput.isNotEmpty()
+                // TODO NPI Check if formulas are valid
+                //&& startFormulaError == null && endFormulaError == null
         }
     }
     //endregion
@@ -96,7 +98,8 @@ fun ByteGroupDefinitionForm(
     val saveDefinition: () -> Unit = {
         if (isValid) {
             val definitionToSave = definition.copy(
-                indexes = startIndexInput.toInt()..endIndexInput.toInt(),
+                startFormula = startFormulaInput,
+                endFormula = endFormulaInput,
                 name = name.ifBlank { null },
                 representation = representation,
             )
@@ -124,9 +127,9 @@ fun ByteGroupDefinitionForm(
 
         PBLabel("Start", orientation = Horizontal) {
             PBTextField(
-                value = startIndexInput,
-                onValueChange = { startIndexInput = it },
-                isError = startIndexError != null,
+                value = startFormulaInput,
+                onValueChange = { startFormulaInput = it },
+                isError = startFormulaError != null,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()
@@ -139,9 +142,9 @@ fun ByteGroupDefinitionForm(
         PBLabel("End", orientation = Horizontal) {
             val isLastInput = representation.dataRenderer.arguments.isEmpty()
             PBTextField(
-                value = endIndexInput,
-                onValueChange = { endIndexInput = it },
-                isError = endIndexError != null,
+                value = endFormulaInput,
+                onValueChange = { endFormulaInput = it },
+                isError = endFormulaError != null,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()
@@ -184,7 +187,10 @@ fun ByteGroupDefinitionForm(
 private fun ByteGroupDefinitionFormPreview() {
     WrapForPreviewDesktop {
         ByteGroupDefinitionForm(
-            definition = ByteGroupDefinition(2..5, "Test ByteGroup"),
+            definition = ByteGroupDefinition.createFromRange(
+                indexes = 2..5,
+                name = "Test ByteGroup"
+            ),
             onDefinitionSaved = {},
         )
     }

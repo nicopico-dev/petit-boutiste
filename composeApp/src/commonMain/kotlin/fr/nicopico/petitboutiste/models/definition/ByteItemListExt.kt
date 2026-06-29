@@ -49,14 +49,16 @@ fun List<ByteItem>.toByteGroup(
 
     val isConsecutive = zipWithNext()
         .all { (previous, current) ->
-            current.firstIndex == previous.firstIndex + 1
+            current.startIndex == previous.startIndex + 1
         }
     if (!isConsecutive) return null
 
+    val firstIndex = first().startIndex
     return ByteGroup(
         bytes = map { (it as SingleByte).value},
-        definition = ByteGroupDefinition(
-            indexes = first().firstIndex..last().lastIndex,
+        startIndex = firstIndex,
+        definition = ByteGroupDefinition.createFromRange(
+            indexes = firstIndex..last().endIndex,
             representation = representation,
         )
     )

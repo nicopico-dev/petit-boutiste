@@ -212,7 +212,7 @@ private suspend fun prepareTabData(
                 rendering = TabDataRendering(
                     inputData = inputData,
                     groupDefinitions = listOf(
-                        ByteGroupDefinition(
+                        ByteGroupDefinition.createFromRange(
                             indexes = 0..<inputData.byteCount,
                             representation = representation,
                         )
@@ -228,7 +228,7 @@ private suspend fun prepareTabData(
                 rendering = TabDataRendering(
                     inputData = inputData,
                     groupDefinitions = listOf(
-                        ByteGroupDefinition(
+                        ByteGroupDefinition.createFromRange(
                             indexes = 0..<inputData.byteCount,
                             representation = representation,
                         )
