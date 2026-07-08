@@ -152,7 +152,7 @@ fun HexDisplay(
                 ) {
                     items(
                         items = byteItems,
-                        key = { it.firstIndex..it.lastIndex },
+                        key = { "${it::class.simpleName}-${it.firstIndex}" },
                         contentType = { it::class },
                         span = { byteItem ->
                             when (byteItem) {
@@ -166,7 +166,9 @@ fun HexDisplay(
                             }
                         },
                     ) { item ->
-                        val inSelection = selectedByteItem != null && item in selectedByteItem
+                        val inSelection = remember(selectedByteItem, item) {
+                            selectedByteItem != null && item in selectedByteItem
+                        }
 
                         TemporaryByteGroupContextMenu(
                             selectedByteItem,
