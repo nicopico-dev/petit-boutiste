@@ -152,7 +152,7 @@ fun HexDisplay(
                 ) {
                     items(
                         items = byteItems,
-                        key = { it.firstIndex..it.lastIndex },
+                        key = { it.startIndex..it.endIndex },
                         contentType = { it::class },
                         span = { byteItem ->
                             when (byteItem) {
@@ -223,9 +223,9 @@ private fun ByteItemView(
             style = AppTheme.current.typography.data,
         )
 
-        val index = if (item.firstIndex != item.lastIndex) {
-            "${item.firstIndex}..${item.lastIndex}"
-        } else item.firstIndex.toString()
+        val index = if (item.startIndex != item.endIndex) {
+            "${item.startIndex}..${item.endIndex}"
+        } else item.startIndex.toString()
         Text(
             text = index,
             style = TextStyle(
@@ -262,7 +262,7 @@ private fun TemporaryByteGroupContextMenu(
                 listOf(
                     ContextMenuItem("Create a new definition") {
                         onAddDefinition(
-                            selectedByteItem.firstIndex..selectedByteItem.lastIndex
+                            selectedByteItem.startIndex..selectedByteItem.endIndex
                         )
                     }
                 )

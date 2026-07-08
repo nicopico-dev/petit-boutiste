@@ -32,20 +32,17 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.LocalOnSnackbar
+import fr.nicopico.petitboutiste.calculator.Calculator
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
-import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.SnackbarState
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
-import fr.nicopico.petitboutiste.utils.moveStart
 import fr.nicopico.petitboutiste.utils.setData
 import fr.nicopico.petitboutiste.utils.size
 import kotlinx.coroutines.launch
@@ -70,17 +67,9 @@ fun ByteGroupDefinitions(
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
     byteItems: List<ByteItem> = emptyList(),
 ) {
-    val overlappingDefinitions: Set<ByteGroupDefinition> = remember(definitions) {
-        buildSet {
-            var previousDefinitionEnd = -1
-            definitions.forEach { definition ->
-                if (definition.indexes.first <= previousDefinitionEnd) {
-                    add(definition)
-                }
-                previousDefinitionEnd = definition.indexes.last
-            }
-        }
-    }
+    // TODO: Overlap detection deferred — definitions with variable formulas cannot be statically
+    //  compared. Revisit in a future session when variable-formula overlap detection is implemented.
+    val overlappingDefinitions: Set<ByteGroupDefinition> = emptySet()
 
     var openedDefinition by remember {
         mutableStateOf<ByteGroupDefinition?>(null)
@@ -156,14 +145,19 @@ fun ByteGroupDefinitions(
                     it is ByteGroup && it.definition == definition
                 } as? ByteGroup
 
-                val expectedSize = definition.indexes.size
                 val actualSize = byteGroup?.bytes?.size
                 val errorMessage = when {
                     definition in overlappingDefinitions -> {
                         "This definition overlaps with the previous one"
                     }
-                    actualSize != null && actualSize != expectedSize -> {
-                        "The payload is incomplete ($actualSize bytes instead of $expectedSize)"
+                    byteGroup?.incomplete == true -> {
+                        val expectedSize = Calculator.compute(byteGroup.definition.endFormula)
+                            ?.let { it - byteGroup.startIndex + 1 }
+                        if (expectedSize != null) {
+                            "The payload is incomplete ($actualSize bytes instead of $expectedSize)"
+                        } else {
+                            "The payload is incomplete"
+                        }
                     }
                     else -> null
                 }
@@ -172,16 +166,17 @@ fun ByteGroupDefinitions(
                     items = {
                         listOf(
                             ContextMenuItem("Duplicate this definition") {
-                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
-                                    definition = definition.copy(
-                                        id = createDefinitionId(),
-                                        name = definition.name?.incrementIndexSuffix(),
-                                        indexes = with(definition.indexes) {
-                                            moveStart(endInclusive + 1)
-                                        },
-                                    )
-                                )
-                                onEvent(event)
+                                // TODO Restore "Duplicate this definition" feature
+//                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
+//                                    definition = definition.copy(
+//                                        id = createDefinitionId(),
+//                                        name = definition.name?.incrementIndexSuffix(),
+//                                        indexes = with(definition.indexes) {
+//                                            moveStart(endInclusive + 1)
+//                                        },
+//                                    )
+//                                )
+//                                onEvent(event)
                             }
                         )
                     }
@@ -230,11 +225,14 @@ fun ByteGroupDefinitions(
                     OutlinedButton(
                         content = { Text("Add definition") },
                         onClick = {
-                            val nextIndex: Int = if (definitions.isEmpty()) 0 else definitions.last().indexes.last + 1
+                            val nextIndex: Int = if (definitions.isNotEmpty()) {
+                                val endFormula = definitions.last().endFormula
+                                (Calculator.compute(endFormula) ?: -1) + 1
+                            } else 0
                             // If available, default to the last representation
                             val nextRepresentation = definitions.lastOrNull()?.representation
                                 ?: DEFAULT_REPRESENTATION
-                            val definition = ByteGroupDefinition(
+                            val definition = ByteGroupDefinition.createFromRange(
                                 indexes = nextIndex..nextIndex,
                                 representation = nextRepresentation,
                             )

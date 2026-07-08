@@ -17,9 +17,14 @@ class ByteItemListExtTest {
     fun `toByteGroup returns null if contains non-SingleByte item`() {
         // Need to create a ByteGroup to put into the list
         val singleByte = SingleByte(0, "AA")
+        createDefinitionId()
         val byteGroup = ByteGroup(
             bytes = listOf("BB"),
-            definition = ByteGroupDefinition(indexes = 1..1, representation = DEFAULT_REPRESENTATION)
+            startIndex = 1,
+            definition = ByteGroupDefinition.createFromRange(
+                indexes = 1..1,
+                representation = DEFAULT_REPRESENTATION,
+            )
         )
         val list = listOf(singleByte, byteGroup)
         assertNull(list.toByteGroup())
@@ -46,7 +51,8 @@ class ByteItemListExtTest {
         // Assertions
         assert(byteGroup != null)
         assertEquals(listOf("AA", "BB", "CC"), byteGroup!!.bytes)
-        assertEquals(0..2, byteGroup.definition.indexes)
+        assertEquals(0, byteGroup.startIndex)
+        assertEquals(2, byteGroup.endIndex)
         assertEquals(DEFAULT_REPRESENTATION, byteGroup.definition.representation)
     }
 }

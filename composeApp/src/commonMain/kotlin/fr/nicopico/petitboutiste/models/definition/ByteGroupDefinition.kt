@@ -8,29 +8,37 @@ package fr.nicopico.petitboutiste.models.definition
 
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.Representation
-import fr.nicopico.petitboutiste.utils.json.IntRangeSerializer
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
+// TODO NPI Deserialize definitions with static indexes
 @Serializable
 data class ByteGroupDefinition(
-    @Serializable(with = IntRangeSerializer::class)
-    val indexes: IntRange,
+    val startFormula: String,
+    val endFormula: String,
     val name: String? = null,
     val representation: Representation = DEFAULT_REPRESENTATION,
     val id: String = createDefinitionId(),
 ) {
-    init {
-        require(indexes.first >= 0 && indexes.last >= indexes.first) {
-            "ByteGroupDefinition indexes are invalid: $indexes"
+    companion object {
+        fun createFromRange(
+            indexes: IntRange,
+            name: String? = null,
+            representation: Representation = DEFAULT_REPRESENTATION,
+        ): ByteGroupDefinition {
+            require(indexes.first >= 0) { "Start index must be non-negative, was ${indexes.first}" }
+            require(indexes.first <= indexes.last) {
+                "Start index must be <= end index, was ${indexes.first}..${indexes.last}"
+            }
+            return ByteGroupDefinition(
+                startFormula = indexes.first.toString(),
+                endFormula = indexes.last.toString(),
+                name = name,
+                representation = representation,
+            )
         }
+
     }
 }
 
 fun createDefinitionId(): String = Uuid.random().toString()
-
-object ByteGroupDefinitionSorter : Comparator<ByteGroupDefinition> {
-    override fun compare(o1: ByteGroupDefinition, o2: ByteGroupDefinition): Int {
-        return o1.indexes.first.compareTo(o2.indexes.first)
-    }
-}

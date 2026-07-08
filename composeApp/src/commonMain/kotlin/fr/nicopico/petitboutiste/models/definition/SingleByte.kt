@@ -19,8 +19,8 @@ data class SingleByte(
         }
     }
 
-    override val firstIndex: Int = index
-    override val lastIndex: Int = index
+    override val startIndex: Int = index
+    override val endIndex: Int = index
 
     override fun toString(): String {
         return value
