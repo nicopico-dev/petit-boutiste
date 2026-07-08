@@ -35,11 +35,13 @@ import org.jetbrains.jewel.window.DecoratedWindow
 
 private val windowStateRepository = WindowStateRepository()
 
+// TODO Reduce usage of LocalOnAppEvent
 val LocalOnAppEvent = staticCompositionLocalOf<OnAppEvent> {
-    { /* no-op */ }
+    { error("LocalOnAppEvent not configured") }
 }
+// TODO Reduce usage of LocalOnSnackbar
 val LocalOnSnackbar = staticCompositionLocalOf<OnSnackbar> {
-    { /* no-op */ }
+    { error("LocalOnSnackbar not configured") }
 }
 
 @Composable
@@ -75,13 +77,22 @@ fun PetitBoutiste(
             },
             state = windowState,
             content = {
-                PBMenuBar(tabsState)
-                PBTitleBar(
-                    tabsState = tabsState,
-                    appTheme = AppTheme.current,
-                )
-                AppShortcuts {
-                    PetitBoutisteApp(viewModel)
+                CompositionLocalProvider(
+                    LocalOnAppEvent provides { event ->
+                        viewModel.onAppEvent(event)
+                    },
+                    LocalOnSnackbar provides { snackbar ->
+                        viewModel.displaySnackBar(snackbar)
+                    },
+                ) {
+                    PBMenuBar(tabsState)
+                    PBTitleBar(
+                        tabsState = tabsState,
+                        appTheme = AppTheme.current,
+                    )
+                    AppShortcuts {
+                        PetitBoutisteApp(viewModel)
+                    }
                 }
             }
         )
@@ -97,20 +108,11 @@ fun PetitBoutisteApp(
     val snackbarState by viewModel.snackbarState
         .collectAsStateWithLifecycle()
 
-    CompositionLocalProvider(
-        LocalOnAppEvent provides { event ->
-            viewModel.onAppEvent(event)
-        },
-        LocalOnSnackbar provides { snackbar ->
-            viewModel.displaySnackBar(snackbar)
-        },
-    ) {
-        AppContent(
-            tabData = currentTab,
-            snackbarState = snackbarState,
-            modifier = Modifier
-                .background(AppTheme.current.colors.windowBackgroundColor),
-            onDismissSnackbar = viewModel::dismissSnackbar,
-        )
-    }
+    AppContent(
+        tabData = currentTab,
+        snackbarState = snackbarState,
+        modifier = Modifier
+            .background(AppTheme.current.colors.windowBackgroundColor),
+        onDismissSnackbar = viewModel::dismissSnackbar,
+    )
 }
