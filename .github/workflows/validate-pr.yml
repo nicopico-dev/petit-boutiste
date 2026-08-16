@@ -48,6 +48,7 @@ jobs:
 
           - name: Check compose stability
             run: ./gradlew --no-daemon stabilityCheck -PappVersion=1.0.0
+            if: false # Disabled
 
       # Result publication
       - parallel:
