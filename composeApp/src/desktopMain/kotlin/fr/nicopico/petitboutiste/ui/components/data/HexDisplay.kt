@@ -8,8 +8,6 @@ package fr.nicopico.petitboutiste.ui.components.data
 
 import androidx.compose.foundation.ContextMenuArea
 import androidx.compose.foundation.ContextMenuItem
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +29,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -67,11 +67,37 @@ fun HexDisplay(
     modifier: Modifier = Modifier,
     selectedByteItem: ByteItem? = null,
     onByteItemClicked: (ByteItem) -> Unit = {},
-    onAddDefinition: (IntRange) -> Unit= {},
+    onAddDefinition: (IntRange) -> Unit = {},
 ) {
     if (byteItems.isNotEmpty()) {
         val isTemporarySelection = remember(byteItems, selectedByteItem) {
             selectedByteItem != null && selectedByteItem !in byteItems
+        }
+
+        //region Theme hoisting
+        val theme = AppTheme.current
+
+        val dataStyle = theme.typography.data
+        val accentColor = theme.colors.accentColor
+        val errorColor = theme.colors.errorColor
+        val accentContainerColor = theme.colors.accentContainer
+        val scrollbarStyle = theme.styles.scrollbarStyle
+        //endregion
+
+        val itemIndexStyle = remember {
+            TextStyle(
+                fontFamily = FontFamily.Monospace,
+                fontSize = 9.sp,
+                color = Color.Gray
+            )
+        }
+
+        val itemNameStyle = remember(accentColor) {
+            TextStyle(
+                fontFamily = FontFamily.Monospace,
+                fontSize = 8.sp,
+                color = accentColor,
+            )
         }
 
         BoxWithConstraints(modifier) {
@@ -117,7 +143,7 @@ fun HexDisplay(
 
             VerticallyScrollableContainer(
                 scrollState = gridState as ScrollableState,
-                style = AppTheme.current.styles.scrollbarStyle,
+                style = scrollbarStyle,
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.FixedSize(COLUMN_WIDTH),
@@ -170,40 +196,48 @@ fun HexDisplay(
                             selectedByteItem != null && item in selectedByteItem
                         }
 
-                        TemporaryByteGroupContextMenu(
-                            selectedByteItem,
-                            enabled = inSelection && isTemporarySelection,
-                            onAddDefinition = onAddDefinition,
-                        ) {
+                        val itemModifier = Modifier
+                            .padding(4.dp)
+                            .clickableWithIndication {
+                                onByteItemClicked(item)
+                            }
+                            .drawBehind {
+                                if (inSelection) {
+                                    drawRect(color = accentContainerColor)
+                                }
+
+                                val borderColor = when (item) {
+                                    is ByteGroup if item.incomplete -> errorColor
+                                    is ByteGroup -> accentColor
+                                    else -> null
+                                }
+
+                                borderColor?.let {
+                                    drawRect(
+                                        color = it,
+                                        style = Stroke(width = 1.dp.toPx())
+                                    )
+                                }
+                            }
+                            .padding(4.dp)
+
+                        val itemView = @Composable {
                             ByteItemView(
                                 item = item,
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .clickableWithIndication {
-                                        onByteItemClicked(item)
-                                    }
-                                    .let {
-                                        when (item) {
-                                            is SingleByte -> it
-                                            is ByteGroup if item.incomplete -> it.border(
-                                                1.dp,
-                                                AppTheme.current.colors.errorColor
-                                            )
-
-                                            is ByteGroup -> it.border(
-                                                1.dp,
-                                                AppTheme.current.colors.accentColor
-                                            )
-                                        }
-                                    }
-                                    .let {
-                                        if (selectedByteItem != null && item in selectedByteItem) {
-                                            it.background(AppTheme.current.colors.accentContainer)
-                                        } else it
-                                    }
-                                    .padding(4.dp)
+                                dataStyle = dataStyle,
+                                indexStyle = itemIndexStyle,
+                                nameStyle = itemNameStyle,
+                                modifier = itemModifier,
                             )
                         }
+
+                        if (inSelection && isTemporarySelection && selectedByteItem != null) {
+                            TemporaryByteGroupContextMenu(
+                                selectedByteItem = selectedByteItem,
+                                onAddDefinition = onAddDefinition,
+                                content = itemView,
+                            )
+                        } else itemView()
                     }
                 }
             }
@@ -214,6 +248,9 @@ fun HexDisplay(
 @Composable
 private fun ByteItemView(
     item: ByteItem,
+    dataStyle: TextStyle,
+    indexStyle: TextStyle,
+    nameStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -222,7 +259,7 @@ private fun ByteItemView(
     ) {
         Text(
             text = item.toString(),
-            style = AppTheme.current.typography.data,
+            style = dataStyle,
         )
 
         val index = if (item.firstIndex != item.lastIndex) {
@@ -230,48 +267,39 @@ private fun ByteItemView(
         } else item.firstIndex.toString()
         Text(
             text = index,
-            style = TextStyle(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 9.sp,
-                color = Color.Gray
-            )
+            style = indexStyle,
         )
 
-        Text(
-            text = item.name.orEmpty(),
-            style = TextStyle(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 8.sp,
-                color = AppTheme.current.colors.accentColor,
-            ),
-            softWrap = false,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
+        item.name?.let { name ->
+            Text(
+                text = name,
+                style = nameStyle,
+                softWrap = false,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 
 @Composable
 private fun TemporaryByteGroupContextMenu(
-    selectedByteItem: ByteItem?,
-    enabled: Boolean,
+    selectedByteItem: ByteItem,
     onAddDefinition: (IntRange) -> Unit,
     content: Slot,
 ) {
-    if (selectedByteItem != null && enabled) {
-        ContextMenuArea(
-            items = {
-                listOf(
-                    ContextMenuItem("Create a new definition") {
-                        onAddDefinition(
-                            selectedByteItem.firstIndex..selectedByteItem.lastIndex
-                        )
-                    }
-                )
-            },
-            content = content,
-        )
-    } else content()
+    ContextMenuArea(
+        items = {
+            listOf(
+                ContextMenuItem("Create a new definition") {
+                    onAddDefinition(
+                        selectedByteItem.firstIndex..selectedByteItem.lastIndex
+                    )
+                }
+            )
+        },
+        content = content,
+    )
 }
 
 @Preview
