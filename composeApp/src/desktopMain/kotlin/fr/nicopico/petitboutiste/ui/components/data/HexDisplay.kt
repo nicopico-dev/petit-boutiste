@@ -198,30 +198,14 @@ fun HexDisplay(
                             selectedByteItem != null && item in selectedByteItem
                         }
 
-                        val itemModifier = Modifier
-                            .padding(4.dp)
-                            .clickableWithIndication {
-                                onByteItemClicked(item)
-                            }
-                            .drawBehind {
-                                if (inSelection) {
-                                    drawRect(color = accentContainerColor)
-                                }
-
-                                val borderColor = when (item) {
-                                    is ByteGroup if item.incomplete -> errorColor
-                                    is ByteGroup -> accentColor
-                                    else -> null
-                                }
-
-                                borderColor?.let {
-                                    drawRect(
-                                        color = it,
-                                        style = Stroke(width = 1.dp.toPx())
-                                    )
-                                }
-                            }
-                            .padding(4.dp)
+                        val itemModifier = createItemModifier(
+                            item = item,
+                            inSelection = inSelection,
+                            accentColor = accentColor,
+                            accentContainerColor = accentContainerColor,
+                            errorColor = errorColor,
+                            onByteItemClicked = onByteItemClicked,
+                        )
 
                         val itemView = @Composable {
                             ByteItemView(
@@ -246,6 +230,38 @@ fun HexDisplay(
         }
     } else Box(modifier)
 }
+
+private fun createItemModifier(
+    item: ByteItem,
+    inSelection: Boolean,
+    accentColor: Color,
+    accentContainerColor: Color,
+    errorColor: Color,
+    onByteItemClicked: (ByteItem) -> Unit,
+) = Modifier
+    .padding(4.dp)
+    .clickableWithIndication {
+        onByteItemClicked(item)
+    }
+    .drawBehind {
+        if (inSelection) {
+            drawRect(color = accentContainerColor)
+        }
+
+        val borderColor = when (item) {
+            is ByteGroup if item.incomplete -> errorColor
+            is ByteGroup -> accentColor
+            else -> null
+        }
+
+        borderColor?.let {
+            drawRect(
+                color = it,
+                style = Stroke(width = 1.dp.toPx())
+            )
+        }
+    }
+    .padding(4.dp)
 
 @Composable
 private fun ByteItemView(
