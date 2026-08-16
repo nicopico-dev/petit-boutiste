@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.skydoves.compose.stability.runtime.TraceRecomposition
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
@@ -61,6 +62,7 @@ import org.jetbrains.jewel.ui.component.VerticallyScrollableContainer
 
 private val COLUMN_WIDTH = 40.dp
 
+@TraceRecomposition("HexDisplay")
 @Composable
 fun HexDisplay(
     byteItems: List<ByteItem>,
