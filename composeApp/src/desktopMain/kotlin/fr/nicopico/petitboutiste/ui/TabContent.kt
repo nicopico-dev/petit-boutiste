@@ -40,11 +40,13 @@ import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 
+@Suppress("LongMethod")
 @Composable
 fun TabContent(
     inputData: DataString,
     definitions: List<ByteGroupDefinition>,
     byteItems: List<ByteItem>,
+    errors: Map<String, String> = emptyMap(),
     scratchpad: String = "",
 ) {
     val onCurrentTabEvent: (CurrentTabEvent) -> Unit = LocalOnAppEvent.current
@@ -137,6 +139,7 @@ fun TabContent(
                         } else null
                     },
                     byteItems = byteItems,
+                    errors = errors,
                     modifier = Modifier
                         .weight(1f)
                         .testTag(UiTags.BYTE_GROUP_DEFINITIONS),
@@ -191,6 +194,7 @@ private fun AppScreenPreview() {
             inputData = HexString(rawHexString = "33DAADDAAD"),
             definitions = emptyList(),
             byteItems = emptyList(),
+            errors = emptyMap(),
         )
     }
 }

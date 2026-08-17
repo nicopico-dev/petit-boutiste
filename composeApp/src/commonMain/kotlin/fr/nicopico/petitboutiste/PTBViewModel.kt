@@ -45,6 +45,7 @@ class PTBViewModel(
 
     init {
         viewModelScope.launch {
+            processEvent(AppEvent.RefreshRenderingEvent)
             for (event in eventChannel) {
                 processEvent(event)
             }

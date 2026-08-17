@@ -8,6 +8,7 @@ import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.expandFormulas
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.asString
@@ -18,16 +19,18 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.VisibleForTesting
 
 class DefinitionVariableRegistry(
-    definitions: List<ByteGroupDefinition>,
+    val definitions: List<ByteGroupDefinition>,
 ) {
+
+    private val expandedDefinitions = definitions.map { it.expandFormulas() }
 
     @get:VisibleForTesting
     val dependencyGraph: List<VariableDependencies> by lazy {
-        buildDependencyGraph(definitions)
+        buildDependencyGraph(expandedDefinitions)
     }
 
     private val namedDefinitions: Map<Payload, ByteGroupDefinition> by lazy {
-        definitions
+        expandedDefinitions
             .filterNot { it.name.isNullOrEmpty() }
             .associateBy { Payload(it.name!!) }
     }

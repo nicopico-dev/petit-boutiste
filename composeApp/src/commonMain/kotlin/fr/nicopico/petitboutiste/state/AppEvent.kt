@@ -20,6 +20,7 @@ sealed class AppEvent {
     data class DuplicateTabEvent(val tabId: TabId) : AppEvent()
     data class CycleTabEvent(val cycleForward: Boolean) : AppEvent()
     data class SwitchAppThemeEvent(val appTheme: PBTheme) : AppEvent()
+    data object RefreshRenderingEvent : AppEvent()
 
     data class UndoRemoveTabEvent(val tabData: TabData, val index: Int) : AppEvent()
 

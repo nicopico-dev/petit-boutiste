@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.calculator.Calculator
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
@@ -44,7 +43,6 @@ import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWith
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.setData
-import fr.nicopico.petitboutiste.utils.size
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
@@ -66,11 +64,8 @@ fun ByteGroupDefinitions(
     selectedDefinition: ByteGroupDefinition? = null,
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
     byteItems: List<ByteItem> = emptyList(),
+    errors: Map<String, String> = emptyMap(),
 ) {
-    // TODO: Overlap detection deferred — definitions with variable formulas cannot be statically
-    //  compared. Revisit in a future session when variable-formula overlap detection is implemented.
-    val overlappingDefinitions: Set<ByteGroupDefinition> = emptySet()
-
     var openedDefinition by remember {
         mutableStateOf<ByteGroupDefinition?>(null)
     }
@@ -82,7 +77,6 @@ fun ByteGroupDefinitions(
     val clipboard = LocalClipboard.current
 
     val lazyListState = rememberLazyListState()
-    val onEvent = LocalOnAppEvent.current
     val onSnackbar = LocalOnSnackbar.current
 
     Column(modifier) {
@@ -146,10 +140,7 @@ fun ByteGroupDefinitions(
                 } as? ByteGroup
 
                 val actualSize = byteGroup?.bytes?.size
-                val errorMessage = when {
-                    definition in overlappingDefinitions -> {
-                        "This definition overlaps with the previous one"
-                    }
+                val errorMessage = errors[definition.id] ?: when {
                     byteGroup?.incomplete == true -> {
                         val expectedSize = Calculator.compute(byteGroup.definition.endFormula)
                             ?.let { it - byteGroup.startIndex + 1 }
@@ -166,7 +157,7 @@ fun ByteGroupDefinitions(
                     items = {
                         listOf(
                             ContextMenuItem("Duplicate this definition") {
-                                // TODO Restore "Duplicate this definition" feature
+                                // TODO NPI Restore "Duplicate this definition" feature
 //                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
 //                                    definition = definition.copy(
 //                                        id = createDefinitionId(),

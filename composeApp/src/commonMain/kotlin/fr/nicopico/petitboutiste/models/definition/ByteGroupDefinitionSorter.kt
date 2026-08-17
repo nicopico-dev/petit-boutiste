@@ -1,10 +1,15 @@
 package fr.nicopico.petitboutiste.models.definition
 
-// TODO: Index-based sorting is deferred — definitions with variable formulas cannot be statically
-//  ordered. Preserving insertion order for now. Revisit in a future session when variable-formula
-//  sorting is implemented.
 object ByteGroupDefinitionSorter : Comparator<ByteGroupDefinition> {
     override fun compare(o1: ByteGroupDefinition, o2: ByteGroupDefinition): Int {
-        return 0
+        val start1 = o1.startFormula.toIntOrNull()
+        val start2 = o2.startFormula.toIntOrNull()
+
+        return when {
+            start1 != null && start2 != null -> start1.compareTo(start2)
+            start1 != null -> -1 // Constants before formulas
+            start2 != null -> 1 // Formulas after constants
+            else -> 0 // Keep original order if both are formulas
+        }
     }
 }

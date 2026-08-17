@@ -7,7 +7,9 @@
 package fr.nicopico.petitboutiste.state
 
 import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
@@ -42,6 +44,27 @@ class ReducerTest {
     }
 
     private val reducer = Reducer(templateManager)
+
+    @Test
+    fun `RefreshRenderingEvent updates all tabs`() = runTest {
+        // Given
+        val tab1 = TabData(rendering = TabDataRendering(inputData = HexString("AA")))
+        val tab2 = TabData(rendering = TabDataRendering(inputData = HexString("BB")))
+        val state = AppState(tabs = listOf(tab1, tab2), selectedTabId = tab1.id)
+
+        // Initial state has no byte items
+        assertEquals(0, state.tabs[0].rendering.byteItems.size)
+        assertEquals(0, state.tabs[1].rendering.byteItems.size)
+
+        // When
+        val newState = reducer(state, AppEvent.RefreshRenderingEvent)
+
+        // Then
+        assertEquals(1, newState.tabs[0].rendering.byteItems.size)
+        assertEquals(1, newState.tabs[1].rendering.byteItems.size)
+        assertEquals("AA", (newState.tabs[0].rendering.byteItems[0] as SingleByte).value)
+        assertEquals("BB", (newState.tabs[1].rendering.byteItems[0] as SingleByte).value)
+    }
 
     @Test
     fun `SwitchAppThemeEvent updates theme`() = runTest {
@@ -215,12 +238,11 @@ class ReducerTest {
         newState = reducer(newState, AppEvent.CurrentTabEvent.AddDefinitionEvent(def2))
 
         // Then
-        // insertion order preserved (sorting by index deferred)
-        // TODO: Re-enable index-based sort assertions when sorting is re-implemented for variable formulas
+        // Sorted by resolved start index (static formulas)
         val definitions = newState.selectedTab.groupDefinitions
         assertEquals(2, definitions.size)
-        assertEquals("Def 1", definitions[0].name)
-        assertEquals("Def 2", definitions[1].name)
+        assertEquals("Def 2", definitions[0].name)
+        assertEquals("Def 1", definitions[1].name)
     }
 
     @Test
@@ -414,13 +436,40 @@ class ReducerTest {
         newState = reducer(newState, AppEvent.CurrentTabEvent.AddDefinitionEvent(def3))
 
         // Then
-        // insertion order preserved (sorting by index deferred)
-        // TODO: Re-enable index-based sort assertions when sorting is re-implemented for variable formulas
         val definitions = newState.selectedTab.groupDefinitions
         assertEquals(3, definitions.size)
-        assertEquals("Later", definitions[0].name)
-        assertEquals("First", definitions[1].name)
-        assertEquals("Middle", definitions[2].name)
+        assertEquals("First", definitions[0].name)
+        assertEquals("Middle", definitions[1].name)
+        assertEquals("Later", definitions[2].name)
+    }
+
+    @Test
+    fun `overlapping definitions store processing error in rendering state`() = runTest {
+        // Given
+        val payload = HexString("1A2B3C4D")
+        val stateWithInput = reducer(
+            AppState(),
+            AppEvent.CurrentTabEvent.ChangeInputDataEvent(payload)
+        )
+
+        val first = ByteGroupDefinition.createFromRange(indexes = 0..2, name = "First")
+        val overlapping = ByteGroupDefinition.createFromRange(indexes = 1..3, name = "Overlapping")
+
+        // When
+        val stateAfterFirst = reducer(stateWithInput, AppEvent.CurrentTabEvent.AddDefinitionEvent(first))
+        val stateAfterSecond = reducer(stateAfterFirst, AppEvent.CurrentTabEvent.AddDefinitionEvent(overlapping))
+
+        // Then
+        val errors = stateAfterSecond.selectedTab.rendering.errors
+        val overlapError = errors[overlapping.id]
+        assertTrue(overlapError != null)
+        assertTrue(overlapError.contains("Overlap detected"))
+        assertTrue(overlapError.contains("1"))
+
+        val groups = stateAfterSecond.selectedTab.rendering.byteItems.filterIsInstance<ByteGroup>()
+        assertEquals(1, groups.size)
+        assertEquals(first.id, groups.single().definition.id)
+        assertTrue(groups.none { it.definition.id == overlapping.id })
     }
 
     @Test
@@ -439,11 +488,10 @@ class ReducerTest {
         val newState = reducer(state, AppEvent.CurrentTabEvent.UpdateDefinitionEvent(def1, updatedDef1))
 
         // Then
-        // insertion order preserved (sorting by index deferred)
-        // TODO: Re-enable sort-order assertion when sorting is re-implemented for variable formulas
+        // Sorted by resolved start index (static formulas)
         val definitions = newState.selectedTab.groupDefinitions
-        assertEquals("Def 1", definitions[0].name)
-        assertEquals("Def 2", definitions[1].name)
+        assertEquals("Def 2", definitions[0].name)
+        assertEquals("Def 1", definitions[1].name)
     }
 
     @Test

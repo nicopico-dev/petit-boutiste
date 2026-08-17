@@ -41,4 +41,14 @@ data class ByteGroupDefinition(
     }
 }
 
+fun ByteGroupDefinition.expandFormulas(): ByteGroupDefinition {
+    val expandedStart = startFormula.replace("[[end]]", "($endFormula)")
+    val expandedEnd = endFormula.replace("[[start]]", "($startFormula)")
+    return if (expandedStart == startFormula && expandedEnd == endFormula) {
+        this
+    } else {
+        this.copy(startFormula = expandedStart, endFormula = expandedEnd)
+    }
+}
+
 fun createDefinitionId(): String = Uuid.random().toString()

@@ -8,16 +8,11 @@ package fr.nicopico.petitboutiste.state
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
-import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.io.files.Path
 import kotlin.uuid.Uuid
 
@@ -45,40 +40,18 @@ data class TabData(
 ) {
     val inputData = rendering.inputData
     val groupDefinitions = rendering.groupDefinitions
-    val isRendered: Boolean
-        get() = rendering.isRendered
 
-    suspend fun renderByteItems(): List<ByteItem> = rendering.renderByteItems()
+    fun renderByteItems(): List<ByteItem> = rendering.byteItems
 }
 
-@Stable
+@Immutable
 data class TabDataRendering(
     val inputData: DataString = HexString(""),
     val groupDefinitions: List<ByteGroupDefinition> = emptyList(),
-) {
-    private var byteItems: List<ByteItem>? = null
-    private val byteItemsMutex = Mutex()
-
-    var isRendered by mutableStateOf(false)
-        private set
-
-    @Suppress("ReturnCount")
-    suspend fun renderByteItems(): List<ByteItem> {
-        // Fast path
-        byteItems?.let { return it }
-
-        // Slow path
-        return byteItemsMutex.withLock {
-            // double-check
-            byteItems?.let { return it }
-
-            val result = inputData.toByteItems(groupDefinitions)
-            byteItems = result
-            isRendered = true
-            result
-        }
-    }
-}
+    val byteItems: List<ByteItem> = emptyList(),
+    val errors: Map<String, String> = emptyMap(),
+    val variableRegistry: DefinitionVariableRegistry? = null,
+)
 
 @Immutable
 data class TabTemplateData(

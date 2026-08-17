@@ -12,46 +12,63 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
+import fr.nicopico.petitboutiste.models.definition.expandFormulas
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 
-// TODO REFACTO Move this computation to the Reducer
 @Suppress("RedundantSuspendModifier", "RedundantSuppression")
 suspend fun DataString.toByteItems(
     groupDefinitions: List<ByteGroupDefinition> = emptyList(),
+    registry: DefinitionVariableRegistry? = null,
     dispatcher: CoroutineDispatcher = Dispatchers.Default,
-): List<ByteItem> = withContext(dispatcher) {
+): ByteItemsResult = withContext(dispatcher) {
     val bytes = hexStringValue.windowed(2, 2)
+    val errors = mutableMapOf<String, String>()
 
-    if (groupDefinitions.isEmpty()) {
-        return@withContext bytes.mapIndexed { index, value ->
-            SingleByte(index, value)
-        }
+    val finalRegistry = if (registry != null && registry.definitions == groupDefinitions) {
+        registry
+    } else {
+        DefinitionVariableRegistry(groupDefinitions)
     }
 
-    // TODO NPI Share DefinitionVariableRegistry as long as the definitions do not change
+    if (groupDefinitions.isEmpty()) {
+        return@withContext ByteItemsResult(
+            items = bytes.mapIndexed { index, value ->
+                SingleByte(index, value)
+            },
+            errors = emptyMap(),
+            registry = finalRegistry,
+        )
+    }
+
     // Resolve variable values once for all definitions
     val variables = try {
-        DefinitionVariableRegistry(groupDefinitions).computeVariableValues(this@toByteItems)
+        finalRegistry.computeVariableValues(this@toByteItems)
     } catch (e: Exception) {
-        // TODO NPI Expose error to the UI
         logError("Unable to compute variable values", e)
+        // If the registry fails, it might be a global error (like circular dependency)
+        // or a specific definition error. For now we log it and continue with empty variables.
+        // Formula resolution for specific definitions will likely fail too and be recorded below.
         emptyMap()
     }
 
     // Resolve start/end indexes for each definition, skipping those that cannot be resolved
-    // or are completely outside the bounds of the payload; preserve insertion order (sorting deferred)
-    // TODO: Index-based sorting deferred — definitions are kept in insertion order for now
-    // TODO NPI: Expand shortened variables [[start]] and [[end]] before passing them to the calculator
+    // or are completely outside the bounds of the payload
     val validGroupDefinitions = groupDefinitions.mapNotNull { definition ->
-        val start = Calculator.compute(definition.startFormula, variables) ?: return@mapNotNull null
-        val end = Calculator.compute(definition.endFormula, variables) ?: return@mapNotNull null
-        if (start > bytes.lastIndex) return@mapNotNull null
-        Triple(definition, start, end)
-    }
+        try {
+            val expandedDefinition = definition.expandFormulas()
+            val start = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
+            val end = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+            if (start > bytes.lastIndex) return@mapNotNull null
+            Triple(definition, start, end)
+        } catch (e: Exception) {
+            errors[definition.id] = e.message ?: "Formula error"
+            null
+        }
+    }.sortedBy { it.second } // Sort by resolved startIndex
 
     val result = mutableListOf<ByteItem>()
     var currentIndex = 0
@@ -64,8 +81,9 @@ suspend fun DataString.toByteItems(
             currentIndex++
         }
 
-        // Skip this group if it overlaps with a previous group
+        // Check for overlap
         if (currentIndex > startIndex) {
+            errors[definition.id] = "Overlap detected at index $startIndex"
             continue
         }
 
@@ -84,7 +102,7 @@ suspend fun DataString.toByteItems(
                 )
             )
         } catch (e: IllegalArgumentException) {
-            // TODO NPI Expose error to the UI
+            errors[definition.id] = e.message ?: "Invalid byte group"
             logError("Invalid byte group definition $definition", e)
         }
         currentIndex = definitionEndIndex + 1
@@ -96,5 +114,5 @@ suspend fun DataString.toByteItems(
         currentIndex++
     }
 
-    return@withContext result
+    return@withContext ByteItemsResult(result, errors, finalRegistry)
 }

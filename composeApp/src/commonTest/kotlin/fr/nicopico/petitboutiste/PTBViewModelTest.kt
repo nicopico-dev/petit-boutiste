@@ -8,10 +8,14 @@ package fr.nicopico.petitboutiste
 
 import fr.nicopico.petitboutiste.fakes.FakeAppStateRepository
 import fr.nicopico.petitboutiste.fakes.FakeTemplateManager
+import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.state.AppEvent
 import fr.nicopico.petitboutiste.state.AppState
 import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.state.TabDataRendering
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +49,7 @@ class PTBViewModelTest {
         Dispatchers.setMain(testDispatcher)
         appStateRepository = FakeAppStateRepository()
         templateManager = FakeTemplateManager()
-        reducer = Reducer(templateManager)
+        reducer = Reducer(templateManager, testDispatcher)
     }
 
     @AfterTest
@@ -167,5 +171,27 @@ class PTBViewModelTest {
         assertEquals(initialTabsCount + 1, viewModel.tabsState.value.tabs.size)
         assertEquals(viewModel.state.value.selectedTabId, viewModel.tabsState.value.selectedTabId)
         assertEquals(viewModel.state.value.selectedTabId, viewModel.currentTab.value.id)
+    }
+
+    @Test
+    fun `restored state has rendered byte items`() = runTest {
+        // Given
+        val inputData = HexString("AABBCC")
+        val tab = TabData(
+            rendering = TabDataRendering(
+                inputData = inputData,
+            )
+        )
+        val restoredState = AppState(tabs = listOf(tab), selectedTabId = tab.id)
+        appStateRepository.savedState = restoredState
+
+        // When
+        createViewModel()
+        advanceUntilIdle()
+
+        // Then
+        val renderedItems = viewModel.currentTab.value.renderByteItems()
+        assertEquals(3, renderedItems.size, "Should have 3 single bytes rendered")
+        assertEquals("AA", (renderedItems[0] as SingleByte).value)
     }
 }

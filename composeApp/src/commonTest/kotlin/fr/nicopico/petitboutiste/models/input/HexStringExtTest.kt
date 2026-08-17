@@ -19,7 +19,7 @@ class HexStringExtTest {
         val hexString = HexString("")
 
         // When converting to byte items
-        val byteItems = hexString.toByteItems()
+        val byteItems = hexString.toByteItems().items
 
         // Then the result is an empty list
         assertTrue(byteItems.isEmpty())
@@ -31,7 +31,7 @@ class HexStringExtTest {
         val hexString = HexString("1A2B3C4D")
 
         // When converting to byte items
-        val byteItems = hexString.toByteItems()
+        val byteItems = hexString.toByteItems().items
 
         // Then the result is a list of ByteItem.SingleByte objects
         val expected = listOf(
@@ -49,7 +49,7 @@ class HexStringExtTest {
         val hexString = HexString("FF")
 
         // When converting to byte items
-        val byteItems = hexString.toByteItems()
+        val byteItems = hexString.toByteItems().items
 
         // Then the result is a list with a single ByteItem.SingleByte
         val expected = listOf(SingleByte(0, "FF"))
@@ -63,7 +63,7 @@ class HexStringExtTest {
         val groupDefinition = ByteGroupDefinition.createFromRange(1..2, "TestGroup")
 
         // When converting to byte items with the group definition
-        val byteItems = hexString.toByteItems(listOf(groupDefinition))
+        val byteItems = hexString.toByteItems(listOf(groupDefinition)).items
 
         // Then the result contains a group and ungrouped singles
         val expected = listOf(
@@ -86,7 +86,7 @@ class HexStringExtTest {
         val group2Definition = ByteGroupDefinition.createFromRange(3..4, "Group2")
 
         // When converting to byte items with the group definitions
-        val byteItems = hexString.toByteItems(listOf(group1Definition, group2Definition))
+        val byteItems = hexString.toByteItems(listOf(group1Definition, group2Definition)).items
 
         // Then the result contains both groups and ungrouped singles
         val expected = listOf(
@@ -115,7 +115,7 @@ class HexStringExtTest {
         val group2Definition = ByteGroupDefinition.createFromRange(1..3, "Group2")
 
         // When converting to byte items with the group definitions
-        val byteItems = hexString.toByteItems(listOf(group1Definition, group2Definition))
+        val byteItems = hexString.toByteItems(listOf(group1Definition, group2Definition)).items
 
         // Then the result contains only the first group
         val expected = listOf(
@@ -140,7 +140,7 @@ class HexStringExtTest {
         // When converting to byte items with the group definitions
         val byteItems = hexString.toByteItems(
             listOf(groupDefinition1, groupDefinition2, groupDefinition3)
-        )
+        ).items
 
         // Then only the valid group is included
         val expected = listOf(
