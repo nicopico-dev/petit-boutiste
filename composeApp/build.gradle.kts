@@ -80,6 +80,11 @@ kotlin {
             implementation(projects.systemBridge)
         }
 
+        desktopTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+        }
+
         // TODO Enable WASM target
 //        wasmJsMain.dependencies {
 //            // WASM-specific dependencies

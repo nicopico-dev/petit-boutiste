@@ -5,8 +5,9 @@
 #  file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
 
-act pull_request \
-  -s GITHUB_TOKEN="$(gh auth token)" \
+act push \
   -P macos-latest=-self-hosted \
   --container-architecture linux/amd64 \
-  -W .github/workflows/validate-pr.yml
+  --artifact-server-path /tmp/act \
+  -W .github/workflows/macos-release.yml \
+  -e .github/act/act_release_event.json

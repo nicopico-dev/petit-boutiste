@@ -576,6 +576,12 @@ public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypography.data(): androidx
   params:
 
 @Composable
+public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypography.small(): androidx.compose.ui.text.TextStyle
+  skippable: true
+  restartable: true
+  params:
+
+@Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypography.title(): androidx.compose.ui.text.TextStyle
   skippable: true
   restartable: true
@@ -583,6 +589,12 @@ public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypography.title(): android
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypographyImpl.data(): androidx.compose.ui.text.TextStyle
+  skippable: true
+  restartable: true
+  params:
+
+@Composable
+public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypographyImpl.small(): androidx.compose.ui.text.TextStyle
   skippable: true
   restartable: true
   params:

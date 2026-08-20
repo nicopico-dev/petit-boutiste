@@ -5,6 +5,8 @@
 #  file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
 
-act schedule \
+act pull_request \
   -P macos-latest=-self-hosted \
-  --artifact-server-path /tmp/act
+  --container-architecture linux/amd64 \
+  -s GITHUB_TOKEN="$(gh auth token)" \
+  -W .github/workflows/validate-pr.yml

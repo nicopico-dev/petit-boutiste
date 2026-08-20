@@ -6,15 +6,18 @@
 
 package fr.nicopico.petitboutiste.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -42,27 +45,40 @@ fun MainPane(
     onInputTypeChanged: (InputType) -> Unit = {},
     onAddDefinition: (IntRange) -> Unit= {},
 ) {
+    val byteCount by remember(inputData) {
+        derivedStateOf { inputData.hexStringValue.count() / 2 }
+    }
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             Text(
                 text = "Data Input",
                 style = AppTheme.current.typography.title,
-                modifier = Modifier.padding(bottom = 8.dp).align(Alignment.Center)
             )
+
+            Spacer(Modifier.width(4.dp))
+
+            Text(
+                text = "($byteCount bytes)",
+                style = AppTheme.current.typography.small,
+            )
+
+            Spacer(Modifier.weight(1f))
 
             InputTypeToggle(
                 inputData.inputType,
                 onInputTypeChanged,
-                Modifier
-                    .align(Alignment.CenterEnd)
-                    .testTag(UiTags.INPUT_TYPE_TOGGLE)
+                Modifier.testTag(UiTags.INPUT_TYPE_TOGGLE)
             )
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(8.dp))
 
         // Render the appropriate input component based on the selected input type
         val inputModifier = Modifier

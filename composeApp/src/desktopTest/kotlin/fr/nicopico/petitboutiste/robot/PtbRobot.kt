@@ -6,12 +6,15 @@
 
 package fr.nicopico.petitboutiste.robot
 
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toAwtImage
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onRoot
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fr.nicopico.petitboutiste.LocalOnAppEvent
+import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.PTBViewModel
 import fr.nicopico.petitboutiste.PetitBoutisteApp
 import fr.nicopico.petitboutiste.fakes.FakeAppStateRepository
@@ -41,7 +44,18 @@ class PtbRobot(
             )
             val appTheme by viewModel.appTheme.collectAsStateWithLifecycle()
             appTheme {
-                PetitBoutisteApp(viewModel)
+                // Replicate CompositionLocalProvider that lives outside `PetitBoutisteApp`
+                // (this is a workaround, hidden CompositionLocal requirements should be removed)
+                CompositionLocalProvider(
+                    LocalOnAppEvent provides { event ->
+                        viewModel.onAppEvent(event)
+                    },
+                    LocalOnSnackbar provides { snackbar ->
+                        viewModel.displaySnackBar(snackbar)
+                    },
+                ) {
+                    PetitBoutisteApp(viewModel)
+                }
             }
         }
     }

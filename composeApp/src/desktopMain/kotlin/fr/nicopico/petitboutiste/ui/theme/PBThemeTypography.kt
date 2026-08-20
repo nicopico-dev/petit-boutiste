@@ -23,6 +23,8 @@ val PBTheme.typography: PBThemeTypography
 interface PBThemeTypography {
     val title: TextStyle
         @Composable get
+    val small: TextStyle
+        @Composable get
     val data: TextStyle
         @Composable get
 }
@@ -37,6 +39,18 @@ private class PBThemeTypographyImpl : PBThemeTypography {
                 JewelTheme.createDefaultTextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = defaultFontSize * 1.1,
+                )
+            }
+        }
+
+    override val small: TextStyle
+        @Composable
+        get() {
+            val defaultFontSize = JewelTheme.defaultTextStyle.fontSize
+            return remember(this, defaultFontSize) {
+                JewelTheme.createDefaultTextStyle(
+                    fontWeight = FontWeight.Thin,
+                    fontSize = defaultFontSize * 0.9,
                 )
             }
         }
