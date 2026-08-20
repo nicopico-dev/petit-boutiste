@@ -37,7 +37,8 @@ import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
 private val fieldMaxWidth = 200.dp
-private val VARIABLE_REGEX = Regex("\\[\\[[^\\]]+\\]\\]")
+// Matches [[VARIABLE]]
+private val VARIABLE_REGEX = Regex("\\[\\[[^]]+]]")
 
 @Suppress("LongMethod")
 @Composable

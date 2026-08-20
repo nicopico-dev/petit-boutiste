@@ -52,6 +52,7 @@ class ByteGroupDefinitionTest {
         }
     }
 
+    @Suppress("EmptyRange")
     @Test
     fun `indexes must be ordered left to right`() {
         assertFails {
