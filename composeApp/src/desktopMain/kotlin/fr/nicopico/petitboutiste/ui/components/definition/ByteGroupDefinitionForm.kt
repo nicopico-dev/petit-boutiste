@@ -28,15 +28,16 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.calculator.Calculator.compute
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.ui.UiTags
-import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
+import fr.nicopico.petitboutiste.ui.components.foundation.PBTextField
 import fr.nicopico.petitboutiste.ui.components.representation.ByteGroupRepresentationForm
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
 private val fieldMaxWidth = 200.dp
+private val VARIABLE_REGEX = Regex("\\[\\[[^\\]]+\\]\\]")
 
 @Suppress("LongMethod")
 @Composable
@@ -61,36 +62,38 @@ fun ByteGroupDefinitionForm(
     }
 
     //region Input validation
-    val startFormulaError by remember(definition) {
+    val startFormulaError by remember(startFormulaInput) {
         derivedStateOf {
             if (startFormulaInput.isNotEmpty()) {
-                val startIndex = compute(startFormulaInput)
+                val expandedFormula = startFormulaInput.replace(VARIABLE_REGEX, "0")
+                val startIndex = compute(expandedFormula)
                 when {
-                    startIndex == null -> "Must be a number"
+                    startIndex == null -> "Invalid formula"
                     startIndex < 0 -> "Must be a positive number"
                     else -> null
                 }
             } else null
         }
     }
-    val endFormulaError by remember(definition) {
+    val endFormulaError by remember(startFormulaInput, endFormulaInput) {
         derivedStateOf {
             if (endFormulaInput.isNotEmpty()) {
-                val startIndex = compute(startFormulaInput)
-                val endIndex = compute(endFormulaInput)
+                val expandedStart = startFormulaInput.replace(VARIABLE_REGEX, "0")
+                val expandedEnd = endFormulaInput.replace(VARIABLE_REGEX, "0")
+                val startIndex = compute(expandedStart)
+                val endIndex = compute(expandedEnd)
                 when {
-                    endIndex == null -> "Must be a number"
+                    endIndex == null -> "Invalid formula"
                     endIndex < (startIndex ?: 0) -> "Must be greater than or equal to Start"
                     else -> null
                 }
             } else null
         }
     }
-    val isValid by remember(definition) {
+    val isValid by remember(startFormulaInput, endFormulaInput, startFormulaError, endFormulaError) {
         derivedStateOf {
             startFormulaInput.isNotEmpty() && endFormulaInput.isNotEmpty()
-                // TODO NPI Check if formulas are valid
-                //&& startFormulaError == null && endFormulaError == null
+                && startFormulaError == null && endFormulaError == null
         }
     }
     //endregion

@@ -35,6 +35,7 @@ import fr.nicopico.petitboutiste.calculator.Calculator
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.state.SnackbarState
@@ -42,6 +43,7 @@ import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
+import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.setData
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
@@ -157,17 +159,23 @@ fun ByteGroupDefinitions(
                     items = {
                         listOf(
                             ContextMenuItem("Duplicate this definition") {
-                                // TODO NPI Restore "Duplicate this definition" feature
-//                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
-//                                    definition = definition.copy(
-//                                        id = createDefinitionId(),
-//                                        name = definition.name?.incrementIndexSuffix(),
-//                                        indexes = with(definition.indexes) {
-//                                            moveStart(endInclusive + 1)
-//                                        },
-//                                    )
-//                                )
-//                                onEvent(event)
+                                val startValue = Calculator.compute(definition.startFormula)
+                                val endValue = Calculator.compute(definition.endFormula)
+                                val (newStart, newEnd) = if (startValue != null && endValue != null) {
+                                    val length = endValue - startValue + 1
+                                    val nextStart = endValue + 1
+                                    nextStart.toString() to (nextStart + length - 1).toString()
+                                } else {
+                                    definition.startFormula to definition.endFormula
+                                }
+
+                                val newDefinition = definition.copy(
+                                    id = createDefinitionId(),
+                                    name = definition.name?.incrementIndexSuffix(),
+                                    startFormula = newStart,
+                                    endFormula = newEnd,
+                                )
+                                onAddDefinition(newDefinition)
                             }
                         )
                     }

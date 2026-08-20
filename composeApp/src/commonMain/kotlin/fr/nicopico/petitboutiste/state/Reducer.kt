@@ -12,6 +12,7 @@ import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
+import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
@@ -242,10 +243,14 @@ class Reducer(
             is AppEvent.CurrentTabEvent.AddDefinitionsFromTemplateEvent -> {
                 val template = templateManager.loadTemplate(event.templateFilePath)
                 state.updateCurrentTab {
-                    // TODO NPI Handle duplicate or conflicting definitions
+                    // Ensure incoming definitions have unique IDs
+                    val currentIds = groupDefinitions.map { it.id }.toSet()
+                    val newDefinitions = template.definitions.map {
+                        if (it.id in currentIds) it.copy(id = createDefinitionId()) else it
+                    }
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + template.definitions,
+                            groupDefinitions = groupDefinitions + newDefinitions,
                         )
                     ).updateRendering()
                 }
