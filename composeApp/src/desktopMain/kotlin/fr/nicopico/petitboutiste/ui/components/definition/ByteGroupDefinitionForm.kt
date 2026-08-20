@@ -134,6 +134,7 @@ fun ByteGroupDefinitionForm(
                 value = startFormulaInput,
                 onValueChange = { startFormulaInput = it },
                 isError = startFormulaError != null,
+                errorText = startFormulaError,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()
@@ -149,6 +150,7 @@ fun ByteGroupDefinitionForm(
                 value = endFormulaInput,
                 onValueChange = { endFormulaInput = it },
                 isError = endFormulaError != null,
+                errorText = endFormulaError,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()
