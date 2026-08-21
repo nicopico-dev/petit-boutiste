@@ -15,6 +15,7 @@ import fr.nicopico.petitboutiste.models.state.AppState
 import fr.nicopico.petitboutiste.models.state.SnackbarState
 import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabDataRendering
+import fr.nicopico.petitboutiste.models.state.TabsState
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -168,8 +169,8 @@ class PTBViewModelTest {
         advanceUntilIdle()
         // Then
         assertEquals(initialTabsCount + 1, viewModel.tabsState.value.tabs.size)
-        assertEquals(viewModel.state.value.selectedTabId, viewModel.tabsState.value.selectedTabId)
-        assertEquals(viewModel.state.value.selectedTabId, viewModel.currentTab.value.id)
+        assertEquals(viewModel.state.value.tabsState.selectedTabId, viewModel.tabsState.value.selectedTabId)
+        assertEquals(viewModel.state.value.tabsState.selectedTabId, viewModel.currentTab.value.id)
     }
 
     @Test
@@ -181,7 +182,12 @@ class PTBViewModelTest {
                 inputData = inputData,
             )
         )
-        val restoredState = AppState(tabs = listOf(tab), selectedTabId = tab.id)
+        val restoredState = AppState(
+            tabsState = TabsState(
+                tabs = listOf(tab),
+                selectedTabId = tab.id,
+            )
+        )
         appStateRepository.savedState = restoredState
 
         // When

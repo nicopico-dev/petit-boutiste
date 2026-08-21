@@ -9,7 +9,6 @@ package fr.nicopico.petitboutiste.models.events
 import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.state.AppState
 import fr.nicopico.petitboutiste.models.state.SnackbarState
-import fr.nicopico.petitboutiste.models.state.selectedTab
 
 fun AppEvent.updateSnackbarState(
     previousState: AppState,
@@ -17,7 +16,7 @@ fun AppEvent.updateSnackbarState(
 ): SnackbarState? {
     return when(this) {
         is CurrentTabEvent.ClearAllDefinitionsEvent -> {
-            val selectedTab = previousState.selectedTab
+            val selectedTab = previousState.tabsState.selectedTab
             SnackbarState(
                 message = "All definitions cleared",
                 actionLabel = "Undo",
@@ -50,7 +49,7 @@ fun AppEvent.updateSnackbarState(
         }
 
         is AppEvent.RemoveTabEvent -> {
-            val selectedTab = previousState.selectedTab
+            val selectedTab = previousState.tabsState.selectedTab
             SnackbarState(
                 message = "Tab '${selectedTab.name ?: "Untitled"}' removed",
                 actionLabel = "Undo",
@@ -58,7 +57,7 @@ fun AppEvent.updateSnackbarState(
                     onAppEvent(
                         AppEvent.UndoRemoveTabEvent(
                             tabData = selectedTab,
-                            index = previousState.tabs.indexOf(selectedTab),
+                            index = previousState.tabsState.tabs.indexOf(selectedTab),
                         )
                     )
                 }

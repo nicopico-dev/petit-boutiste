@@ -17,6 +17,7 @@ import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabDataRendering
 import fr.nicopico.petitboutiste.models.state.TabId
 import fr.nicopico.petitboutiste.models.state.TabTemplateData
+import fr.nicopico.petitboutiste.models.state.TabsState
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import fr.nicopico.petitboutiste.utils.getSettingsFor
 import fr.nicopico.petitboutiste.utils.log
@@ -36,8 +37,8 @@ class AppStateRepositorySettings(
 
     override fun save(appState: AppState) {
         val persisted = PersistedAppState(
-            tabs = appState.tabs.map { it.toPersisted() },
-            selectedTabId = appState.selectedTabId.value,
+            tabs = appState.tabsState.tabs.map { it.toPersisted() },
+            selectedTabId = appState.tabsState.selectedTabId.value,
             appTheme = appState.appTheme.name,
         )
         encodeAndStore(key, persisted)
@@ -67,8 +68,10 @@ class AppStateRepositorySettings(
         }
 
         return AppState(
-            tabs = finalTabs,
-            selectedTabId = selectedTabId,
+            tabsState = TabsState(
+                tabs = finalTabs,
+                selectedTabId = selectedTabId,
+            ),
             appTheme = appTheme,
         ).also {
             log("Restoring app state -> $it")

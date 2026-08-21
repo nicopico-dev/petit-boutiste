@@ -20,7 +20,7 @@ import fr.nicopico.petitboutiste.models.state.AppState
 import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabId
 import fr.nicopico.petitboutiste.models.state.TabTemplateData
-import fr.nicopico.petitboutiste.models.state.selectedTab
+import fr.nicopico.petitboutiste.models.state.TabsState
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
 import kotlinx.coroutines.CoroutineDispatcher
@@ -37,94 +37,104 @@ class Reducer(
             is AppEvent.SwitchAppThemeEvent -> {
                 state.copy(appTheme = event.appTheme)
             }
+
             is AppEvent.RefreshRenderingEvent -> {
-                state.copy(
-                    tabs = state.tabs.map { it.updateRendering() }
-                )
+                state.updateTabsState {
+                    copy(tabs = tabs.map { it.withUpdatedRendering() })
+                }
             }
 
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
-                val newTab = (event.tabData ?: TabData()).updateRendering()
-                state.copy(tabs = state.tabs + newTab, selectedTabId = newTab.id)
+                val newTab = (event.tabData ?: TabData()).withUpdatedRendering()
+                state.updateTabsState {
+                    copy(
+                        tabs = tabs + newTab,
+                        selectedTabId = newTab.id,
+                    )
+                }
             }
 
             is AppEvent.SelectTabEvent -> {
-                state.copy(selectedTabId = event.tabId)
+                state.updateTabsState {
+                    copy(selectedTabId = event.tabId)
+                }
             }
 
             is AppEvent.RenameTabEvent -> {
-                state.copy(
-                    tabs = state.tabs.update(event.tabId) {
-                        TabData(name = event.tabName).updateRendering()
-                    }
-                )
+                state.updateTab(event.tabId) {
+                    copy(name = event.tabName)
+                }
             }
 
             is AppEvent.RemoveTabEvent -> {
-                val tabs = state.tabs
+                val tabs = state.tabsState.tabs
                     .filterNot { it.id == event.tabId }
                     .ifEmpty {
                         // Add a default tab if the last tab was closed
-                        listOf(TabData().updateRendering())
+                        listOf(TabData().withUpdatedRendering())
                     }
 
-                val selectedTabId = if (state.selectedTabId == event.tabId) {
+                val selectedTabId = if (state.tabsState.selectedTabId == event.tabId) {
                     // Select the tab just before the deleted one, or the first tab
                     val nextSelectedTabIndex = max(
                         0,
-                        state.tabs.indexOfFirst { it.id == event.tabId } - 1,
+                        state.tabsState.tabs.indexOfFirst { it.id == event.tabId } - 1,
                     )
                     tabs[nextSelectedTabIndex].id
-                } else state.selectedTabId
-                state.copy(tabs = tabs, selectedTabId = selectedTabId)
+                } else state.tabsState.selectedTabId
+
+                state.updateTabsState {
+                    copy(tabs = tabs, selectedTabId = selectedTabId)
+                }
             }
 
             is AppEvent.UndoRemoveTabEvent -> {
-                val renderedTabData = event.tabData.updateRendering()
-                val newTabs = state.tabs.toMutableList()
+                val renderedTabData = event.tabData.withUpdatedRendering()
+                val newTabs = state.tabsState.tabs.toMutableList()
                     .apply { add(event.index.coerceIn(0, size), renderedTabData) }
-                state.copy(
-                    tabs = newTabs,
-                    selectedTabId = event.tabData.id,
-                )
+
+                state.updateTabsState {
+                    copy(tabs = newTabs, selectedTabId = event.tabData.id)
+                }
             }
 
             is AppEvent.DuplicateTabEvent -> {
                 // Copy the tab with a new ID to separate them
-                val sourceTab = state.tabs.firstOrNull { it.id == event.tabId }
+                val sourceTab = state.tabsState.tabs.firstOrNull { it.id == event.tabId }
                     ?: return state
 
                 val duplicatedTab = sourceTab.copy(
                     id = TabId.create(),
                     name = sourceTab.name?.let { "$it (copy)" },
-                ).updateRendering()
-                val duplicateIndex = state.tabs.indexOf(sourceTab) + 1
+                ).withUpdatedRendering()
+                val duplicateIndex = state.tabsState.tabs.indexOf(sourceTab) + 1
 
-                val newTabs = state.tabs
+                val newTabs = state.tabsState.tabs
                     .toMutableList()
                     .apply {
                         add(duplicateIndex, duplicatedTab)
                     }
                     .toList()
 
-                state.copy(
-                    tabs = newTabs,
-                    selectedTabId = duplicatedTab.id,
-                )
+                state.updateTabsState {
+                    copy(tabs = newTabs, selectedTabId = duplicatedTab.id)
+                }
             }
 
             is AppEvent.CycleTabEvent -> {
-                val currentIndex = state.tabs.indexOf(state.selectedTab)
+                val currentIndex = state.tabsState.tabs.indexOf(state.tabsState.selectedTab)
                 val nextIndex = when {
-                    event.cycleForward && currentIndex == state.tabs.lastIndex -> 0
+                    event.cycleForward && currentIndex == state.tabsState.tabs.lastIndex -> 0
                     event.cycleForward -> currentIndex + 1
-                    currentIndex == 0 -> state.tabs.lastIndex
+                    currentIndex == 0 -> state.tabsState.tabs.lastIndex
                     else -> currentIndex - 1
                 }
+                val nextTab = state.tabsState.tabs[nextIndex]
 
-                val nextTab = state.tabs[nextIndex]
-                state.copy(selectedTabId = nextTab.id)
+                state.updateTabsState {
+                    copy(selectedTabId = nextTab.id)
+                }
             }
             //endregion
 
@@ -137,29 +147,30 @@ class Reducer(
                         InputType.BINARY -> BinaryString.fromHexString(hexString)
                         InputType.BASE64 -> Base64String.fromHexString(hexString)
                     }
-                    TabData(
+
+                    copy(
                         rendering = rendering.copy(inputData = updatedData),
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
 
             is AppEvent.CurrentTabEvent.ChangeInputDataEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         rendering = rendering.copy(inputData = event.data)
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
 
             is AppEvent.CurrentTabEvent.AddDefinitionEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         rendering = rendering.copy(
                             groupDefinitions = (groupDefinitions + event.definition)
                                 .sortedWith(ByteGroupDefinitionSorter),
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
 
@@ -168,117 +179,111 @@ class Reducer(
                     val updatedDefinitions = groupDefinitions.map { definition ->
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
-                    TabData(
+
+                    copy(
                         rendering = rendering.copy(
                             groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
 
             is AppEvent.CurrentTabEvent.DeleteDefinitionEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         rendering = rendering.copy(
                             groupDefinitions = groupDefinitions - event.definition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
 
             is AppEvent.CurrentTabEvent.ClearAllDefinitionsEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         rendering = rendering.copy(
                             groupDefinitions = emptyList(),
                         ),
                         templateData = null
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
 
             is AppEvent.CurrentTabEvent.UndoClearAllDefinitionsEvent -> {
-                state.copy(
-                    tabs = state.tabs.update(event.tabId) {
-                        TabData(
-                            rendering = event.rendering,
-                            templateData = event.templateData,
-                        ).updateRendering()
-                    },
-                )
+                state.updateTab(event.tabId) {
+                    copy(
+                        rendering = event.rendering,
+                        templateData = event.templateData,
+                    ).withUpdatedRendering()
+                }
             }
 
             is AppEvent.CurrentTabEvent.UpdateScratchpadEvent -> {
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         scratchpad = event.scratchpad,
                         templateData = templateData?.copy(
                             definitionsHaveChanged = true
                         )
-                    ).updateRendering()
+                    )
                 }
             }
 
             //region Templates
             is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
                 val template = templateManager.loadTemplate(event.templateFilePath)
+
                 state.updateCurrentTab {
-                    TabData(
+                    copy(
                         rendering = rendering.copy(groupDefinitions = template.definitions),
                         scratchpad = if (event.definitionsOnly) {
                             // Keep current scratchpad
                             this.scratchpad
                         } else template.scratchpad,
                         templateData = TabTemplateData(event.templateFilePath),
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
 
             is AppEvent.CurrentTabEvent.SaveTemplateEvent -> {
-                val template = with(state.selectedTab) {
+                val template = with(state.tabsState.selectedTab) {
                     toTemplate(event.templateFilePath.nameWithoutExtension)
                 }
                 templateManager.saveTemplate(template, event.templateFilePath, event.updateExisting)
 
                 state.updateCurrentTab {
-                    TabData(templateData = TabTemplateData(event.templateFilePath)).updateRendering()
+                    copy(
+                        templateData = TabTemplateData(event.templateFilePath)
+                    ).withUpdatedRendering()
                 }
             }
 
             is AppEvent.CurrentTabEvent.AddDefinitionsFromTemplateEvent -> {
                 val template = templateManager.loadTemplate(event.templateFilePath)
+
                 state.updateCurrentTab {
                     // Ensure incoming definitions have unique IDs
                     val currentIds = groupDefinitions.map { it.id }.toSet()
                     val newDefinitions = template.definitions.map {
                         if (it.id in currentIds) it.copy(id = createDefinitionId()) else it
                     }
-                    TabData(
+
+                    copy(
                         rendering = rendering.copy(
                             groupDefinitions = groupDefinitions + newDefinitions,
                         )
-                    ).updateRendering()
+                    ).withUpdatedRendering()
                 }
             }
             //endregion
+
             //endregion
-
         }
     }
 
-    private suspend fun List<TabData>.update(tabId: TabId, block: suspend TabData.() -> TabData): List<TabData> {
-        return map { tab ->
-            if (tab.id == tabId) tab.block() else tab
-        }
-    }
-
-    private suspend fun AppState.updateCurrentTab(block: suspend TabData.() -> TabData): AppState {
-        return copy(tabs = tabs.update(selectedTabId, block))
-    }
-
-    private suspend fun TabData.updateRendering(): TabData {
+    private suspend fun TabData.withUpdatedRendering(): TabData {
         val result = rendering.inputData.toByteItems(
             groupDefinitions = rendering.groupDefinitions,
             registry = rendering.variableRegistry,
@@ -291,5 +296,25 @@ class Reducer(
                 variableRegistry = result.registry,
             )
         )
+    }
+
+    companion object {
+        private suspend inline fun AppState.updateCurrentTab(block: suspend TabData.() -> TabData): AppState {
+            return updateTab(tabsState.selectedTabId, block)
+        }
+
+        private suspend inline fun AppState.updateTab(tabId: TabId, block: suspend TabData.() -> TabData): AppState {
+            return copy(
+                tabsState = tabsState.copy(
+                    tabs = tabsState.tabs.map { tab ->
+                        if (tab.id == tabId) tab.block() else tab
+                    }
+                )
+            )
+        }
+
+        private suspend inline fun AppState.updateTabsState(block: suspend TabsState.() -> TabsState): AppState {
+            return copy(tabsState = tabsState.block())
+        }
     }
 }

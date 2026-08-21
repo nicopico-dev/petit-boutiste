@@ -12,8 +12,6 @@ import fr.nicopico.petitboutiste.models.events.AppEvent
 import fr.nicopico.petitboutiste.models.events.updateSnackbarState
 import fr.nicopico.petitboutiste.models.state.AppState
 import fr.nicopico.petitboutiste.models.state.SnackbarState
-import fr.nicopico.petitboutiste.models.state.TabsState
-import fr.nicopico.petitboutiste.models.state.selectedTab
 import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.Job
@@ -61,23 +59,21 @@ class PTBViewModel(
         )
 
     val tabsState = state
-        .map { TabsState(it.tabs, it.selectedTabId) }
+        .map { it.tabsState }
         .distinctUntilChanged()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = state.value.let {
-                TabsState(it.tabs, it.selectedTabId)
-            },
+            initialValue = state.value.tabsState,
         )
 
     val currentTab = state
-        .map { it.selectedTab }
+        .map { it.tabsState.selectedTab }
         .distinctUntilChanged()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = state.value.selectedTab,
+            initialValue = state.value.tabsState.selectedTab,
         )
 
     fun onAppEvent(event: AppEvent) {
