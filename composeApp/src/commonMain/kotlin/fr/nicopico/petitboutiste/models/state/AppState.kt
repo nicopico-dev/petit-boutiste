@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.models.state
 
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.ui.theme.PBTheme

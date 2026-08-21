@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import fr.nicopico.petitboutiste.state.SnackbarState
-import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.models.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.ui.components.foundation.PBSnackbar
 
 @Composable

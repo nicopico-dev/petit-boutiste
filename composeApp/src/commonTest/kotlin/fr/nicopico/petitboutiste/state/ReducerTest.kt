@@ -6,11 +6,18 @@
 
 package fr.nicopico.petitboutiste.state
 
+import fr.nicopico.petitboutiste.Reducer
+import fr.nicopico.petitboutiste.models.InputType
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.SingleByte
+import fr.nicopico.petitboutiste.models.events.AppEvent
 import fr.nicopico.petitboutiste.models.persistence.Template
+import fr.nicopico.petitboutiste.models.state.AppState
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabDataRendering
+import fr.nicopico.petitboutiste.models.state.selectedTab
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import io.github.vinceglb.filekit.utils.toKotlinxIoPath

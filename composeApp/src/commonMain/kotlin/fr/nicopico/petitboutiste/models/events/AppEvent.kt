@@ -4,10 +4,15 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.models.events
 
+import fr.nicopico.petitboutiste.models.InputType
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabDataRendering
+import fr.nicopico.petitboutiste.models.state.TabId
+import fr.nicopico.petitboutiste.models.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlinx.io.files.Path
 

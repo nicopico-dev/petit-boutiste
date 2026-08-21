@@ -8,14 +8,13 @@ package fr.nicopico.petitboutiste
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fr.nicopico.petitboutiste.models.events.AppEvent
+import fr.nicopico.petitboutiste.models.events.updateSnackbarState
+import fr.nicopico.petitboutiste.models.state.AppState
+import fr.nicopico.petitboutiste.models.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.TabsState
+import fr.nicopico.petitboutiste.models.state.selectedTab
 import fr.nicopico.petitboutiste.repository.AppStateRepository
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.AppState
-import fr.nicopico.petitboutiste.state.Reducer
-import fr.nicopico.petitboutiste.state.SnackbarState
-import fr.nicopico.petitboutiste.state.TabsState
-import fr.nicopico.petitboutiste.state.getEventSnackbar
-import fr.nicopico.petitboutiste.state.selectedTab
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -98,7 +97,7 @@ class PTBViewModel(
 
         state.value = newState
 
-        val snackbar = event.getEventSnackbar(previousState, ::onAppEvent)
+        val snackbar = event.updateSnackbarState(previousState, ::onAppEvent)
         if (snackbar != null) {
             displaySnackBar(snackbar)
         }

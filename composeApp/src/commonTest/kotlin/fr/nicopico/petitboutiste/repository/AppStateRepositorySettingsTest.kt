@@ -9,10 +9,10 @@ package fr.nicopico.petitboutiste.repository
 import com.russhwolf.settings.MapSettings
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.HexString
-import fr.nicopico.petitboutiste.state.AppState
-import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.TabDataRendering
-import fr.nicopico.petitboutiste.state.TabId
+import fr.nicopico.petitboutiste.models.state.AppState
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabDataRendering
+import fr.nicopico.petitboutiste.models.state.TabId
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlin.test.Test
 import kotlin.test.assertEquals

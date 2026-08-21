@@ -38,7 +38,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
-import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.SnackbarState
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme

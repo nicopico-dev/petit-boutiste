@@ -24,7 +24,7 @@ import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
-import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.SnackbarState
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 
 @Composable

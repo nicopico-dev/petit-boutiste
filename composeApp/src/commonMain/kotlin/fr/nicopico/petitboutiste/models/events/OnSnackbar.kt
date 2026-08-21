@@ -4,10 +4,8 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.models.events
 
-data class SnackbarState(
-    val message: String,
-    val actionLabel: String? = null,
-    val onAction: (() -> Unit)? = null,
-)
+import fr.nicopico.petitboutiste.models.state.SnackbarState
+
+typealias OnSnackbar = (SnackbarState) -> Unit

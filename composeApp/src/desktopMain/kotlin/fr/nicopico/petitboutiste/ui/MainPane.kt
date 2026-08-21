@@ -22,9 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.models.InputType
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.state.InputType
 import fr.nicopico.petitboutiste.ui.components.data.HexDisplay
 import fr.nicopico.petitboutiste.ui.components.data.input.InputTypeToggle
 import fr.nicopico.petitboutiste.ui.components.data.input.base64.Base64Input

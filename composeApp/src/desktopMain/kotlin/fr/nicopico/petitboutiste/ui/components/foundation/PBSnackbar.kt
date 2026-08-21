@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.SnackbarState
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors

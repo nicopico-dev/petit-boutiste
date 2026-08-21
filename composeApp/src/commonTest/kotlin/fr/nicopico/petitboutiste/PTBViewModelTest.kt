@@ -10,12 +10,11 @@ import fr.nicopico.petitboutiste.fakes.FakeAppStateRepository
 import fr.nicopico.petitboutiste.fakes.FakeTemplateManager
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.SingleByte
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.AppState
-import fr.nicopico.petitboutiste.state.Reducer
-import fr.nicopico.petitboutiste.state.SnackbarState
-import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.TabDataRendering
+import fr.nicopico.petitboutiste.models.events.AppEvent
+import fr.nicopico.petitboutiste.models.state.AppState
+import fr.nicopico.petitboutiste.models.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabDataRendering
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

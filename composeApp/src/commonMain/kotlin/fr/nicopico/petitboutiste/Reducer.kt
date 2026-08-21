@@ -4,8 +4,9 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste
 
+import fr.nicopico.petitboutiste.models.InputType
 import fr.nicopico.petitboutiste.models.data.Base64String
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.DataString
@@ -13,7 +14,13 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
+import fr.nicopico.petitboutiste.models.events.AppEvent
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
+import fr.nicopico.petitboutiste.models.state.AppState
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabId
+import fr.nicopico.petitboutiste.models.state.TabTemplateData
+import fr.nicopico.petitboutiste.models.state.selectedTab
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
 import kotlinx.coroutines.CoroutineDispatcher
@@ -49,7 +56,7 @@ class Reducer(
             is AppEvent.RenameTabEvent -> {
                 state.copy(
                     tabs = state.tabs.update(event.tabId) {
-                        copy(name = event.tabName).updateRendering()
+                        TabData(name = event.tabName).updateRendering()
                     }
                 )
             }
@@ -130,7 +137,7 @@ class Reducer(
                         InputType.BINARY -> BinaryString.fromHexString(hexString)
                         InputType.BASE64 -> Base64String.fromHexString(hexString)
                     }
-                    copy(
+                    TabData(
                         rendering = rendering.copy(inputData = updatedData),
                     ).updateRendering()
                 }
@@ -138,7 +145,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.ChangeInputDataEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         rendering = rendering.copy(inputData = event.data)
                     ).updateRendering()
                 }
@@ -146,7 +153,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.AddDefinitionEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         rendering = rendering.copy(
                             groupDefinitions = (groupDefinitions + event.definition)
                                 .sortedWith(ByteGroupDefinitionSorter),
@@ -161,7 +168,7 @@ class Reducer(
                     val updatedDefinitions = groupDefinitions.map { definition ->
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
-                    copy(
+                    TabData(
                         rendering = rendering.copy(
                             groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
                         ),
@@ -172,7 +179,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.DeleteDefinitionEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         rendering = rendering.copy(
                             groupDefinitions = groupDefinitions - event.definition,
                         ),
@@ -183,7 +190,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.ClearAllDefinitionsEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         rendering = rendering.copy(
                             groupDefinitions = emptyList(),
                         ),
@@ -195,7 +202,7 @@ class Reducer(
             is AppEvent.CurrentTabEvent.UndoClearAllDefinitionsEvent -> {
                 state.copy(
                     tabs = state.tabs.update(event.tabId) {
-                        copy(
+                        TabData(
                             rendering = event.rendering,
                             templateData = event.templateData,
                         ).updateRendering()
@@ -205,7 +212,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.UpdateScratchpadEvent -> {
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         scratchpad = event.scratchpad,
                         templateData = templateData?.copy(
                             definitionsHaveChanged = true
@@ -218,7 +225,7 @@ class Reducer(
             is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
                 val template = templateManager.loadTemplate(event.templateFilePath)
                 state.updateCurrentTab {
-                    copy(
+                    TabData(
                         rendering = rendering.copy(groupDefinitions = template.definitions),
                         scratchpad = if (event.definitionsOnly) {
                             // Keep current scratchpad
@@ -236,7 +243,7 @@ class Reducer(
                 templateManager.saveTemplate(template, event.templateFilePath, event.updateExisting)
 
                 state.updateCurrentTab {
-                    copy(templateData = TabTemplateData(event.templateFilePath)).updateRendering()
+                    TabData(templateData = TabTemplateData(event.templateFilePath)).updateRendering()
                 }
             }
 
@@ -248,7 +255,7 @@ class Reducer(
                     val newDefinitions = template.definitions.map {
                         if (it.id in currentIds) it.copy(id = createDefinitionId()) else it
                     }
-                    copy(
+                    TabData(
                         rendering = rendering.copy(
                             groupDefinitions = groupDefinitions + newDefinitions,
                         )

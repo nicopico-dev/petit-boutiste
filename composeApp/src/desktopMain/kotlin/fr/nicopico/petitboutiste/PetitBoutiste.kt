@@ -16,13 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.WindowState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import fr.nicopico.petitboutiste.models.events.OnAppEvent
+import fr.nicopico.petitboutiste.models.events.OnSnackbar
 import fr.nicopico.petitboutiste.models.persistence.getScreenCharacteristics
 import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
-import fr.nicopico.petitboutiste.state.OnAppEvent
-import fr.nicopico.petitboutiste.state.OnSnackbar
-import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.ui.AppContent
 import fr.nicopico.petitboutiste.ui.AppShortcuts
 import fr.nicopico.petitboutiste.ui.components.foundation.PBMenuBar

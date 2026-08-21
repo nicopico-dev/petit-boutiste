@@ -4,11 +4,14 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.models.events
 
-import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
+import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
+import fr.nicopico.petitboutiste.models.state.AppState
+import fr.nicopico.petitboutiste.models.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.selectedTab
 
-fun AppEvent.getEventSnackbar(
+fun AppEvent.updateSnackbarState(
     previousState: AppState,
     onAppEvent: OnAppEvent,
 ): SnackbarState? {

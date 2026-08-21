@@ -40,6 +40,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.definition.rawHexString
+import fr.nicopico.petitboutiste.models.events.AppEvent
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
@@ -47,10 +48,9 @@ import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFilePath
 import fr.nicopico.petitboutiste.models.representation.render
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.TabDataRendering
-import fr.nicopico.petitboutiste.state.TabTemplateData
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabDataRendering
+import fr.nicopico.petitboutiste.models.state.TabTemplateData
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors

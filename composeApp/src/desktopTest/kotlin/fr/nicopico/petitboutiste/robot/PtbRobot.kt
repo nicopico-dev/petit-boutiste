@@ -17,9 +17,9 @@ import fr.nicopico.petitboutiste.LocalOnAppEvent
 import fr.nicopico.petitboutiste.LocalOnSnackbar
 import fr.nicopico.petitboutiste.PTBViewModel
 import fr.nicopico.petitboutiste.PetitBoutisteApp
+import fr.nicopico.petitboutiste.Reducer
 import fr.nicopico.petitboutiste.fakes.FakeAppStateRepository
 import fr.nicopico.petitboutiste.fakes.FakeTemplateManager
-import fr.nicopico.petitboutiste.state.Reducer
 import fr.nicopico.petitboutiste.ui.theme.invoke
 import fr.nicopico.petitboutiste.utils.debug
 import java.io.File

@@ -4,7 +4,7 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.models.state
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
