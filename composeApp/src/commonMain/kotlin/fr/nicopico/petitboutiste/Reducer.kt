@@ -283,6 +283,9 @@ class Reducer(
         }
     }
 
+    /**
+     * Update the rendering of a [TabData]. Call this function whenever a change might have an impact on the rendering.
+     */
     private suspend fun TabData.withUpdatedRendering(): TabData {
         val result = rendering.inputData.toByteItems(
             groupDefinitions = rendering.groupDefinitions,

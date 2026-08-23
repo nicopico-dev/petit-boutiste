@@ -37,7 +37,6 @@ import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
 private val fieldMaxWidth = 200.dp
-// Matches [[VARIABLE]]
 private val VARIABLE_REGEX = Regex("\\[\\[[^]]+]]")
 
 @Suppress("LongMethod")
@@ -65,6 +64,7 @@ fun ByteGroupDefinitionForm(
     //region Input validation
     val startFormulaError by remember(startFormulaInput) {
         derivedStateOf {
+            // TODO NPI Extract this into the Reducer
             if (startFormulaInput.isNotEmpty()) {
                 val expandedFormula = startFormulaInput.replace(VARIABLE_REGEX, "0")
                 val startIndex = compute(expandedFormula)
@@ -78,6 +78,7 @@ fun ByteGroupDefinitionForm(
     }
     val endFormulaError by remember(startFormulaInput, endFormulaInput) {
         derivedStateOf {
+            // TODO NPI Extract this into the Reducer
             if (endFormulaInput.isNotEmpty()) {
                 val expandedStart = startFormulaInput.replace(VARIABLE_REGEX, "0")
                 val expandedEnd = endFormulaInput.replace(VARIABLE_REGEX, "0")

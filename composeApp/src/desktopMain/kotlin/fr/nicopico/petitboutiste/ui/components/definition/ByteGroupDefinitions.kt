@@ -159,6 +159,7 @@ fun ByteGroupDefinitions(
                     items = {
                         listOf(
                             ContextMenuItem("Duplicate this definition") {
+                                // TODO NPI Extract this into the Reducer
                                 val startValue = Calculator.compute(definition.startFormula)
                                 val endValue = Calculator.compute(definition.endFormula)
                                 val (newStart, newEnd) = if (startValue != null && endValue != null) {
@@ -224,6 +225,7 @@ fun ByteGroupDefinitions(
                     OutlinedButton(
                         content = { Text("Add definition") },
                         onClick = {
+                            // TODO NPI Extract this into the Reducer
                             val nextIndex: Int = if (definitions.isNotEmpty()) {
                                 val endFormula = definitions.last().endFormula
                                 (Calculator.compute(endFormula) ?: -1) + 1

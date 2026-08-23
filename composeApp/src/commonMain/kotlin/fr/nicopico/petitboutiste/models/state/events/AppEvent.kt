@@ -17,21 +17,27 @@ import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlinx.io.files.Path
 
 sealed class AppEvent {
-    data class AddNewTabEvent(val tabData: TabData? = null) : AppEvent()
 
-    data class SelectTabEvent(val tabId: TabId) : AppEvent()
-    data class RenameTabEvent(val tabId: TabId, val tabName: String) : AppEvent()
-    data class RemoveTabEvent(val tabId: TabId) : AppEvent()
-    data class DuplicateTabEvent(val tabId: TabId) : AppEvent()
-    data class CycleTabEvent(val cycleForward: Boolean) : AppEvent()
-    data class SwitchAppThemeEvent(val appTheme: PBTheme) : AppEvent()
     data object RefreshRenderingEvent : AppEvent()
+    data class SwitchAppThemeEvent(
+        val appTheme: PBTheme
+    ) : AppEvent()
 
-    data class UndoRemoveTabEvent(val tabData: TabData, val index: Int) : AppEvent()
+    sealed class TabManagementEvent : AppEvent()
+    //region Tab management
+    data class AddNewTabEvent(val tabData: TabData? = null) : TabManagementEvent()
+    data class SelectTabEvent(val tabId: TabId) : TabManagementEvent()
+    data class RenameTabEvent(val tabId: TabId, val tabName: String) : TabManagementEvent()
+    data class RemoveTabEvent(val tabId: TabId) : TabManagementEvent()
+    data class UndoRemoveTabEvent(val tabData: TabData, val index: Int) : TabManagementEvent()
+    data class DuplicateTabEvent(val tabId: TabId) : TabManagementEvent()
+    data class CycleTabEvent(val cycleForward: Boolean) : TabManagementEvent()
+    //endregion
 
     sealed class CurrentTabEvent : AppEvent() {
         data class ChangeInputTypeEvent(val type: InputType) : CurrentTabEvent()
         data class ChangeInputDataEvent(val data: DataString) : CurrentTabEvent()
+
         data class AddDefinitionEvent(val definition: ByteGroupDefinition): CurrentTabEvent()
         data class UpdateDefinitionEvent(
             val sourceDefinition: ByteGroupDefinition,
@@ -44,6 +50,7 @@ sealed class AppEvent {
             val rendering: TabDataRendering,
             val templateData: TabTemplateData?,
         ) : CurrentTabEvent()
+
         data class UpdateScratchpadEvent(val scratchpad: String): CurrentTabEvent()
 
         data class LoadTemplateEvent(

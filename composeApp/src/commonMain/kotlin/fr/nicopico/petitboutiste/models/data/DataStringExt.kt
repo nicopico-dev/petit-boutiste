@@ -44,13 +44,13 @@ suspend fun DataString.toByteItems(
         )
     }
 
-    // Resolve variable values once for all definitions
+    // Resolve variable values at once for all definitions
     val variables = try {
         finalRegistry.computeVariableValues(this@toByteItems)
     } catch (e: Exception) {
         logError("Unable to compute variable values", e)
         // If the registry fails, it might be a global error (like circular dependency)
-        // or a specific definition error. For now we log it and continue with empty variables.
+        // or a specific definition error. For now, we log it and continue with empty variables.
         // Formula resolution for specific definitions will likely fail too and be recorded below.
         emptyMap()
     }
