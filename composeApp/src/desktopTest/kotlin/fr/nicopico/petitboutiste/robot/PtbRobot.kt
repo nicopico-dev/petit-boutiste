@@ -14,7 +14,7 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onRoot
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.LocalOnSnackbar
+import fr.nicopico.petitboutiste.LocalOnSnackbarEvent
 import fr.nicopico.petitboutiste.PTBViewModel
 import fr.nicopico.petitboutiste.PetitBoutisteApp
 import fr.nicopico.petitboutiste.Reducer
@@ -50,7 +50,7 @@ class PtbRobot(
                     LocalOnAppEvent provides { event ->
                         viewModel.onAppEvent(event)
                     },
-                    LocalOnSnackbar provides { snackbar ->
+                    LocalOnSnackbarEvent provides { snackbar ->
                         viewModel.displaySnackBar(snackbar)
                     },
                 ) {

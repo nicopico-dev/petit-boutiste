@@ -13,15 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import fr.nicopico.petitboutiste.models.state.SnackbarState
 import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.ui.components.foundation.PBSnackbar
 
 @Composable
 fun AppContent(
     tabData: TabData,
     modifier: Modifier = Modifier,
-    snackbarState: SnackbarState? = null,
+    snackbarEvent: SnackbarEvent? = null,
     onDismissSnackbar: () -> Unit = {},
 ) {
     val byteItems = tabData.renderByteItems()
@@ -39,9 +39,9 @@ fun AppContent(
             )
         }
 
-        if (snackbarState != null) {
+        if (snackbarEvent != null) {
             PBSnackbar(
-                state = snackbarState,
+                state = snackbarEvent,
                 onDismiss = { onDismissSnackbar() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

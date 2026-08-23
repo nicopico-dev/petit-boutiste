@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.LocalOnSnackbar
+import fr.nicopico.petitboutiste.LocalOnSnackbarEvent
 import fr.nicopico.petitboutiste.calculator.Calculator
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
@@ -38,7 +38,7 @@ import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
 import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
-import fr.nicopico.petitboutiste.models.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
@@ -79,7 +79,7 @@ fun ByteGroupDefinitions(
     val clipboard = LocalClipboard.current
 
     val lazyListState = rememberLazyListState()
-    val onSnackbar = LocalOnSnackbar.current
+    val onSnackbar = LocalOnSnackbarEvent.current
 
     Column(modifier) {
         Row(
@@ -118,9 +118,9 @@ fun ByteGroupDefinitions(
                     scope.launch {
                         val json = byteItems.toJsonData()
                         if (clipboard.setData(json)) {
-                            onSnackbar(SnackbarState("Data exported to clipboard as JSON"))
+                            onSnackbar(SnackbarEvent("Data exported to clipboard as JSON"))
                         } else {
-                            onSnackbar(SnackbarState("Failed to export data to the clipboard"))
+                            onSnackbar(SnackbarEvent("Failed to export data to the clipboard"))
                         }
                     }
                 },

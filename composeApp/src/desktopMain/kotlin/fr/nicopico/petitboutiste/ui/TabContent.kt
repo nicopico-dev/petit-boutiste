@@ -29,9 +29,9 @@ import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.definition.createFullPayloadByteGroup
-import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.state.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel

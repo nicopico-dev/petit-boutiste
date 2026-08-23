@@ -10,12 +10,12 @@ import fr.nicopico.petitboutiste.fakes.FakeAppStateRepository
 import fr.nicopico.petitboutiste.fakes.FakeTemplateManager
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.SingleByte
-import fr.nicopico.petitboutiste.models.events.AppEvent
 import fr.nicopico.petitboutiste.models.state.AppState
-import fr.nicopico.petitboutiste.models.state.SnackbarState
 import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabDataRendering
 import fr.nicopico.petitboutiste.models.state.TabsState
+import fr.nicopico.petitboutiste.models.state.events.AppEvent
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -106,27 +106,27 @@ class PTBViewModelTest {
     fun `displaySnackBar updates snackbarState`() = runTest {
         // Given
         createViewModel()
-        val snackbar = SnackbarState(message = "Test message")
+        val snackbar = SnackbarEvent(message = "Test message")
 
         // When
         viewModel.displaySnackBar(snackbar)
 
         // Then
-        assertEquals(snackbar, viewModel.snackbarState.value)
+        assertEquals(snackbar, viewModel.snackbarEvent.value)
     }
 
     @Test
     fun `dismissSnackbar clears snackbarState`() = runTest {
         // Given
         createViewModel()
-        val snackbar = SnackbarState(message = "Test message")
+        val snackbar = SnackbarEvent(message = "Test message")
         viewModel.displaySnackBar(snackbar)
 
         // When
         viewModel.dismissSnackbar()
 
         // Then
-        assertNull(viewModel.snackbarState.value)
+        assertNull(viewModel.snackbarEvent.value)
     }
 
     @Test
@@ -143,13 +143,13 @@ class PTBViewModelTest {
         runCurrent()
 
         // Then
-        assertNotNull(viewModel.snackbarState.value)
-        assertEquals("All definitions cleared", viewModel.snackbarState.value?.message)
+        assertNotNull(viewModel.snackbarEvent.value)
+        assertEquals("All definitions cleared", viewModel.snackbarEvent.value?.message)
 
         // Advance time to trigger auto-hide
         advanceTimeBy(5000.milliseconds)
         runCurrent()
-        assertNull(viewModel.snackbarState.value)
+        assertNull(viewModel.snackbarEvent.value)
     }
 
     @Test

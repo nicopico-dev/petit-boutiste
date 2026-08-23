@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.WindowState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import fr.nicopico.petitboutiste.models.events.OnAppEvent
-import fr.nicopico.petitboutiste.models.events.OnSnackbar
 import fr.nicopico.petitboutiste.models.persistence.getScreenCharacteristics
+import fr.nicopico.petitboutiste.models.state.events.OnAppEvent
+import fr.nicopico.petitboutiste.models.state.events.OnSnackbarEvent
 import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.repository.WindowStateRepository
@@ -38,9 +38,9 @@ private val windowStateRepository = WindowStateRepository()
 val LocalOnAppEvent = staticCompositionLocalOf<OnAppEvent> {
     { error("LocalOnAppEvent not configured") }
 }
-// TODO Reduce usage of LocalOnSnackbar
-val LocalOnSnackbar = staticCompositionLocalOf<OnSnackbar> {
-    { error("LocalOnSnackbar not configured") }
+// TODO Reduce usage of LocalOnSnackbarEvent
+val LocalOnSnackbarEvent = staticCompositionLocalOf<OnSnackbarEvent> {
+    { error("LocalOnSnackbarEvent not configured") }
 }
 
 @Composable
@@ -80,7 +80,7 @@ fun PetitBoutiste(
                     LocalOnAppEvent provides { event ->
                         viewModel.onAppEvent(event)
                     },
-                    LocalOnSnackbar provides { snackbar ->
+                    LocalOnSnackbarEvent provides { snackbar ->
                         viewModel.displaySnackBar(snackbar)
                     },
                 ) {
@@ -104,12 +104,12 @@ fun PetitBoutisteApp(
 ) {
     val currentTab by viewModel.currentTab
         .collectAsStateWithLifecycle()
-    val snackbarState by viewModel.snackbarState
+    val snackbarState by viewModel.snackbarEvent
         .collectAsStateWithLifecycle()
 
     AppContent(
         tabData = currentTab,
-        snackbarState = snackbarState,
+        snackbarEvent = snackbarState,
         modifier = Modifier
             .background(AppTheme.current.colors.windowBackgroundColor),
         onDismissSnackbar = viewModel::dismissSnackbar,

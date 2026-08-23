@@ -4,20 +4,30 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.models.events
+package fr.nicopico.petitboutiste.models.state.events
 
-import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.state.AppState
-import fr.nicopico.petitboutiste.models.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.events.AppEvent.CurrentTabEvent
 
-fun AppEvent.updateSnackbarState(
+data class SnackbarEvent(
+    val message: String,
+    val actionLabel: String? = null,
+    val onAction: (() -> Unit)? = null,
+)
+
+/**
+ * Get the [SnackbarEvent] corresponding to this [AppEvent].
+ *
+ * Returns `null` if the `AppEvent` does not require a snackbar
+ */
+fun AppEvent.getSnackbarEvent(
     previousState: AppState,
     onAppEvent: OnAppEvent,
-): SnackbarState? {
+): SnackbarEvent? {
     return when(this) {
         is CurrentTabEvent.ClearAllDefinitionsEvent -> {
             val selectedTab = previousState.tabsState.selectedTab
-            SnackbarState(
+            SnackbarEvent(
                 message = "All definitions cleared",
                 actionLabel = "Undo",
                 onAction = {
@@ -33,7 +43,7 @@ fun AppEvent.updateSnackbarState(
         }
 
         is CurrentTabEvent.DeleteDefinitionEvent -> {
-            SnackbarState(
+            SnackbarEvent(
                 message = if (definition.name.isNullOrBlank()) {
                     "Definition deleted"
                 } else "Definition '${definition.name}' deleted",
@@ -50,7 +60,7 @@ fun AppEvent.updateSnackbarState(
 
         is AppEvent.RemoveTabEvent -> {
             val selectedTab = previousState.tabsState.selectedTab
-            SnackbarState(
+            SnackbarEvent(
                 message = "Tab '${selectedTab.name ?: "Untitled"}' removed",
                 actionLabel = "Undo",
                 onAction = {

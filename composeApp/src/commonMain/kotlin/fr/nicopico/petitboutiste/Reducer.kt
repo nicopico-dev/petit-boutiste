@@ -14,13 +14,13 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
-import fr.nicopico.petitboutiste.models.events.AppEvent
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
 import fr.nicopico.petitboutiste.models.state.AppState
 import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabId
 import fr.nicopico.petitboutiste.models.state.TabTemplateData
 import fr.nicopico.petitboutiste.models.state.TabsState
+import fr.nicopico.petitboutiste.models.state.events.AppEvent
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,7 +39,7 @@ class Reducer(
             }
 
             is AppEvent.RefreshRenderingEvent -> {
-                state.updateTabsState {
+                state.withTabsState {
                     copy(tabs = tabs.map { it.withUpdatedRendering() })
                 }
             }
@@ -47,7 +47,7 @@ class Reducer(
             //region Tab management
             is AppEvent.AddNewTabEvent -> {
                 val newTab = (event.tabData ?: TabData()).withUpdatedRendering()
-                state.updateTabsState {
+                state.withTabsState {
                     copy(
                         tabs = tabs + newTab,
                         selectedTabId = newTab.id,
@@ -56,7 +56,7 @@ class Reducer(
             }
 
             is AppEvent.SelectTabEvent -> {
-                state.updateTabsState {
+                state.withTabsState {
                     copy(selectedTabId = event.tabId)
                 }
             }
@@ -84,7 +84,7 @@ class Reducer(
                     tabs[nextSelectedTabIndex].id
                 } else state.tabsState.selectedTabId
 
-                state.updateTabsState {
+                state.withTabsState {
                     copy(tabs = tabs, selectedTabId = selectedTabId)
                 }
             }
@@ -94,7 +94,7 @@ class Reducer(
                 val newTabs = state.tabsState.tabs.toMutableList()
                     .apply { add(event.index.coerceIn(0, size), renderedTabData) }
 
-                state.updateTabsState {
+                state.withTabsState {
                     copy(tabs = newTabs, selectedTabId = event.tabData.id)
                 }
             }
@@ -117,7 +117,7 @@ class Reducer(
                     }
                     .toList()
 
-                state.updateTabsState {
+                state.withTabsState {
                     copy(tabs = newTabs, selectedTabId = duplicatedTab.id)
                 }
             }
@@ -132,7 +132,7 @@ class Reducer(
                 }
                 val nextTab = state.tabsState.tabs[nextIndex]
 
-                state.updateTabsState {
+                state.withTabsState {
                     copy(selectedTabId = nextTab.id)
                 }
             }
@@ -313,7 +313,7 @@ class Reducer(
             )
         }
 
-        private suspend inline fun AppState.updateTabsState(block: suspend TabsState.() -> TabsState): AppState {
+        private suspend inline fun AppState.withTabsState(block: suspend TabsState.() -> TabsState): AppState {
             return copy(tabsState = tabsState.block())
         }
     }

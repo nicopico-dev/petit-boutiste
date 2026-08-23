@@ -6,12 +6,12 @@
 
 package fr.nicopico.petitboutiste.ui.components.foundation
 
-import fr.nicopico.petitboutiste.models.events.AppEvent
-import fr.nicopico.petitboutiste.models.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabId
 import fr.nicopico.petitboutiste.models.state.TabTemplateData
 import fr.nicopico.petitboutiste.models.state.TabsState
+import fr.nicopico.petitboutiste.models.state.events.AppEvent
+import fr.nicopico.petitboutiste.models.state.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.utils.dialog.FileDialog
 import fr.nicopico.petitboutiste.utils.dialog.FileDialogOperation
 import io.github.vinceglb.filekit.utils.toKotlinxIoPath

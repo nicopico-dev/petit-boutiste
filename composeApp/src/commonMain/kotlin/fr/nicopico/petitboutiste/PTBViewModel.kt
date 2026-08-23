@@ -8,10 +8,10 @@ package fr.nicopico.petitboutiste
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import fr.nicopico.petitboutiste.models.events.AppEvent
-import fr.nicopico.petitboutiste.models.events.updateSnackbarState
 import fr.nicopico.petitboutiste.models.state.AppState
-import fr.nicopico.petitboutiste.models.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.events.AppEvent
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
+import fr.nicopico.petitboutiste.models.state.events.getSnackbarEvent
 import fr.nicopico.petitboutiste.repository.AppStateRepository
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.Job
@@ -34,8 +34,8 @@ class PTBViewModel(
     val state: StateFlow<AppState>
         field = MutableStateFlow(appStateRepository.restore())
 
-    val snackbarState: StateFlow<SnackbarState?>
-        field = MutableStateFlow<SnackbarState?>(null)
+    val snackbarEvent: StateFlow<SnackbarEvent?>
+        field = MutableStateFlow<SnackbarEvent?>(null)
 
     private val eventChannel = Channel<AppEvent>(Channel.BUFFERED)
     private var snackbarDismissJob: Job? = null
@@ -93,7 +93,7 @@ class PTBViewModel(
 
         state.value = newState
 
-        val snackbar = event.updateSnackbarState(previousState, ::onAppEvent)
+        val snackbar = event.getSnackbarEvent(previousState, ::onAppEvent)
         if (snackbar != null) {
             displaySnackBar(snackbar)
         }
@@ -103,19 +103,19 @@ class PTBViewModel(
         appStateRepository.save(state.value)
     }
 
-    fun displaySnackBar(snackbar: SnackbarState) {
+    fun displaySnackBar(snackbar: SnackbarEvent) {
         snackbarDismissJob?.cancel()
-        snackbarState.value = snackbar
+        snackbarEvent.value = snackbar
 
         // Auto-hide snackbar after 5 seconds
         snackbarDismissJob = viewModelScope.launch {
             delay(5000.milliseconds)
-            snackbarState.value = null
+            snackbarEvent.value = null
         }
     }
 
     fun dismissSnackbar() {
         snackbarDismissJob?.cancel()
-        snackbarState.value = null
+        snackbarEvent.value = null
     }
 }
