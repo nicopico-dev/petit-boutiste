@@ -59,17 +59,36 @@ class DataStringExtTest {
 
     @Test
     fun toByteItemsWithStaticDefinitionPartiallyOutOfBoundsMarksGroupIncomplete() = runTest {
-        // Given a 4-byte payload and a definition that extends beyond it
+        // Given a 4-byte payload and a definition that extends beyond it (indices 2..5, 4 bytes expected)
         val data = HexString("1A2B3C4D")
         val def = ByteGroupDefinition.createFromRange(2..5, "PartialGroup")
 
         // When
         val byteItems = data.toByteItems(listOf(def)).items
 
-        // Then the group exists but is marked incomplete, containing only the in-bounds bytes
+        // Then the group exists but is marked incomplete, containing only the in-bounds bytes,
+        // while still exposing the resolved expected end index/size (4 bytes: indices 2..5)
         val group = byteItems.filterIsInstance<ByteGroup>().firstOrNull()
         assertEquals(listOf("3C", "4D"), group?.bytes)
         assertEquals(true, group?.incomplete)
+        assertEquals(5, group?.expectedEndIndex)
+        assertEquals(4, group?.expectedSize)
+    }
+
+    @Test
+    fun toByteItemsCompleteGroupHasExpectedEndIndexEqualToResolvedEndIndex() = runTest {
+        // Given a payload fully covering the definition's range
+        val data = HexString("1A2B3C4D")
+        val def = ByteGroupDefinition.createFromRange(0..1, "FullGroup")
+
+        // When
+        val byteItems = data.toByteItems(listOf(def)).items
+
+        // Then the group is complete, and expectedEndIndex/expectedSize match the actual resolved values
+        val group = byteItems.filterIsInstance<ByteGroup>().first()
+        assertEquals(false, group.incomplete)
+        assertEquals(group.endIndex, group.expectedEndIndex)
+        assertEquals(2, group.expectedSize)
     }
 
     // endregion

@@ -13,10 +13,12 @@ import androidx.compose.ui.test.hasParent
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import fr.nicopico.petitboutiste.ui.UiTags
+import fr.nicopico.petitboutiste.utils.debug
 import fr.nicopico.petitboutiste.utils.onPBTextFieldInput
 
 object DefinitionsPart : PartRobot {
@@ -29,6 +31,9 @@ object DefinitionsPart : PartRobot {
     ) {
         rule.onNodeWithTag(UiTags.BYTE_GROUP_DEFINITIONS_ADD_DEFINITION)
             .performClick()
+
+        // TODO Workaround to wait for the form to appear for UI tests
+        rule.onRoot().debug()
 
         rule.onPBTextFieldInput(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM_INPUT_NAME)
             .apply {

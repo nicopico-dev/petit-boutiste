@@ -12,7 +12,12 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.SingleByte
+import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.persistence.Template
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Endianness
+import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.arguments.EndiannessArgument
 import fr.nicopico.petitboutiste.models.state.AppState
 import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabDataRendering
@@ -559,6 +564,108 @@ class ReducerTest {
     }
 
     @Test
+    fun `AppendDefaultDefinitionEvent adds a definition starting at 0 when there are no definitions`() = runTest {
+        // Given no definitions
+        val state = createAppState()
+
+        // When
+        val newState = reducer(state, AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent)
+
+        // Then a single default definition covering byte 0 is added
+        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        assertEquals(1, definitions.size)
+        assertEquals("0", definitions.first().startFormula)
+        assertEquals("0", definitions.first().endFormula)
+    }
+
+    @Test
+    fun `AppendDefaultDefinitionEvent adds a definition right after the last one`() = runTest {
+        // Given an existing definition covering bytes 0..2
+        val existingDef = ByteGroupDefinition.createFromRange(indexes = 0..2, name = "Existing")
+        val initialState = reducer(createAppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(existingDef))
+
+        // When
+        val newState = reducer(initialState, AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent)
+
+        // Then the new definition starts right after the resolved end of the last one (byte 3)
+        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        assertEquals(2, definitions.size)
+        val appended = definitions.last { it.id != existingDef.id }
+        assertEquals("3", appended.startFormula)
+        assertEquals("3", appended.endFormula)
+    }
+
+    @Test
+    fun `AppendDefaultDefinitionEvent reuses the last definition's representation`() = runTest {
+        // Given an existing definition with a non-default representation
+        val existingDef = ByteGroupDefinition.createFromRange(
+            indexes = 0..0,
+            name = "Existing",
+            representation = Representation(dataRenderer = DataRenderer.Binary),
+        )
+        val initialState = reducer(createAppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(existingDef))
+
+        // When
+        val newState = reducer(initialState, AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent)
+
+        // Then the newly appended definition uses the same representation
+        val appended = newState.tabsState.selectedTab.groupDefinitions.last { it.id != existingDef.id }
+        assertEquals(DataRenderer.Binary, appended.representation.dataRenderer)
+    }
+
+    @Test
+    fun `DuplicateDefinitionEvent appends a shifted copy right after the source definition`() = runTest {
+        // Given an existing definition covering bytes 0..2
+        val existingDef = ByteGroupDefinition.createFromRange(indexes = 0..2, name = "Original")
+        val initialState = reducer(createAppState(), AppEvent.CurrentTabEvent.AddDefinitionEvent(existingDef))
+
+        // When
+        val newState = reducer(initialState, AppEvent.CurrentTabEvent.DuplicateDefinitionEvent(existingDef))
+
+        // Then a new definition of the same length (3 bytes) is appended right after the original (bytes 3..5)
+        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        assertEquals(2, definitions.size)
+        val duplicated = definitions.last { it.id != existingDef.id }
+        assertEquals("3", duplicated.startFormula)
+        assertEquals("5", duplicated.endFormula)
+        assertEquals("Original 2", duplicated.name)
+    }
+
+    @Test
+    fun `DuplicateDefinitionEvent resolves variables using the real registry`() = runTest {
+        // Given a payload where LEN=3 (big-endian, single byte at index 0), and a data definition
+        // whose end depends on LEN.value
+        val payload = HexString("031A2B3CFF")
+        val stateWithInput = reducer(createAppState(), AppEvent.CurrentTabEvent.ChangeInputDataEvent(payload))
+
+        val lenDef = ByteGroupDefinition(
+            name = "LEN",
+            startFormula = "0",
+            endFormula = "0",
+            representation = Representation(
+                dataRenderer = DataRenderer.Integer,
+                argumentValues = mapOf(EndiannessArgument.key to Endianness.BigEndian.name),
+            ),
+        )
+        val dataDef = ByteGroupDefinition(
+            name = "DATA",
+            startFormula = "1",
+            endFormula = "[[LEN.value]]",
+        )
+        var state = reducer(stateWithInput, AppEvent.CurrentTabEvent.AddDefinitionEvent(lenDef))
+        state = reducer(state, AppEvent.CurrentTabEvent.AddDefinitionEvent(dataDef))
+
+        // When duplicating DATA (real resolved start=1, end=3, length=3)
+        val newState = reducer(state, AppEvent.CurrentTabEvent.DuplicateDefinitionEvent(dataDef))
+
+        // Then the duplicate starts right after the real resolved end (index 4)
+        val duplicated = newState.tabsState.selectedTab.groupDefinitions
+            .first { it.name == "DATA 2" }
+        assertEquals("4", duplicated.startFormula)
+        assertEquals("6", duplicated.endFormula)
+    }
+
+    @Test
     fun `UndoClearAllDefinitionsEvent restores definitions`() = runTest {
         // Given
         val defs = listOf(
@@ -574,5 +681,78 @@ class ReducerTest {
 
         // Then
         assertEquals(defs, newState.tabsState.selectedTab.groupDefinitions)
+    }
+
+    @Test
+    fun `OpenRenderedByteItemInNewTabEvent opens a new tab with Hexadecimal representation`() = runTest {
+        // Given
+        val state = createAppState()
+        val byteItem = SingleByte(index = 0, value = "AA")
+        val representation = Representation(dataRenderer = DataRenderer.Hexadecimal)
+        val event = AppEvent.OpenRenderedByteItemInNewTabEvent(byteItem, representation)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(2, newState.tabsState.tabs.size)
+        val newTab = newState.tabsState.tabs.last()
+        assertEquals(byteItem.name, newTab.name)
+        assertEquals(InputType.HEX, newTab.rendering.inputData.inputType)
+        assertEquals("AA", newTab.rendering.inputData.hexStringValue)
+    }
+
+    @Test
+    fun `OpenRenderedByteItemInNewTabEvent opens a new tab with Binary representation`() = runTest {
+        // Given
+        val state = createAppState()
+        val byteItem = SingleByte(index = 0, value = "AA")
+        val representation = Representation(dataRenderer = DataRenderer.Binary)
+        val event = AppEvent.OpenRenderedByteItemInNewTabEvent(byteItem, representation)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(2, newState.tabsState.tabs.size)
+        val newTab = newState.tabsState.tabs.last()
+        assertEquals(byteItem.name, newTab.name)
+        assertEquals(InputType.BINARY, newTab.rendering.inputData.inputType)
+        assertEquals("10101010", (newTab.rendering.inputData as fr.nicopico.petitboutiste.models.data.BinaryString).value)
+    }
+
+    @Test
+    fun `OpenRenderedByteItemInNewTabEvent does nothing for SubTemplate with missing template file`() = runTest {
+        // Given
+        val state = createAppState()
+        val byteItem = SingleByte(index = 0, value = "AA")
+        // SubTemplate representation without the required templateFile argument
+        // This will cause rendering to fail, so no new tab is created
+        val representation = Representation(
+            dataRenderer = DataRenderer.SubTemplate,
+            argumentValues = mapOf("templateFile" to "nonexistent.json")
+        )
+        val event = AppEvent.OpenRenderedByteItemInNewTabEvent(byteItem, representation)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then - no new tab is added because rendering fails (template file doesn't exist)
+        assertEquals(1, newState.tabsState.tabs.size)
+    }
+
+    @Test
+    fun `OpenRenderedByteItemInNewTabEvent does nothing for unsupported representation`() = runTest {
+        // Given
+        val state = createAppState()
+        val byteItem = SingleByte(index = 0, value = "AA")
+        val representation = Representation(dataRenderer = DataRenderer.Integer)
+        val event = AppEvent.OpenRenderedByteItemInNewTabEvent(byteItem, representation)
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then - no new tab is added
+        assertEquals(1, newState.tabsState.tabs.size)
     }
 }

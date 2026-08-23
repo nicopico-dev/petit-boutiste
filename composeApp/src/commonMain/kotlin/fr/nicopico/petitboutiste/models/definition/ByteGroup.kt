@@ -25,7 +25,13 @@ data class ByteGroup(
      * Set to `true` if [bytes] do not match the definition size.
      * This means the payload is likely incomplete or the definition is incorrect
      */
-    val incomplete: Boolean = false,
+    val incomplete: Boolean = false, // TODO NPI make this a computed property
+    /**
+     * The end index that was actually resolved from the definition's `endFormula`, regardless of
+     * whether the payload was long enough to reach it. When [incomplete] is `true`, this is greater
+     * than [endIndex] and can be used to report the expected size of the group.
+     */
+    val expectedEndIndex: Int = endIndex,
 ) : ByteItem() {
 
     init {
@@ -38,6 +44,12 @@ data class ByteGroup(
     }
 
     val name: String? = definition.name
+
+    /**
+     * The number of bytes this group is expected to have, according to the resolved [expectedEndIndex],
+     * regardless of whether the payload was long enough to reach it.
+     */
+    val expectedSize: Int = expectedEndIndex - startIndex + 1
 
     private var _cachedRenderResult: RenderResult? = null
     private val renderMutex = Mutex()
@@ -68,6 +80,7 @@ data class ByteGroup(
     }
 
     companion object {
+        // TODO NPI Remove this unused function (check if others unused functions exist)
         fun fromRange(
             bytes: List<String>,
             indexes: IntRange,

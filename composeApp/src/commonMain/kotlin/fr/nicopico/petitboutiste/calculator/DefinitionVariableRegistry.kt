@@ -4,6 +4,7 @@ import fr.nicopico.petitboutiste.calculator.models.Variable
 import fr.nicopico.petitboutiste.calculator.models.Variable.Payload
 import fr.nicopico.petitboutiste.calculator.models.Variable.Property
 import fr.nicopico.petitboutiste.calculator.models.VariableDependencies
+import fr.nicopico.petitboutiste.calculator.models.VariableValues
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
@@ -38,7 +39,7 @@ class DefinitionVariableRegistry(
     suspend fun computeVariableValues(
         data: DataString,
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
-    ): Map<String, Int> = withContext(dispatcher) {
+    ): VariableValues = withContext(dispatcher) {
         val variablesToCompute = ArrayDeque<Variable>()
         val knownVariables = mutableSetOf<Variable>()
         val variableValues = mutableMapOf<String, Int>()
@@ -87,8 +88,11 @@ class DefinitionVariableRegistry(
 
                 Property.VALUE -> {
                     val representation = definition.representation
-                    require(representation.dataRenderer == DataRenderer.Integer) {
-                        "VALUE property on $this is only supported for Integer representation"
+                    require(
+                        representation.dataRenderer == DataRenderer.Integer
+                            || representation.dataRenderer == DataRenderer.UserScript
+                    ) {
+                        "VALUE property on $this is only supported for Integer and UserScript representation"
                     }
 
                     val startIndex = Calculator.computeOrThrow(definition.startFormula, variables)

@@ -6,25 +6,43 @@
 
 package fr.nicopico.petitboutiste
 
+import fr.nicopico.petitboutiste.calculator.Calculator
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
 import fr.nicopico.petitboutiste.models.InputType
 import fr.nicopico.petitboutiste.models.data.Base64String
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
+import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
+import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
+import fr.nicopico.petitboutiste.models.definition.expandFormulas
+import fr.nicopico.petitboutiste.models.definition.name
+import fr.nicopico.petitboutiste.models.definition.rawHexString
+import fr.nicopico.petitboutiste.models.definition.renderWith
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
+import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.RenderResult
+import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.asString
+import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
+import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFilePath
 import fr.nicopico.petitboutiste.models.state.AppState
 import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabDataRendering
 import fr.nicopico.petitboutiste.models.state.TabId
 import fr.nicopico.petitboutiste.models.state.TabTemplateData
 import fr.nicopico.petitboutiste.models.state.TabsState
 import fr.nicopico.petitboutiste.models.state.events.AppEvent
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
+import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.io.files.Path
 import kotlin.math.max
 
 class Reducer(
@@ -53,6 +71,22 @@ class Reducer(
                         selectedTabId = newTab.id,
                     )
                 }
+            }
+
+            is AppEvent.OpenRenderedByteItemInNewTabEvent -> {
+                val byteItem = event.byteItem
+                val representation = event.representation
+                val renderResult = byteItem.renderWith(representation)
+                val tabData = prepareTabDataForRenderedByteItem(byteItem, representation, renderResult)
+                if (tabData != null) {
+                    val newTab = tabData.withUpdatedRendering()
+                    state.withTabsState {
+                        copy(
+                            tabs = tabs + newTab,
+                            selectedTabId = newTab.id,
+                        )
+                    }
+                } else state // TODO NPI Display warning to the user (Snackbar ?)
             }
 
             is AppEvent.SelectTabEvent -> {
@@ -174,6 +208,68 @@ class Reducer(
                 }
             }
 
+            is AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent -> {
+                state.updateCurrentTab {
+                    val lastDefinition = groupDefinitions.lastOrNull()
+                    val variables = resolveVariables(rendering)
+                    val nextIndex: Int = if (lastDefinition != null) {
+                        val expandedFormula = lastDefinition.expandFormulas().endFormula
+                        val endValue = try {
+                            Calculator.computeOrThrow(expandedFormula, variables)
+                        } catch (_: Exception) {
+                            -1
+                        }
+                        endValue + 1
+                    } else 0
+                    // If available, default to the last representation
+                    val nextRepresentation = lastDefinition?.representation ?: DEFAULT_REPRESENTATION
+                    val newDefinition = ByteGroupDefinition.createFromRange(
+                        indexes = nextIndex..nextIndex,
+                        representation = nextRepresentation,
+                    )
+
+                    copy(
+                        rendering = rendering.copy(
+                            groupDefinitions = (groupDefinitions + newDefinition)
+                                .sortedWith(ByteGroupDefinitionSorter),
+                        ),
+                        templateData = templateData?.copy(definitionsHaveChanged = true),
+                    ).withUpdatedRendering()
+                }
+            }
+
+            is AppEvent.CurrentTabEvent.DuplicateDefinitionEvent -> {
+                state.updateCurrentTab {
+                    val definition = event.definition
+                    val variables = resolveVariables(rendering)
+                    val expandedDefinition = definition.expandFormulas()
+                    val (newStart, newEnd) = try {
+                        val startValue = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
+                        val endValue = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+                        val length = endValue - startValue + 1
+                        val nextStart = endValue + 1
+                        nextStart.toString() to (nextStart + length - 1).toString()
+                    } catch (_: Exception) {
+                        definition.startFormula to definition.endFormula
+                    }
+
+                    val newDefinition = definition.copy(
+                        id = createDefinitionId(),
+                        name = definition.name?.incrementIndexSuffix(),
+                        startFormula = newStart,
+                        endFormula = newEnd,
+                    )
+
+                    copy(
+                        rendering = rendering.copy(
+                            groupDefinitions = (groupDefinitions + newDefinition)
+                                .sortedWith(ByteGroupDefinitionSorter),
+                        ),
+                        templateData = templateData?.copy(definitionsHaveChanged = true),
+                    ).withUpdatedRendering()
+                }
+            }
+
             is AppEvent.CurrentTabEvent.UpdateDefinitionEvent -> {
                 state.updateCurrentTab {
                     val updatedDefinitions = groupDefinitions.map { definition ->
@@ -280,6 +376,90 @@ class Reducer(
             //endregion
 
             //endregion
+        }
+    }
+
+    /**
+     * Build the [TabData] to open in a new tab from a rendered [byteItem], mirroring the previous per-[DataRenderer]
+     * branching that lived in `ByteItemRender.kt`'s `prepareTabData`. Returns `null` if the renderer is not
+     * supported or the rendering was not successful.
+     */
+    private suspend fun prepareTabDataForRenderedByteItem(
+        byteItem: ByteItem,
+        representation: Representation,
+        renderResult: RenderResult,
+    ): TabData? {
+        val tabName = byteItem.name
+        val rendering = (renderResult as? RenderResult.Success)
+            ?.asString()
+            ?: return null
+
+        return when (representation.dataRenderer) {
+            DataRenderer.Hexadecimal -> {
+                val inputData = HexString(rendering)
+                TabData(
+                    name = tabName,
+                    rendering = TabDataRendering(
+                        inputData = inputData,
+                        groupDefinitions = listOf(
+                            ByteGroupDefinition.createFromRange(
+                                indexes = 0..<inputData.byteCount,
+                                representation = representation,
+                            )
+                        ),
+                    ),
+                )
+            }
+
+            DataRenderer.Binary -> {
+                val inputData = BinaryString(rendering)
+                TabData(
+                    name = tabName,
+                    rendering = TabDataRendering(
+                        inputData = inputData,
+                        groupDefinitions = listOf(
+                            ByteGroupDefinition.createFromRange(
+                                indexes = 0..<inputData.byteCount,
+                                representation = representation,
+                            )
+                        ),
+                    )
+                )
+            }
+
+            DataRenderer.SubTemplate -> {
+                val inputData = HexString(byteItem.rawHexString)
+                val templateFile: Path? = representation.getSubTemplateFilePath()
+                val definitions: List<ByteGroupDefinition> = representation.getSubTemplateDefinitions()
+
+                TabData(
+                    name = tabName,
+                    rendering = TabDataRendering(
+                        inputData = inputData,
+                        groupDefinitions = definitions,
+                    ),
+                    templateData = templateFile?.let {
+                        TabTemplateData(
+                            templateFilePath = it,
+                        )
+                    }
+                )
+            }
+
+            else -> null
+        }
+    }
+
+    /**
+     * Resolve the variable values for the given [rendering] state, using its cached registry when available.
+     * Returns an empty map if the registry fails to resolve (e.g. circular dependency).
+     */
+    private suspend fun resolveVariables(rendering: TabDataRendering): Map<String, Int> {
+        val registry = rendering.variableRegistry ?: DefinitionVariableRegistry(rendering.groupDefinitions)
+        return try {
+            registry.computeVariableValues(rendering.inputData)
+        } catch (_: Exception) {
+            emptyMap()
         }
     }
 

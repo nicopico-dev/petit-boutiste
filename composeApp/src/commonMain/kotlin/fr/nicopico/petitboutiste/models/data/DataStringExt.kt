@@ -98,7 +98,8 @@ suspend fun DataString.toByteItems(
                     bytes = groupBytes,
                     startIndex = startIndex,
                     definition = definition,
-                    incomplete = endIndex < definitionEndIndex
+                    incomplete = endIndex < definitionEndIndex,
+                    expectedEndIndex = definitionEndIndex,
                 )
             )
         } catch (e: IllegalArgumentException) {

@@ -1,6 +1,6 @@
 package fr.nicopico.petitboutiste.models.definition
 
-// FIXME NPI This sorter does not sort by resolved formula !
+// TODO NPI Sort definitions by resolved value
 object ByteGroupDefinitionSorter : Comparator<ByteGroupDefinition> {
     override fun compare(o1: ByteGroupDefinition, o2: ByteGroupDefinition): Int {
         val start1 = o1.startFormula.toIntOrNull()

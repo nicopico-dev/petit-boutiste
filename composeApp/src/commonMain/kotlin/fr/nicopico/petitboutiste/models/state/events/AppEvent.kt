@@ -9,6 +9,8 @@ package fr.nicopico.petitboutiste.models.state.events
 import fr.nicopico.petitboutiste.models.InputType
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.state.TabData
 import fr.nicopico.petitboutiste.models.state.TabDataRendering
 import fr.nicopico.petitboutiste.models.state.TabId
@@ -32,6 +34,10 @@ sealed class AppEvent {
     data class UndoRemoveTabEvent(val tabData: TabData, val index: Int) : TabManagementEvent()
     data class DuplicateTabEvent(val tabId: TabId) : TabManagementEvent()
     data class CycleTabEvent(val cycleForward: Boolean) : TabManagementEvent()
+    data class OpenRenderedByteItemInNewTabEvent(
+        val byteItem: ByteItem,
+        val representation: Representation,
+    ) : TabManagementEvent()
     //endregion
 
     sealed class CurrentTabEvent : AppEvent() {
@@ -39,6 +45,8 @@ sealed class AppEvent {
         data class ChangeInputDataEvent(val data: DataString) : CurrentTabEvent()
 
         data class AddDefinitionEvent(val definition: ByteGroupDefinition): CurrentTabEvent()
+        data object AppendDefaultDefinitionEvent : CurrentTabEvent()
+        data class DuplicateDefinitionEvent(val definition: ByteGroupDefinition) : CurrentTabEvent()
         data class UpdateDefinitionEvent(
             val sourceDefinition: ByteGroupDefinition,
             val updatedDefinition: ByteGroupDefinition,

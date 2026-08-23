@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
@@ -48,6 +49,7 @@ fun TabContent(
     byteItems: List<ByteItem>,
     errors: Map<String, String> = emptyMap(),
     scratchpad: String = "",
+    variableRegistry: DefinitionVariableRegistry? = null,
 ) {
     val onCurrentTabEvent: (CurrentTabEvent) -> Unit = LocalOnAppEvent.current
 
@@ -120,8 +122,11 @@ fun TabContent(
             Column(Modifier.padding(16.dp)) {
                 ByteGroupDefinitions(
                     definitions = definitions,
-                    onAddDefinition = { definition ->
-                        onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
+                    onAppendDefaultDefinition = {
+                        onCurrentTabEvent(CurrentTabEvent.AppendDefaultDefinitionEvent)
+                    },
+                    onDuplicateDefinition = { definition ->
+                        onCurrentTabEvent(CurrentTabEvent.DuplicateDefinitionEvent(definition))
                     },
                     onUpdateDefinition = { source, update ->
                         onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(source, update))
@@ -140,6 +145,8 @@ fun TabContent(
                     },
                     byteItems = byteItems,
                     errors = errors,
+                    variableRegistry = variableRegistry,
+                    inputData = inputData,
                     modifier = Modifier
                         .weight(1f)
                         .testTag(UiTags.BYTE_GROUP_DEFINITIONS),

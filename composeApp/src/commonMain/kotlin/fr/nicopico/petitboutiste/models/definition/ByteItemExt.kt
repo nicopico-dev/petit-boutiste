@@ -6,6 +6,10 @@
 
 package fr.nicopico.petitboutiste.models.definition
 
+import fr.nicopico.petitboutiste.models.representation.RenderResult
+import fr.nicopico.petitboutiste.models.representation.Representation
+import fr.nicopico.petitboutiste.models.representation.render
+
 val ByteItem.name: String?
     get() = when (this) {
         is ByteGroup -> name
@@ -44,3 +48,25 @@ fun ByteItem.toByteArray(): ByteArray {
  */
 operator fun ByteItem.contains(other: ByteItem): Boolean = other.startIndex >= startIndex
     && other.endIndex <= endIndex
+
+/**
+ * Renders this [ByteItem] with the given [representation].
+ *
+ * If the [ByteItem] is a [ByteGroup] and the [representation] matches its definition's representation,
+ * returns the cached rendering from the group. Otherwise, renders the byte item directly with the
+ * representation.
+ *
+ * Returns [RenderResult.None] if the representation is not ready.
+ */
+suspend fun ByteItem.renderWith(representation: Representation): RenderResult {
+    return if (representation.isReady) {
+        // Use cached rendering for ByteGroup if the representation matches its definition
+        if (this is ByteGroup && representation == this.definition.representation) {
+            this.getOrComputeRendering()
+        } else {
+            representation.render(this)
+        }
+    } else {
+        RenderResult.None
+    }
+}

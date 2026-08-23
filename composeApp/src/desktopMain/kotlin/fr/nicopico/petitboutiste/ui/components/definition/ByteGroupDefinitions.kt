@@ -31,19 +31,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnSnackbarEvent
-import fr.nicopico.petitboutiste.calculator.Calculator
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
-import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import fr.nicopico.petitboutiste.utils.setData
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
@@ -59,7 +58,8 @@ import org.jetbrains.jewel.ui.typography
 @Composable
 fun ByteGroupDefinitions(
     definitions: List<ByteGroupDefinition>,
-    onAddDefinition: (ByteGroupDefinition) -> Unit,
+    onAppendDefaultDefinition: () -> Unit,
+    onDuplicateDefinition: (ByteGroupDefinition) -> Unit,
     onUpdateDefinition: (source: ByteGroupDefinition, update: ByteGroupDefinition) -> Unit,
     onDeleteDefinition: (ByteGroupDefinition) -> Unit,
     modifier: Modifier = Modifier,
@@ -67,9 +67,14 @@ fun ByteGroupDefinitions(
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
     byteItems: List<ByteItem> = emptyList(),
     errors: Map<String, String> = emptyMap(),
+    variableRegistry: DefinitionVariableRegistry? = null,
+    inputData: DataString = HexString(""),
 ) {
     var openedDefinition by remember {
         mutableStateOf<ByteGroupDefinition?>(null)
+    }
+    var knownDefinitionIds by remember {
+        mutableStateOf(definitions.map { it.id }.toSet())
     }
     var showRepresentation by remember {
         mutableStateOf(false)
@@ -144,13 +149,7 @@ fun ByteGroupDefinitions(
                 val actualSize = byteGroup?.bytes?.size
                 val errorMessage = errors[definition.id] ?: when {
                     byteGroup?.incomplete == true -> {
-                        val expectedSize = Calculator.compute(byteGroup.definition.endFormula)
-                            ?.let { it - byteGroup.startIndex + 1 }
-                        if (expectedSize != null) {
-                            "The payload is incomplete ($actualSize bytes instead of $expectedSize)"
-                        } else {
-                            "The payload is incomplete"
-                        }
+                        "The payload is incomplete ($actualSize bytes instead of ${byteGroup.expectedSize})"
                     }
                     else -> null
                 }
@@ -159,24 +158,7 @@ fun ByteGroupDefinitions(
                     items = {
                         listOf(
                             ContextMenuItem("Duplicate this definition") {
-                                // TODO NPI Extract this into the Reducer
-                                val startValue = Calculator.compute(definition.startFormula)
-                                val endValue = Calculator.compute(definition.endFormula)
-                                val (newStart, newEnd) = if (startValue != null && endValue != null) {
-                                    val length = endValue - startValue + 1
-                                    val nextStart = endValue + 1
-                                    nextStart.toString() to (nextStart + length - 1).toString()
-                                } else {
-                                    definition.startFormula to definition.endFormula
-                                }
-
-                                val newDefinition = definition.copy(
-                                    id = createDefinitionId(),
-                                    name = definition.name?.incrementIndexSuffix(),
-                                    startFormula = newStart,
-                                    endFormula = newEnd,
-                                )
-                                onAddDefinition(newDefinition)
+                                onDuplicateDefinition(definition)
                             }
                         )
                     }
@@ -200,6 +182,8 @@ fun ByteGroupDefinitions(
                                 onDefinitionSaved = { savedDefinition ->
                                     onUpdateDefinition(definition, savedDefinition)
                                 },
+                                variableRegistry = variableRegistry,
+                                inputData = inputData,
                                 showRepresentationForm = showRepresentation,
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 16.dp)
@@ -224,29 +208,22 @@ fun ByteGroupDefinitions(
                     Spacer(Modifier.weight(1f))
                     OutlinedButton(
                         content = { Text("Add definition") },
-                        onClick = {
-                            // TODO NPI Extract this into the Reducer
-                            val nextIndex: Int = if (definitions.isNotEmpty()) {
-                                val endFormula = definitions.last().endFormula
-                                (Calculator.compute(endFormula) ?: -1) + 1
-                            } else 0
-                            // If available, default to the last representation
-                            val nextRepresentation = definitions.lastOrNull()?.representation
-                                ?: DEFAULT_REPRESENTATION
-                            val definition = ByteGroupDefinition.createFromRange(
-                                indexes = nextIndex..nextIndex,
-                                representation = nextRepresentation,
-                            )
-                            // Open the new definition automatically
-                            openedDefinition = definition
-                            onAddDefinition(definition)
-                        },
+                        onClick = onAppendDefaultDefinition,
                         modifier = Modifier
                             .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ADD_DEFINITION)
                     )
                 }
             }
         }
+    }
+
+    // Auto-open (and scroll to) newly added definitions, since their creation now happens in the Reducer
+    LaunchedEffect(definitions) {
+        val newDefinition = definitions.firstOrNull { it.id !in knownDefinitionIds }
+        if (newDefinition != null) {
+            openedDefinition = newDefinition
+        }
+        knownDefinitionIds = definitions.map { it.id }.toSet()
     }
 
     // Auto-scroll to opened definition

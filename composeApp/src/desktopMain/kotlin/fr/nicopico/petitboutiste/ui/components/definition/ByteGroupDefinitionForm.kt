@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,8 +25,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.calculator.Calculator.compute
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.FormulaValidation
+import fr.nicopico.petitboutiste.models.definition.validateFormulas
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
@@ -37,13 +41,14 @@ import org.jetbrains.jewel.ui.component.DefaultButton
 import org.jetbrains.jewel.ui.component.Text
 
 private val fieldMaxWidth = 200.dp
-private val VARIABLE_REGEX = Regex("\\[\\[[^]]+]]")
 
 @Suppress("LongMethod")
 @Composable
 fun ByteGroupDefinitionForm(
     definition: ByteGroupDefinition,
     onDefinitionSaved: (ByteGroupDefinition) -> Unit,
+    variableRegistry: DefinitionVariableRegistry?,
+    inputData: DataString,
     modifier: Modifier = Modifier,
     showRepresentationForm: Boolean = false,
 ) {
@@ -62,42 +67,23 @@ fun ByteGroupDefinitionForm(
     }
 
     //region Input validation
-    val startFormulaError by remember(startFormulaInput) {
-        derivedStateOf {
-            // TODO NPI Extract this into the Reducer
-            if (startFormulaInput.isNotEmpty()) {
-                val expandedFormula = startFormulaInput.replace(VARIABLE_REGEX, "0")
-                val startIndex = compute(expandedFormula)
-                when {
-                    startIndex == null -> "Invalid formula"
-                    startIndex < 0 -> "Must be a positive number"
-                    else -> null
-                }
-            } else null
-        }
+    val formulaValidation by produceState(
+        initialValue = FormulaValidation(startError = null, endError = null),
+        startFormulaInput,
+        endFormulaInput,
+        variableRegistry,
+        inputData,
+    ) {
+        value = definition.validateFormulas(
+            startFormula = startFormulaInput,
+            endFormula = endFormulaInput,
+            registry = variableRegistry ?: DefinitionVariableRegistry(emptyList()),
+            inputData = inputData,
+        )
     }
-    val endFormulaError by remember(startFormulaInput, endFormulaInput) {
-        derivedStateOf {
-            // TODO NPI Extract this into the Reducer
-            if (endFormulaInput.isNotEmpty()) {
-                val expandedStart = startFormulaInput.replace(VARIABLE_REGEX, "0")
-                val expandedEnd = endFormulaInput.replace(VARIABLE_REGEX, "0")
-                val startIndex = compute(expandedStart)
-                val endIndex = compute(expandedEnd)
-                when {
-                    endIndex == null -> "Invalid formula"
-                    endIndex < (startIndex ?: 0) -> "Must be greater than or equal to Start"
-                    else -> null
-                }
-            } else null
-        }
-    }
-    val isValid by remember(startFormulaInput, endFormulaInput, startFormulaError, endFormulaError) {
-        derivedStateOf {
-            startFormulaInput.isNotEmpty() && endFormulaInput.isNotEmpty()
-                && startFormulaError == null && endFormulaError == null
-        }
-    }
+    val startFormulaError = formulaValidation.startError
+    val endFormulaError = formulaValidation.endError
+    val isValid = startFormulaInput.isNotEmpty() && endFormulaInput.isNotEmpty() && formulaValidation.isValid
     //endregion
 
     val saveDefinition: () -> Unit = {
@@ -199,6 +185,8 @@ private fun ByteGroupDefinitionFormPreview() {
                 name = "Test ByteGroup"
             ),
             onDefinitionSaved = {},
+            variableRegistry = null,
+            inputData = HexString(""),
         )
     }
 }
