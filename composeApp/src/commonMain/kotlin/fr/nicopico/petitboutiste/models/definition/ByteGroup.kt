@@ -22,11 +22,6 @@ data class ByteGroup(
      */
     override val endIndex: Int = startIndex + (bytes.count() - 1),
     /**
-     * Set to `true` if [bytes] do not match the definition size.
-     * This means the payload is likely incomplete or the definition is incorrect
-     */
-    val incomplete: Boolean = false, // TODO NPI make this a computed property
-    /**
      * The end index that was actually resolved from the definition's `endFormula`, regardless of
      * whether the payload was long enough to reach it. When [incomplete] is `true`, this is greater
      * than [endIndex] and can be used to report the expected size of the group.
@@ -50,6 +45,12 @@ data class ByteGroup(
      * regardless of whether the payload was long enough to reach it.
      */
     val expectedSize: Int = expectedEndIndex - startIndex + 1
+
+    /**
+     * Set to `true` if [bytes] do not match the definition size.
+     * This means the payload is likely incomplete or the definition is incorrect
+     */
+    val incomplete: Boolean = bytes.size != expectedSize
 
     private var _cachedRenderResult: RenderResult? = null
     private val renderMutex = Mutex()

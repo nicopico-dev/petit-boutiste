@@ -148,15 +148,17 @@ class HexStringExtTest {
             ByteGroup(
                 listOf("2B", "3C"),
                 groupDefinition1,
-                startIndex = 1
+                startIndex = 1,
+                expectedEndIndex = 2,
             ),
             ByteGroup(
                 listOf("4D"),
                 groupDefinition2,
                 startIndex = 3,
-                incomplete = true,
+                expectedEndIndex = 5,
             ),
         )
         assertContentEquals(expected, byteItems)
+        assertTrue((expected[2] as ByteGroup).incomplete)
     }
 }

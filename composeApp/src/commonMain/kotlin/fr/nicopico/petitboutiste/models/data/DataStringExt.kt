@@ -98,7 +98,6 @@ suspend fun DataString.toByteItems(
                     bytes = groupBytes,
                     startIndex = startIndex,
                     definition = definition,
-                    incomplete = endIndex < definitionEndIndex,
                     expectedEndIndex = definitionEndIndex,
                 )
             )
