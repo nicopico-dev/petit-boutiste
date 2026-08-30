@@ -8,6 +8,7 @@ package fr.nicopico.petitboutiste.models.data
 
 import fr.nicopico.petitboutiste.calculator.Calculator
 import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
+import fr.nicopico.petitboutiste.calculator.models.emptyVariableValues
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
@@ -41,6 +42,7 @@ suspend fun DataString.toByteItems(
             },
             errors = emptyMap(),
             registry = finalRegistry,
+            variables = emptyVariableValues(),
         )
     }
 
@@ -114,5 +116,5 @@ suspend fun DataString.toByteItems(
         currentIndex++
     }
 
-    return@withContext ByteItemsResult(result, errors, finalRegistry)
+    return@withContext ByteItemsResult(result, errors, finalRegistry, variables)
 }

@@ -1,16 +1,33 @@
 package fr.nicopico.petitboutiste.models.definition
 
-// TODO NPI Sort definitions by resolved value
-object ByteGroupDefinitionSorter : Comparator<ByteGroupDefinition> {
+import fr.nicopico.petitboutiste.calculator.Calculator
+import fr.nicopico.petitboutiste.calculator.models.VariableValues
+import fr.nicopico.petitboutiste.calculator.models.emptyVariableValues
+
+/**
+ * Sort [ByteGroupDefinition]s by their resolved `start` value, the same way
+ * [fr.nicopico.petitboutiste.models.data.toByteItems] resolves it: `[[start]]`/`[[end]]` shortcuts are
+ * expanded and variables are resolved through [variables].
+ *
+ * Definitions whose `start` value cannot be resolved (unknown variable, invalid formula) are kept last,
+ * in their original relative order.
+ */
+class ByteGroupDefinitionSorter(
+    private val variables: VariableValues = emptyVariableValues(),
+) : Comparator<ByteGroupDefinition> {
+
     override fun compare(o1: ByteGroupDefinition, o2: ByteGroupDefinition): Int {
-        val start1 = o1.startFormula.toIntOrNull()
-        val start2 = o2.startFormula.toIntOrNull()
+        val start1 = o1.resolveStart()
+        val start2 = o2.resolveStart()
 
         return when {
             start1 != null && start2 != null -> start1.compareTo(start2)
-            start1 != null -> -1 // Constants before formulas
-            start2 != null -> 1 // Formulas after constants
-            else -> 0 // Keep original order if both are formulas
+            start1 != null -> -1 // Resolved definitions before unresolvable ones
+            start2 != null -> 1 // Unresolvable definitions after resolved ones
+            else -> 0 // Keep original order when neither can be resolved
         }
     }
+
+    private fun ByteGroupDefinition.resolveStart(): Int? =
+        Calculator.compute(expandFormulas().startFormula, variables)
 }

@@ -496,6 +496,95 @@ class ReducerTest {
     }
 
     @Test
+    fun `AddDefinitionEvent sorts definitions by resolved start value`() = runTest {
+        // Given
+        val state = reducer(
+            createAppState(),
+            AppEvent.CurrentTabEvent.ChangeInputDataEvent(HexString("0102030405")),
+        )
+        val defConstant = ByteGroupDefinition.createFromRange(indexes = 2..3, name = "A")
+        // Resolves to 0, i.e. before "A"
+        val defVariable = ByteGroupDefinition(
+            startFormula = "[[A.start]] - 2",
+            endFormula = "[[start]]",
+            name = "B",
+        )
+
+        // When
+        var newState = reducer(state, AppEvent.CurrentTabEvent.AddDefinitionEvent(defConstant))
+        newState = reducer(newState, AppEvent.CurrentTabEvent.AddDefinitionEvent(defVariable))
+
+        // Then
+        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        assertEquals(listOf("B", "A"), definitions.map { it.name })
+    }
+
+    @Test
+    fun `ChangeInputDataEvent sorts definitions by resolved start value`() = runTest {
+        // Given a definition starting on the last byte of the payload
+        val defLastByte = ByteGroupDefinition(
+            startFormula = "[[LAST]]",
+            endFormula = "[[start]]",
+            name = "Last",
+        )
+        val defMiddle = ByteGroupDefinition.createFromRange(indexes = 2..2, name = "Middle")
+
+        var state = reducer(
+            createAppState(),
+            AppEvent.CurrentTabEvent.ChangeInputDataEvent(HexString("0102030405")),
+        )
+        state = reducer(state, AppEvent.CurrentTabEvent.AddDefinitionEvent(defLastByte))
+        state = reducer(state, AppEvent.CurrentTabEvent.AddDefinitionEvent(defMiddle))
+
+        // "Last" resolves to 4 with a 5-byte payload
+        assertEquals(
+            listOf("Middle", "Last"),
+            state.tabsState.selectedTab.groupDefinitions.map { it.name },
+        )
+
+        // When the payload is shortened, "Last" resolves to 1
+        val newState = reducer(
+            state,
+            AppEvent.CurrentTabEvent.ChangeInputDataEvent(HexString("0102")),
+        )
+
+        // Then
+        assertEquals(
+            listOf("Last", "Middle"),
+            newState.tabsState.selectedTab.groupDefinitions.map { it.name },
+        )
+    }
+
+    @Test
+    fun `LoadTemplateEvent sorts definitions by resolved start value`() = runTest {
+        // Given
+        val state = createAppState()
+        val templateFilePath = File("template.json").toKotlinxIoPath()
+        templateManager.templateToReturn = Template(
+            name = "Test Template",
+            definitions = listOf(
+                ByteGroupDefinition.createFromRange(5..6, "Second"),
+                ByteGroupDefinition.createFromRange(0..1, "First"),
+            ),
+        )
+
+        // When
+        val newState = reducer(
+            state = state,
+            event = AppEvent.CurrentTabEvent.LoadTemplateEvent(
+                templateFilePath = templateFilePath,
+                definitionsOnly = false,
+            )
+        )
+
+        // Then
+        assertEquals(
+            listOf("First", "Second"),
+            newState.tabsState.selectedTab.groupDefinitions.map { it.name },
+        )
+    }
+
+    @Test
     fun `overlapping definitions store processing error in rendering state`() = runTest {
         // Given
         val payload = HexString("1A2B3C4D")

@@ -200,8 +200,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = (groupDefinitions + event.definition)
-                                .sortedWith(ByteGroupDefinitionSorter),
+                            groupDefinitions = groupDefinitions + event.definition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -230,8 +229,7 @@ class Reducer(
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = (groupDefinitions + newDefinition)
-                                .sortedWith(ByteGroupDefinitionSorter),
+                            groupDefinitions = groupDefinitions + newDefinition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -262,8 +260,7 @@ class Reducer(
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = (groupDefinitions + newDefinition)
-                                .sortedWith(ByteGroupDefinitionSorter),
+                            groupDefinitions = groupDefinitions + newDefinition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -278,7 +275,7 @@ class Reducer(
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = updatedDefinitions.sortedWith(ByteGroupDefinitionSorter),
+                            groupDefinitions = updatedDefinitions,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -474,6 +471,9 @@ class Reducer(
         )
         return copy(
             rendering = rendering.copy(
+                // Keep the definitions sorted by their resolved start value
+                groupDefinitions = rendering.groupDefinitions
+                    .sortedWith(ByteGroupDefinitionSorter(result.variables)),
                 byteItems = result.items,
                 errors = result.errors,
                 variableRegistry = result.registry,
