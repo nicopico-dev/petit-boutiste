@@ -274,7 +274,7 @@ private fun ByteItemView(
         modifier = modifier
     ) {
         Text(
-            text = item.toString(),
+            text = item.asString(),
             style = dataStyle,
         )
 

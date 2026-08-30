@@ -76,7 +76,7 @@ data class ByteGroup(
         }
     }
 
-    override fun toString(): String {
+    override fun asString(): String {
         return bytes.joinToString(separator = "")
     }
 
