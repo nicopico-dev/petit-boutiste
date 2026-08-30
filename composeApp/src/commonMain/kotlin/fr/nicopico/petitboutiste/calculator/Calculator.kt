@@ -51,12 +51,7 @@ private fun tokenize(formula: String): List<String> {
     val matchedLength = tokens.sumOf { it.length }
     val whitespaceCount = formula.count { it.isWhitespace() }
     if (matchedLength + whitespaceCount != formula.length) {
-        error(
-            "tokenization failed for formula $formula: \n" +
-                "  - matchedLength=$matchedLength, \n" +
-                "  - whitespaceCount=$whitespaceCount, \n" +
-                "  - formulaLength=${formula.length}"
-        )
+        error("Unable to parse '$formula'")
     }
 
     return tokens

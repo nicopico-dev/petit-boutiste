@@ -136,8 +136,8 @@ class ByteGroupDefinitionValidationTest {
         )
 
         // Then both are reported as invalid
-        assertEquals("Invalid formula", validation.startError)
-        assertEquals("Invalid formula", validation.endError)
+        assertEquals("Formula error: Unable to parse 'not a formula'", validation.startError)
+        assertEquals("Formula error: Unable to parse 'also not a formula'", validation.endError)
     }
 
     @Test

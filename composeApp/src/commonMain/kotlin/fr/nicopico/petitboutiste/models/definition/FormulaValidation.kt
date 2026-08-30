@@ -103,4 +103,4 @@ private sealed class FormulaValidationResult {
     data class InvalidFormula(val errorMessage: String) : FormulaValidationResult()
 }
 
-private fun Exception.toErrorMessage(): String = "Invalid formula: $message"
+private fun Exception.toErrorMessage(): String = "Formula error: $message"
