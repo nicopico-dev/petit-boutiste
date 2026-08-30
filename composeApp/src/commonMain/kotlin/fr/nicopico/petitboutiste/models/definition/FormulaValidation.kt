@@ -87,7 +87,7 @@ private fun validateFormula(
         try {
             val computedValue = Calculator.computeOrThrow(formula, variables)
             if (computedValue < minValue) {
-                FormulaValidationResult.InvalidFormula("Must be equal or greater than $minValue")
+                FormulaValidationResult.InvalidFormula("Must be greater than or equal to $minValue")
             } else {
                 FormulaValidationResult.ValidFormula(computedValue)
             }

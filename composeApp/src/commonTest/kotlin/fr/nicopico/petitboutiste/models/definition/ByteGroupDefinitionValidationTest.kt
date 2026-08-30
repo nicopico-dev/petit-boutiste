@@ -100,7 +100,7 @@ class ByteGroupDefinitionValidationTest {
         )
 
         // Then the start error is reported
-        assertEquals("Must be a positive number", validation.startError)
+        assertEquals("Must be greater than or equal to 0", validation.startError)
     }
 
     @Test
@@ -118,7 +118,7 @@ class ByteGroupDefinitionValidationTest {
         )
 
         // Then the end error is reported
-        assertEquals("Must be greater than or equal to Start", validation.endError)
+        assertEquals("Must be greater than or equal to 5", validation.endError)
     }
 
     @Test

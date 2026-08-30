@@ -80,23 +80,6 @@ data class ByteGroup(
     }
 
     companion object {
-        // TODO NPI Remove this unused function (check if others unused functions exist)
-        fun fromRange(
-            bytes: List<String>,
-            indexes: IntRange,
-            name: String? = null,
-            representation: Representation = DEFAULT_REPRESENTATION,
-        ) = ByteGroup(
-            bytes = bytes,
-            definition = ByteGroupDefinition.createFromRange(
-                indexes = indexes,
-                name = name,
-                representation = representation,
-            ),
-            startIndex = indexes.first(),
-            endIndex = indexes.last(),
-        )
-
         /**
          * Utility method to create ByteGroup from a start index and a data payload.
          * This mimics the constructor of [SingleByte]
