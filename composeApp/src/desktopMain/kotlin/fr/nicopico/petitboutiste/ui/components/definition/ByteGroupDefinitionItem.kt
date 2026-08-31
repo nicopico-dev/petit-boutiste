@@ -94,8 +94,13 @@ fun ByteGroupDefinitionItem(
                         .testTag(UiTags.byteGroupDefinitionsItemName(definition.name))
                 )
 
-                val rangeSuffix = with(definition.indexes) {
-                    "$start..$endInclusive ($size bytes)"
+                val rangeSuffix = if (byteGroup != null) {
+                    val start = byteGroup.startIndex
+                    val end = byteGroup.endIndex
+                    val size = byteGroup.bytes.size
+                    "$start..$end ($size bytes)"
+                } else {
+                    "${definition.startFormula}..${definition.endFormula}"
                 }
                 Text(
                     text = rangeSuffix,

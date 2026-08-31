@@ -14,6 +14,7 @@ import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.Serializable
+import org.jetbrains.annotations.VisibleForTesting
 
 val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
 
@@ -36,6 +37,7 @@ data class Representation(
 val Representation.isOff: Boolean
     get() = dataRenderer == DataRenderer.Off
 
+// TODO REFACTO Move this computation to the Reducer
 suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     require(isReady) { "Representation must be ready!" }
     return try {
@@ -47,6 +49,7 @@ suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     }
 }
 
+@VisibleForTesting
 suspend fun Representation.renderAsString(byteItem: ByteItem): String? {
     return render(byteItem).asString()
 }

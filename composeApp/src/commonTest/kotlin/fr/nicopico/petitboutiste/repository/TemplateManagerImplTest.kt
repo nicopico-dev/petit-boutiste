@@ -46,7 +46,7 @@ class TemplateManagerImplTest {
         val template = Template(
             name = "Test Template",
             definitions = listOf(
-                ByteGroupDefinition(0..1, "First Group")
+                ByteGroupDefinition.createFromRange(0..1, "First Group")
             ),
             scratchpad = "Notes"
         )
@@ -74,7 +74,7 @@ class TemplateManagerImplTest {
         val template = Template(
             name = "Template with File",
             definitions = listOf(
-                ByteGroupDefinition(
+                ByteGroupDefinition.createFromRange(
                     indexes = 0..1,
                     representation = Representation(
                         dataRenderer = DataRenderer.SubTemplate,

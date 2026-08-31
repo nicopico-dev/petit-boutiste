@@ -28,10 +28,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.AppEvent.SwitchAppThemeEvent
-import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.TabsState
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabsState
+import fr.nicopico.petitboutiste.models.state.events.AppEvent
+import fr.nicopico.petitboutiste.models.state.events.AppEvent.SwitchAppThemeEvent
 import fr.nicopico.petitboutiste.ui.dialog.RenameTabDialog
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.PBIcons

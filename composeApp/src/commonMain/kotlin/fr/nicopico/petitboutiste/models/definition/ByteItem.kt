@@ -7,6 +7,8 @@
 package fr.nicopico.petitboutiste.models.definition
 
 sealed class ByteItem {
-    abstract val firstIndex: Int
-    abstract val lastIndex: Int
+    abstract val startIndex: Int
+    abstract val endIndex: Int
+
+    abstract fun asString(): String
 }

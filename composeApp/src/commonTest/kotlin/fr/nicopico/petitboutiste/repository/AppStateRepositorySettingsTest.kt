@@ -9,10 +9,11 @@ package fr.nicopico.petitboutiste.repository
 import com.russhwolf.settings.MapSettings
 import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.HexString
-import fr.nicopico.petitboutiste.state.AppState
-import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.TabDataRendering
-import fr.nicopico.petitboutiste.state.TabId
+import fr.nicopico.petitboutiste.models.state.AppState
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabDataRendering
+import fr.nicopico.petitboutiste.models.state.TabId
+import fr.nicopico.petitboutiste.models.state.TabsState
 import fr.nicopico.petitboutiste.ui.theme.PBTheme
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,9 +45,11 @@ class AppStateRepositorySettingsTest {
             )
         )
         val appState = AppState(
-            tabs = listOf(tab1, tab2),
-            selectedTabId = tab2.id,
-            appTheme = PBTheme.Dark
+            tabsState = TabsState(
+                tabs = listOf(tab1, tab2),
+                selectedTabId = tab2.id,
+            ),
+            appTheme = PBTheme.Dark,
         )
 
         // When
@@ -54,16 +57,16 @@ class AppStateRepositorySettingsTest {
         val restored = repository.restore()
 
         // Then
-        assertEquals(appState.selectedTabId, restored.selectedTabId)
+        assertEquals(appState.tabsState.selectedTabId, restored.tabsState.selectedTabId)
         assertEquals(appState.appTheme, restored.appTheme)
-        assertEquals(appState.tabs.size, restored.tabs.size)
+        assertEquals(appState.tabsState.tabs.size, restored.tabsState.tabs.size)
 
-        val restoredTab1 = restored.tabs.first { it.id == tab1.id }
+        val restoredTab1 = restored.tabsState.tabs.first { it.id == tab1.id }
         assertEquals(tab1.name, restoredTab1.name)
         assertEquals(tab1.inputData.hexStringValue, restoredTab1.inputData.hexStringValue)
         assertEquals(tab1.scratchpad, restoredTab1.scratchpad)
 
-        val restoredTab2 = restored.tabs.first { it.id == tab2.id }
+        val restoredTab2 = restored.tabsState.tabs.first { it.id == tab2.id }
         assertEquals(tab2.name, restoredTab2.name)
         assertEquals(tab2.inputData.hexStringValue, restoredTab2.inputData.hexStringValue)
         // Check input type indirectly
@@ -76,9 +79,9 @@ class AppStateRepositorySettingsTest {
         val restored = repository.restore()
 
         // Then
-        assertEquals(1, restored.tabs.size)
+        assertEquals(1, restored.tabsState.tabs.size)
         assertEquals(PBTheme.System, restored.appTheme)
-        assertEquals(restored.tabs.first().id, restored.selectedTabId)
+        assertEquals(restored.tabsState.tabs.first().id, restored.tabsState.selectedTabId)
     }
 
     @Test

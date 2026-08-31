@@ -9,8 +9,9 @@ package fr.nicopico.petitboutiste.utils
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import java.awt.datatransfer.StringSelection
-import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalComposeUiApi::class)
 suspend fun Clipboard.setData(data: String): Boolean {
@@ -18,9 +19,8 @@ suspend fun Clipboard.setData(data: String): Boolean {
     try {
         setClipEntry(clipEntry)
         return true
-    } catch (e: CancellationException) {
-        throw e
     } catch (e: Exception) {
+        currentCoroutineContext().ensureActive()
         logError("Failed to set clipboard", e)
         return false
     }

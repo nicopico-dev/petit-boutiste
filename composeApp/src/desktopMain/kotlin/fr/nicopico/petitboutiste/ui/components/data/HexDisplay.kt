@@ -41,7 +41,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.skydoves.compose.stability.runtime.TraceRecomposition
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteItem
 import fr.nicopico.petitboutiste.models.definition.SingleByte
@@ -62,7 +61,6 @@ import org.jetbrains.jewel.ui.component.VerticallyScrollableContainer
 
 private val COLUMN_WIDTH = 40.dp
 
-@TraceRecomposition("HexDisplay")
 @Composable
 fun HexDisplay(
     byteItems: List<ByteItem>,
@@ -180,7 +178,7 @@ fun HexDisplay(
                 ) {
                     items(
                         items = byteItems,
-                        key = { "${it::class.simpleName}-${it.firstIndex}" },
+                        key = { "${it::class.simpleName}-${it.startIndex}" },
                         contentType = { it::class },
                         span = { byteItem ->
                             when (byteItem) {
@@ -276,13 +274,13 @@ private fun ByteItemView(
         modifier = modifier
     ) {
         Text(
-            text = item.toString(),
+            text = item.asString(),
             style = dataStyle,
         )
 
-        val index = if (item.firstIndex != item.lastIndex) {
-            "${item.firstIndex}..${item.lastIndex}"
-        } else item.firstIndex.toString()
+        val index = if (item.startIndex != item.endIndex) {
+            "${item.startIndex}..${item.endIndex}"
+        } else item.startIndex.toString()
         Text(
             text = index,
             style = indexStyle,
@@ -311,7 +309,7 @@ private fun TemporaryByteGroupContextMenu(
             listOf(
                 ContextMenuItem("Create a new definition") {
                     onAddDefinition(
-                        selectedByteItem.firstIndex..selectedByteItem.lastIndex
+                        selectedByteItem.startIndex..selectedByteItem.endIndex
                     )
                 }
             )

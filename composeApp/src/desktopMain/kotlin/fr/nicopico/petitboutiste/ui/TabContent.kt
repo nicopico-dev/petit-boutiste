@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
@@ -31,7 +32,7 @@ import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.definition.createFullPayloadByteGroup
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.Representation
-import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
+import fr.nicopico.petitboutiste.models.state.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions
 import fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
@@ -40,12 +41,15 @@ import fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
 import fr.nicopico.petitboutiste.utils.compose.optionalSlot
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 
+@Suppress("LongMethod")
 @Composable
 fun TabContent(
     inputData: DataString,
     definitions: List<ByteGroupDefinition>,
     byteItems: List<ByteItem>,
+    errors: Map<String, String> = emptyMap(),
     scratchpad: String = "",
+    variableRegistry: DefinitionVariableRegistry? = null,
 ) {
     val onCurrentTabEvent: (CurrentTabEvent) -> Unit = LocalOnAppEvent.current
 
@@ -105,7 +109,7 @@ fun TabContent(
                     onCurrentTabEvent(CurrentTabEvent.ChangeInputTypeEvent(inputType))
                 },
                 onAddDefinition = { indexes ->
-                    val definition = ByteGroupDefinition(
+                    val definition = ByteGroupDefinition.createFromRange(
                         indexes = indexes,
                         representation = noDefinitionRepresentation,
                     )
@@ -118,8 +122,11 @@ fun TabContent(
             Column(Modifier.padding(16.dp)) {
                 ByteGroupDefinitions(
                     definitions = definitions,
-                    onAddDefinition = { definition ->
-                        onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
+                    onAppendDefaultDefinition = {
+                        onCurrentTabEvent(CurrentTabEvent.AppendDefaultDefinitionEvent)
+                    },
+                    onDuplicateDefinition = { definition ->
+                        onCurrentTabEvent(CurrentTabEvent.DuplicateDefinitionEvent(definition))
                     },
                     onUpdateDefinition = { source, update ->
                         onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(source, update))
@@ -137,6 +144,9 @@ fun TabContent(
                         } else null
                     },
                     byteItems = byteItems,
+                    errors = errors,
+                    variableRegistry = variableRegistry,
+                    inputData = inputData,
                     modifier = Modifier
                         .weight(1f)
                         .testTag(UiTags.BYTE_GROUP_DEFINITIONS),
@@ -191,6 +201,7 @@ private fun AppScreenPreview() {
             inputData = HexString(rawHexString = "33DAADDAAD"),
             definitions = emptyList(),
             byteItems = emptyList(),
+            errors = emptyMap(),
         )
     }
 }

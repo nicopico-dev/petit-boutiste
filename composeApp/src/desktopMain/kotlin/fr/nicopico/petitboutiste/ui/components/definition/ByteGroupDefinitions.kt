@@ -30,24 +30,20 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.LocalOnSnackbar
+import fr.nicopico.petitboutiste.LocalOnSnackbarEvent
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.toJsonData
-import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
-import fr.nicopico.petitboutiste.utils.moveStart
 import fr.nicopico.petitboutiste.utils.setData
-import fr.nicopico.petitboutiste.utils.size
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
@@ -62,28 +58,23 @@ import org.jetbrains.jewel.ui.typography
 @Composable
 fun ByteGroupDefinitions(
     definitions: List<ByteGroupDefinition>,
-    onAddDefinition: (ByteGroupDefinition) -> Unit,
+    onAppendDefaultDefinition: () -> Unit,
+    onDuplicateDefinition: (ByteGroupDefinition) -> Unit,
     onUpdateDefinition: (source: ByteGroupDefinition, update: ByteGroupDefinition) -> Unit,
     onDeleteDefinition: (ByteGroupDefinition) -> Unit,
     modifier: Modifier = Modifier,
     selectedDefinition: ByteGroupDefinition? = null,
     onDefinitionSelected: (ByteGroupDefinition?) -> Unit = {},
     byteItems: List<ByteItem> = emptyList(),
+    errors: Map<String, String> = emptyMap(),
+    variableRegistry: DefinitionVariableRegistry? = null,
+    inputData: DataString = HexString(""),
 ) {
-    val overlappingDefinitions: Set<ByteGroupDefinition> = remember(definitions) {
-        buildSet {
-            var previousDefinitionEnd = -1
-            definitions.forEach { definition ->
-                if (definition.indexes.first <= previousDefinitionEnd) {
-                    add(definition)
-                }
-                previousDefinitionEnd = definition.indexes.last
-            }
-        }
-    }
-
     var openedDefinition by remember {
         mutableStateOf<ByteGroupDefinition?>(null)
+    }
+    var knownDefinitionIds by remember {
+        mutableStateOf(definitions.map { it.id }.toSet())
     }
     var showRepresentation by remember {
         mutableStateOf(false)
@@ -93,8 +84,7 @@ fun ByteGroupDefinitions(
     val clipboard = LocalClipboard.current
 
     val lazyListState = rememberLazyListState()
-    val onEvent = LocalOnAppEvent.current
-    val onSnackbar = LocalOnSnackbar.current
+    val onSnackbar = LocalOnSnackbarEvent.current
 
     Column(modifier) {
         Row(
@@ -133,9 +123,9 @@ fun ByteGroupDefinitions(
                     scope.launch {
                         val json = byteItems.toJsonData()
                         if (clipboard.setData(json)) {
-                            onSnackbar(SnackbarState("Data exported to clipboard as JSON"))
+                            onSnackbar(SnackbarEvent("Data exported to clipboard as JSON"))
                         } else {
-                            onSnackbar(SnackbarState("Failed to export data to the clipboard"))
+                            onSnackbar(SnackbarEvent("Failed to export data to the clipboard"))
                         }
                     }
                 },
@@ -156,14 +146,10 @@ fun ByteGroupDefinitions(
                     it is ByteGroup && it.definition == definition
                 } as? ByteGroup
 
-                val expectedSize = definition.indexes.size
                 val actualSize = byteGroup?.bytes?.size
-                val errorMessage = when {
-                    definition in overlappingDefinitions -> {
-                        "This definition overlaps with the previous one"
-                    }
-                    actualSize != null && actualSize != expectedSize -> {
-                        "The payload is incomplete ($actualSize bytes instead of $expectedSize)"
+                val errorMessage = errors[definition.id] ?: when {
+                    byteGroup?.incomplete == true -> {
+                        "The payload is incomplete ($actualSize bytes instead of ${byteGroup.expectedSize})"
                     }
                     else -> null
                 }
@@ -172,16 +158,7 @@ fun ByteGroupDefinitions(
                     items = {
                         listOf(
                             ContextMenuItem("Duplicate this definition") {
-                                val event = AppEvent.CurrentTabEvent.AddDefinitionEvent(
-                                    definition = definition.copy(
-                                        id = createDefinitionId(),
-                                        name = definition.name?.incrementIndexSuffix(),
-                                        indexes = with(definition.indexes) {
-                                            moveStart(endInclusive + 1)
-                                        },
-                                    )
-                                )
-                                onEvent(event)
+                                onDuplicateDefinition(definition)
                             }
                         )
                     }
@@ -205,6 +182,8 @@ fun ByteGroupDefinitions(
                                 onDefinitionSaved = { savedDefinition ->
                                     onUpdateDefinition(definition, savedDefinition)
                                 },
+                                variableRegistry = variableRegistry,
+                                inputData = inputData,
                                 showRepresentationForm = showRepresentation,
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 16.dp)
@@ -229,25 +208,22 @@ fun ByteGroupDefinitions(
                     Spacer(Modifier.weight(1f))
                     OutlinedButton(
                         content = { Text("Add definition") },
-                        onClick = {
-                            val nextIndex: Int = if (definitions.isEmpty()) 0 else definitions.last().indexes.last + 1
-                            // If available, default to the last representation
-                            val nextRepresentation = definitions.lastOrNull()?.representation
-                                ?: DEFAULT_REPRESENTATION
-                            val definition = ByteGroupDefinition(
-                                indexes = nextIndex..nextIndex,
-                                representation = nextRepresentation,
-                            )
-                            // Open the new definition automatically
-                            openedDefinition = definition
-                            onAddDefinition(definition)
-                        },
+                        onClick = onAppendDefaultDefinition,
                         modifier = Modifier
                             .testTag(UiTags.BYTE_GROUP_DEFINITIONS_ADD_DEFINITION)
                     )
                 }
             }
         }
+    }
+
+    // Auto-open (and scroll to) newly added definitions, since their creation now happens in the Reducer
+    LaunchedEffect(definitions) {
+        val newDefinition = definitions.firstOrNull { it.id !in knownDefinitionIds }
+        if (newDefinition != null) {
+            openedDefinition = newDefinition
+        }
+        knownDefinitionIds = definitions.map { it.id }.toSet()
     }
 
     // Auto-scroll to opened definition

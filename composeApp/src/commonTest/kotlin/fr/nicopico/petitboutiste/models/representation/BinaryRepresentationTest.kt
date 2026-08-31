@@ -23,7 +23,8 @@ class BinaryRepresentationTest {
         // a ByteItem with multiple bytes
         val byteItem = ByteGroup(
             bytes = listOf("1A", "2B", "3C"),
-            definition = ByteGroupDefinition(0..2, "TestGroup")
+            startIndex = 0,
+            definition = ByteGroupDefinition.createFromRange(0..2, "TestGroup")
         )
 
         // WHEN

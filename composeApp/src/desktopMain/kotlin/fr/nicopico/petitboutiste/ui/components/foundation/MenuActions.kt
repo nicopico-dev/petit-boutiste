@@ -10,11 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.AppEvent.CurrentTabEvent
-import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.TabId
-import fr.nicopico.petitboutiste.state.TabsState
+import fr.nicopico.petitboutiste.models.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabId
+import fr.nicopico.petitboutiste.models.state.TabsState
+import fr.nicopico.petitboutiste.models.state.events.AppEvent
+import fr.nicopico.petitboutiste.models.state.events.AppEvent.CurrentTabEvent
 import fr.nicopico.petitboutiste.utils.dialog.FileDialog
 import fr.nicopico.petitboutiste.utils.dialog.FileDialogOperation
 import kotlinx.coroutines.CoroutineScope

@@ -4,12 +4,18 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.models.state
 
 data class TabsState(
     val tabs: List<TabData>,
-    val selectedTabId: TabId,
+    val selectedTabId: TabId = tabs.first().id,
 ) {
     val selectedTabIndex: Int = tabs.indexOfFirst { it.id == selectedTabId }
     val selectedTab: TabData = tabs[selectedTabIndex]
+
+    init {
+        require(selectedTabId in tabs.map { it.id }) {
+            "`selectedTabId` $selectedTabId must be present in `tabs` ${tabs.joinToString { it.id.toString() }}"
+        }
+    }
 }

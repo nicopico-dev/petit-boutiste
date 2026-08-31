@@ -20,11 +20,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.LocalOnSnackbar
+import fr.nicopico.petitboutiste.LocalOnSnackbarEvent
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.models.representation.arguments.emptyArgumentValues
-import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
 
 @Composable
@@ -35,7 +35,7 @@ fun RendererArgumentsForm(
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
-    val onSnackbar = LocalOnSnackbar.current
+    val onSnackbar = LocalOnSnackbarEvent.current
     var argumentValues: ArgumentValues = remember(arguments, values) { values }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -54,7 +54,7 @@ fun RendererArgumentsForm(
                     onArgumentsChange(argumentValues)
                 },
                 onError = { message ->
-                    onSnackbar(SnackbarState(message))
+                    onSnackbar(SnackbarEvent(message))
                 },
                 completeArguments = argumentValues,
                 modifier = Modifier.fillMaxWidth(),

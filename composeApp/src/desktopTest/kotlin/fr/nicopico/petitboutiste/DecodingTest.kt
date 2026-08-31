@@ -81,6 +81,28 @@ class DecodingTest {
     }
 
     @Test
+    fun `show error message for overlapping definitions`() {
+        val robot = PtbRobot(rule)
+
+        robot
+            // 1. Initialize the app with a specific HEX payload
+            .on(MainPanePart) {
+                setSelectedInputType(DATA_TYPE_HEX)
+                dataInput.performTextClearance()
+                dataInput.performTextInput("01020304")
+            }
+            // 2. Add overlapping definitions
+            .on(DefinitionsPart) {
+                addDefinition(name = "Field 1", start = 0, end = 2)
+                addDefinition(name = "Field 2", start = 1, end = 3) // Overlaps with Field 1
+            }
+            // 3. Verify error message
+            .on(DefinitionsPart) {
+                verifyError("Field 2", "Overlap detected at index 1")
+            }
+    }
+
+    @Test
     fun `handle empty payload gracefully`() {
         val robot = PtbRobot(rule)
 

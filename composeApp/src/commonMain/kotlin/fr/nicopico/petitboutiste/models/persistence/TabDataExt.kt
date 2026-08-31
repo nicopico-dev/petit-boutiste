@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.persistence
 
-import fr.nicopico.petitboutiste.state.TabData
+import fr.nicopico.petitboutiste.models.state.TabData
 
 fun TabData.toTemplate(
     fallbackName: String

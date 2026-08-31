@@ -21,7 +21,8 @@ class ByteItemListExtKtTest {
             SingleByte(0, "AA"),
             ByteGroup(
                 bytes = listOf("F0", "08"),
-                definition = ByteGroupDefinition(
+                startIndex = 1,
+                definition = ByteGroupDefinition.createFromRange(
                     indexes = 1..2,
                     name = "Group 1",
                     representation = Representation(
@@ -31,7 +32,8 @@ class ByteItemListExtKtTest {
             ),
             ByteGroup(
                 bytes = listOf("AA"),
-                definition = ByteGroupDefinition(
+                startIndex = 3,
+                definition = ByteGroupDefinition.createFromRange(
                     indexes = 3..3,
                     name = null,
                     representation = Representation(
@@ -41,7 +43,8 @@ class ByteItemListExtKtTest {
             ),
             ByteGroup(
                 bytes = listOf("41", "42", "43"),
-                definition = ByteGroupDefinition(
+                startIndex = 4,
+                definition = ByteGroupDefinition.createFromRange(
                     indexes = 4..6,
                     name = "Group 3",
                     representation = Representation(

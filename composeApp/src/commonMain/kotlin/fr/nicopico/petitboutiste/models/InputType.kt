@@ -4,6 +4,13 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.models
 
-typealias OnSnackbar = (SnackbarState) -> Unit
+/**
+ * Enum representing the different types of input supported by the application.
+ */
+enum class InputType {
+    HEX,
+    BINARY,
+    BASE64,
+}

@@ -26,7 +26,7 @@ class ByteItemsParameterProvider(
         ),
         listOf(
             SingleByte(0, "33"),
-            ByteGroup(1, "DAADDAAD"),
+            ByteGroup.forPreview(1, "DAADDAAD"),
             SingleByte(2, "01"),
             SingleByte(3, "15"),
             SingleByte(4, "01"),
@@ -40,7 +40,7 @@ class ByteItemsParameterProvider(
         // Test case with a large ByteGroup that exceeds the default maxColumnsPerRow (8)
         listOf(
             SingleByte(0, "FF"),
-            ByteGroup(1, "AABBCCDDEEFF00112233445566778899", "Large ByteGroup"),
+            ByteGroup.forPreview(1, "AABBCCDDEEFF00112233445566778899", "Large ByteGroup"),
             SingleByte(2, "EE"),
         ),
     )

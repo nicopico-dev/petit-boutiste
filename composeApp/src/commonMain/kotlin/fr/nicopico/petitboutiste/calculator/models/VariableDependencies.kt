@@ -4,6 +4,9 @@
  *  file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fr.nicopico.petitboutiste.state
+package fr.nicopico.petitboutiste.calculator.models
 
-typealias OnAppEvent = (AppEvent) -> Unit
+data class VariableDependencies(
+    val variable: Variable,
+    val dependencies: List<VariableDependencies>,
+)

@@ -42,7 +42,7 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
     val template = templateManager.loadTemplate(templateFilePath)
 
     val dataString = HexString(byteArray.toHexString())
-    val parsedData = dataString.toByteItems(template.definitions)
+    val parsedData = dataString.toByteItems(template.definitions).items
         .filterIsInstance<ByteGroup>()
         .filter { group ->
             // Ignore unnamed groups

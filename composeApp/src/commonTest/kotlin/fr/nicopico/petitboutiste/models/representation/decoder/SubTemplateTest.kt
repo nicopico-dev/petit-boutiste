@@ -29,8 +29,16 @@ class SubTemplateTest {
         val template = Template(
             name = "Test Template",
             definitions = listOf(
-                ByteGroupDefinition(indexes = 0..1, name = "first", representation = Representation(DataRenderer.Integer)),
-                ByteGroupDefinition(indexes = 2..3, name = "second", representation = Representation(DataRenderer.Hexadecimal))
+                ByteGroupDefinition.createFromRange(
+                    indexes = 0..1,
+                    name = "first",
+                    representation = Representation(DataRenderer.Integer),
+                ),
+                ByteGroupDefinition.createFromRange(
+                    indexes = 2..3,
+                    name = "second",
+                    representation = Representation(DataRenderer.Hexadecimal),
+                )
             )
         )
         val templateFile = File.createTempFile("test_template", ".ptb").apply {
@@ -58,7 +66,7 @@ class SubTemplateTest {
         val template = Template(
             name = "Test Template",
             definitions = listOf(
-                ByteGroupDefinition(
+                ByteGroupDefinition.createFromRange(
                     indexes = 0..1,
                     name = "errorGroup",
                     // Protobuf will fail if the file does not exist
@@ -107,7 +115,10 @@ class SubTemplateTest {
     fun `getSubTemplateDefinitions should return definitions from file`() = runTest {
         // GIVEN
         val definitions = listOf(
-            ByteGroupDefinition(indexes = 0..1, name = "first")
+            ByteGroupDefinition.createFromRange(
+                indexes = 0..1,
+                name = "first",
+            )
         )
         val template = Template(name = "Test", definitions = definitions)
         val templateFile = File.createTempFile("test_template_defs", ".ptb").apply {

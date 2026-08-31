@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.state.SnackbarState
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.ui.components.foundation.modifier.clickableWithIndication
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
@@ -30,7 +30,7 @@ import org.jetbrains.jewel.ui.component.Text
 
 @Composable
 fun PBSnackbar(
-    state: SnackbarState,
+    state: SnackbarEvent,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -82,9 +82,9 @@ private fun PBSnackbarPreview() {
     }
 }
 
-private object SnackbarStatePreviewParameter : PreviewParameterProvider<SnackbarState> {
-    override val values: Sequence<SnackbarState> = sequenceOf(
-        SnackbarState("Test message", null, null),
-        SnackbarState("Test message with action", "Action", {}),
+private object SnackbarStatePreviewParameter : PreviewParameterProvider<SnackbarEvent> {
+    override val values: Sequence<SnackbarEvent> = sequenceOf(
+        SnackbarEvent("Test message", null, null),
+        SnackbarEvent("Test message with action", "Action", {}),
     )
 }

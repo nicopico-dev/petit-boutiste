@@ -11,7 +11,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
-import fr.nicopico.petitboutiste.state.TabsState
+import fr.nicopico.petitboutiste.models.state.TabsState
 
 @Composable
 fun FrameWindowScope.PBMenuBar(

@@ -6,7 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.data
 
-import fr.nicopico.petitboutiste.state.InputType
+import fr.nicopico.petitboutiste.models.InputType
 
 class BinaryString(
     rawBinaryString: String

@@ -33,31 +33,19 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.models.data.BinaryString
-import fr.nicopico.petitboutiste.models.data.HexString
-import fr.nicopico.petitboutiste.models.definition.ByteGroup
-import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
-import fr.nicopico.petitboutiste.models.definition.name
-import fr.nicopico.petitboutiste.models.definition.rawHexString
+import fr.nicopico.petitboutiste.models.definition.renderWith
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.asString
-import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
-import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFilePath
-import fr.nicopico.petitboutiste.models.representation.render
-import fr.nicopico.petitboutiste.state.AppEvent
-import fr.nicopico.petitboutiste.state.TabData
-import fr.nicopico.petitboutiste.state.TabDataRendering
-import fr.nicopico.petitboutiste.state.TabTemplateData
+import fr.nicopico.petitboutiste.models.state.events.AppEvent
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
 import fr.nicopico.petitboutiste.utils.setData
 import kotlinx.coroutines.launch
-import kotlinx.io.files.Path
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.Outline
@@ -78,14 +66,7 @@ fun ByteItemRender(
         mutableStateOf(RenderResult.None)
     }
     LaunchedEffect(byteItem, representation) {
-        rendererOutput = if (representation.isReady) {
-            // Use cached rendering for ByteGroup if the representation matches its definition
-            if (byteItem is ByteGroup && representation == byteItem.definition.representation) {
-                byteItem.getOrComputeRendering()
-            } else {
-                representation.render(byteItem)
-            }
-        } else RenderResult.None
+        rendererOutput = byteItem.renderWith(representation)
     }
 
     Row(
@@ -174,10 +155,12 @@ fun ByteItemRender(
                         contentDescription = "Open in new tab",
                         enabled = representation.allowOpenInNewTab() && rendererOutput is RenderResult.Success,
                         onClick = {
-                            scope.launch {
-                                val tabData = prepareTabData(byteItem, representation, rendererOutput)
-                                onEvent(AppEvent.AddNewTabEvent(tabData))
-                            }
+                            onEvent(
+                                AppEvent.OpenRenderedByteItemInNewTabEvent(
+                                    byteItem = byteItem,
+                                    representation = representation,
+                                )
+                            )
                         },
                         modifier = Modifier
                             .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER_OPEN_NEW_TAB),
@@ -192,70 +175,4 @@ private fun Representation.allowOpenInNewTab(): Boolean {
     return dataRenderer == DataRenderer.Hexadecimal
         || dataRenderer == DataRenderer.Binary
         || dataRenderer == DataRenderer.SubTemplate
-}
-
-private suspend fun prepareTabData(
-    byteItem: ByteItem,
-    representation: Representation,
-    renderResult: RenderResult,
-): TabData? {
-    val tabName = byteItem.name
-    val rendering = (renderResult as? RenderResult.Success)
-        ?.asString()
-        ?: return null
-
-    return when (representation.dataRenderer) {
-        DataRenderer.Hexadecimal -> {
-            val inputData = HexString(rendering)
-            TabData(
-                name = tabName,
-                rendering = TabDataRendering(
-                    inputData = inputData,
-                    groupDefinitions = listOf(
-                        ByteGroupDefinition(
-                            indexes = 0..<inputData.byteCount,
-                            representation = representation,
-                        )
-                    ),
-                ),
-            )
-        }
-
-        DataRenderer.Binary -> {
-            val inputData = BinaryString(rendering)
-            TabData(
-                name = tabName,
-                rendering = TabDataRendering(
-                    inputData = inputData,
-                    groupDefinitions = listOf(
-                        ByteGroupDefinition(
-                            indexes = 0..<inputData.byteCount,
-                            representation = representation,
-                        )
-                    ),
-                )
-            )
-        }
-
-        DataRenderer.SubTemplate -> {
-            val inputData = HexString(byteItem.rawHexString)
-            val templateFile: Path? = representation.getSubTemplateFilePath()
-            val definitions: List<ByteGroupDefinition> = representation.getSubTemplateDefinitions()
-
-            TabData(
-                name = tabName,
-                rendering = TabDataRendering(
-                    inputData = inputData,
-                    groupDefinitions = definitions,
-                ),
-                templateData = templateFile?.let {
-                    TabTemplateData(
-                        templateFilePath = it,
-                    )
-                }
-            )
-        }
-
-        else -> null
-    }
 }

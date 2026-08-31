@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,7 +25,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
+import fr.nicopico.petitboutiste.models.data.DataString
+import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.definition.FormulaValidation
+import fr.nicopico.petitboutiste.models.definition.validateFormulas
 import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabel
 import fr.nicopico.petitboutiste.ui.components.foundation.PBLabelOrientation.Horizontal
@@ -42,15 +47,17 @@ private val fieldMaxWidth = 200.dp
 fun ByteGroupDefinitionForm(
     definition: ByteGroupDefinition,
     onDefinitionSaved: (ByteGroupDefinition) -> Unit,
+    variableRegistry: DefinitionVariableRegistry?,
+    inputData: DataString,
     modifier: Modifier = Modifier,
     showRepresentationForm: Boolean = false,
 ) {
     val focusManager = LocalFocusManager.current
-    var startIndexInput by remember(definition.id) {
-        mutableStateOf(definition.indexes.first.toString())
+    var startFormulaInput by remember(definition.id) {
+        mutableStateOf(definition.startFormula)
     }
-    var endIndexInput by remember(definition.id) {
-        mutableStateOf(definition.indexes.last.toString())
+    var endFormulaInput by remember(definition.id) {
+        mutableStateOf(definition.endFormula)
     }
     var name by remember(definition.id) {
         mutableStateOf(definition.name.orEmpty())
@@ -60,43 +67,30 @@ fun ByteGroupDefinitionForm(
     }
 
     //region Input validation
-    val startIndexError by remember(definition) {
-        derivedStateOf {
-            if (startIndexInput.isNotEmpty()) {
-                val startIndex = startIndexInput.toIntOrNull()
-                when {
-                    startIndex == null -> "Must be a number"
-                    startIndex < 0 -> "Must be a positive number"
-                    else -> null
-                }
-            } else null
-        }
+    val formulaValidation by produceState(
+        initialValue = FormulaValidation(startError = null, endError = null),
+        startFormulaInput,
+        endFormulaInput,
+        variableRegistry,
+        inputData,
+    ) {
+        value = definition.validateFormulas(
+            startFormula = startFormulaInput,
+            endFormula = endFormulaInput,
+            registry = variableRegistry ?: DefinitionVariableRegistry(emptyList()),
+            inputData = inputData,
+        )
     }
-    val endIndexError by remember(definition) {
-        derivedStateOf {
-            if (endIndexInput.isNotEmpty()) {
-                val startIndex = startIndexInput.toIntOrNull()
-                val endIndex = endIndexInput.toIntOrNull()
-                when {
-                    endIndex == null -> "Must be a number"
-                    endIndex < (startIndex ?: 0) -> "Must be greater than or equal to Start"
-                    else -> null
-                }
-            } else null
-        }
-    }
-    val isValid by remember(definition) {
-        derivedStateOf {
-            startIndexInput.isNotEmpty() && endIndexInput.isNotEmpty()
-                && startIndexError == null && endIndexError == null
-        }
-    }
+    val startFormulaError = formulaValidation.startError
+    val endFormulaError = formulaValidation.endError
+    val isValid = startFormulaInput.isNotEmpty() && endFormulaInput.isNotEmpty() && formulaValidation.isValid
     //endregion
 
     val saveDefinition: () -> Unit = {
         if (isValid) {
             val definitionToSave = definition.copy(
-                indexes = startIndexInput.toInt()..endIndexInput.toInt(),
+                startFormula = startFormulaInput,
+                endFormula = endFormulaInput,
                 name = name.ifBlank { null },
                 representation = representation,
             )
@@ -124,9 +118,10 @@ fun ByteGroupDefinitionForm(
 
         PBLabel("Start", orientation = Horizontal) {
             PBTextField(
-                value = startIndexInput,
-                onValueChange = { startIndexInput = it },
-                isError = startIndexError != null,
+                value = startFormulaInput,
+                onValueChange = { startFormulaInput = it },
+                isError = startFormulaError != null,
+                errorText = startFormulaError,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()
@@ -139,9 +134,10 @@ fun ByteGroupDefinitionForm(
         PBLabel("End", orientation = Horizontal) {
             val isLastInput = representation.dataRenderer.arguments.isEmpty()
             PBTextField(
-                value = endIndexInput,
-                onValueChange = { endIndexInput = it },
-                isError = endIndexError != null,
+                value = endFormulaInput,
+                onValueChange = { endFormulaInput = it },
+                isError = endFormulaError != null,
+                errorText = endFormulaError,
                 modifier = Modifier
                     .widthIn(max = fieldMaxWidth)
                     .fillMaxWidth()
@@ -184,8 +180,13 @@ fun ByteGroupDefinitionForm(
 private fun ByteGroupDefinitionFormPreview() {
     WrapForPreviewDesktop {
         ByteGroupDefinitionForm(
-            definition = ByteGroupDefinition(2..5, "Test ByteGroup"),
+            definition = ByteGroupDefinition.createFromRange(
+                indexes = 2..5,
+                name = "Test ByteGroup"
+            ),
             onDefinitionSaved = {},
+            variableRegistry = null,
+            inputData = HexString(""),
         )
     }
 }
