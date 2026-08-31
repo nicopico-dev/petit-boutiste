@@ -51,7 +51,7 @@ class PtbRobot(
                         viewModel.onAppEvent(event)
                     },
                     LocalOnSnackbarEvent provides { snackbar ->
-                        viewModel.displaySnackBar(snackbar)
+                        viewModel.displaySnackbar(snackbar)
                     },
                 ) {
                     PetitBoutisteApp(viewModel)

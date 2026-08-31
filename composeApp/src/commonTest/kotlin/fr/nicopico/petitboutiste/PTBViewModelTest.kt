@@ -109,7 +109,7 @@ class PTBViewModelTest {
         val snackbar = SnackbarEvent(message = "Test message")
 
         // When
-        viewModel.displaySnackBar(snackbar)
+        viewModel.displaySnackbar(snackbar)
 
         // Then
         assertEquals(snackbar, viewModel.snackbarEvent.value)
@@ -120,7 +120,7 @@ class PTBViewModelTest {
         // Given
         createViewModel()
         val snackbar = SnackbarEvent(message = "Test message")
-        viewModel.displaySnackBar(snackbar)
+        viewModel.displaySnackbar(snackbar)
 
         // When
         viewModel.dismissSnackbar()

@@ -81,7 +81,7 @@ fun PetitBoutiste(
                         viewModel.onAppEvent(event)
                     },
                     LocalOnSnackbarEvent provides { snackbar ->
-                        viewModel.displaySnackBar(snackbar)
+                        viewModel.displaySnackbar(snackbar)
                     },
                 ) {
                     PBMenuBar(tabsState)

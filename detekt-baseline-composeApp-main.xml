@@ -18,5 +18,6 @@
     <ID>ReturnCount:Calculator.kt$Parser$fun parseExpression(): Int?</ID>
     <ID>ReturnCount:Calculator.kt$Parser$private fun parseFactor(): Int?</ID>
     <ID>ReturnCount:Calculator.kt$Parser$private fun parseTerm(): Int?</ID>
+    <ID>ReturnCount:Reducer.kt$Reducer$suspend operator fun invoke(state: AppState, event: AppEvent): AppState</ID>
   </CurrentIssues>
 </SmellBaseline>

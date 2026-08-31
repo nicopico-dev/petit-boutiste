@@ -37,7 +37,9 @@ import fr.nicopico.petitboutiste.models.state.TabId
 import fr.nicopico.petitboutiste.models.state.TabTemplateData
 import fr.nicopico.petitboutiste.models.state.TabsState
 import fr.nicopico.petitboutiste.models.state.events.AppEvent
+import fr.nicopico.petitboutiste.models.state.events.SnackbarEvent
 import fr.nicopico.petitboutiste.repository.TemplateManager
+import fr.nicopico.petitboutiste.ui.SnackbarController
 import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import kotlinx.coroutines.CoroutineDispatcher
@@ -49,6 +51,16 @@ class Reducer(
     private val templateManager: TemplateManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
+
+    private var snackbarController: SnackbarController? = null
+    fun setSnackbarController(snackbarController: SnackbarController) {
+        this.snackbarController = snackbarController
+    }
+
+    private var onAppEvent: ((AppEvent) -> Unit)? = null
+    fun setOnAppEvent(onAppEvent: (AppEvent) -> Unit) {
+        this.onAppEvent = onAppEvent
+    }
 
     suspend operator fun invoke(state: AppState, event: AppEvent): AppState {
         return when (event) {
@@ -86,7 +98,10 @@ class Reducer(
                             selectedTabId = newTab.id,
                         )
                     }
-                } else state // TODO NPI Display warning to the user (Snackbar ?)
+                } else {
+                    displaySnackbar(SnackbarEvent("Could not create tab from rendered data"))
+                    state
+                }
             }
 
             is AppEvent.SelectTabEvent -> {
@@ -120,6 +135,22 @@ class Reducer(
 
                 state.withTabsState {
                     copy(tabs = tabs, selectedTabId = selectedTabId)
+                }.also {
+                    val selectedTab = state.tabsState.selectedTab
+                    displaySnackbar(
+                        SnackbarEvent(
+                            message = "Tab '${selectedTab.name ?: "Untitled"}' removed",
+                            actionLabel = "Undo",
+                            onAction = {
+                                sendSideEffect(
+                                    AppEvent.UndoRemoveTabEvent(
+                                        tabData = selectedTab,
+                                        index = state.tabsState.tabs.indexOf(selectedTab),
+                                    )
+                                )
+                            }
+                        )
+                    )
                 }
             }
 
@@ -217,7 +248,7 @@ class Reducer(
                             Calculator.computeOrThrow(expandedFormula, variables)
                         } catch (_: Exception) {
                             // Unexpected error
-                            // TODO NPI Indicate to the user that the last definition is invalid
+                            displaySnackbar(SnackbarEvent("Could not compute the end of the last definition"))
                             return state
                         }
                         endValue + 1
@@ -292,6 +323,23 @@ class Reducer(
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
+                }.also {
+                    val definition = event.definition
+                    displaySnackbar(
+                        SnackbarEvent(
+                            message = if (definition.name.isNullOrBlank()) {
+                                "Definition deleted"
+                            } else "Definition '${definition.name}' deleted",
+                            actionLabel = "Undo",
+                            onAction = {
+                                sendSideEffect(
+                                    AppEvent.CurrentTabEvent.AddDefinitionEvent(
+                                        definition = definition
+                                    )
+                                )
+                            }
+                        )
+                    )
                 }
             }
 
@@ -303,6 +351,23 @@ class Reducer(
                         ),
                         templateData = null
                     ).withUpdatedRendering()
+                }.also {
+                    val selectedTab = state.tabsState.selectedTab
+                    displaySnackbar(
+                        SnackbarEvent(
+                            message = "All definitions cleared",
+                            actionLabel = "Undo",
+                            onAction = {
+                                sendSideEffect(
+                                    AppEvent.CurrentTabEvent.UndoClearAllDefinitionsEvent(
+                                        tabId = selectedTab.id,
+                                        rendering = selectedTab.rendering,
+                                        templateData = selectedTab.templateData,
+                                    )
+                                )
+                            },
+                        )
+                    )
                 }
             }
 
@@ -447,6 +512,14 @@ class Reducer(
 
             else -> null
         }
+    }
+
+    private fun displaySnackbar(snackbar: SnackbarEvent) {
+        snackbarController?.displaySnackbar(snackbar)
+    }
+
+    private fun sendSideEffect(event: AppEvent) {
+        onAppEvent?.invoke(event)
     }
 
     /**
