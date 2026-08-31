@@ -216,7 +216,9 @@ class Reducer(
                         val endValue = try {
                             Calculator.computeOrThrow(expandedFormula, variables)
                         } catch (_: Exception) {
-                            -1
+                            // Unexpected error
+                            // TODO NPI Indicate to the user that the last definition is invalid
+                            return state
                         }
                         endValue + 1
                     } else 0

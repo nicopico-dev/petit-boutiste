@@ -17,6 +17,7 @@ import fr.nicopico.petitboutiste.models.definition.expandFormulas
 import fr.nicopico.petitboutiste.utils.logError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 
@@ -50,6 +51,7 @@ suspend fun DataString.toByteItems(
     val variables = try {
         finalRegistry.computeVariableValues(this@toByteItems)
     } catch (e: Exception) {
+        ensureActive()
         logError("Unable to compute variable values", e)
         // If the registry fails, it might be a global error (like circular dependency)
         // or a specific definition error. For now, we log it and continue with empty variables.
@@ -63,20 +65,36 @@ suspend fun DataString.toByteItems(
         try {
             val expandedDefinition = definition.expandFormulas()
             val start = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
+            check (start >= 0) { "Start index cannot be negative" }
+
             val end = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+            check (end >= start) { "End index must be equals or greater than Start" }
+
             if (start > bytes.lastIndex) return@mapNotNull null
             Triple(definition, start, end)
         } catch (e: Exception) {
+            ensureActive()
             errors[definition.id] = e.message ?: "Formula error"
             null
         }
     }.sortedBy { it.second } // Sort by resolved startIndex
+
+    val duplicateNames = groupDefinitions
+        .filterNot { it.name.isNullOrBlank()}
+        .groupingBy { it.name }
+        .eachCount()
+        .filterValues { it > 1 }
+        .keys
 
     val result = mutableListOf<ByteItem>()
     var currentIndex = 0
 
     // Process each valid group definition
     for ((definition, startIndex, definitionEndIndex) in validGroupDefinitions) {
+        if (definition.name in duplicateNames) {
+            errors[definition.id] = "Duplicate name '${definition.name}'"
+        }
+
         // Add single bytes before the current group
         while (currentIndex < startIndex) {
             result.add(SingleByte(currentIndex, bytes[currentIndex]))
