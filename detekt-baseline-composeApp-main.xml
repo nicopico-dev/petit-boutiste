@@ -2,6 +2,7 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>ComplexCondition:HexDisplay.kt$selectedByteItem != null &amp;&amp; inSelection &amp;&amp; (isTemporarySelection || selectedByteItem.size == 1)</ID>
     <ID>CyclomaticComplexMethod:HexDisplay.kt$@Composable fun HexDisplay( byteItems: List&lt;ByteItem&gt;, modifier: Modifier = Modifier, selectedByteItem: ByteItem? = null, onByteItemClicked: (ByteItem) -&gt; Unit = {}, onAddDefinition: (IntRange) -&gt; Unit = {}, )</ID>
     <ID>InjectDispatcher:ArgumentInput.kt$Default</ID>
     <ID>InjectDispatcher:FileDialog.desktop.kt$DefaultFileDialog$IO</ID>

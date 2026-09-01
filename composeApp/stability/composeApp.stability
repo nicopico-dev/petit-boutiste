@@ -21,18 +21,18 @@ public fun fr.nicopico.petitboutiste.PetitBoutisteApp(viewModel: fr.nicopico.pet
 
 @Composable
 public fun fr.nicopico.petitboutiste.models.persistence.getScreenCharacteristics(): fr.nicopico.petitboutiste.models.persistence.ScreenCharacteristics
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.AppContent(tabData: fr.nicopico.petitboutiste.state.TabData, modifier: androidx.compose.ui.Modifier, snackbarState: fr.nicopico.petitboutiste.state.SnackbarState?, onDismissSnackbar: kotlin.Function0<kotlin.Unit>): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.AppContent(tabData: fr.nicopico.petitboutiste.models.state.TabData, modifier: androidx.compose.ui.Modifier, snackbarEvent: fr.nicopico.petitboutiste.models.state.events.SnackbarEvent?, onDismissSnackbar: kotlin.Function0<kotlin.Unit>): kotlin.Unit
   skippable: true
   restartable: true
   params:
     - tabData: STABLE (marked @Stable or @Immutable)
     - modifier: STABLE (marked @Stable or @Immutable)
-    - snackbarState: STABLE (class with no mutable properties)
+    - snackbarEvent: STABLE (class with no mutable properties)
     - onDismissSnackbar: STABLE (function type)
 
 @Composable
@@ -43,7 +43,7 @@ public fun fr.nicopico.petitboutiste.ui.AppShortcuts(content: @[Composable] andr
     - content: STABLE (composable function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.MainPane(inputData: fr.nicopico.petitboutiste.models.data.DataString, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, onInputDataChanged: kotlin.Function1<fr.nicopico.petitboutiste.models.data.DataString, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, onByteItemSelected: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteItem?, kotlin.Unit>, onInputTypeChanged: kotlin.Function1<fr.nicopico.petitboutiste.state.InputType, kotlin.Unit>, onAddDefinition: kotlin.Function1<kotlin.ranges.IntRange, kotlin.Unit>): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.MainPane(inputData: fr.nicopico.petitboutiste.models.data.DataString, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, onInputDataChanged: kotlin.Function1<fr.nicopico.petitboutiste.models.data.DataString, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, onByteItemSelected: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteItem?, kotlin.Unit>, onInputTypeChanged: kotlin.Function1<fr.nicopico.petitboutiste.models.InputType, kotlin.Unit>, onAddDefinition: kotlin.Function1<kotlin.ranges.IntRange, kotlin.Unit>): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -57,21 +57,26 @@ public fun fr.nicopico.petitboutiste.ui.MainPane(inputData: fr.nicopico.petitbou
     - onAddDefinition: STABLE (function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.TabContent(inputData: fr.nicopico.petitboutiste.models.data.DataString, definitions: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition>, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, scratchpad: kotlin.String): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.TabContent(inputData: fr.nicopico.petitboutiste.models.data.DataString, definitions: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition>, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, errors: kotlin.collections.Map<kotlin.String, kotlin.String>, scratchpad: kotlin.String, variableRegistry: fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry?): kotlin.Unit
   skippable: false
   restartable: true
   params:
     - inputData: STABLE (class with no mutable properties)
     - definitions: RUNTIME (requires runtime check)
     - byteItems: RUNTIME (requires runtime check)
+    - errors: RUNTIME (requires runtime check)
     - scratchpad: STABLE (String is immutable)
+    - variableRegistry: RUNTIME (requires runtime check)
 
 @Composable
-private fun fr.nicopico.petitboutiste.ui.components.data.ByteItemView(item: fr.nicopico.petitboutiste.models.definition.ByteItem, modifier: androidx.compose.ui.Modifier): kotlin.Unit
+private fun fr.nicopico.petitboutiste.ui.components.data.ByteItemView(item: fr.nicopico.petitboutiste.models.definition.ByteItem, dataStyle: androidx.compose.ui.text.TextStyle, indexStyle: androidx.compose.ui.text.TextStyle, nameStyle: androidx.compose.ui.text.TextStyle, modifier: androidx.compose.ui.Modifier): kotlin.Unit
   skippable: true
   restartable: true
   params:
     - item: STABLE (class with no mutable properties)
+    - dataStyle: STABLE (marked @Stable or @Immutable)
+    - indexStyle: STABLE (marked @Stable or @Immutable)
+    - nameStyle: STABLE (marked @Stable or @Immutable)
     - modifier: STABLE (marked @Stable or @Immutable)
 
 @Composable
@@ -86,12 +91,11 @@ public fun fr.nicopico.petitboutiste.ui.components.data.HexDisplay(byteItems: ko
     - onAddDefinition: STABLE (function type)
 
 @Composable
-private fun fr.nicopico.petitboutiste.ui.components.data.TemporaryByteGroupContextMenu(selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem?, enabled: kotlin.Boolean, onAddDefinition: kotlin.Function1<kotlin.ranges.IntRange, kotlin.Unit>, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+private fun fr.nicopico.petitboutiste.ui.components.data.TemporaryByteGroupContextMenu(selectedByteItem: fr.nicopico.petitboutiste.models.definition.ByteItem, onAddDefinition: kotlin.Function1<kotlin.ranges.IntRange, kotlin.Unit>, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
   skippable: true
   restartable: true
   params:
     - selectedByteItem: STABLE (class with no mutable properties)
-    - enabled: STABLE (primitive type)
     - onAddDefinition: STABLE (function type)
     - content: STABLE (composable function type)
 
@@ -106,7 +110,7 @@ public fun fr.nicopico.petitboutiste.ui.components.data.input.DataInput(value: T
     - modifier: STABLE (marked @Stable or @Immutable)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.data.input.InputTypeToggle(current: fr.nicopico.petitboutiste.state.InputType, onInputTypeChange: kotlin.Function1<fr.nicopico.petitboutiste.state.InputType, kotlin.Unit>, modifier: androidx.compose.ui.Modifier): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.data.input.InputTypeToggle(current: fr.nicopico.petitboutiste.models.InputType, onInputTypeChange: kotlin.Function1<fr.nicopico.petitboutiste.models.InputType, kotlin.Unit>, modifier: androidx.compose.ui.Modifier): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -142,12 +146,14 @@ public fun fr.nicopico.petitboutiste.ui.components.data.input.hexadecimal.HexInp
     - modifier: STABLE (marked @Stable or @Immutable)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitionForm(definition: fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, onDefinitionSaved: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, showRepresentationForm: kotlin.Boolean): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitionForm(definition: fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, onDefinitionSaved: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, kotlin.Unit>, variableRegistry: fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry?, inputData: fr.nicopico.petitboutiste.models.data.DataString, modifier: androidx.compose.ui.Modifier, showRepresentationForm: kotlin.Boolean): kotlin.Unit
   skippable: false
   restartable: true
   params:
     - definition: RUNTIME (requires runtime check)
     - onDefinitionSaved: STABLE (function type)
+    - variableRegistry: RUNTIME (requires runtime check)
+    - inputData: STABLE (class with no mutable properties)
     - modifier: STABLE (marked @Stable or @Immutable)
     - showRepresentationForm: STABLE (primitive type)
 
@@ -167,18 +173,22 @@ public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitio
     - displayForm: STABLE (primitive type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions(definitions: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition>, onAddDefinition: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, kotlin.Unit>, onUpdateDefinition: kotlin.Function2<@[ParameterName(name = \, onDeleteDefinition: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selectedDefinition: fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition?, onDefinitionSelected: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition?, kotlin.Unit>, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.definition.ByteGroupDefinitions(definitions: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition>, onAppendDefaultDefinition: kotlin.Function0<kotlin.Unit>, onDuplicateDefinition: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, kotlin.Unit>, onUpdateDefinition: kotlin.Function2<@[ParameterName(name = \, onDeleteDefinition: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, selectedDefinition: fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition?, onDefinitionSelected: kotlin.Function1<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition?, kotlin.Unit>, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, errors: kotlin.collections.Map<kotlin.String, kotlin.String>, variableRegistry: fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry?, inputData: fr.nicopico.petitboutiste.models.data.DataString): kotlin.Unit
   skippable: false
   restartable: true
   params:
     - definitions: RUNTIME (requires runtime check)
-    - onAddDefinition: STABLE (function type)
+    - onAppendDefaultDefinition: STABLE (function type)
+    - onDuplicateDefinition: STABLE (function type)
     - onUpdateDefinition: STABLE (function type)
     - onDeleteDefinition: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
     - selectedDefinition: RUNTIME (requires runtime check)
     - onDefinitionSelected: STABLE (function type)
     - byteItems: RUNTIME (requires runtime check)
+    - errors: RUNTIME (requires runtime check)
+    - variableRegistry: RUNTIME (requires runtime check)
+    - inputData: STABLE (class with no mutable properties)
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.components.foundation.DesktopScaffold(main: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, side: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, tools: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?): kotlin.Unit
@@ -222,14 +232,14 @@ public fun fr.nicopico.petitboutiste.ui.components.foundation.PBLabel(label: kot
     - content: STABLE (composable function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.foundation.PBMenuBar(tabsState: fr.nicopico.petitboutiste.state.TabsState): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.foundation.PBMenuBar(tabsState: fr.nicopico.petitboutiste.models.state.TabsState): kotlin.Unit
   skippable: false
   restartable: true
   params:
     - tabsState: RUNTIME (requires runtime check)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.foundation.PBSnackbar(state: fr.nicopico.petitboutiste.state.SnackbarState, onDismiss: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.foundation.PBSnackbar(state: fr.nicopico.petitboutiste.models.state.events.SnackbarEvent, onDismiss: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -249,7 +259,7 @@ public fun fr.nicopico.petitboutiste.ui.components.foundation.PBTextArea(value: 
     - textStyle: STABLE (marked @Stable or @Immutable)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.foundation.PBTextField(value: kotlin.String, onValueChange: kotlin.Function1<kotlin.String, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, isError: kotlin.Boolean, keyboardOptions: androidx.compose.foundation.text.KeyboardOptions, onKeyboardAction: kotlin.Function0<kotlin.Unit>?): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.foundation.PBTextField(value: kotlin.String, onValueChange: kotlin.Function1<kotlin.String, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, isError: kotlin.Boolean, errorText: kotlin.String?, keyboardOptions: androidx.compose.foundation.text.KeyboardOptions, onKeyboardAction: kotlin.Function0<kotlin.Unit>?): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -257,11 +267,12 @@ public fun fr.nicopico.petitboutiste.ui.components.foundation.PBTextField(value:
     - onValueChange: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
     - isError: STABLE (primitive type)
+    - errorText: STABLE (class with no mutable properties)
     - keyboardOptions: STABLE (marked @Stable or @Immutable)
     - onKeyboardAction: STABLE (function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.foundation.PBTitleBar(tabsState: fr.nicopico.petitboutiste.state.TabsState, appTheme: fr.nicopico.petitboutiste.ui.theme.PBTheme, modifier: androidx.compose.ui.Modifier): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.components.foundation.PBTitleBar(tabsState: fr.nicopico.petitboutiste.models.state.TabsState, appTheme: fr.nicopico.petitboutiste.ui.theme.PBTheme, modifier: androidx.compose.ui.Modifier): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -279,7 +290,7 @@ private fun fr.nicopico.petitboutiste.ui.components.foundation.SwitchThemeButton
     - modifier: STABLE (marked @Stable or @Immutable)
 
 @Composable
-private fun fr.nicopico.petitboutiste.ui.components.foundation.TabItem(tabData: fr.nicopico.petitboutiste.state.TabData, tabNum: kotlin.Int, modifier: androidx.compose.ui.Modifier, fullChangeIndicator: kotlin.Boolean): kotlin.Unit
+private fun fr.nicopico.petitboutiste.ui.components.foundation.TabItem(tabData: fr.nicopico.petitboutiste.models.state.TabData, tabNum: kotlin.Int, modifier: androidx.compose.ui.Modifier, fullChangeIndicator: kotlin.Boolean): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -289,14 +300,14 @@ private fun fr.nicopico.petitboutiste.ui.components.foundation.TabItem(tabData: 
     - fullChangeIndicator: STABLE (primitive type)
 
 @Composable
-private fun fr.nicopico.petitboutiste.ui.components.foundation.TabToolbar(tabData: fr.nicopico.petitboutiste.state.TabData): kotlin.Unit
+private fun fr.nicopico.petitboutiste.ui.components.foundation.TabToolbar(tabData: fr.nicopico.petitboutiste.models.state.TabData): kotlin.Unit
   skippable: true
   restartable: true
   params:
     - tabData: STABLE (marked @Stable or @Immutable)
 
 @Composable
-private fun fr.nicopico.petitboutiste.ui.components.foundation.TemplateToolbar(tabsState: fr.nicopico.petitboutiste.state.TabsState): kotlin.Unit
+private fun fr.nicopico.petitboutiste.ui.components.foundation.TemplateToolbar(tabsState: fr.nicopico.petitboutiste.models.state.TabsState): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -314,23 +325,23 @@ private fun fr.nicopico.petitboutiste.ui.components.foundation.ToolbarItem(label
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.components.foundation.modifier.InkIndication.rememberUpdatedInstance(interactionSource: androidx.compose.foundation.interaction.InteractionSource): androidx.compose.foundation.IndicationInstance
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
     - interactionSource: STABLE (marked @Stable or @Immutable)
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.components.foundation.observeTextFieldState(value: kotlin.String, onValueChange: kotlin.Function1<kotlin.String, kotlin.Unit>): androidx.compose.foundation.text.input.TextFieldState
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
     - value: STABLE (String is immutable)
     - onValueChange: STABLE (function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.components.foundation.rememberMenuActions(tabsState: fr.nicopico.petitboutiste.state.TabsState, onEvent: kotlin.Function1<fr.nicopico.petitboutiste.state.AppEvent, kotlin.Unit>): fr.nicopico.petitboutiste.ui.components.foundation.MenuActions
+public fun fr.nicopico.petitboutiste.ui.components.foundation.rememberMenuActions(tabsState: fr.nicopico.petitboutiste.models.state.TabsState, onEvent: kotlin.Function1<fr.nicopico.petitboutiste.models.state.events.AppEvent, kotlin.Unit>): fr.nicopico.petitboutiste.ui.components.foundation.MenuActions
   skippable: false
-  restartable: true
+  restartable: false
   params:
     - tabsState: RUNTIME (requires runtime check)
     - onEvent: STABLE (function type)
@@ -397,218 +408,218 @@ public fun fr.nicopico.petitboutiste.ui.dialog.RenameTabDialog(currentName: kotl
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBIcons.app(): androidx.compose.ui.graphics.painter.Painter
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColors.actionBackgroundColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColors.actionTextColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColors.backgroundColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColors.contentColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColorsImpl.actionBackgroundColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColorsImpl.actionTextColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColorsImpl.backgroundColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBSnackbarColorsImpl.contentColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.accentColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.accentContainer(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.borderColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.dangerousActionColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.errorColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.subTextColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.titleBarIconTint(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColors.windowBackgroundColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.accentColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.accentContainer(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.borderColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.dangerousActionColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.errorColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.subTextColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.titleBarIconTint(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeColorsImpl.windowBackgroundColor(): androidx.compose.ui.graphics.Color
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeStyles.dividerStyle(): org.jetbrains.jewel.ui.component.styling.DividerStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeStyles.scrollbarStyle(): org.jetbrains.jewel.ui.component.styling.ScrollbarStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeStylesImpl.dividerStyle(): org.jetbrains.jewel.ui.component.styling.DividerStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeStylesImpl.scrollbarStyle(): org.jetbrains.jewel.ui.component.styling.ScrollbarStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypography.data(): androidx.compose.ui.text.TextStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypography.small(): androidx.compose.ui.text.TextStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypography.title(): androidx.compose.ui.text.TextStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypographyImpl.data(): androidx.compose.ui.text.TextStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypographyImpl.small(): androidx.compose.ui.text.TextStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.PBThemeTypographyImpl.title(): androidx.compose.ui.text.TextStyle
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.colors(): fr.nicopico.petitboutiste.ui.theme.PBThemeColors
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
@@ -620,14 +631,14 @@ public fun fr.nicopico.petitboutiste.ui.theme.invoke(content: @[Composable] andr
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.isDark(): kotlin.Boolean
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.styles(): fr.nicopico.petitboutiste.ui.theme.PBThemeStyles
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
@@ -638,8 +649,8 @@ public fun fr.nicopico.petitboutiste.ui.theme.system.adaptWindowAppearance(): ko
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.theme.typography(): fr.nicopico.petitboutiste.ui.theme.PBThemeTypography
-  skippable: true
-  restartable: true
+  skippable: false
+  restartable: false
   params:
 
 @Composable
