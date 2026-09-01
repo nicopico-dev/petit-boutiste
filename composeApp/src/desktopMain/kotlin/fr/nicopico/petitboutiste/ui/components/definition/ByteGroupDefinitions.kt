@@ -217,23 +217,28 @@ fun ByteGroupDefinitions(
         }
     }
 
+    suspend fun scrollToDefinition(definition: ByteGroupDefinition) {
+        val index = definitions.indexOfFirst { definition == it }
+
+        if (index != -1) {
+            lazyListState.animateScrollToItem(index)
+        }
+    }
+
     // Auto-open (and scroll to) newly added definitions, since their creation now happens in the Reducer
     LaunchedEffect(definitions) {
         val newDefinition = definitions.firstOrNull { it.id !in knownDefinitionIds }
         if (newDefinition != null) {
             openedDefinition = newDefinition
+            scrollToDefinition(newDefinition)
         }
         knownDefinitionIds = definitions.map { it.id }.toSet()
     }
 
-    // Auto-scroll to opened definition
-    LaunchedEffect(openedDefinition) {
-        if (openedDefinition == null) return@LaunchedEffect
-        val index = definitions
-            .indexOfFirst { openedDefinition == it }
-
-        if (index != -1) {
-            lazyListState.animateScrollToItem(index)
+    // Auto-scroll to selected definition
+    LaunchedEffect(selectedDefinition) {
+        if (selectedDefinition != null) {
+            scrollToDefinition(selectedDefinition)
         }
     }
 }
