@@ -193,7 +193,7 @@ fun HexDisplay(
                         },
                     ) { item ->
                         val inSelection = remember(selectedByteItem, item) {
-                            selectedByteItem != null && item in selectedByteItem
+                            selectedByteItem?.contains(item) ?: false
                         }
 
                         val itemModifier = createItemModifier(
@@ -215,7 +215,8 @@ fun HexDisplay(
                             )
                         }
 
-                        if (inSelection && isTemporarySelection && selectedByteItem != null) {
+                        if (selectedByteItem != null && inSelection
+                            && (isTemporarySelection || selectedByteItem.size == 1)) {
                             TemporaryByteGroupContextMenu(
                                 selectedByteItem = selectedByteItem,
                                 onAddDefinition = onAddDefinition,
