@@ -241,4 +241,11 @@ fun ByteGroupDefinitions(
             scrollToDefinition(selectedDefinition)
         }
     }
+
+    // Automatically select the newly created definition
+    LaunchedEffect(selectedDefinition, openedDefinition) {
+        if (openedDefinition != null && selectedDefinition == null) {
+            onDefinitionSelected(openedDefinition)
+        }
+    }
 }
