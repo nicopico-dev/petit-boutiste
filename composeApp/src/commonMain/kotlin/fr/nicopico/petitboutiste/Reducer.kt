@@ -23,7 +23,6 @@ import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.definition.rawHexString
 import fr.nicopico.petitboutiste.models.definition.renderWith
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
-import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
@@ -254,7 +253,7 @@ class Reducer(
                         endValue + 1
                     } else 0
                     // If available, default to the last representation
-                    val nextRepresentation = lastDefinition?.representation ?: DEFAULT_REPRESENTATION
+                    val nextRepresentation = lastDefinition?.representation ?: defaultRepresentation
                     val newDefinition = ByteGroupDefinition.createFromRange(
                         indexes = nextIndex..nextIndex,
                         representation = nextRepresentation,
@@ -469,14 +468,9 @@ class Reducer(
                 val inputData = HexString(rendering)
                 TabData(
                     name = tabName,
+                    defaultRepresentation = representation,
                     rendering = TabDataRendering(
                         inputData = inputData,
-                        groupDefinitions = listOf(
-                            ByteGroupDefinition.createFromRange(
-                                indexes = 0..<inputData.byteCount,
-                                representation = representation,
-                            )
-                        ),
                     ),
                 )
             }
@@ -485,14 +479,9 @@ class Reducer(
                 val inputData = BinaryString(rendering)
                 TabData(
                     name = tabName,
+                    defaultRepresentation = representation,
                     rendering = TabDataRendering(
                         inputData = inputData,
-                        groupDefinitions = listOf(
-                            ByteGroupDefinition.createFromRange(
-                                indexes = 0..<inputData.byteCount,
-                                representation = representation,
-                            )
-                        ),
                     )
                 )
             }

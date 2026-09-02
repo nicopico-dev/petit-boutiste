@@ -16,7 +16,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.VisibleForTesting
 
-val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
+val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Hexadecimal)
 
 @Serializable
 data class Representation(
