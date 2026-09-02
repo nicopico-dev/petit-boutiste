@@ -60,6 +60,7 @@ sealed class AppEvent {
         ) : CurrentTabEvent()
 
         data class UpdateScratchpadEvent(val scratchpad: String): CurrentTabEvent()
+        data class UpdateDefaultRepresentationEvent(val representation: Representation): CurrentTabEvent()
 
         data class LoadTemplateEvent(
             val templateFilePath: Path,

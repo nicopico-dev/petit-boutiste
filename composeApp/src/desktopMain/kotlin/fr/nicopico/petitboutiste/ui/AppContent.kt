@@ -36,6 +36,7 @@ fun AppContent(
                 byteItems = byteItems,
                 errors = errors,
                 scratchpad = tabData.scratchpad,
+                defaultRepresentation = tabData.defaultRepresentation,
                 variableRegistry = tabData.rendering.variableRegistry,
             )
         }

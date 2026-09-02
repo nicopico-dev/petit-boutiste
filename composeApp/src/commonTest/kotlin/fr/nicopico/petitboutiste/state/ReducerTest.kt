@@ -333,6 +333,22 @@ class ReducerTest {
     }
 
     @Test
+    fun `UpdateDefaultRepresentationEvent updates the defaultRepresentation`() = runTest {
+        // Given
+        val state = createAppState()
+        val event = AppEvent.CurrentTabEvent.UpdateDefaultRepresentationEvent(
+            Representation(DataRenderer.Binary)
+        )
+
+        // When
+        val newState = reducer(state, event)
+
+        // Then
+        assertEquals(Representation(DataRenderer.Binary), newState.tabsState.selectedTab.defaultRepresentation)
+        assertEquals(state.tabsState.selectedTab.scratchpad, newState.tabsState.selectedTab.scratchpad)
+    }
+
+    @Test
     fun `LoadTemplateEvent loads definitions and scratchpad by default`() = runTest {
         // Given
         val state = createAppState()

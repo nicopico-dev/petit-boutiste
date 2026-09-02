@@ -13,6 +13,8 @@ import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.representation.DataRenderer
+import fr.nicopico.petitboutiste.models.representation.Representation
 import kotlinx.io.files.Path
 import kotlin.uuid.Uuid
 
@@ -36,6 +38,7 @@ data class TabData(
     val name: String? = null,
     val rendering: TabDataRendering = TabDataRendering(),
     val scratchpad: String = "",
+    val defaultRepresentation: Representation = Representation(DataRenderer.Hexadecimal),
     val templateData: TabTemplateData? = null,
 ) {
     val inputData = rendering.inputData

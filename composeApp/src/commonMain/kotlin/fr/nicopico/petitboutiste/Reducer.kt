@@ -391,6 +391,12 @@ class Reducer(
                 }
             }
 
+            is AppEvent.CurrentTabEvent.UpdateDefaultRepresentationEvent -> {
+                state.updateCurrentTab {
+                    copy(defaultRepresentation = event.representation)
+                }
+            }
+
             //region Templates
             is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
                 val template = templateManager.loadTemplate(event.templateFilePath)
