@@ -6,21 +6,22 @@
 
 package fr.nicopico.petitboutiste.robot
 
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasAnyChild
 import androidx.compose.ui.test.hasParent
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import fr.nicopico.petitboutiste.ui.UiTags
-import fr.nicopico.petitboutiste.utils.debug
 import fr.nicopico.petitboutiste.utils.onPBTextFieldInput
 
+@Suppress("unused")
 object DefinitionsPart : PartRobot {
 
     context(rule: ComposeContentTestRule)
@@ -32,8 +33,12 @@ object DefinitionsPart : PartRobot {
         rule.onNodeWithTag(UiTags.BYTE_GROUP_DEFINITIONS_ADD_DEFINITION)
             .performClick()
 
-        // TODO Workaround to wait for the form to appear for UI tests
-        rule.onRoot().debug()
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithTag(
+                UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM_INPUT_NAME,
+                useUnmergedTree = true,
+            ).fetchSemanticsNodes().isNotEmpty()
+        }
 
         rule.onPBTextFieldInput(UiTags.BYTE_GROUP_DEFINITIONS_ITEM_FORM_INPUT_NAME)
             .apply {
@@ -70,9 +75,22 @@ object DefinitionsPart : PartRobot {
 
     context(rule: ComposeContentTestRule)
     fun selectDefinition(name: String) {
-        rule.onNodeWithTag(UiTags.byteGroupDefinitionsItemName(name), useUnmergedTree = true)
-            .performClick()
-        rule.waitForIdle()
+        val definitionItem = rule.onNode(
+            hasTestTag(UiTags.BYTE_GROUP_DEFINITIONS_ITEM) and
+                hasAnyChild(hasTestTag(UiTags.byteGroupDefinitionsItemName(name))),
+            useUnmergedTree = true,
+        )
+
+        val semantics = definitionItem.fetchSemanticsNode().config
+        if (!semantics.contains(SemanticsProperties.Selected) || !semantics[SemanticsProperties.Selected]) {
+            definitionItem.performClick()
+        }
+
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithTag(
+                UiTags.BYTE_GROUP_REPRESENTATION_FORM_DATA_RENDERER,
+            ).fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     context(rule: ComposeContentTestRule)

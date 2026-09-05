@@ -55,8 +55,8 @@ class SubTemplateTest {
 
         // THEN
         // decodeInteger(00 01) -> "1"
-        // decodeHexadecimal(02 03) -> "0203"
-        val expected = """{"first":"1","second":"0203"}"""
+        // decodeHexadecimal(02 03) -> "02 03" (thin space)
+        val expected = """{"first":"1","second":"02 03"}"""
         assertEquals(expected, result)
     }
 
