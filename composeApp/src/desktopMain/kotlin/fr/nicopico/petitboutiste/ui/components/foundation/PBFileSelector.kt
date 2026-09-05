@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -85,6 +86,16 @@ fun PBFileSelector(
                 enabled = selection != null,
                 onClick = {
                     onFileSelected(selection)
+                },
+            )
+
+            IconActionButton(
+                key = AllIconsKeys.Actions.ClearCash,
+                contentDescription = "Unselect the file",
+                colorFilter = ColorFilter.tint(AppTheme.current.colors.dangerousActionColor),
+                enabled = selection != null,
+                onClick = {
+                    onFileSelected(null)
                 },
             )
         }
