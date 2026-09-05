@@ -57,7 +57,7 @@ public fun fr.nicopico.petitboutiste.ui.MainPane(inputData: fr.nicopico.petitbou
     - onAddDefinition: STABLE (function type)
 
 @Composable
-public fun fr.nicopico.petitboutiste.ui.TabContent(inputData: fr.nicopico.petitboutiste.models.data.DataString, definitions: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition>, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, errors: kotlin.collections.Map<kotlin.String, kotlin.String>, scratchpad: kotlin.String, variableRegistry: fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry?): kotlin.Unit
+public fun fr.nicopico.petitboutiste.ui.TabContent(inputData: fr.nicopico.petitboutiste.models.data.DataString, definitions: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition>, byteItems: kotlin.collections.List<fr.nicopico.petitboutiste.models.definition.ByteItem>, errors: kotlin.collections.Map<kotlin.String, kotlin.String>, scratchpad: kotlin.String, defaultRepresentation: fr.nicopico.petitboutiste.models.representation.Representation, variableRegistry: fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry?): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -66,6 +66,7 @@ public fun fr.nicopico.petitboutiste.ui.TabContent(inputData: fr.nicopico.petitb
     - byteItems: RUNTIME (requires runtime check)
     - errors: RUNTIME (requires runtime check)
     - scratchpad: STABLE (String is immutable)
+    - defaultRepresentation: RUNTIME (requires runtime check)
     - variableRegistry: RUNTIME (requires runtime check)
 
 @Composable
@@ -386,6 +387,15 @@ public fun fr.nicopico.petitboutiste.ui.components.representation.ByteItemRender
     - representation: RUNTIME (requires runtime check)
     - onRepresentationChanged: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
+
+@Composable
+private fun fr.nicopico.petitboutiste.ui.components.representation.CreateNewTemplateButton(byteItem: fr.nicopico.petitboutiste.models.definition.ByteItem, modifier: androidx.compose.ui.Modifier, fileDialog: fr.nicopico.petitboutiste.utils.dialog.FileDialog): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - byteItem: STABLE (class with no mutable properties)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - fileDialog: UNKNOWN (interface or non-final class; concrete implementation unknown)
 
 @Composable
 public fun fr.nicopico.petitboutiste.ui.components.representation.RendererArgumentsForm(arguments: kotlin.collections.List<fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument>, values: kotlin.collections.Map<kotlin.String, kotlin.String>, onArgumentsChange: kotlin.Function1<kotlin.collections.Map<kotlin.String, kotlin.String>, kotlin.Unit>, modifier: androidx.compose.ui.Modifier): kotlin.Unit
