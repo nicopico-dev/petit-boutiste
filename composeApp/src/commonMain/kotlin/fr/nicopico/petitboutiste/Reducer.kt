@@ -14,9 +14,11 @@ import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.expandFormulas
 import fr.nicopico.petitboutiste.models.definition.name
@@ -28,6 +30,7 @@ import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.asString
+import fr.nicopico.petitboutiste.models.representation.decoder.createSubTemplateArgument
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFilePath
 import fr.nicopico.petitboutiste.models.state.AppState
@@ -446,7 +449,7 @@ class Reducer(
             //endregion
 
             //endregion
-            is AppEvent.CreateNewTemplateFile -> {
+            is AppEvent.CreateNewSubTemplateFile -> {
                 val template = Template(
                     name = event.templateFile.nameWithoutExtension
                 )
@@ -455,10 +458,40 @@ class Reducer(
                     templateFilePath = event.templateFile,
                     overwrite = event.allowOverwrite,
                 )
-                event.onFileReady(event.templateFile)
 
-                // Keep the current state
-                state
+                state.updateCurrentTab {
+                    val existingDefinition = when(event.byteItem) {
+                        // Retrieve definition from the rendering to exclude temporary definition
+                        is ByteGroup -> rendering.groupDefinitions
+                            .find { it.id == event.byteItem.definition.id }
+                        is SingleByte -> null
+                    }
+                    val subTemplateRepresentation = Representation(
+                        DataRenderer.SubTemplate,
+                        createSubTemplateArgument(event.templateFile),
+                    )
+
+                    if (existingDefinition != null) {
+                        // Update the existing definition with the new representation
+                        val updatedDefinitions = rendering.groupDefinitions.map { definition ->
+                            if (definition.id == existingDefinition.id) {
+                                definition.copy(representation = subTemplateRepresentation)
+                            } else definition
+                        }
+
+                        copy(
+                            rendering = rendering.copy(
+                                groupDefinitions = updatedDefinitions,
+                            ),
+                            templateData = templateData?.copy(definitionsHaveChanged = true),
+                        ).withUpdatedRendering()
+                    } else copy(
+                        // Update default representation
+                        defaultRepresentation = subTemplateRepresentation,
+                    )
+                }
+
+                // TODO Open a new tab with subTemplate
             }
         }
     }

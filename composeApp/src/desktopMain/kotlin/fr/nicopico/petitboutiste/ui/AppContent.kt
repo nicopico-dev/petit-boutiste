@@ -24,7 +24,7 @@ fun AppContent(
     snackbarEvent: SnackbarEvent? = null,
     onDismissSnackbar: () -> Unit = {},
 ) {
-    val byteItems = tabData.renderByteItems()
+    val byteItems = tabData.rendering.byteItems
     val errors = tabData.rendering.errors
 
     Box(modifier = modifier.fillMaxSize()) {

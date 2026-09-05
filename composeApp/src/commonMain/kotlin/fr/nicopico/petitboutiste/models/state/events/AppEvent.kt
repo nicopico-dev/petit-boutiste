@@ -75,9 +75,9 @@ sealed class AppEvent {
         ) : CurrentTabEvent()
     }
 
-    data class CreateNewTemplateFile(
+    data class CreateNewSubTemplateFile(
+        val byteItem: ByteItem,
         val templateFile: Path,
-        val onFileReady: (Path) -> Unit,
         val allowOverwrite: Boolean = false,
     ) : AppEvent()
 }

@@ -10,14 +10,12 @@ import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
-import fr.nicopico.petitboutiste.models.persistence.NewFileOptions
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
-import fr.nicopico.petitboutiste.models.state.events.AppEvent
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
@@ -30,22 +28,12 @@ val subTemplateArguments = listOf(
     Argument(
         key = ARG_TEMPLATE_FILE_KEY,
         label = "PTB Template file",
-        type = FileType(
-            newFileOptions = NewFileOptions(
-                suggestedFileName = "template",
-                extension = "json",
-                onFileSelected = { onAppEvent, path, onFileReady ->
-                    onAppEvent(
-                        AppEvent.CreateNewTemplateFile(
-                            templateFile = path,
-                            onFileReady = onFileReady,
-                            allowOverwrite = true, // the UI will ask the user for overwriting
-                        )
-                    )
-                },
-            )
-        ),
+        type = FileType,
     )
+)
+
+fun createSubTemplateArgument(templateFile: Path): ArgumentValues = mapOf(
+    ARG_TEMPLATE_FILE_KEY to FileType.convertTo(templateFile)
 )
 
 private val templateManager = TemplateManager()

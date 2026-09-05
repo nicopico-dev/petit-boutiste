@@ -41,10 +41,10 @@ data class TabData(
     val defaultRepresentation: Representation = DEFAULT_REPRESENTATION,
     val templateData: TabTemplateData? = null,
 ) {
+    // TODO NPI Inline this property
     val inputData = rendering.inputData
+    // TODO NPI Inline this property
     val groupDefinitions = rendering.groupDefinitions
-
-    fun renderByteItems(): List<ByteItem> = rendering.byteItems
 }
 
 @Immutable

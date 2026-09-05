@@ -17,7 +17,7 @@ val userScriptArguments = listOf(
     Argument(
         key = ARG_USER_SCRIPT_FILE_KEY,
         label = "script file",
-        type = FileType(),
+        type = FileType,
     ),
 )
 

@@ -195,7 +195,7 @@ class PTBViewModelTest {
         advanceUntilIdle()
 
         // Then
-        val renderedItems = viewModel.currentTab.value.renderByteItems()
+        val renderedItems = viewModel.currentTab.value.rendering.byteItems
         assertEquals(3, renderedItems.size, "Should have 3 single bytes rendered")
         assertEquals("AA", (renderedItems[0] as SingleByte).value)
     }

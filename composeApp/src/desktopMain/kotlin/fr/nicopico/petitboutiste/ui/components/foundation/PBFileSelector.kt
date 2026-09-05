@@ -19,13 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import fr.nicopico.petitboutiste.LocalOnAppEvent
-import fr.nicopico.petitboutiste.models.persistence.NewFileOptions
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
-import fr.nicopico.petitboutiste.utils.compose.preview.BooleanParameterProvider
 import fr.nicopico.petitboutiste.utils.compose.preview.WrapForPreviewDesktop
-import fr.nicopico.petitboutiste.utils.compose.preview.combineParameterProviders
 import fr.nicopico.petitboutiste.utils.dialog.FileDialog
 import fr.nicopico.petitboutiste.utils.dialog.FileDialogOperation
 import kotlinx.coroutines.launch
@@ -45,10 +41,8 @@ fun PBFileSelector(
     modifier: Modifier = Modifier,
     selection: Path? = null,
     fileDialog: FileDialog = FileDialog.Default,
-    newFileOptions: NewFileOptions? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val onAppEvent = LocalOnAppEvent.current
 
     Column(modifier) {
         Row(
@@ -93,29 +87,6 @@ fun PBFileSelector(
                     onFileSelected(selection)
                 },
             )
-
-            if (newFileOptions != null) {
-                IconActionButton(
-                    key = AllIconsKeys.Actions.AddFile,
-                    contentDescription = "Create a new file",
-                    modifier = Modifier.padding(start = 4.dp),
-                    onClick = {
-                        val operation = FileDialogOperation.CreateNewFile(
-                            suggestedFilename = newFileOptions.suggestedFileName,
-                            extension = newFileOptions.extension,
-                        )
-                        coroutineScope.launch {
-                            fileDialog.show(operation) { file ->
-                                newFileOptions.onFileSelected(
-                                    onAppEvent,
-                                    file,
-                                    onFileSelected, // Callback of the composable, called once the file has been populated
-                                )
-                            }
-                        }
-                    },
-                )
-            }
         }
 
         if (selection != null) {
@@ -139,19 +110,11 @@ private object PathSelectionParameterProvider : PreviewParameterProvider<Path?> 
 @Preview
 @Composable
 private fun PBFileSelectorPreview() {
-    WrapForPreviewDesktop(
-        combineParameterProviders(
-            PathSelectionParameterProvider,
-            BooleanParameterProvider,
-        )
-    ) { (path, allowFileCreation) ->
+    WrapForPreviewDesktop(PathSelectionParameterProvider) {  path ->
         PBFileSelector(
             modifier = Modifier.padding(8.dp),
             onFileSelected = {},
             selection = path,
-            newFileOptions = if (allowFileCreation) {
-                NewFileOptions("example", "txt") { _, _, _ -> }
-            } else null,
         )
     }
 }

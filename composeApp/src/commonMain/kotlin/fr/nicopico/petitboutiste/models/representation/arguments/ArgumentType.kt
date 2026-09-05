@@ -6,7 +6,6 @@
 
 package fr.nicopico.petitboutiste.models.representation.arguments
 
-import fr.nicopico.petitboutiste.models.persistence.NewFileOptions
 import fr.nicopico.petitboutiste.utils.file.asString
 import fr.nicopico.petitboutiste.utils.nowInMillis
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +19,9 @@ sealed class ArgumentType<T : Any>(
     abstract fun convertFrom(argValue: ArgValue): T
     abstract fun convertTo(value: T): ArgValue
 
-    data class FileType(
-        val newFileOptions: NewFileOptions? = null,
-    ) : ArgumentType<Path>(Path::class) {
+    data object FileType: ArgumentType<Path>(Path::class) {
+
+        private const val SEPARATOR = ";;"
 
         override fun convertFrom(argValue: ArgValue): Path {
             // Ignore the timestamp
@@ -33,10 +32,6 @@ sealed class ArgumentType<T : Any>(
         override fun convertTo(value: Path): ArgValue {
             // Append a timestamp to the file path to allow reloading the same file
             return value.asString() + SEPARATOR + nowInMillis()
-        }
-
-        companion object {
-            private const val SEPARATOR = ";;"
         }
     }
 
