@@ -14,20 +14,23 @@ import fr.nicopico.petitboutiste.models.data.BinaryString
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
 import fr.nicopico.petitboutiste.models.data.toByteItems
+import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinitionSorter
 import fr.nicopico.petitboutiste.models.definition.ByteItem
+import fr.nicopico.petitboutiste.models.definition.SingleByte
 import fr.nicopico.petitboutiste.models.definition.createDefinitionId
 import fr.nicopico.petitboutiste.models.definition.expandFormulas
 import fr.nicopico.petitboutiste.models.definition.name
 import fr.nicopico.petitboutiste.models.definition.rawHexString
 import fr.nicopico.petitboutiste.models.definition.renderWith
+import fr.nicopico.petitboutiste.models.persistence.Template
 import fr.nicopico.petitboutiste.models.persistence.toTemplate
-import fr.nicopico.petitboutiste.models.representation.DEFAULT_REPRESENTATION
 import fr.nicopico.petitboutiste.models.representation.DataRenderer
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.asString
+import fr.nicopico.petitboutiste.models.representation.decoder.createSubTemplateArgument
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateDefinitions
 import fr.nicopico.petitboutiste.models.representation.decoder.getSubTemplateFilePath
 import fr.nicopico.petitboutiste.models.state.AppState
@@ -206,7 +209,7 @@ class Reducer(
             //region Current Tab
             is AppEvent.CurrentTabEvent.ChangeInputTypeEvent -> {
                 state.updateCurrentTab {
-                    val hexString = HexString(inputData.hexStringValue)
+                    val hexString = HexString(rendering.inputData.hexStringValue)
                     val updatedData: DataString = when (event.type) {
                         InputType.HEX -> hexString
                         InputType.BINARY -> BinaryString.fromHexString(hexString)
@@ -231,7 +234,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + event.definition,
+                            groupDefinitions = rendering.groupDefinitions + event.definition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -240,7 +243,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent -> {
                 state.updateCurrentTab {
-                    val lastDefinition = groupDefinitions.lastOrNull()
+                    val lastDefinition = rendering.groupDefinitions.lastOrNull()
                     val variables = resolveVariables(rendering)
                     val nextIndex: Int = if (lastDefinition != null) {
                         val expandedFormula = lastDefinition.expandFormulas().endFormula
@@ -254,7 +257,7 @@ class Reducer(
                         endValue + 1
                     } else 0
                     // If available, default to the last representation
-                    val nextRepresentation = lastDefinition?.representation ?: DEFAULT_REPRESENTATION
+                    val nextRepresentation = lastDefinition?.representation ?: defaultRepresentation
                     val newDefinition = ByteGroupDefinition.createFromRange(
                         indexes = nextIndex..nextIndex,
                         representation = nextRepresentation,
@@ -262,7 +265,7 @@ class Reducer(
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + newDefinition,
+                            groupDefinitions = rendering.groupDefinitions + newDefinition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -293,7 +296,7 @@ class Reducer(
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + newDefinition,
+                            groupDefinitions = rendering.groupDefinitions + newDefinition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -302,7 +305,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.UpdateDefinitionEvent -> {
                 state.updateCurrentTab {
-                    val updatedDefinitions = groupDefinitions.map { definition ->
+                    val updatedDefinitions = rendering.groupDefinitions.map { definition ->
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
 
@@ -319,7 +322,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions - event.definition,
+                            groupDefinitions = rendering.groupDefinitions - event.definition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -391,6 +394,12 @@ class Reducer(
                 }
             }
 
+            is AppEvent.CurrentTabEvent.UpdateDefaultRepresentationEvent -> {
+                state.updateCurrentTab {
+                    copy(defaultRepresentation = event.representation)
+                }
+            }
+
             //region Templates
             is AppEvent.CurrentTabEvent.LoadTemplateEvent -> {
                 val template = templateManager.loadTemplate(event.templateFilePath)
@@ -425,14 +434,14 @@ class Reducer(
 
                 state.updateCurrentTab {
                     // Ensure incoming definitions have unique IDs
-                    val currentIds = groupDefinitions.map { it.id }.toSet()
+                    val currentIds = rendering.groupDefinitions.map { it.id }.toSet()
                     val newDefinitions = template.definitions.map {
                         if (it.id in currentIds) it.copy(id = createDefinitionId()) else it
                     }
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + newDefinitions,
+                            groupDefinitions = rendering.groupDefinitions + newDefinitions,
                         )
                     ).withUpdatedRendering()
                 }
@@ -440,6 +449,57 @@ class Reducer(
             //endregion
 
             //endregion
+            is AppEvent.CreateNewSubTemplateFile -> {
+                val template = Template(
+                    name = event.templateFile.nameWithoutExtension
+                )
+                templateManager.saveTemplate(
+                    template = template,
+                    templateFilePath = event.templateFile,
+                    overwrite = event.allowOverwrite,
+                )
+
+                val subTemplateRepresentation = Representation(
+                    DataRenderer.SubTemplate,
+                    createSubTemplateArgument(event.templateFile),
+                )
+
+                state.updateCurrentTab {
+                    val existingDefinition = when(event.byteItem) {
+                        // Retrieve definition from the rendering to exclude temporary definition
+                        is ByteGroup -> rendering.groupDefinitions
+                            .find { it.id == event.byteItem.definition.id }
+                        is SingleByte -> null
+                    }
+
+                    if (existingDefinition != null) {
+                        // Update the existing definition with the new representation
+                        val updatedDefinitions = rendering.groupDefinitions.map { definition ->
+                            if (definition.id == existingDefinition.id) {
+                                definition.copy(representation = subTemplateRepresentation)
+                            } else definition
+                        }
+
+                        copy(
+                            rendering = rendering.copy(
+                                groupDefinitions = updatedDefinitions,
+                            ),
+                            templateData = templateData?.copy(definitionsHaveChanged = true),
+                        ).withUpdatedRendering()
+                    } else copy(
+                        // Update default representation
+                        defaultRepresentation = subTemplateRepresentation,
+                    )
+                }.also {
+                    // Open a new tab with the subTemplate
+                    sendSideEffect(
+                        AppEvent.OpenRenderedByteItemInNewTabEvent(
+                            byteItem = event.byteItem,
+                            representation = subTemplateRepresentation,
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -463,14 +523,9 @@ class Reducer(
                 val inputData = HexString(rendering)
                 TabData(
                     name = tabName,
+                    defaultRepresentation = representation,
                     rendering = TabDataRendering(
                         inputData = inputData,
-                        groupDefinitions = listOf(
-                            ByteGroupDefinition.createFromRange(
-                                indexes = 0..<inputData.byteCount,
-                                representation = representation,
-                            )
-                        ),
                     ),
                 )
             }
@@ -479,14 +534,9 @@ class Reducer(
                 val inputData = BinaryString(rendering)
                 TabData(
                     name = tabName,
+                    defaultRepresentation = representation,
                     rendering = TabDataRendering(
                         inputData = inputData,
-                        groupDefinitions = listOf(
-                            ByteGroupDefinition.createFromRange(
-                                indexes = 0..<inputData.byteCount,
-                                representation = representation,
-                            )
-                        ),
                     )
                 )
             }

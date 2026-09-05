@@ -19,7 +19,8 @@ sealed class ArgumentType<T : Any>(
     abstract fun convertFrom(argValue: ArgValue): T
     abstract fun convertTo(value: T): ArgValue
 
-    data object FileType : ArgumentType<Path>(Path::class) {
+    data object FileType: ArgumentType<Path>(Path::class) {
+
         private const val SEPARATOR = ";;"
 
         override fun convertFrom(argValue: ArgValue): Path {

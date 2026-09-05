@@ -16,7 +16,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.VisibleForTesting
 
-val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Off)
+val DEFAULT_REPRESENTATION: Representation = Representation(DataRenderer.Hexadecimal)
 
 @Serializable
 data class Representation(
@@ -37,7 +37,6 @@ data class Representation(
 val Representation.isOff: Boolean
     get() = dataRenderer == DataRenderer.Off
 
-// TODO REFACTO Move this computation to the Reducer
 suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     require(isReady) { "Representation must be ready!" }
     return try {

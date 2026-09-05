@@ -49,6 +49,7 @@ fun TabContent(
     byteItems: List<ByteItem>,
     errors: Map<String, String> = emptyMap(),
     scratchpad: String = "",
+    defaultRepresentation: Representation = Representation(DataRenderer.Hexadecimal),
     variableRegistry: DefinitionVariableRegistry? = null,
 ) {
     val onCurrentTabEvent: (CurrentTabEvent) -> Unit = LocalOnAppEvent.current
@@ -57,18 +58,11 @@ fun TabContent(
         mutableStateOf(null)
     }
 
-    // As ByteItem.SingleByte do not have a definition, we use the same representation for all of them.
-    // The same representation will be used for full-payload representation when there is no definition.
-    // (note that it is possible to create a ByteGroup with a single byte)
-    var noDefinitionRepresentation by remember {
-        mutableStateOf(Representation(DataRenderer.Hexadecimal))
-    }
-
-    val fullPayload: ByteGroup? = remember(inputData, definitions, noDefinitionRepresentation) {
+    val fullPayload: ByteGroup? = remember(inputData, definitions, defaultRepresentation) {
         if (inputData.isNotEmpty() && definitions.isEmpty()) {
             createFullPayloadByteGroup(
                 dataString = inputData,
-                representation = noDefinitionRepresentation,
+                representation = defaultRepresentation,
             )
         } else null
     }
@@ -111,7 +105,7 @@ fun TabContent(
                 onAddDefinition = { indexes ->
                     val definition = ByteGroupDefinition.createFromRange(
                         indexes = indexes,
-                        representation = noDefinitionRepresentation,
+                        representation = defaultRepresentation,
                     )
                     onCurrentTabEvent(CurrentTabEvent.AddDefinitionEvent(definition))
                 },
@@ -175,7 +169,7 @@ fun TabContent(
                 byteItem = renderedByteItem,
                 representation = if (useDefinitionRepresentation) {
                     renderedByteItem.definition.representation
-                } else noDefinitionRepresentation,
+                } else defaultRepresentation,
                 onRepresentationChanged = { representation ->
                     if (useDefinitionRepresentation) {
                         val currentDefinition = renderedByteItem.definition
@@ -184,7 +178,7 @@ fun TabContent(
                             onCurrentTabEvent(CurrentTabEvent.UpdateDefinitionEvent(currentDefinition, updatedDefinition))
                         }
                     } else {
-                        noDefinitionRepresentation = representation
+                        onCurrentTabEvent(CurrentTabEvent.UpdateDefaultRepresentationEvent(representation))
                     }
                 },
                 modifier = Modifier.padding(16.dp),

@@ -89,6 +89,7 @@ class PTBViewModel(
             reducer(state.value, event)
         } catch (error: Exception) {
             logError("Error processing event: $event", error)
+            displaySnackbar(SnackbarEvent("Unexpected error: $error"))
             return // early exit
         }
 

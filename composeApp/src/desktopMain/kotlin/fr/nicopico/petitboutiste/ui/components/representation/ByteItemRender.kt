@@ -44,6 +44,8 @@ import fr.nicopico.petitboutiste.ui.UiTags
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.ui.theme.styles
+import fr.nicopico.petitboutiste.utils.dialog.FileDialog
+import fr.nicopico.petitboutiste.utils.dialog.FileDialogOperation
 import fr.nicopico.petitboutiste.utils.setData
 import kotlinx.coroutines.launch
 import org.jetbrains.jewel.foundation.theme.JewelTheme
@@ -51,6 +53,8 @@ import org.jetbrains.jewel.ui.Orientation
 import org.jetbrains.jewel.ui.Outline
 import org.jetbrains.jewel.ui.component.Divider
 import org.jetbrains.jewel.ui.component.IconActionButton
+import org.jetbrains.jewel.ui.component.OutlinedButton
+import org.jetbrains.jewel.ui.component.Text
 import org.jetbrains.jewel.ui.component.TextArea
 import org.jetbrains.jewel.ui.icons.AllIconsKeys
 import org.jetbrains.jewel.ui.typography
@@ -92,13 +96,13 @@ fun ByteItemRender(
             modifier = Modifier.fillMaxHeight().padding(vertical = 16.dp)
         )
 
-        if (representation.isReady) {
-            Box(
-                modifier = Modifier
-                    .widthIn(min = 200.dp)
-                    .fillMaxSize()
-                    .padding(top = 8.dp, end = 8.dp, bottom = 8.dp),
-            ) {
+        Box(
+            modifier = Modifier
+                .widthIn(min = 200.dp)
+                .fillMaxSize()
+                .padding(top = 8.dp, end = 8.dp, bottom = 8.dp),
+        ) {
+            if (representation.isReady) {
                 TextArea(
                     state = remember(rendererOutput) {
                         TextFieldState(
@@ -166,9 +170,49 @@ fun ByteItemRender(
                             .testTag(UiTags.BYTE_GROUP_REPRESENTATION_RENDER_OPEN_NEW_TAB),
                     )
                 }
+            } else if (representation.dataRenderer == DataRenderer.SubTemplate) {
+                CreateNewTemplateButton(
+                    byteItem = byteItem,
+                    modifier = Modifier.align(Alignment.Center),
+                )
             }
         }
     }
+}
+
+@Composable
+private fun CreateNewTemplateButton(
+    byteItem: ByteItem,
+    modifier: Modifier = Modifier,
+    fileDialog: FileDialog = FileDialog.Default,
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val onAppEvent = LocalOnAppEvent.current
+
+    OutlinedButton(
+        content = {
+            Text("Create a new Template")
+        },
+        modifier = modifier,
+        onClick = {
+            val operation = FileDialogOperation.CreateNewFile(
+                suggestedFilename = "template",
+                extension = "json",
+            )
+            coroutineScope.launch {
+                fileDialog.show(operation) { file ->
+                    onAppEvent(
+                        AppEvent.CreateNewSubTemplateFile(
+                            byteItem = byteItem,
+                            templateFile = file,
+                            // FileDialog UI will ask user to confirm overwriting an existing file
+                            allowOverwrite = true,
+                        )
+                    )
+                }
+            }
+        },
+    )
 }
 
 private fun Representation.allowOpenInNewTab(): Boolean {

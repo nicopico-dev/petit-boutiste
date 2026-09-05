@@ -54,7 +54,7 @@ class ByteItemExtTest {
 
         // Then
         assertIs<RenderResult.Success>(result)
-        assertEquals("AABB", result.asString())
+        assertEquals("AA BB", result.asString())
     }
 
     @Test

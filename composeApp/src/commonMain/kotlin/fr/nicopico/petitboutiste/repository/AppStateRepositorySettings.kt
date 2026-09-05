@@ -101,9 +101,9 @@ private data class PersistedTab(
 private fun TabData.toPersisted(): PersistedTab = PersistedTab(
     id = id.value,
     name = name,
-    inputHex = inputData.hexStringValue,
-    inputType = inputData.inputType,
-    groupDefinitions = groupDefinitions,
+    inputHex = rendering.inputData.hexStringValue,
+    inputType = rendering.inputData.inputType,
+    groupDefinitions = rendering.groupDefinitions,
     scratchpad = scratchpad,
     templateFilePath = templateData?.templateFilePath?.toString(),
     templateDefinitionsChanged = templateData?.definitionsHaveChanged ?: false,

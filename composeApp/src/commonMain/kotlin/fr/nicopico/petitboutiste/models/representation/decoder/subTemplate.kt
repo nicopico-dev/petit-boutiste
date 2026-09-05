@@ -32,6 +32,10 @@ val subTemplateArguments = listOf(
     )
 )
 
+fun createSubTemplateArgument(templateFile: Path): ArgumentValues = mapOf(
+    ARG_TEMPLATE_FILE_KEY to FileType.convertTo(templateFile)
+)
+
 private val templateManager = TemplateManager()
 
 suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues: ArgumentValues): String {
