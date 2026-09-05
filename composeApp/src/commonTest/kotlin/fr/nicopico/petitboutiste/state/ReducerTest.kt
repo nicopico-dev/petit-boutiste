@@ -190,7 +190,10 @@ class ReducerTest {
         // Then
         assertEquals(2, newState.tabsState.tabs.size)
         assertNotEquals(tabId, newState.tabsState.selectedTabId)
-        assertEquals(state.tabsState.selectedTab.inputData, newState.tabsState.selectedTab.inputData)
+        assertEquals(
+            state.tabsState.selectedTab.rendering.inputData,
+            newState.tabsState.selectedTab.rendering.inputData
+        )
     }
 
     @Test
@@ -225,7 +228,7 @@ class ReducerTest {
         val newState = reducer(state, event)
 
         // Then
-        assertEquals(InputType.BINARY, newState.tabsState.selectedTab.inputData.inputType)
+        assertEquals(InputType.BINARY, newState.tabsState.selectedTab.rendering.inputData.inputType)
     }
 
     @Test
@@ -239,7 +242,7 @@ class ReducerTest {
         val newState = reducer(state, event)
 
         // Then
-        assertEquals(newData, newState.tabsState.selectedTab.inputData)
+        assertEquals(newData, newState.tabsState.selectedTab.rendering.inputData)
     }
 
     @Test
@@ -261,7 +264,7 @@ class ReducerTest {
 
         // Then
         // Sorted by resolved start index (static formulas)
-        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        val definitions = newState.tabsState.selectedTab.rendering.groupDefinitions
         assertEquals(2, definitions.size)
         assertEquals("Def 2", definitions[0].name)
         assertEquals("Def 1", definitions[1].name)
@@ -282,7 +285,7 @@ class ReducerTest {
         val newState = reducer(initialState, event)
 
         // Then
-        assertEquals("Updated", newState.tabsState.selectedTab.groupDefinitions.first().name)
+        assertEquals("Updated", newState.tabsState.selectedTab.rendering.groupDefinitions.first().name)
     }
 
     @Test
@@ -299,7 +302,7 @@ class ReducerTest {
         val newState = reducer(initialState, event)
 
         // Then
-        assertTrue(newState.tabsState.selectedTab.groupDefinitions.isEmpty())
+        assertTrue(newState.tabsState.selectedTab.rendering.groupDefinitions.isEmpty())
     }
 
     @Test
@@ -316,7 +319,7 @@ class ReducerTest {
         val newState = reducer(initialState, event)
 
         // Then
-        assertTrue(newState.tabsState.selectedTab.groupDefinitions.isEmpty())
+        assertTrue(newState.tabsState.selectedTab.rendering.groupDefinitions.isEmpty())
     }
 
     @Test
@@ -374,8 +377,8 @@ class ReducerTest {
 
         // Then
         with(newState.tabsState.selectedTab) {
-            assertEquals(1, groupDefinitions.size)
-            assertEquals("Template Def", groupDefinitions.first().name)
+            assertEquals(1, rendering.groupDefinitions.size)
+            assertEquals("Template Def", rendering.groupDefinitions.first().name)
             assertEquals("Template Scratchpad", scratchpad)
             assertEquals(templateFilePath, templateData?.templateFilePath)
         }
@@ -413,8 +416,8 @@ class ReducerTest {
 
         // Then
         with(newState.tabsState.selectedTab) {
-            assertEquals(1, groupDefinitions.size)
-            assertEquals("Template Def", groupDefinitions.first().name)
+            assertEquals(1, rendering.groupDefinitions.size)
+            assertEquals("Template Def", rendering.groupDefinitions.first().name)
             assertEquals("Original Scratchpad", scratchpad)
             assertEquals(templateFilePath, templateData?.templateFilePath)
         }
@@ -467,9 +470,9 @@ class ReducerTest {
 
         // Then
         with(newState.tabsState.selectedTab) {
-            assertEquals(2, groupDefinitions.size)
-            assertTrue(groupDefinitions.any { it.name == "Existing" })
-            assertTrue(groupDefinitions.any { it.name == "Extra Def" })
+            assertEquals(2, rendering.groupDefinitions.size)
+            assertTrue(rendering.groupDefinitions.any { it.name == "Existing" })
+            assertTrue(rendering.groupDefinitions.any { it.name == "Extra Def" })
         }
     }
 
@@ -504,7 +507,7 @@ class ReducerTest {
         newState = reducer(newState, AppEvent.CurrentTabEvent.AddDefinitionEvent(def3))
 
         // Then
-        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        val definitions = newState.tabsState.selectedTab.rendering.groupDefinitions
         assertEquals(3, definitions.size)
         assertEquals("First", definitions[0].name)
         assertEquals("Middle", definitions[1].name)
@@ -531,7 +534,7 @@ class ReducerTest {
         newState = reducer(newState, AppEvent.CurrentTabEvent.AddDefinitionEvent(defVariable))
 
         // Then
-        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        val definitions = newState.tabsState.selectedTab.rendering.groupDefinitions
         assertEquals(listOf("B", "A"), definitions.map { it.name })
     }
 
@@ -555,7 +558,7 @@ class ReducerTest {
         // "Last" resolves to 4 with a 5-byte payload
         assertEquals(
             listOf("Middle", "Last"),
-            state.tabsState.selectedTab.groupDefinitions.map { it.name },
+            state.tabsState.selectedTab.rendering.groupDefinitions.map { it.name },
         )
 
         // When the payload is shortened, "Last" resolves to 1
@@ -567,7 +570,7 @@ class ReducerTest {
         // Then
         assertEquals(
             listOf("Last", "Middle"),
-            newState.tabsState.selectedTab.groupDefinitions.map { it.name },
+            newState.tabsState.selectedTab.rendering.groupDefinitions.map { it.name },
         )
     }
 
@@ -596,7 +599,7 @@ class ReducerTest {
         // Then
         assertEquals(
             listOf("First", "Second"),
-            newState.tabsState.selectedTab.groupDefinitions.map { it.name },
+            newState.tabsState.selectedTab.rendering.groupDefinitions.map { it.name },
         )
     }
 
@@ -646,7 +649,7 @@ class ReducerTest {
 
         // Then
         // Sorted by resolved start index (static formulas)
-        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        val definitions = newState.tabsState.selectedTab.rendering.groupDefinitions
         assertEquals("Def 2", definitions[0].name)
         assertEquals("Def 1", definitions[1].name)
     }
@@ -677,7 +680,7 @@ class ReducerTest {
         val newState = reducer(state, AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent)
 
         // Then a single default definition covering byte 0 is added
-        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        val definitions = newState.tabsState.selectedTab.rendering.groupDefinitions
         assertEquals(1, definitions.size)
         assertEquals("0", definitions.first().startFormula)
         assertEquals("0", definitions.first().endFormula)
@@ -693,7 +696,7 @@ class ReducerTest {
         val newState = reducer(initialState, AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent)
 
         // Then the new definition starts right after the resolved end of the last one (byte 3)
-        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        val definitions = newState.tabsState.selectedTab.rendering.groupDefinitions
         assertEquals(2, definitions.size)
         val appended = definitions.last { it.id != existingDef.id }
         assertEquals("3", appended.startFormula)
@@ -714,7 +717,7 @@ class ReducerTest {
         val newState = reducer(initialState, AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent)
 
         // Then the newly appended definition uses the same representation
-        val appended = newState.tabsState.selectedTab.groupDefinitions.last { it.id != existingDef.id }
+        val appended = newState.tabsState.selectedTab.rendering.groupDefinitions.last { it.id != existingDef.id }
         assertEquals(DataRenderer.Binary, appended.representation.dataRenderer)
     }
 
@@ -728,7 +731,7 @@ class ReducerTest {
         val newState = reducer(initialState, AppEvent.CurrentTabEvent.DuplicateDefinitionEvent(existingDef))
 
         // Then a new definition of the same length (3 bytes) is appended right after the original (bytes 3..5)
-        val definitions = newState.tabsState.selectedTab.groupDefinitions
+        val definitions = newState.tabsState.selectedTab.rendering.groupDefinitions
         assertEquals(2, definitions.size)
         val duplicated = definitions.last { it.id != existingDef.id }
         assertEquals("3", duplicated.startFormula)
@@ -764,7 +767,7 @@ class ReducerTest {
         val newState = reducer(state, AppEvent.CurrentTabEvent.DuplicateDefinitionEvent(dataDef))
 
         // Then the duplicate starts right after the real resolved end (index 4)
-        val duplicated = newState.tabsState.selectedTab.groupDefinitions
+        val duplicated = newState.tabsState.selectedTab.rendering.groupDefinitions
             .first { it.name == "DATA 2" }
         assertEquals("4", duplicated.startFormula)
         assertEquals("6", duplicated.endFormula)
@@ -785,7 +788,7 @@ class ReducerTest {
         val newState = reducer(state, event)
 
         // Then
-        assertEquals(defs, newState.tabsState.selectedTab.groupDefinitions)
+        assertEquals(defs, newState.tabsState.selectedTab.rendering.groupDefinitions)
     }
 
     @Test

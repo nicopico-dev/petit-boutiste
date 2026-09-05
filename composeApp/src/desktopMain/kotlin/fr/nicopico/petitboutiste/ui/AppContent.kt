@@ -31,8 +31,8 @@ fun AppContent(
         Column(modifier = Modifier.fillMaxSize()) {
             // Main app screen with the selected tab's data
             TabContent(
-                inputData = tabData.inputData,
-                definitions = tabData.groupDefinitions,
+                inputData = tabData.rendering.inputData,
+                definitions = tabData.rendering.groupDefinitions,
                 byteItems = byteItems,
                 errors = errors,
                 scratchpad = tabData.scratchpad,

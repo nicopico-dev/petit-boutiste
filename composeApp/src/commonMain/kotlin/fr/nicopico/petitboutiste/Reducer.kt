@@ -209,7 +209,7 @@ class Reducer(
             //region Current Tab
             is AppEvent.CurrentTabEvent.ChangeInputTypeEvent -> {
                 state.updateCurrentTab {
-                    val hexString = HexString(inputData.hexStringValue)
+                    val hexString = HexString(rendering.inputData.hexStringValue)
                     val updatedData: DataString = when (event.type) {
                         InputType.HEX -> hexString
                         InputType.BINARY -> BinaryString.fromHexString(hexString)
@@ -234,7 +234,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + event.definition,
+                            groupDefinitions = rendering.groupDefinitions + event.definition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -243,7 +243,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.AppendDefaultDefinitionEvent -> {
                 state.updateCurrentTab {
-                    val lastDefinition = groupDefinitions.lastOrNull()
+                    val lastDefinition = rendering.groupDefinitions.lastOrNull()
                     val variables = resolveVariables(rendering)
                     val nextIndex: Int = if (lastDefinition != null) {
                         val expandedFormula = lastDefinition.expandFormulas().endFormula
@@ -265,7 +265,7 @@ class Reducer(
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + newDefinition,
+                            groupDefinitions = rendering.groupDefinitions + newDefinition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -296,7 +296,7 @@ class Reducer(
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + newDefinition,
+                            groupDefinitions = rendering.groupDefinitions + newDefinition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -305,7 +305,7 @@ class Reducer(
 
             is AppEvent.CurrentTabEvent.UpdateDefinitionEvent -> {
                 state.updateCurrentTab {
-                    val updatedDefinitions = groupDefinitions.map { definition ->
+                    val updatedDefinitions = rendering.groupDefinitions.map { definition ->
                         if (definition.id == event.sourceDefinition.id) event.updatedDefinition else definition
                     }
 
@@ -322,7 +322,7 @@ class Reducer(
                 state.updateCurrentTab {
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions - event.definition,
+                            groupDefinitions = rendering.groupDefinitions - event.definition,
                         ),
                         templateData = templateData?.copy(definitionsHaveChanged = true),
                     ).withUpdatedRendering()
@@ -434,14 +434,14 @@ class Reducer(
 
                 state.updateCurrentTab {
                     // Ensure incoming definitions have unique IDs
-                    val currentIds = groupDefinitions.map { it.id }.toSet()
+                    val currentIds = rendering.groupDefinitions.map { it.id }.toSet()
                     val newDefinitions = template.definitions.map {
                         if (it.id in currentIds) it.copy(id = createDefinitionId()) else it
                     }
 
                     copy(
                         rendering = rendering.copy(
-                            groupDefinitions = groupDefinitions + newDefinitions,
+                            groupDefinitions = rendering.groupDefinitions + newDefinitions,
                         )
                     ).withUpdatedRendering()
                 }
