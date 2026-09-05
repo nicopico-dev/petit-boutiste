@@ -15,7 +15,7 @@ object PBIcons {
 
     val app: Painter
         @Composable
-        @Suppress("DEPRECATION")
+        // TODO Migrate to non-deprecated variant
         get() = painterResource("icons/app-icon.png")
 
     val themeDark: PathIconKey = PathIconKey("icons/themeDark.svg", PBIcons::class.java)
