@@ -78,5 +78,6 @@ sealed class AppEvent {
     data class CreateNewTemplateFile(
         val templateFile: Path,
         val onFileReady: (Path) -> Unit,
+        val allowOverwrite: Boolean = false,
     ) : AppEvent()
 }

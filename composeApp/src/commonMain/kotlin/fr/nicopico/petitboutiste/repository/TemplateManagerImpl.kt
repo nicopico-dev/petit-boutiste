@@ -16,6 +16,9 @@ import fr.nicopico.petitboutiste.utils.file.createTempFile
 import fr.nicopico.petitboutiste.utils.file.normalize
 import fr.nicopico.petitboutiste.utils.file.parentOrCurrent
 import fr.nicopico.petitboutiste.utils.file.relativeTo
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.io.files.FileSystem
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
@@ -26,19 +29,22 @@ import kotlinx.serialization.json.Json
 class TemplateManagerImpl(
     private val json: Json = Json.Default,
     private val fileSystem: FileSystem = SystemFileSystem,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TemplateManager {
 
     override suspend fun loadTemplate(templateFilePath: Path): Template {
-        val template = templateFilePath.asSource(fileSystem)
-            .use { source ->
-                json.decodeFromString<Template>(source.readString())
-            }
+        return withContext(dispatcher) {
+            val template = templateFilePath.asSource(fileSystem)
+                .use { source ->
+                    json.decodeFromString<Template>(source.readString())
+                }
 
-        // Transform each FileArg relative path to an absolute path
-        return template.transformFileArgumentPaths { relativePath ->
-            Path(templateFilePath.parentOrCurrent, relativePath)
-                .normalize()
-                .absolutePath
+            // Transform each FileArg relative path to an absolute path
+            template.transformFileArgumentPaths { relativePath ->
+                Path(templateFilePath.parentOrCurrent, relativePath)
+                    .normalize()
+                    .absolutePath
+            }
         }
     }
 
@@ -46,7 +52,7 @@ class TemplateManagerImpl(
         template: Template,
         templateFilePath: Path,
         overwrite: Boolean,
-    ) {
+    ): Unit = withContext(dispatcher) {
         if (fileSystem.exists(templateFilePath) && !overwrite) {
             error("Template file '$templateFilePath' already exists")
         }

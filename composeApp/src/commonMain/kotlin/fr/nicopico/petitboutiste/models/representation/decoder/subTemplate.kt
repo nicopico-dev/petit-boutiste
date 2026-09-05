@@ -36,7 +36,11 @@ val subTemplateArguments = listOf(
                 extension = "json",
                 onFileSelected = { onAppEvent, path, onFileReady ->
                     onAppEvent(
-                        AppEvent.CreateNewTemplateFile(path, onFileReady)
+                        AppEvent.CreateNewTemplateFile(
+                            templateFile = path,
+                            onFileReady = onFileReady,
+                            allowOverwrite = true, // the UI will ask the user for overwriting
+                        )
                     )
                 },
             )

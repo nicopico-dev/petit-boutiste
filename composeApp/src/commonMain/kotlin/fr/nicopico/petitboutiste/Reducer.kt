@@ -43,10 +43,7 @@ import fr.nicopico.petitboutiste.ui.SnackbarController
 import fr.nicopico.petitboutiste.utils.file.nameWithoutExtension
 import fr.nicopico.petitboutiste.utils.incrementIndexSuffix
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import kotlinx.io.files.Path
 import kotlin.math.max
 
@@ -54,8 +51,6 @@ class Reducer(
     private val templateManager: TemplateManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
-
-    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
     private var snackbarController: SnackbarController? = null
     fun setSnackbarController(snackbarController: SnackbarController) {
@@ -452,11 +447,15 @@ class Reducer(
 
             //endregion
             is AppEvent.CreateNewTemplateFile -> {
-                scope.launch(Dispatchers.IO) {
-                    val template = Template(name = event.templateFile.name)
-                    templateManager.saveTemplate(template, event.templateFile, overwrite = false)
-                    event.onFileReady(event.templateFile)
-                }
+                val template = Template(
+                    name = event.templateFile.nameWithoutExtension
+                )
+                templateManager.saveTemplate(
+                    template = template,
+                    templateFilePath = event.templateFile,
+                    overwrite = event.allowOverwrite,
+                )
+                event.onFileReady(event.templateFile)
 
                 // Keep the current state
                 state
