@@ -459,6 +459,11 @@ class Reducer(
                     overwrite = event.allowOverwrite,
                 )
 
+                val subTemplateRepresentation = Representation(
+                    DataRenderer.SubTemplate,
+                    createSubTemplateArgument(event.templateFile),
+                )
+
                 state.updateCurrentTab {
                     val existingDefinition = when(event.byteItem) {
                         // Retrieve definition from the rendering to exclude temporary definition
@@ -466,10 +471,6 @@ class Reducer(
                             .find { it.id == event.byteItem.definition.id }
                         is SingleByte -> null
                     }
-                    val subTemplateRepresentation = Representation(
-                        DataRenderer.SubTemplate,
-                        createSubTemplateArgument(event.templateFile),
-                    )
 
                     if (existingDefinition != null) {
                         // Update the existing definition with the new representation
@@ -489,9 +490,15 @@ class Reducer(
                         // Update default representation
                         defaultRepresentation = subTemplateRepresentation,
                     )
+                }.also {
+                    // Open a new tab with the subTemplate
+                    sendSideEffect(
+                        AppEvent.OpenRenderedByteItemInNewTabEvent(
+                            byteItem = event.byteItem,
+                            representation = subTemplateRepresentation,
+                        )
+                    )
                 }
-
-                // TODO Open a new tab with subTemplate
             }
         }
     }
