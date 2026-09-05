@@ -92,6 +92,7 @@ fun ArgumentInput(
                             )
                         },
                         selection = value?.let(fileType::convertFrom),
+                        newFileOptions = fileType.newFileOptions,
                         modifier = inputModifier
                     )
                 }

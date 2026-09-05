@@ -6,6 +6,7 @@
 
 package fr.nicopico.petitboutiste.models.representation.arguments
 
+import fr.nicopico.petitboutiste.models.persistence.NewFileOptions
 import fr.nicopico.petitboutiste.utils.file.asString
 import fr.nicopico.petitboutiste.utils.nowInMillis
 import kotlinx.coroutines.flow.Flow
@@ -19,14 +20,8 @@ sealed class ArgumentType<T : Any>(
     abstract fun convertFrom(argValue: ArgValue): T
     abstract fun convertTo(value: T): ArgValue
 
-    data class NewFileSupport(
-        val suggestedFileName: String,
-        val extension: String,
-        val defaultContent: String,
-    )
-
     data class FileType(
-        val newFileSupport: NewFileSupport? = null,
+        val newFileOptions: NewFileOptions? = null,
     ) : ArgumentType<Path>(Path::class) {
 
         override fun convertFrom(argValue: ArgValue): Path {

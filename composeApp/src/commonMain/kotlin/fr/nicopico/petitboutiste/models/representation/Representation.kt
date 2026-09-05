@@ -37,7 +37,6 @@ data class Representation(
 val Representation.isOff: Boolean
     get() = dataRenderer == DataRenderer.Off
 
-// TODO REFACTO Move this computation to the Reducer
 suspend fun Representation.render(byteItem: ByteItem): RenderResult {
     require(isReady) { "Representation must be ready!" }
     return try {

@@ -74,4 +74,9 @@ sealed class AppEvent {
             val templateFilePath: Path,
         ) : CurrentTabEvent()
     }
+
+    data class CreateNewTemplateFile(
+        val templateFile: Path,
+        val onFileReady: (Path) -> Unit,
+    ) : AppEvent()
 }
