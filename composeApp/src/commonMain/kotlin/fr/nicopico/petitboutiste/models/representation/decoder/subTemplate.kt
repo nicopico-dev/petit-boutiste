@@ -15,6 +15,7 @@ import fr.nicopico.petitboutiste.models.representation.DataRenderer.Argument
 import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.Representation
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.FileType
+import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentType.NewFileSupport
 import fr.nicopico.petitboutiste.models.representation.arguments.ArgumentValues
 import fr.nicopico.petitboutiste.repository.TemplateManager
 import kotlinx.io.files.Path
@@ -28,7 +29,13 @@ val subTemplateArguments = listOf(
     Argument(
         key = ARG_TEMPLATE_FILE_KEY,
         label = "PTB Template file",
-        type = FileType,
+        type = FileType(
+            newFileSupport = NewFileSupport(
+                suggestedFileName = "template",
+                extension = "json",
+                defaultContent = "{}",
+            )
+        ),
     )
 )
 

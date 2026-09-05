@@ -19,8 +19,15 @@ sealed class ArgumentType<T : Any>(
     abstract fun convertFrom(argValue: ArgValue): T
     abstract fun convertTo(value: T): ArgValue
 
-    data object FileType : ArgumentType<Path>(Path::class) {
-        private const val SEPARATOR = ";;"
+    data class NewFileSupport(
+        val suggestedFileName: String,
+        val extension: String,
+        val defaultContent: String,
+    )
+
+    data class FileType(
+        val newFileSupport: NewFileSupport? = null,
+    ) : ArgumentType<Path>(Path::class) {
 
         override fun convertFrom(argValue: ArgValue): Path {
             // Ignore the timestamp
@@ -31,6 +38,10 @@ sealed class ArgumentType<T : Any>(
         override fun convertTo(value: Path): ArgValue {
             // Append a timestamp to the file path to allow reloading the same file
             return value.asString() + SEPARATOR + nowInMillis()
+        }
+
+        companion object {
+            private const val SEPARATOR = ";;"
         }
     }
 

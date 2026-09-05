@@ -84,13 +84,14 @@ fun ArgumentInput(
         ) {
             when (argument.type) {
                 is FileType -> {
+                    val fileType = argument.type
                     PBFileSelector(
                         onFileSelected = { file ->
                             onValueChanged(
-                                file?.let { FileType.convertTo(it) }
+                                file?.let { fileType.convertTo(it) }
                             )
                         },
-                        selection = value?.let(FileType::convertFrom),
+                        selection = value?.let(fileType::convertFrom),
                         modifier = inputModifier
                     )
                 }
