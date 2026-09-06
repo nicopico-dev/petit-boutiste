@@ -85,11 +85,29 @@ class DefinitionVariableRegistry(
 
             when (property) {
                 Property.START -> {
-                    Calculator.computeOrThrow(definition.startFormula, variables)
+                    val expanded = definition.expandFormulas()
+                    if (expanded.startFormula != null) {
+                        Calculator.computeOrThrow(expanded.startFormula, variables)
+                    } else if (expanded.endFormula != null && expanded.lengthFormula != null) {
+                        val end = Calculator.computeOrThrow(expanded.endFormula, variables)
+                        val length = Calculator.computeOrThrow(expanded.lengthFormula, variables)
+                        end - length + 1
+                    } else {
+                        error("Cannot compute START for definition without startFormula or endFormula+lengthFormula")
+                    }
                 }
 
                 Property.END -> {
-                    Calculator.computeOrThrow(definition.endFormula, variables)
+                    val expanded = definition.expandFormulas()
+                    if (expanded.endFormula != null) {
+                        Calculator.computeOrThrow(expanded.endFormula, variables)
+                    } else if (expanded.startFormula != null && expanded.lengthFormula != null) {
+                        val start = Calculator.computeOrThrow(expanded.startFormula, variables)
+                        val length = Calculator.computeOrThrow(expanded.lengthFormula, variables)
+                        start + length - 1
+                    } else {
+                        error("Cannot compute END for definition without endFormula or startFormula+lengthFormula")
+                    }
                 }
 
                 Property.VALUE -> {
@@ -101,8 +119,24 @@ class DefinitionVariableRegistry(
                         "VALUE property on $this is only supported for Integer and UserScript representation"
                     }
 
-                    val startIndex = Calculator.computeOrThrow(definition.startFormula, variables)
-                    val endIndex = Calculator.computeOrThrow(definition.endFormula, variables)
+                    val startIndex: Int
+                    val endIndex: Int
+                    val expanded = definition.expandFormulas()
+                    
+                    if (expanded.startFormula != null && expanded.endFormula != null) {
+                        startIndex = Calculator.computeOrThrow(expanded.startFormula, variables)
+                        endIndex = Calculator.computeOrThrow(expanded.endFormula, variables)
+                    } else if (expanded.startFormula != null && expanded.lengthFormula != null) {
+                        startIndex = Calculator.computeOrThrow(expanded.startFormula, variables)
+                        val length = Calculator.computeOrThrow(expanded.lengthFormula, variables)
+                        endIndex = startIndex + length - 1
+                    } else if (expanded.endFormula != null && expanded.lengthFormula != null) {
+                        val length = Calculator.computeOrThrow(expanded.lengthFormula, variables)
+                        endIndex = Calculator.computeOrThrow(expanded.endFormula, variables)
+                        startIndex = endIndex - length + 1
+                    } else {
+                        error("Cannot compute VALUE for definition without valid formula combination")
+                    }
 
                     val byteItem = data.extractByteItem(definition, startIndex, endIndex)
                     val renderResult = representation.render(byteItem)
@@ -138,7 +172,7 @@ class DefinitionVariableRegistry(
     ): List<VariableDependencies> {
         val variablesToResolve = buildSet {
             definitions.forEach {
-                addAll(extractVariables(it.startFormula, it.endFormula))
+                addAll(extractVariables(it.startFormula, it.endFormula, it.lengthFormula))
             }
         }
 
@@ -203,16 +237,21 @@ class DefinitionVariableRegistry(
 
                 when (property) {
                     Property.START -> extractVariables(
-                        variablePayloadDefinition.startFormula
+                        variablePayloadDefinition.startFormula,
+                        variablePayloadDefinition.endFormula,
+                        variablePayloadDefinition.lengthFormula
                     )
 
                     Property.END -> extractVariables(
-                        variablePayloadDefinition.endFormula
+                        variablePayloadDefinition.startFormula,
+                        variablePayloadDefinition.endFormula,
+                        variablePayloadDefinition.lengthFormula
                     )
 
                     Property.VALUE -> extractVariables(
                         variablePayloadDefinition.startFormula,
                         variablePayloadDefinition.endFormula,
+                        variablePayloadDefinition.lengthFormula
                     )
                 }
             }
@@ -233,8 +272,8 @@ class DefinitionVariableRegistry(
         }
 
         private fun extractVariables(vararg formulas: String): Set<Variable> {
-            require(formulas.size == 1 || formulas.size == 2) {
-                "expected one or two formulas, but was ${formulas.size}"
+            require(formulas.size in 1..3) {
+                "expected one to three formulas, but was ${formulas.size}"
             }
 
             return formulas
