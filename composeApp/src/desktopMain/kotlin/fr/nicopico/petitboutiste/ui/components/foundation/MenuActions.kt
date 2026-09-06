@@ -132,4 +132,10 @@ class MenuActions(
     fun clearAllDefinitions() {
         onEvent(CurrentTabEvent.ClearAllDefinitionsEvent)
     }
+
+    fun detachTemplate(tabData: TabData) {
+        if (tabData.templateData != null) {
+            onEvent(CurrentTabEvent.DetachTemplateEvent)
+        }
+    }
 }

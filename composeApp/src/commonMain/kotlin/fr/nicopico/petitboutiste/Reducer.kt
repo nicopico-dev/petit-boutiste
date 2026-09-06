@@ -446,6 +446,14 @@ class Reducer(
                     ).withUpdatedRendering()
                 }
             }
+
+            is AppEvent.CurrentTabEvent.DetachTemplateEvent -> {
+                state.updateCurrentTab {
+                    copy(
+                        templateData = null
+                    )
+                }
+            }
             //endregion
 
             //endregion
