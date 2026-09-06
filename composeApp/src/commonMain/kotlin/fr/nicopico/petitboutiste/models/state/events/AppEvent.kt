@@ -73,6 +73,8 @@ sealed class AppEvent {
         data class AddDefinitionsFromTemplateEvent(
             val templateFilePath: Path,
         ) : CurrentTabEvent()
+
+        data object DetachTemplateEvent : CurrentTabEvent()
     }
 
     data class CreateNewSubTemplateFile(

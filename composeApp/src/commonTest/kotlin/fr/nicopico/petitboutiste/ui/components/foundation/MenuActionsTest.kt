@@ -155,6 +155,34 @@ class MenuActionsTest {
     }
 
     @Test
+    fun `detachTemplate triggers DetachTemplateEvent when templateData is present`() {
+        // Given
+        val filePath = Path("test.json")
+        val tabData = TabData(
+            templateData = TabTemplateData(templateFilePath = filePath)
+        )
+
+        // When
+        menuActions.detachTemplate(tabData)
+
+        // Then
+        assertEquals(1, capturedEvents.size)
+        assertEquals(CurrentTabEvent.DetachTemplateEvent, capturedEvents[0])
+    }
+
+    @Test
+    fun `detachTemplate does nothing when templateData is null`() {
+        // Given
+        val tabData = TabData(templateData = null)
+
+        // When
+        menuActions.detachTemplate(tabData)
+
+        // Then
+        assertTrue(capturedEvents.isEmpty())
+    }
+
+    @Test
     fun `loadTemplate triggers LoadTemplateEvent after file selection`() = runTest {
         // Given
         val filePath = Path("selected.json")

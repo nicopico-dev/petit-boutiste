@@ -54,6 +54,11 @@ fun FrameWindowScope.PBMenuBar(
                 shortcut = KeyShortcut(Key.S, meta = true, shift = true),
                 onClick = { menuActions.saveTemplateAs(currentTab) }
             )
+            Item(
+                text = "Detach template (keep definitions)",
+                enabled = currentTab.templateData != null,
+                onClick = { menuActions.detachTemplate(currentTab) }
+            )
         }
 
         Menu("Definitions", mnemonic = 'D') {
