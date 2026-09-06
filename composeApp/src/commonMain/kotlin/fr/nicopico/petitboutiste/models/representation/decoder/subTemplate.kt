@@ -46,8 +46,11 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
     val template = templateManager.loadTemplate(templateFilePath)
 
     val dataString = HexString(byteArray.toHexString())
-    val parsedData = dataString.toByteItems(template.definitions).items
+    val byteGroups = dataString.toByteItems(template.definitions)
+        .items
         .filterIsInstance<ByteGroup>()
+
+    val parsedData = byteGroups
         .filter { group ->
             // Ignore unnamed groups
             group.name != null
@@ -74,7 +77,12 @@ suspend fun DataRenderer.decodeSubTemplate(byteArray: ByteArray, argumentValues:
         }
         .associate { (key, value) -> key to value }
 
-    return Json.encodeToString(parsedData)
+    val jsonEncodedData = Json.encodeToString(parsedData)
+    check(byteGroups.none { it.incomplete }) {
+        "The payload do not match de template definitions\n$jsonEncodedData"
+    }
+
+    return jsonEncodedData
 }
 
 fun Representation.getSubTemplateFilePath(): Path? {
