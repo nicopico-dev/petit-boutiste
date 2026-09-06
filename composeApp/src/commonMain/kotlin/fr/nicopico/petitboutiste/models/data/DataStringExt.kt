@@ -64,11 +64,32 @@ suspend fun DataString.toByteItems(
     val validGroupDefinitions = groupDefinitions.mapNotNull { definition ->
         try {
             val expandedDefinition = definition.expandFormulas()
-            val start = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
-            check (start >= 0) { "Start index cannot be negative" }
-
-            val end = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
-            check (end >= start) { "End index must be equals or greater than Start" }
+            val start: Int
+            val end: Int
+            
+            // Handle the three valid combinations
+            if (expandedDefinition.startFormula != null && expandedDefinition.endFormula != null) {
+                start = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
+                check (start >= 0) { "Start index cannot be negative" }
+                end = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+                check (end >= start) { "End index must be equals or greater than Start" }
+            } else if (expandedDefinition.startFormula != null && expandedDefinition.lengthFormula != null) {
+                start = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
+                check (start >= 0) { "Start index cannot be negative" }
+                val length = Calculator.computeOrThrow(expandedDefinition.lengthFormula, variables)
+                check (length > 0) { "Length must be positive" }
+                end = start + length - 1
+            } else if (expandedDefinition.endFormula != null && expandedDefinition.lengthFormula != null) {
+                val length = Calculator.computeOrThrow(expandedDefinition.lengthFormula, variables)
+                check (length > 0) { "Length must be positive" }
+                end = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+                check (end >= 0) { "End index cannot be negative" }
+                start = end - length + 1
+                check (start >= 0) { "Start index cannot be negative" }
+                check (end >= start) { "End index must be equals or greater than Start" }
+            } else {
+                error("Invalid ByteGroupDefinition: missing required formula combination")
+            }
 
             if (start > bytes.lastIndex) return@mapNotNull null
             Triple(definition, start, end)

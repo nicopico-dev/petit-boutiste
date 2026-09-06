@@ -34,6 +34,16 @@ class ByteGroupDefinitionSorter(
         }
     }
 
-    private fun ByteGroupDefinition.resolveStart(): Int? =
-        Calculator.compute(expandFormulas().startFormula, variables)
+    private fun ByteGroupDefinition.resolveStart(): Int? {
+        val expanded = expandFormulas()
+        return when {
+            expanded.startFormula != null -> Calculator.compute(expanded.startFormula, variables)
+            expanded.endFormula != null && expanded.lengthFormula != null -> {
+                val end = Calculator.compute(expanded.endFormula, variables)
+                val length = Calculator.compute(expanded.lengthFormula, variables)
+                end?.minus(length ?: 0)?.plus(1)
+            }
+            else -> null
+        }
+    }
 }

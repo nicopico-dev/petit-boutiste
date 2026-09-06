@@ -27,14 +27,13 @@ data class FormulaValidation(
  * instead of naively replacing every `[[variable]]` reference with `0`.
  */
 suspend fun ByteGroupDefinition.validateFormulas(
-    startFormula: String,
-    endFormula: String,
+    boundaries: ByteGroupBoundaries,
     registry: DefinitionVariableRegistry,
     inputData: DataString,
 ): FormulaValidation {
     // Rebuild the registry with this definition's draft formulas so that any variable newly
     // referenced by the (not yet saved) draft is resolved the same way it would be once saved.
-    val draftDefinition = copy(startFormula = startFormula, endFormula = endFormula)
+    val draftDefinition = copy(boundaries = boundaries)
     val definitionsForValidation = if (registry.definitions.any { it.id == id }) {
         registry.definitions.map { if (it.id == id) draftDefinition else it }
     } else {
@@ -46,31 +45,87 @@ suspend fun ByteGroupDefinition.validateFormulas(
         draftRegistry.computeVariableValues(inputData)
     } catch (error: Exception) {
         return FormulaValidation(
-            startError = if (startFormula.isNotEmpty()) error.toErrorMessage() else null,
-            endError = if (endFormula.isNotEmpty()) error.toErrorMessage() else null,
+            startError = if (!boundaries.startFormula.isNullOrEmpty()) error.toErrorMessage() else null,
+            endError = if (!boundaries.endFormula.isNullOrEmpty()) error.toErrorMessage() else null,
         )
     }
 
     val draft = draftDefinition.expandFormulas()
 
-    val startValidationResult = validateFormula(
-        formula = draft.startFormula,
-        variables = variables,
-        minValue = 0,
-    )
-    val startError = when (startValidationResult) {
-        is FormulaValidationResult.InvalidFormula -> startValidationResult.errorMessage
-        else -> null
-    }
+    // Validate based on which formulas are present
+    val startValidationResult: FormulaValidationResult
+    val startError: String?
+    val endValidationResult: FormulaValidationResult
+    val endError: String?
 
-    val endValidationResult = validateFormula(
-        formula = draft.endFormula,
-        variables = variables,
-        minValue = (startValidationResult as? FormulaValidationResult.ValidFormula)?.value ?: 0,
-    )
-    val endError = when (endValidationResult) {
-        is FormulaValidationResult.InvalidFormula -> endValidationResult.errorMessage
-        else -> null
+    if (draft.startFormula != null && draft.endFormula != null) {
+        // start + end combination
+        startValidationResult = validateFormula(
+            formula = draft.startFormula,
+            variables = variables,
+            minValue = 0,
+        )
+        startError = when (startValidationResult) {
+            is FormulaValidationResult.InvalidFormula -> startValidationResult.errorMessage
+            else -> null
+        }
+
+        endValidationResult = validateFormula(
+            formula = draft.endFormula,
+            variables = variables,
+            minValue = (startValidationResult as? FormulaValidationResult.ValidFormula)?.value ?: 0,
+        )
+        endError = when (endValidationResult) {
+            is FormulaValidationResult.InvalidFormula -> endValidationResult.errorMessage
+            else -> null
+        }
+    } else if (draft.startFormula != null && draft.lengthFormula != null) {
+        // start + length combination
+        startValidationResult = validateFormula(
+            formula = draft.startFormula,
+            variables = variables,
+            minValue = 0,
+        )
+        startError = when (startValidationResult) {
+            is FormulaValidationResult.InvalidFormula -> startValidationResult.errorMessage
+            else -> null
+        }
+
+        endValidationResult = validateFormula(
+            formula = draft.lengthFormula,
+            variables = variables,
+            minValue = 1,
+        )
+        endError = when (endValidationResult) {
+            is FormulaValidationResult.InvalidFormula -> endValidationResult.errorMessage
+            else -> null
+        }
+    } else if (draft.endFormula != null && draft.lengthFormula != null) {
+        // end + length combination
+        endValidationResult = validateFormula(
+            formula = draft.endFormula,
+            variables = variables,
+            minValue = 0,
+        )
+        endError = when (endValidationResult) {
+            is FormulaValidationResult.InvalidFormula -> endValidationResult.errorMessage
+            else -> null
+        }
+
+        startValidationResult = validateFormula(
+            formula = draft.lengthFormula,
+            variables = variables,
+            minValue = 1,
+        )
+        startError = when (startValidationResult) {
+            is FormulaValidationResult.InvalidFormula -> startValidationResult.errorMessage
+            else -> null
+        }
+    } else {
+        return FormulaValidation(
+            startError = "Invalid formula combination",
+            endError = "Invalid formula combination"
+        )
     }
 
     return FormulaValidation(startError, endError)
