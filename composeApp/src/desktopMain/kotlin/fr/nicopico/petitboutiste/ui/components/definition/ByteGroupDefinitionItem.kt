@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import fr.nicopico.petitboutiste.models.definition.ByteGroup
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
+import fr.nicopico.petitboutiste.models.representation.RenderResult
 import fr.nicopico.petitboutiste.models.representation.asString
 import fr.nicopico.petitboutiste.models.representation.isOff
 import fr.nicopico.petitboutiste.ui.UiTags
@@ -46,7 +47,6 @@ import fr.nicopico.petitboutiste.ui.UiTags.BYTE_GROUP_DEFINITIONS_ITEM_TOGGLE_FO
 import fr.nicopico.petitboutiste.ui.theme.AppTheme
 import fr.nicopico.petitboutiste.ui.theme.colors
 import fr.nicopico.petitboutiste.utils.compose.Slot
-import fr.nicopico.petitboutiste.utils.size
 import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.IconButton
@@ -66,6 +66,10 @@ fun ByteGroupDefinitionItem(
     form: Slot? = null,
     displayForm: Boolean = false,
 ) {
+    var errorMessage by remember(errorMessage) {
+        mutableStateOf(errorMessage)
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -110,7 +114,30 @@ fun ByteGroupDefinitionItem(
                     modifier = Modifier.testTag(BYTE_GROUP_DEFINITIONS_ITEM_RANGE)
                 )
 
-                if (errorMessage != null) {
+                var valueText: String? by remember {
+                    mutableStateOf(null)
+                }
+                LaunchedEffect(byteGroup, definition.representation) {
+                    if (
+                        byteGroup != null
+                        && !definition.representation.isOff
+                        && definition.representation.isReady
+                    ) {
+                        val render = byteGroup.getOrComputeRendering()
+                        valueText = render.asString(
+                            singleLine = true
+                        )
+                        if (render is RenderResult.Error) {
+                            errorMessage = if (errorMessage.isNullOrEmpty()) {
+                                render.message
+                            } else errorMessage + "\n" + render.message
+                        }
+                    } else {
+                        valueText = null
+                    }
+                }
+
+                errorMessage?.let { errorMessage ->
                     Text(
                         text = errorMessage,
                         style = JewelTheme.typography.medium,
@@ -118,21 +145,6 @@ fun ByteGroupDefinitionItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.testTag(BYTE_GROUP_DEFINITIONS_ITEM_ERROR)
                     )
-                }
-
-                var valueText: String? by remember {
-                    mutableStateOf(null)
-                }
-                LaunchedEffect(byteGroup, definition.representation) {
-                    valueText = if (
-                        byteGroup != null
-                        && !definition.representation.isOff
-                        && definition.representation.isReady
-                    ) {
-                        byteGroup.getOrComputeRendering().asString(
-                            singleLine = true
-                        )
-                    } else null
                 }
 
                 valueText?.let { valueText ->
