@@ -37,10 +37,10 @@ kotlin {
     }
 
     jvmToolchain {
-        // Runs with JBR-21 for Jewel L&F
-        languageVersion = JavaLanguageVersion.of(21)
+        // Runs with JBR-25 for Jewel L&F
+        languageVersion = JavaLanguageVersion.of(25)
         @Suppress("UnstableApiUsage")
-        vendor = JvmVendorSpec.JETBRAINS
+        this.vendor = JvmVendorSpec.JETBRAINS
     }
 
     sourceSets {
