@@ -5,6 +5,8 @@
  */
 
 import ext.configureDesktopApplication
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("compose-desktop-convention")
@@ -22,6 +24,9 @@ configureDesktopApplication(
     fullPackageName = "fr.nicopico.petitboutiste",
 )
 
+val compilerJvm: JavaVersion = JavaVersion.VERSION_25
+val targetJvm: JvmTarget = JvmTarget.JVM_21
+
 kotlin {
     compilerOptions {
         // NOTE: Pre-release options must be mirrored in the embedded Kotlin compiler to prevent the error
@@ -38,7 +43,7 @@ kotlin {
 
     jvmToolchain {
         // Runs with JBR-25 for Jewel L&F
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(compilerJvm.majorVersion)
         @Suppress("UnstableApiUsage")
         this.vendor = JvmVendorSpec.JETBRAINS
     }
@@ -88,6 +93,13 @@ kotlin {
 //        }
     }
 }
+
+tasks.withType<KotlinCompile> {
+    this.compilerOptions {
+        jvmTarget.set(targetJvm)
+    }
+}
+
 
 // Ensure native bridges are built and copied before building composeApp
 // This makes :composeApp:build depend on :buildAndCopyNativeBridges
