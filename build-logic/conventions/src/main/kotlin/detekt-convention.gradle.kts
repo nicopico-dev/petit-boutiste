@@ -37,8 +37,12 @@ run {
     )
     tasks.withType<Detekt>().configureEach {
         setSource(files(detektSourceDirs))
+        // Detekt 1.23.x supports jvm-target up to 22 but derives it from the JVM
+        // toolchain (JVM 25 to run with JBR-25); pin it to the bytecode target instead.
+        jvmTarget = "21"
     }
     tasks.withType<DetektCreateBaselineTask>().configureEach {
         setSource(files(detektSourceDirs))
+        jvmTarget = "21"
     }
 }
