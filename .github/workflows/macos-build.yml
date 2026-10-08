@@ -27,7 +27,7 @@ jobs:
         if: ${{ !env.ACT }}
         with:
           distribution: 'jetbrains'
-          java-version: '21'
+          java-version: '25'
           cache: 'gradle'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
