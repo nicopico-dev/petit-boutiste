@@ -60,7 +60,9 @@ kotlin {
                 exclude(group = "org.jetbrains.compose.material")
             }
 
-            implementation(libs.findBundle("jewel").get())
+            // Cannot use the `jewel` bundle as we need to exclude some transitive dependencies
+            // (see `dependencies` block below)
+            //implementation(libs.findBundle("jewel").get())
         }
 
         val desktopTest by getting
@@ -74,5 +76,25 @@ kotlin {
         // TODO Enable WASM target
         //val wasmJsMain by getting
 
+    }
+}
+
+dependencies {
+    // Mirrors the "jewel" bundle from the version catalog (which cannot be declared in the
+    // source set DSL because bundles do not support dependency configuration actions).
+    //
+    // The intellij-platform-icons modules transitively pull the IntelliJ fork of
+    // kotlinx-coroutines (org.jetbrains.intellij.deps.kotlinx:kotlinx-coroutines-core),
+    // which duplicates the stock coroutines classes in the packaged application and breaks
+    // proguardReleaseJars ("unresolved references to program class members"). The stock
+    // coroutines used by the app is API-compatible for these modules, so the fork is excluded.
+    listOf(
+        libs.findLibrary("jewel-int-ui-standalone").get(),
+        libs.findLibrary("jewel-int-ui-decorated-window").get(),
+        libs.findLibrary("intellij-platform-icons").get(),
+    ).forEach { dependency ->
+        "desktopMainImplementation"(dependency) {
+            exclude(group = "org.jetbrains.intellij.deps.kotlinx")
+        }
     }
 }
