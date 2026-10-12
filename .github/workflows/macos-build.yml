@@ -52,7 +52,11 @@ jobs:
           BASE_NAME="${APP_NAME%.app}"
           BASE_NAME="${BASE_NAME// /-}"
           ZIP_NAME="${BASE_NAME}-${{ inputs.version_prefix }}${{ inputs.version }}.zip"
-          zip -r "$ZIP_NAME" "$APP_NAME"
+          # -y preserves symlinks (e.g. in the bundled JBR runtime). Without it, zip
+          # dereferences them into regular files, which invalidates the .app code
+          # signature and makes macOS Gatekeeper reject the downloaded application
+          # ("app is damaged and can't be opened").
+          zip -r -y "$ZIP_NAME" "$APP_NAME"
           echo "ZIP_PATH=$(pwd)/$ZIP_NAME" >> $GITHUB_ENV
 
       - name: Upload artifact
