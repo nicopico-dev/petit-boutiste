@@ -40,12 +40,17 @@ class ByteGroupDefinitionValidationTest {
             ),
         )
         val registry = DefinitionVariableRegistry(listOf(lenDef))
-        val draftDefinition = ByteGroupDefinition(startFormula = "1", endFormula = "1")
+        val draftDefinition = ByteGroupDefinition(
+            boundaries = ByteGroupBoundaries.fromFormulas("1", "1", null)
+        )
 
         // When validating a draft end formula depending on the real LEN value
         val validation = draftDefinition.validateFormulas(
-            startFormula = "[[LEN.value]] - 1",
-            endFormula = "[[LEN.value]] + 1",
+            boundaries = ByteGroupBoundaries.fromFormulas(
+                startFormula = "[[LEN.value]] - 1",
+                endFormula = "[[LEN.value]] + 1",
+                lengthFormula = null,
+            ),
             registry = registry,
             inputData = data,
         )
@@ -71,12 +76,17 @@ class ByteGroupDefinitionValidationTest {
             ),
         )
         val registry = DefinitionVariableRegistry(listOf(lenDef))
-        val draftDefinition = ByteGroupDefinition(startFormula = "1", endFormula = "1")
+        val draftDefinition = ByteGroupDefinition(
+            boundaries = ByteGroupBoundaries.fromFormulas("1", "1", null)
+        )
 
         // When validating a draft start formula depending on the real LEN value
         val validation = draftDefinition.validateFormulas(
-            startFormula = "[[LEN.value]] - 3",
-            endFormula = "10",
+            boundaries = ByteGroupBoundaries.fromFormulas(
+                startFormula = "[[LEN.value]] - 3",
+                endFormula = "10",
+                lengthFormula = null,
+            ),
             registry = registry,
             inputData = data,
         )
@@ -89,12 +99,17 @@ class ByteGroupDefinitionValidationTest {
     fun `validateFormulas flags negative start index`() = runTest {
         // Given no group definitions
         val registry = DefinitionVariableRegistry(emptyList())
-        val draftDefinition = ByteGroupDefinition(startFormula = "0", endFormula = "0")
+        val draftDefinition = ByteGroupDefinition(
+            boundaries = ByteGroupBoundaries.fromFormulas("0", "0", null)
+        )
 
         // When the start formula resolves to a negative number
         val validation = draftDefinition.validateFormulas(
-            startFormula = "0 - 5",
-            endFormula = "10",
+            boundaries = ByteGroupBoundaries.fromFormulas(
+                startFormula = "0 - 5",
+                endFormula = "10",
+                lengthFormula = null,
+            ),
             registry = registry,
             inputData = HexString(""),
         )
@@ -107,12 +122,17 @@ class ByteGroupDefinitionValidationTest {
     fun `validateFormulas flags end lower than start`() = runTest {
         // Given no group definitions
         val registry = DefinitionVariableRegistry(emptyList())
-        val draftDefinition = ByteGroupDefinition(startFormula = "0", endFormula = "0")
+        val draftDefinition = ByteGroupDefinition(
+            boundaries = ByteGroupBoundaries.fromFormulas("0", "0", null)
+        )
 
         // When the end formula resolves to a value lower than the start
         val validation = draftDefinition.validateFormulas(
-            startFormula = "5",
-            endFormula = "2",
+            boundaries = ByteGroupBoundaries.fromFormulas(
+                startFormula = "5",
+                endFormula = "2",
+                lengthFormula = null,
+            ),
             registry = registry,
             inputData = HexString(""),
         )
@@ -125,12 +145,17 @@ class ByteGroupDefinitionValidationTest {
     fun `validateFormulas flags invalid formula syntax`() = runTest {
         // Given no group definitions
         val registry = DefinitionVariableRegistry(emptyList())
-        val draftDefinition = ByteGroupDefinition(startFormula = "0", endFormula = "0")
+        val draftDefinition = ByteGroupDefinition(
+            boundaries = ByteGroupBoundaries.fromFormulas("0", "0", null)
+        )
 
         // When the formulas cannot be parsed
         val validation = draftDefinition.validateFormulas(
-            startFormula = "not a formula",
-            endFormula = "also not a formula",
+            boundaries = ByteGroupBoundaries.fromFormulas(
+                startFormula = "not a formula",
+                endFormula = "also not a formula",
+                lengthFormula = null,
+            ),
             registry = registry,
             inputData = HexString(""),
         )
@@ -144,12 +169,17 @@ class ByteGroupDefinitionValidationTest {
     fun `validateFormulas treats empty formulas as no error`() = runTest {
         // Given no group definitions
         val registry = DefinitionVariableRegistry(emptyList())
-        val draftDefinition = ByteGroupDefinition(startFormula = "0", endFormula = "0")
+        val draftDefinition = ByteGroupDefinition(
+            boundaries = ByteGroupBoundaries.fromFormulas("0", "0", null)
+        )
 
         // When both formulas are empty (not yet filled in by the user)
         val validation = draftDefinition.validateFormulas(
-            startFormula = "",
-            endFormula = "",
+            boundaries = ByteGroupBoundaries.fromFormulas(
+                startFormula = "",
+                endFormula = "",
+                lengthFormula = null,
+            ),
             registry = registry,
             inputData = HexString(""),
         )

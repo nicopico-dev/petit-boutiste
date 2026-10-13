@@ -246,9 +246,17 @@ class Reducer(
                     val lastDefinition = rendering.groupDefinitions.lastOrNull()
                     val variables = resolveVariables(rendering)
                     val nextIndex: Int = if (lastDefinition != null) {
-                        val expandedFormula = lastDefinition.expandFormulas().endFormula
+                        val expanded = lastDefinition.expandFormulas()
                         val endValue = try {
-                            Calculator.computeOrThrow(expandedFormula, variables)
+                            if (expanded.endFormula != null) {
+                                Calculator.computeOrThrow(expanded.endFormula, variables)
+                            } else if (expanded.startFormula != null && expanded.lengthFormula != null) {
+                                val start = Calculator.computeOrThrow(expanded.startFormula, variables)
+                                val length = Calculator.computeOrThrow(expanded.lengthFormula, variables)
+                                start + length - 1
+                            } else {
+                                throw IllegalStateException("Invalid formula combination")
+                            }
                         } catch (_: Exception) {
                             // Unexpected error
                             displaySnackbar(SnackbarEvent("Could not compute the end of the last definition"))
@@ -278,8 +286,24 @@ class Reducer(
                     val variables = resolveVariables(rendering)
                     val expandedDefinition = definition.expandFormulas()
                     val (newStart, newEnd) = try {
-                        val startValue = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
-                        val endValue = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+                        val startValue: Int
+                        val endValue: Int
+                        
+                        if (expandedDefinition.startFormula != null && expandedDefinition.endFormula != null) {
+                            startValue = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
+                            endValue = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+                        } else if (expandedDefinition.startFormula != null && expandedDefinition.lengthFormula != null) {
+                            startValue = Calculator.computeOrThrow(expandedDefinition.startFormula, variables)
+                            val length = Calculator.computeOrThrow(expandedDefinition.lengthFormula, variables)
+                            endValue = startValue + length - 1
+                        } else if (expandedDefinition.endFormula != null && expandedDefinition.lengthFormula != null) {
+                            val length = Calculator.computeOrThrow(expandedDefinition.lengthFormula, variables)
+                            endValue = Calculator.computeOrThrow(expandedDefinition.endFormula, variables)
+                            startValue = endValue - length + 1
+                        } else {
+                            throw IllegalStateException("Invalid formula combination")
+                        }
+                        
                         val length = endValue - startValue + 1
                         val nextStart = endValue + 1
                         nextStart.toString() to (nextStart + length - 1).toString()
@@ -292,6 +316,7 @@ class Reducer(
                         name = definition.name?.incrementIndexSuffix(),
                         startFormula = newStart,
                         endFormula = newEnd,
+                        lengthFormula = null,
                     )
 
                     copy(

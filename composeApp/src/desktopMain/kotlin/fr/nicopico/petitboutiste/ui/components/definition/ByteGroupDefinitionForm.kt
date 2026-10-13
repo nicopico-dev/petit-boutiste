@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import fr.nicopico.petitboutiste.calculator.DefinitionVariableRegistry
 import fr.nicopico.petitboutiste.models.data.DataString
 import fr.nicopico.petitboutiste.models.data.HexString
+import fr.nicopico.petitboutiste.models.definition.ByteGroupBoundaries
 import fr.nicopico.petitboutiste.models.definition.ByteGroupDefinition
 import fr.nicopico.petitboutiste.models.definition.FormulaValidation
 import fr.nicopico.petitboutiste.models.definition.validateFormulas
@@ -75,8 +76,11 @@ fun ByteGroupDefinitionForm(
         inputData,
     ) {
         value = definition.validateFormulas(
-            startFormula = startFormulaInput,
-            endFormula = endFormulaInput,
+            boundaries = ByteGroupBoundaries.fromFormulas(
+                startFormula = startFormulaInput,
+                endFormula = endFormulaInput,
+                lengthFormula = null,
+            ),
             registry = variableRegistry ?: DefinitionVariableRegistry(emptyList()),
             inputData = inputData,
         )
