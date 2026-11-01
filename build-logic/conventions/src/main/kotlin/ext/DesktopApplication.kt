@@ -7,6 +7,9 @@
 package ext
 
 import org.gradle.api.Project
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
+import org.gradle.jvm.toolchain.JvmVendorSpec
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.compose.ComposeExtension
@@ -25,6 +28,9 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
  * - **ProGuard**: The release build type uses a ProGuard configuration file named `compose-desktop.pro`
  *   located in the project directory.
  * - **License**: The `LICENSE` file from the root project is included in the distributions.
+ * - **JDK**: The application (and the ProGuard library jars) use the Gradle-resolved JetBrains
+ *   Runtime toolchain for [jdkMajorVersion] instead of the ambient `JAVA_HOME`, because the
+ *   ProGuard task only picks up the JDK runtime classes from the `jmods` directory of `javaHome`.
  * - **JDK Modules**: The `jdk.unsupported` module is included by default.
  * - **App Resources**: Application resources are expected to be in a `resources` directory within
  *   the project.
@@ -41,20 +47,33 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 fun Project.configureDesktopApplication(
     appName: String,
     fullPackageName: String,
+    jdkMajorVersion: Int,
     mainClass: String = "$fullPackageName.MainKt",
     vendorName: String = "Nicolas PICON",
     enableJniLogs: Boolean = false,
 ) {
     pluginManager.withPlugin("org.jetbrains.compose") {
+        // Resolve the JetBrains Runtime toolchain (same one used to compile the app).
+        // Using it as `javaHome` guarantees that `<javaHome>/jmods` exists, which the
+        // ProGuard task needs to emit `-libraryjars` for the JDK runtime classes.
+        val jbrHome = extensions.getByType(JavaToolchainService::class.java)
+            .launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(jdkMajorVersion))
+                vendor.set(JvmVendorSpec.JETBRAINS)
+            }
+            .get()
+            .metadata
+            .installationPath
+            .asFile
+            .absolutePath
+
         extensions.findByType<ComposeExtension>()?.apply {
             // equivalent to `desktop` generated accessor
             configure<DesktopExtension> {
                 application {
                     this.mainClass = mainClass
 
-                    // JAVA_HOME must point to a JBR-21 or more recent
-                    // ex: ~/Library/Java/JavaVirtualMachines/jbr-21.0.6/Contents/Home
-                    javaHome = System.getenv("JAVA_HOME")
+                    javaHome = jbrHome
                     if (enableJniLogs) {
                         jvmArgs.add("-Xcheck:jni") // Print JNI logs to the console (really verbose !)
                     }

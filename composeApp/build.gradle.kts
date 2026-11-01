@@ -19,13 +19,14 @@ plugins {
     alias(libs.plugins.skydoves.stabilityAnalyzer)
 }
 
+val compilerJvm: JavaVersion = JavaVersion.VERSION_25
+val targetJvm: JvmTarget = JvmTarget.JVM_21
+
 configureDesktopApplication(
     appName = "Petit Boutiste",
     fullPackageName = "fr.nicopico.petitboutiste",
+    jdkMajorVersion = compilerJvm.majorVersion.toInt(),
 )
-
-val compilerJvm: JavaVersion = JavaVersion.VERSION_25
-val targetJvm: JvmTarget = JvmTarget.JVM_21
 
 kotlin {
     compilerOptions {
